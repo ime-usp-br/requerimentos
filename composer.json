@@ -11,7 +11,8 @@
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
-        "uspdev/laravel-usp-theme": "^2.6"
+        "uspdev/laravel-usp-theme": "^2.6",
+        "uspdev/senhaunica-socialite": "^4.3"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
