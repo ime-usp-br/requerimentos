@@ -12,6 +12,7 @@
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "uspdev/laravel-usp-theme": "^2.6",
+        "uspdev/replicado": "^1.14",
         "uspdev/senhaunica-socialite": "^4.3"
     },
     "require-dev": {
