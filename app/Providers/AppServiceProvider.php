@@ -12,8 +12,10 @@ class AppServiceProvider extends ServiceProvider
      * @return void
      */
     public function register()
-    {
-        //
+    {        
+        if (env('FORCE_HTTPS') === true) {
+            $this->app['request']->server->set('HTTPS', true);
+        }
     }
 
     /**
