@@ -15,7 +15,7 @@ use App\Models\User;
 */
 
 Route::get('/', function () {
-    return view('home');
+    return view('pages.home');
 });
 
 Route::get('/acesso-negado', function() {
