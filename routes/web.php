@@ -21,3 +21,7 @@ Route::get('/', function () {
 Route::get('/acesso-negado', function() {
     return view('pages.accessDenied');
 });
+
+Route::get('/lista', function () {
+    return view('pages.list');
+});
