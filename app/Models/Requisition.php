@@ -9,4 +9,7 @@ class Requisition extends Model
 {
     use HasFactory;
     
+    public function takenDisciplines() {
+        return $this->hasMany(TakenDisciplines::class);
+    }
 }
