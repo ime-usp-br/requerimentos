@@ -1,17 +1,13 @@
 footer {
-    justify-self: flex-end;
     margin-top: 1.2rem;
     display: flex;
     background-color: var(--blue);
-    flex-shrink: 0;
 }
 
 .footer-content {
     display: flex;
-    
     justify-content: space-between;
     align-items: center;
-
     padding: 1.81rem var(--page-margin);
     width: 100%;
 }

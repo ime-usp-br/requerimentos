@@ -11,7 +11,7 @@ body {
     background-image: url("/img/home/background.png");
     background-size: cover;
     background-position: center center;
-    min-height: 100vh;
+    min-height: 100%;
 }
 
 .button {
