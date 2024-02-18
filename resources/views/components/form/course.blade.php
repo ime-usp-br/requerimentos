@@ -4,7 +4,7 @@
         <label class="select" >
             Nome
             <select name="course">
-                <option value="">Selecione o curso</option>
+                <option value="">Selecione o seu curso atual</option>
                 <option 
                     value="Bacharelado em Ciência da Computação"
                     @if(isset($req) && $req->course == 'Bacharelado em Ciência da Computação') 

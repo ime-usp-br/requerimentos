@@ -1,6 +1,6 @@
 <fieldset class="documents">
     <legend>Documentos</legend>
-    <div class="doc-text" >Adicione o histórico escolar com as disciplinas cursadas</div>
+    <div class="doc-text" >Adicione o histórico escolar com todas as disciplinas cursadas</div>
     <div class="document">
         <img src="{{ asset('img/newRequisition/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
         <div>
@@ -14,7 +14,7 @@
             <div class="taken-disc-record">Nenhum arquivo pdf anexado</div>
         </div>
     </div>
-    <div class="doc-text">Adicione o histórico do curso atual</div>
+    <div class="doc-text">Adicione o histórico escolar do curso atual</div>
     <div class="document">
         <img src="{{ asset('img/newRequisition/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
         <div>
