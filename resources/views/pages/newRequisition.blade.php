@@ -25,9 +25,8 @@
         <form method="POST" action="{{ route('requisitions.create')}}" id="form" enctype="multipart/form-data">
             @csrf
 
-            <x-form.personal :withRecordButton="false"/> 
+            {{--<x-form.personal :withRecordButton="false"/> <hr> --}}
             
-            <hr>
             <x-form.course />
 
             <hr>

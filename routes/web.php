@@ -34,6 +34,13 @@ Route::get('/novo-requerimento', function() {
     return view('pages.newRequisition');
 })->middleware('auth')->name('newRequisition');
 
+Route::get('/analise/{requisitionId}', function($requisitionId) {
+
+    $req = Requisition::with('takenDisciplines')->find($requisitionId);
+    
+    return view('pages.requisitionDetails', ['req' => $req, 'takenDiscs' => $req->takenDisciplines]);
+})->middleware('auth')->name('requisitions.show');
+
 Route::post('/novo-requerimento', function(Request $request) {
     // dd($request->input('takenDiscCount'));
     $takenDiscCount = (int) $request->takenDiscCount;
@@ -49,9 +56,6 @@ Route::post('/novo-requerimento', function(Request $request) {
     }
 
     $inputArray = [
-        'name' => 'required | max:255',
-        'email' => 'required | max:255 | email ',
-        'nusp' => 'required | numeric | integer',
         'course' => 'required | max:255',
         'requested-disc-name' => 'required | max:255',
         'requested-disc-type' => 'required',
@@ -67,9 +71,12 @@ Route::post('/novo-requerimento', function(Request $request) {
 
     $req = new Requisition;
     $req->department = $data['disc-department'];
-    $req->nusp = $data['nusp'];
-    $req->student_name = $data['name'];
-    $req->email = $data['email'];
+    // $req->nusp = $data['nusp'];
+    $req->nusp = Auth::user()->codpes;
+    // $req->student_name = $data['name'];
+    $req->student_name = Auth::user()->name;
+    // $req->email = $data['email'];
+    $req->email = Auth::user()->email;
     $req->course = $data['course'];
     $req->requested_disc = $data['requested-disc-name'];
     $req->requested_disc_type = $data['requested-disc-type'];
