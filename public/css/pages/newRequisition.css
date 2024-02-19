@@ -47,7 +47,7 @@ header .button {
 }
 
 h1 {
-    font-size: 1.3rem;
+    /* font-size: 1.3rem; */
     margin-top: var(--body-gaps);
 }
 
@@ -167,9 +167,9 @@ input[type="radio"] {
         width: 9rem;
     }
 
-    h1 {
+    /* h1 {
         font-size: 1.4rem;
-    }
+    } */
 
     header .button {
         width: 6.5rem;
