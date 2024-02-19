@@ -82,6 +82,10 @@
     /* width: 100%; */
 }
 
+.large-field {
+    width: 17.3rem;
+}
+
 #disc-type {
     width: 9rem;
 }
@@ -99,11 +103,19 @@
     #disc-name, #disc-institution {
         width: 24.8rem;
     }
+
+    .large-field {
+        width: 24.8rem;
+    }
 }
 
 @media screen and (min-width: 830px) {
 
     #disc-name, #disc-institution {
+        width: 25.8rem;
+    }
+
+    .large-field {
         width: 25.8rem;
     }
 }
@@ -119,18 +131,27 @@
     #disc-name, #disc-institution {
         width: 27.8rem;
     }
-}
 
-@media screen and (min-width: 1280px) {
-
-    #disc-name, #disc-institution {
+    .large-field {
         width: 27.8rem;
     }
 }
 
+/* @media screen and (min-width: 1280px) {
+
+    #disc-name, #disc-institution {
+        width: 27.8rem;
+    }
+
+} */
+
 @media screen and (min-width: 1920px) {
  
     #disc-name, #disc-institution {
+        width: 29.8rem;
+    }
+
+    .large-field {
         width: 29.8rem;
     }
 }
