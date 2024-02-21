@@ -163,46 +163,5 @@
                     <a href="{{ Storage::disk('public')->url($req->requested_disc_syllabus)}}" target="_blank">Ementa</a>
                 </div>
             </article>
-
-            <!-- <section class="result-section">
-                <h3>Resultado</h3>
-                
-                <div class="result">Requerimento indeferido</div>
-                <p>Deferido porque eu quis e tenho muito poder aqui dentro, eu mando nas pessoas e elas obedecem haha como é bom ser rica e poderosa </p>
-
-                <button class="button">Pedir recurso</button>
-            </section> -->
-
-            
-
-            @if ($req->result === 'Deferido')
-                <article class="result-section">
-                    <h3>Resultado</h3>
-                    
-                    <div class="result">Requerimento deferido</div>
-                    @if($req->result_text)
-                        <p>{{ $req->result_text }}</p>
-                    @endif
-                </article>
-            @elseif ($req->result === 'Indeferido')
-                <article class="result-section">
-                    <h3>Resultado</h3>
-                    
-                    <div class="result">Requerimento indeferido</div>
-
-                    @if($req->result_text)
-                        <p>{{ $req->result_text }}</p>
-                    @endif
-                    
-                    <button class="button">Recurso</button>
-                </article>
-            @elseif($req->result === 'Inconsistência nas informações')
-                <article class="result-section">
-                    <p>O seu requerimento apresenta os seguintes problemas</p>
-                    <p>{{ $req->result_text }}</p>
-                </article>
-            @endif
-        </section>
-        
     </div>
 @endsection
