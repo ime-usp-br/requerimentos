@@ -72,35 +72,35 @@
                             @endif
                             <div class="disc">
                                 <div class="field-wrapper">
-                                    Nome: 
+                                    Nome
                                     <div class="field large-field">{{ $disc->name }}</div>
                                 </div>
 
                                 <div class="field-wrapper">
-                                    Instituição em que foi cursada: 
+                                    Instituição em que foi cursada 
                                     <div id="disc-institution" class="field">{{ $disc->institution }}</div>
                                 </div>
                                 
                                 <div class="disc-middle-row">
                                     <div class="field-wrapper">
-                                        Sigla: 
+                                        Sigla 
                                         <div id="disc-code" class="field">{{ $disc->code }}</div>
                                     </div>
 
                                     <div class="field-wrapper">
-                                        Ano: 
+                                        Ano 
                                         <div id="disc-year" class="field">{{ $disc->year }}</div>
                                     </div>
 
                                     <div class="field-wrapper">
-                                        Nota: 
+                                        Nota 
                                         <div id="disc-grade" class="field">{{ $disc->grade }}</div>
                                     </div>
                                 </div>
 
                                 <div class="disc-last-row">
                                     <div class="field-wrapper">
-                                        Semestre: 
+                                        Semestre 
                                         <div id="disc-semester" class="field">{{ $disc->semester }}</div>
                                     </div>
                                 </div>
@@ -115,13 +115,13 @@
                     <div class="disc-list">
                         <div class="disc">
                             <div class="field-wrapper">
-                                Nome: 
+                                Nome 
                                 <div class="field large-field">{{ $req->requested_disc }}</div>
                             </div>
 
                             <div class="disc-middle-row">
                                 <div class="field-wrapper ">
-                                    Departamento: 
+                                    Departamento 
                                     <div class="field department">{{ $req->department }}</div>
                                 </div>
                                 <div class="field-wrapper ">
