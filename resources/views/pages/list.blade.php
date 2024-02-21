@@ -36,7 +36,7 @@
                     <td>
                         <ul>
                             @foreach ($req->takenDisciplines as $disc)
-                                <li>- {{ $disc->name }} </li>
+                                <li>{{ $disc->name }} </li>
                             @endforeach
                         </ul>    
                     </td>
