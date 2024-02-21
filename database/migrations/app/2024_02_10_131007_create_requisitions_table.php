@@ -17,20 +17,28 @@ class CreateRequisitionsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->enum('department', ['MAC', 'MAE', 'MAT', 'MAP', 'Disciplina de fora do IME']);
+            
             $table->unsignedInteger('nusp');
             $table->string('student_name');
             $table->string('email');
+            
             $table->enum('course', ['Bacharelado em Ciência da Computação', 'Bacharelado em Estatística', 'Bacharelado em Matemática', 'Bacharelado em Matemática Aplicada', 'Bacharelado em Matemática Aplicada e Computacional', 'Licenciatura em Matemática']);
             $table->string('requested_disc');
             $table->enum('requested_disc_type', ['Extracurricular', 'Obrigatória', 'Optativa Eletiva', 'Optativa Livre']);
-            $table->string('requested_disc_code');
             $table->string('situation');
+            $table->string('requested_disc_code');
+            $table->text('observations')->nullable();
+            $table->boolean('validated_by_sg');
+
+            // arquivos
             $table->string('taken_discs_record');
             $table->string('current_course_record');
             $table->string('taken_discs_syllabus');
             $table->string('requested_disc_syllabus');
-            $table->text('result')->nullable();
-            $table->text('observations')->nullable();
+
+            // resultado
+            $table->enum('result', ['Sem resultado', 'Inconsistência nas informações', 'Deferido', 'Indeferido']);
+            $table->text('result_text')->nullable();
             
             // parecerista
             $table->enum('reviewer_decision', ['Sem decisão', 'Deferido', 'Indeferido']);
