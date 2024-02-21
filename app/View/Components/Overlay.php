@@ -4,7 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class FormOverlay extends Component
+class Overlay extends Component
 {
     /**
      * Create a new component instance.
@@ -23,6 +23,6 @@ class FormOverlay extends Component
      */
     public function render()
     {
-        return view('components.form-overlay');
+        return view('components.overlay');
     }
 }

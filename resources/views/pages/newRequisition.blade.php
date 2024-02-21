@@ -10,10 +10,35 @@
 @endsection
 
 @section('content')
-    <x-form-overlay>
-        <a href="{{ route('list') }}" class="button">Voltar para a página inicial</a>
-        <a href="{{ route('newRequisition') }}" class="button">Criar outro requerimento</a>
-    </x-form-overlay>
+    <x-overlay>
+        <x-slot name="title">
+            @if (session()->has('success'))
+                {{ session('success')['title message'] }}
+            @elseif($errors->any())
+                Erros no prenchimento dos dados
+            @endif
+        </x-slot>
+
+        @if (session()->has('success'))
+            <style>
+                .overlay-container {
+                    display: block;
+                }
+            </style>
+            <p>{{ session('success')['body message'] }}</p>
+            <div class="overlay-nav">
+                <a href="{{ route('list') }}" class="button">Voltar para a página inicial</a>
+                <a href="{{ route('newRequisition') }}" class="button">Criar outro requerimento</a>
+            </div>
+        @elseif($errors->any())
+            <style>
+                .overlay-container {
+                    display: block;
+                }
+            </style>
+            <p class="overlay-error-message">Os erros podem ter sido causados por campos obrigatórios não preenchidos ou por inconsistência nos dados inseridos.</p>
+        @endif
+    </x-overlay>
 
     <div class="content">
         <header>
@@ -45,6 +70,7 @@
 
         <div class="bottom-nav"> 
             <a href="{{ route('list') }}" class="button">Voltar</a>
+            
             <button type="submit" form="form" class="button">Encaminhar para análise</button>
         </div>
         

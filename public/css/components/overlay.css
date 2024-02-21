@@ -26,15 +26,20 @@
 .overlay-content {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.5rem;
     z-index: 2;
     background-color: white;
     padding: 0.8rem;
+    padding: 1.2rem;
     margin: 2rem 0.7rem;
     border-radius: 4.64px;
     box-shadow: 0 5px 40px rgba(0,0,0,0.8);
     /* position: absolute;
     top: 2rem; */
+}
+
+.overlay-content .button {
+    padding: 12px;
 }
 
 .overlay-title {
@@ -43,7 +48,7 @@
 }
 
 .close-button {
-    width: 2.1rem;
+    width: 2.2rem;
     cursor: pointer;
 }
 
