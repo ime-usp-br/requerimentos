@@ -3,7 +3,7 @@
 @section('head')
     
     <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/student/requisitionDetails.css') }}">
-    <script src="{{ asset('js/form.js')}}" defer></script>
+    <script src="{{ asset('js/requisitionDetails.js')}}" defer></script>
 
     <!-- ionicons -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
@@ -17,7 +17,7 @@
             <h1>Detalhes do requerimento</h1>
             <a href="{{ route('list')}}" class="button">Voltar</a>
         </header>
-        
+
         @if ($req->result === 'Inconsistência nas informações')
             <section class="result">
                 <h2>Problema nas informações fornecidas</h2>
@@ -27,7 +27,7 @@
                         <div class="field result-text large-field">{{ $req->result_text }}</div>
                     </div>
                 @endif
-                <a href="/edicao-requerimento" class="button" target="_blank">Editar o requerimento</a>            
+                <a href="{{ route('requisitions.edit', ['requisitionId' => $req->id]) }}" class="button" target="_blank">Editar o requerimento</a>            
             </section>
         @elseif ($req->result === 'Indeferido')
             <section class="result">
@@ -38,7 +38,6 @@
                         <div class="field result-text large-field">{{ $req->result_text }}</div>
                     </div>
                 @endif
-                <a href="/recurso" class="button" target="_blank">Pedir recurso</a>            
             </section>
         @elseif ($req->result === 'Deferido')
             <section class="result">
@@ -58,7 +57,6 @@
             @endif
             <article class="disciplines">
                 <div class="taken">
-                    <!-- <div class="disc-title" >Disciplinas cursadas</div> -->
                     @if ($takenDiscs->count() > 1)
                         <h3>Disciplinas cursadas</h3>
                     @else
@@ -163,5 +161,11 @@
                     <a href="{{ Storage::disk('public')->url($req->requested_disc_syllabus)}}" target="_blank">Ementa</a>
                 </div>
             </article>
+
+            <article class="observations">
+                <h2>Observações</h2>
+                <div class="textarea">{{ isset($req) ? $req->observations : null }}</div>
+            </article>
+        </section>
     </div>
 @endsection

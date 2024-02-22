@@ -64,6 +64,19 @@ header .button {
     /* padding: 0 0.5rem; */
 }
 
+.textarea {
+    border: none;
+    outline: 1.6px solid var(--gray);
+    border-radius: 3.2px;
+    resize: none;
+    background-color: var(--white);
+    overflow-wrap: break-word;
+    min-width: 19rem;
+    height: 13rem;
+    font-size: 1rem;
+    /* padding-right: 2rem; */
+}
+
 .button {
     width: 8.5rem;
     height: 2.5rem;
@@ -99,6 +112,7 @@ input[type='text'], input[type='email'] {
     font-weight: 600;
     font-size: 0.8rem;
 }
+
 
 .result {
     margin-bottom: 2.5rem;
@@ -201,7 +215,7 @@ select {
         margin: 2rem 0;
     }
 
-    textarea {
+    .textarea {
         width: 28rem;
     }
 
@@ -245,6 +259,10 @@ select {
         background-color: var(--light-blue);
         padding: 2rem 3rem;
         
+    }
+
+    .textarea {
+        width: 32rem;
     }
 
 }

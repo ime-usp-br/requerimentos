@@ -138,8 +138,6 @@ Route::get('/atualizar-requerimento/{requisitionId}', function(Request $request,
 Route::post('/atualizar/{requisitionId}', function(Request $request, $requisitionId) {
     // dd($request);
 
-    // $req = Requisition::with('takenDisciplines')->find($requisitionId);
-
     $takenDiscCount = (int) $request->takenDiscCount;
 
     $discsArray = [];
@@ -158,7 +156,11 @@ Route::post('/atualizar/{requisitionId}', function(Request $request, $requisitio
         'requested-disc-name' => 'required | max:255',
         'requested-disc-type' => 'required',
         'requested-disc-code' => 'required',
-        'disc-department' => 'required'
+        'disc-department' => 'required',
+        'taken-disc-record' => 'required | file | mimes:pdf',
+        'course-record' => 'required | file | mimes:pdf',
+        'taken-disc-syllabus' => 'required | file | mimes:pdf',
+        'requested-disc-syllabus' => 'required | file | mimes:pdf',
     ];
 
     $data = $request->validate(array_merge($inputArray, $discsArray));
@@ -170,6 +172,10 @@ Route::post('/atualizar/{requisitionId}', function(Request $request, $requisitio
     $reqToBeUpdated->requested_disc_type = $data['requested-disc-type'];
     $reqToBeUpdated->requested_disc_code = $data['requested-disc-code'];
     $reqToBeUpdated->observations = request('observations');
+    $reqToBeUpdated->taken_discs_record = $request->file('taken-disc-record')->store('test');
+    $reqToBeUpdated->current_course_record = $request->file('course-record')->store('test');
+    $reqToBeUpdated->taken_discs_syllabus = $request->file('taken-disc-syllabus')->store('test');
+    $reqToBeUpdated->requested_disc_syllabus = $request->file('requested-disc-syllabus')->store('test');
     $reqToBeUpdated->save();
 
     for ($i = 1; $i <= $takenDiscCount; $i++) {
@@ -195,3 +201,11 @@ Route::post('/atualizar/{requisitionId}', function(Request $request, $requisitio
     return redirect()->route('requisitions.edit', ['requisitionId' => $requisitionId])->with('success', ['title message' => 'Requerimento salvo', 'body message' => 'As novas informações do requerimento foram salvas com sucesso']);
 
 })->name('requisitions.update');
+
+Route::post('/criar-recurso', function(Request $request) {
+
+    $data = $request->validate(['extra-document' => 'file | mimes:pdf']);
+
+    
+
+})->name('appeal.create');
