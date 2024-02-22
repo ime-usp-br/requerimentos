@@ -26,7 +26,7 @@
 .overlay-content {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1.4rem;
     z-index: 2;
     background-color: white;
     padding: 0.8rem;
@@ -39,11 +39,13 @@
 }
 
 .overlay-content .button {
-    padding: 12px;
+    padding: 25px;
+    height: 3rem;
+    width: 10rem;
 }
 
 .overlay-title {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 700;
 }
 

@@ -6,14 +6,19 @@ use Illuminate\View\Component;
 
 class Read extends Component
 {
+    public $takenDiscs;
+    public $req;
+    public $withRecordButton;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($takenDiscs, $req, $withRecordButton)
     {
-        //
+        $this->takenDiscs = $takenDiscs;
+        $this->req = $req;
+        $this->withRecordButton = $withRecordButton;
     }
 
     /**

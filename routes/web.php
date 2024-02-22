@@ -5,6 +5,7 @@ use App\Models\Requisition;
 use App\Models\TakenDisciplines;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -48,6 +49,13 @@ Route::get('/analise/{requisitionId}', function($requisitionId) {
 
     $req = Requisition::with('takenDisciplines')->find($requisitionId);
     
+    // if ($req === null) {
+    // }
+    // elseif (Gate::denies('see-requisition', $req)) {
+    //     abort(403);
+    // }
+    
+
     return view('pages.requisitionDetails', ['req' => $req, 'takenDiscs' => $req->takenDisciplines]);
 })->middleware('auth')->name('requisitions.show');
 
@@ -119,3 +127,71 @@ Route::post('/novo-requerimento', function(Request $request) {
     return redirect()->route('newRequisition')->with('success', ['title message' => 'Requerimento criado', 'body message' => "O requerimento foi criado com sucesso. Acompanhe o andamento pelo campo 'situação' na página inicial."]);
 
 })->name('requisitions.create');
+
+Route::get('/atualizar-requerimento/{requisitionId}', function(Request $request, $requisitionId) {
+    $req = Requisition::with('takenDisciplines')->find($requisitionId);
+    
+    return view('pages.editRequisition', ['req' => $req, 'takenDiscs' => $req->takenDisciplines]);
+    
+})->name('requisitions.edit');
+
+Route::post('/atualizar/{requisitionId}', function(Request $request, $requisitionId) {
+    // dd($request);
+
+    // $req = Requisition::with('takenDisciplines')->find($requisitionId);
+
+    $takenDiscCount = (int) $request->takenDiscCount;
+
+    $discsArray = [];
+
+    for ($i = 1; $i <= $takenDiscCount; $i++) {
+        $discsArray["disc$i-name"] = 'required | max:255';
+        $discsArray["disc$i-code"] = 'max:255';
+        $discsArray["disc$i-year"] = 'required | numeric | integer';
+        $discsArray["disc$i-grade"] = 'required | numeric';
+        $discsArray["disc$i-semester"] = 'required';
+        $discsArray["disc$i-institution"] = 'required';
+    }
+
+    $inputArray = [
+        'course' => 'required | max:255',
+        'requested-disc-name' => 'required | max:255',
+        'requested-disc-type' => 'required',
+        'requested-disc-code' => 'required',
+        'disc-department' => 'required'
+    ];
+
+    $data = $request->validate(array_merge($inputArray, $discsArray));
+    
+    $reqToBeUpdated = Requisition::find($requisitionId);
+    $reqToBeUpdated->department = $data['disc-department'];
+    $reqToBeUpdated->course = $data['course'];
+    $reqToBeUpdated->requested_disc = $data['requested-disc-name'];
+    $reqToBeUpdated->requested_disc_type = $data['requested-disc-type'];
+    $reqToBeUpdated->requested_disc_code = $data['requested-disc-code'];
+    $reqToBeUpdated->observations = request('observations');
+    $reqToBeUpdated->save();
+
+    for ($i = 1; $i <= $takenDiscCount; $i++) {
+        $takenDisc = TakenDisciplines::find(request("disc$i-id"));
+        $takenDisc->name = $data["disc$i-name"];
+        $takenDisc->code = $data["disc$i-code"] ?? "";
+        $takenDisc->year = $data["disc$i-year"];
+        $takenDisc->grade = $data["disc$i-grade"];
+        $takenDisc->semester = $data["disc$i-semester"];
+        $takenDisc->institution = $data["disc$i-institution"];
+        $takenDisc->requisition_id = $requisitionId;
+        $takenDisc->save();
+    }
+
+    // if ($request->button === 'validate') {
+    //     $bodyMsg = 'O requerimento foi enviado para o departamento';
+    //     $titleMsg = 'Requerimento enviado';
+    // } elseif ($request->button === 'save') {
+    //     $bodyMsg = 'As novas informações do requerimento foram salvas';
+    //     $titleMsg = 'Requerimento salvo';        
+    // }
+
+    return redirect()->route('requisitions.edit', ['requisitionId' => $requisitionId])->with('success', ['title message' => 'Requerimento salvo', 'body message' => 'As novas informações do requerimento foram salvas com sucesso']);
+
+})->name('requisitions.update');

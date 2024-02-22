@@ -6,10 +6,10 @@
             @foreach($takenDiscs as $disc)
                 <div class="disc">
                     <label>
-                        Nome: <input type="text" name="{{ 'disc' . $loop->iteration . '-name'}}" value="{{ $disc->name }}" id="disc-name">
+                        Nome <input type="text" name="{{ 'disc' . $loop->iteration . '-name'}}" value="{{ $disc->name }}" id="disc-name" required>
                     </label>
                     <label class="disc-institution">
-                        Instituição em que foi cursada:
+                        Instituição em que foi cursada
                         <input type="text" name="{{ 'disc' . $loop->iteration . '-institution' }}" id="disc-institution" value="{{ $disc->institution }}" required>
                     </label>
                     @error('disc-institution')
@@ -28,17 +28,17 @@
                             <input type="text" name="{{ 'disc' . $loop->iteration . '-code' }}" value="{{ $disc->code }}" id="disc-code">
                         </label>
                         <label>
-                            Ano: 
-                            <input type="text" name="{{ 'disc' . $loop->iteration . '-year'}}" value="{{ $disc->year }}" id="disc-year">
+                            Ano 
+                            <input type="text" name="{{ 'disc' . $loop->iteration . '-year'}}" value="{{ $disc->year }}" id="disc-year" required>
                         </label>
                         <label>
-                            Nota: <input type="text" name="{{ 'disc' . $loop->iteration . '-grade'}}" value="{{ $disc->grade }}" id="disc-grade">
+                            Nota <input type="text" name="{{ 'disc' . $loop->iteration . '-grade'}}" value="{{ $disc->grade }}" id="disc-grade" required>
                         </label>
                     </div>
 
                     <div class="disc-last-row">
                         <label>
-                            Semestre: 
+                            Semestre 
                             <select name="{{ 'disc' . $loop->iteration .'-semester' }}" id="disc-semester">
                                 <option 
                                     value=""
@@ -63,7 +63,9 @@
                                 </option>
                             </select>
                         </label>
-                        <a href="#" class="button record-button">Histórico</a>
+                        @if ($withRecordButton)
+                            <a href="#" class="button record-button">Histórico</a>
+                        @endif
                     </div>
                     <input type="hidden" name="{{ 'disc' . $loop->iteration . '-id'}}" value="{{$disc->id}}">
                 </div>
@@ -76,10 +78,10 @@
         <div class="disc-list">
             <div class="disc">
                 <label>
-                    Nome: <input type="text" name="requested-disc-name" value="{{ $req->requested_disc }}" id="disc-name">
+                    Nome <input type="text" name="requested-disc-name" value="{{ $req->requested_disc }}" id="disc-name" required>
                 </label>
                 <label class="disc-department">
-                    Departamento:
+                    Departamento
                     <select name="disc-department" required>
                         <option value="">
                             Selecione o departamento
@@ -141,7 +143,7 @@
                 </div> -->
                 
                 <label>
-                    Tipo: 
+                    Tipo 
                     <select id="disc-type" name="requested-disc-type">
                         <option value="">Selecione o tipo</option>
                         <option 
@@ -182,10 +184,13 @@
                 <div class="disc-last-row">
                     <label class="disc-code">
                         Sigla
-                        <input type="text" name="requested-disc-code" value="{{ $req->requested_disc_code }}" id="disc-code">
+                        <input type="text" name="requested-disc-code" value="{{ $req->requested_disc_code }}" id="disc-code" required>
                     </label>
-
-                    <a href="#" class="button record-button">Histórico</a>
+                    
+                    @if ($withRecordButton)
+                        <a href="#" class="button record-button">Histórico</a>
+                    @endif
+                    
                 </div>
             </div>
             

@@ -6,14 +6,15 @@ use Illuminate\View\Component;
 
 class Course extends Component
 {
+    public $req;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct()
-    {
-        //
+    public function __construct($req = null)
+    {   
+        $this->req = $req;
     }
 
     /**
