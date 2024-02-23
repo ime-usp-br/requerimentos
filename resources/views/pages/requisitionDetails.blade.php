@@ -15,7 +15,7 @@
     <div class="content">
         <header>
             <h1>Detalhes do requerimento</h1>
-            <a href="{{ route('list')}}" class="button">Voltar</a>
+            <a href="{{ route('requisitions.list')}}" class="button">Voltar</a>
         </header>
 
         @if ($req->result === 'Inconsistência nas informações')

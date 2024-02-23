@@ -27,7 +27,7 @@
             </style>
             <p>{{ session('success')['body message'] }}</p>
             <div class="overlay-nav">
-                <a href="{{ route('list') }}" class="button">Voltar para a página inicial</a>
+                <a href="{{ route('requisitions.list') }}" class="button">Voltar para a página inicial</a>
             </div>
         @elseif($errors->any())
             <style>
@@ -42,7 +42,7 @@
     <div class="content">
         <header>
             <h1>Edição do requerimento</h1>
-            <!-- <a href="{{ route('list')}}" class="button">Voltar</a> -->
+            <!-- <a href="{{ route('requisitions.list')}}" class="button">Voltar</a> -->
         </header>
         <p class="instruction">Atualize as informações do requerimento</p>
         
@@ -67,7 +67,7 @@
         </form>
 
         <div class="bottom-nav"> 
-            <a href="{{ route('list') }}" class="button">Voltar</a>
+            <a href="{{ route('requisitions.list') }}" class="button">Voltar</a>
             
             <button type="submit" form="form" class="button">Salvar mudanças</button>
         </div>
