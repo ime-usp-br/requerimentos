@@ -27,8 +27,8 @@
             </style>
             <p>{{ session('success')['body message'] }}</p>
             <div class="overlay-nav">
-                <a href="{{ route('requisitions.list') }}" class="button">Voltar para a página inicial</a>
-                <a href="{{ route('newRequisition') }}" class="button">Criar outro requerimento</a>
+                <a href="{{ route('student.list') }}" class="button">Voltar para a página inicial</a>
+                <a href="{{ route('student.newRequisition') }}" class="button">Criar outro requerimento</a>
             </div>
         @elseif($errors->any())
             <style>
@@ -43,11 +43,11 @@
     <div class="content">
         <header>
             <h1>Novo requerimento</h1>
-            <a href="{{ route('requisitions.list')}}" class="button">Voltar</a>
+            <a href="{{ route('student.list')}}" class="button">Voltar</a>
         </header>
         <p class="instruction">Preencha o seguinte formulário para criar o requerimento</p>
 
-        <form method="POST" action="{{ route('requisitions.create')}}" id="form" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('student.create')}}" id="form" enctype="multipart/form-data">
             @csrf
 
             {{--<x-form.personal :withRecordButton="false"/> <hr> --}}
@@ -69,7 +69,7 @@
         </form>
 
         <div class="bottom-nav"> 
-            <a href="{{ route('requisitions.list') }}" class="button">Voltar</a>
+            <a href="{{ route('student.list') }}" class="button">Voltar</a>
             
             <button type="submit" form="form" class="button">Encaminhar para análise</button>
         </div>

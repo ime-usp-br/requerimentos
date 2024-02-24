@@ -15,7 +15,7 @@
     <div class="content">
         <header>
             <h1>Detalhes do requerimento</h1>
-            <a href="{{ route('requisitions.list')}}" class="button">Voltar</a>
+            <a href="{{ route('student.list')}}" class="button">Voltar</a>
         </header>
 
         @if ($req->result === 'Inconsistência nas informações')
@@ -27,7 +27,7 @@
                         <div class="field result-text large-field">{{ $req->result_text }}</div>
                     </div>
                 @endif
-                <a href="{{ route('requisitions.edit', ['requisitionId' => $req->id]) }}" class="button" target="_blank">Editar o requerimento</a>            
+                <a href="{{ route('student.edit', ['requisitionId' => $req->id]) }}" class="button" target="_blank">Editar o requerimento</a>            
             </section>
         @elseif ($req->result === 'Indeferido')
             <section class="result">

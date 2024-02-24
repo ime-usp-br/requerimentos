@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\RequisitionController;
+use App\Http\Controllers\StudentController;
 
 Route::get('/', function () {
     return view('pages.home');
@@ -12,15 +12,20 @@ Route::get('/acesso-negado', function() {
 });
 
 Route::middleware('auth')->group(function() {
-    Route::get('/lista', [RequisitionController::class, 'list'])->name('requisitions.list');
 
-    Route::view('/novo-requerimento', 'pages.newRequisition')->name('newRequisition');
+    Route::prefix('aluno')->group(function () {
+        Route::get('/lista', [StudentController::class, 'list'])->name('student.list');
 
-    Route::get('/detalhe/{requisitionId}', [RequisitionController::class, 'show'])->name('requisitions.show');
+        Route::view('/novo-requerimento', 'pages.newRequisition')->name('student.newRequisition');
 
-    Route::post('/novo-requerimento', [RequisitionController::class, 'create'])->name('requisitions.create');
+        Route::get('/detalhe/{requisitionId}', [StudentController::class, 'show'])->name('student.show');
 
-    Route::get('/atualizar-requerimento/{requisitionId}', [RequisitionController::class, 'show'])->name('requisitions.edit');
+        Route::post('/novo-requerimento', [StudentController::class, 'create'])->name('student.create');
 
-    Route::post('/atualizar/{requisitionId}', [RequisitionController::class, 'update'])->name('requisitions.update');
+        Route::get('/atualizar/{requisitionId}', [StudentController::class, 'show'])->name('student.edit');
+
+        Route::post('/atualizar/{requisitionId}', [StudentController::class, 'update'])->name('student.update');
+    });
+
+
 });
