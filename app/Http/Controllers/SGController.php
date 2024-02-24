@@ -18,6 +18,12 @@ class SGController extends Controller
         return view('pages.sg.list', ['reqs' => $reqs]);
     }
 
+    public function show($requisitionId) {
+        $req = Requisition::with('takenDisciplines')->find($requisitionId);
+        
+        return view('pages.sg.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines]);
+    }
+
     public function create(Request $request) {
         $takenDiscCount = (int) $request->takenDiscCount;
         $discsArray = [];
@@ -86,5 +92,81 @@ class SGController extends Controller
         }
 
         return redirect()->route('sg.newRequisition')->with('success', ['title message' => 'Requerimento criado', 'body message' => 'O requerimento foi criado com sucesso. Acompanhe o andamento pela página inicial.']);
+    }
+
+    public function update($requisitionId, Request $request) {
+        // dd($request);
+        $takenDiscCount = (int) $request->takenDiscCount;
+
+        $discsArray = [];
+
+        for ($i = 1; $i <= $takenDiscCount; $i++) {
+            $discsArray["disc$i-name"] = 'required | max:255';
+            $discsArray["disc$i-code"] = 'max:255';
+            $discsArray["disc$i-year"] = 'required | numeric | integer';
+            $discsArray["disc$i-grade"] = 'required | numeric';
+            $discsArray["disc$i-semester"] = 'required';
+            $discsArray["disc$i-institution"] = 'required';
+        }
+
+        $inputArray = [
+            'name' => 'required | max:255',
+            'email' => 'required | max:255 | email ',
+            'nusp' => 'required | numeric | integer',
+            'course' => 'required | max:255',
+            'requested-disc-name' => 'required | max:255',
+            'requested-disc-type' => 'required',
+            'requested-disc-code' => 'required',
+            'disc-department' => 'required'
+        ];
+
+        $data = $request->validate(array_merge($inputArray, $discsArray));
+        
+        $reqToBeUpdated = Requisition::find($requisitionId);
+        $reqToBeUpdated->department = $data['disc-department'];
+        $reqToBeUpdated->nusp = $data['nusp'];
+        $reqToBeUpdated->student_name = $data['name'];
+        $reqToBeUpdated->email = $data['email'];
+        $reqToBeUpdated->course = $data['course'];
+        $reqToBeUpdated->requested_disc = $data['requested-disc-name'];
+        $reqToBeUpdated->requested_disc_type = $data['requested-disc-type'];
+        $reqToBeUpdated->requested_disc_code = $data['requested-disc-code'];
+        
+        // dados vindo direto da request
+        $reqToBeUpdated->result = request('result');
+        $reqToBeUpdated->result_text = request('result-text');
+        $reqToBeUpdated->appraisal = request('appraisal');
+        $reqToBeUpdated->reviewer_decision = request('decision');
+        $reqToBeUpdated->reviewer_name = request('reviewer_name');
+        $reqToBeUpdated->reviewer_nusp = request('reviewer_nusp');
+        $reqToBeUpdated->observations = request('observations');
+
+        if ($request->button === 'validate') {
+            $reqToBeUpdated->validated_by_sg = true;
+        } 
+
+        $reqToBeUpdated->save();
+
+        for ($i = 1; $i <= $takenDiscCount; $i++) {
+            $takenDisc = TakenDisciplines::find(request("disc$i-id"));
+            $takenDisc->name = $data["disc$i-name"];
+            $takenDisc->code = $data["disc$i-code"] ?? "";
+            $takenDisc->year = $data["disc$i-year"];
+            $takenDisc->grade = $data["disc$i-grade"];
+            $takenDisc->semester = $data["disc$i-semester"];
+            $takenDisc->institution = $data["disc$i-institution"];
+            $takenDisc->requisition_id = $requisitionId;
+            $takenDisc->save();
+        }
+
+        if ($request->button === 'validate') {
+            $bodyMsg = 'O requerimento foi enviado para o departamento';
+            $titleMsg = 'Requerimento enviado';
+        } elseif ($request->button === 'save') {
+            $bodyMsg = 'As informações do requerimento foram salvas';
+            $titleMsg = 'Requerimento salvo';        
+        }
+
+        return redirect()->route('sg.requisition', ['requisitionId' => request('req-id')])->with('success', ['title message' => $titleMsg, 'body message' => $bodyMsg]);
     }
 }

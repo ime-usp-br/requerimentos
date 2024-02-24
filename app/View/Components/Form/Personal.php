@@ -7,14 +7,16 @@ use Illuminate\View\Component;
 class Personal extends Component
 {
     public $withRecordButton;
+    public $req;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($withRecordButton)
+    public function __construct($withRecordButton, $req = null)
     {
         $this->withRecordButton = $withRecordButton;
+        $this->req = $req;
         //
     }
 

@@ -23,7 +23,7 @@
         <div class="header-buttons">
             <nav>
                 <a href="/secretaria/usuarios" class="button">Administrar usuários</a>
-                <a href="/secretaria/novo-requerimento" class="button">Criar requerimento</a>
+                <a href="{{ route('sg.newRequisition') }}" class="button">Criar requerimento</a>
                 <a href="/" class="button">Sair</a>
             </nav>
             <form action="/trocar-papel" method="POST" class="role-switch">

@@ -45,9 +45,12 @@ Route::middleware('auth')->group(function() {
 
         Route::view('/novo-requerimento', 'pages.sg.newRequisition')->name('sg.newRequisition');
 
+        Route::get('/detalhe/{requisitionId}', [SGController::class, 'show'])->name('sg.show');
+
         Route::post('/novo-requerimento', [SGController::class, 'create'])->name('sg.create');
 
-        
+        Route::post('/atualizar/{requisitionId}', [SGController::class, 'update'])->name('sg.update');
+
     });
 
 

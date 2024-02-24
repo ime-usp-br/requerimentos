@@ -1,10 +1,10 @@
 <?php
 
-namespace App\View\Components\Form\Documents;
+namespace App\View\Components\Form;
 
 use Illuminate\View\Component;
 
-class Read extends Component
+class Result extends Component
 {
     public $req;
     /**
@@ -24,6 +24,6 @@ class Read extends Component
      */
     public function render()
     {
-        return view('components.form.documents.read');
+        return view('components.form.result');
     }
 }
