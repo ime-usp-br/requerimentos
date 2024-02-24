@@ -2,8 +2,8 @@
 
 @section('head')
     
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/student/requisitionDetails.css') }}">
-    <script src="{{ asset('js/requisitionDetails.js')}}" defer></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/student/detail.css') }}">
+    <script src="{{ asset('js/student/detail.js')}}" defer></script>
 
     <!-- ionicons -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
@@ -141,23 +141,23 @@
                 <h3>Documentos</h3>
                 <div class="doc-text" >Histórico com as disciplinas cursadas e aprovadas</div>
                 <div class="document">
-                    <img src="{{ asset('img/requisitionDetails/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
+                    <img src="{{ asset('img/student/detail/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
                     <a href="{{ Storage::disk('public')->url($req->taken_discs_record)}}" id="taken" target="_blank" >Histórico escolar</a>
                 </div>
                 <div class="doc-text">Histórico do curso atual</div>
                 <div class="document">
-                    <img src="{{ asset('img/requisitionDetails/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
+                    <img src="{{ asset('img/student/detail/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
                     <a href="{{ Storage::disk('public')->url($req->current_course_record)}}" id="current-course" target="_blank">Histórico escolar</a>
                 </div>
                 
                 <div class="doc-text">Ementas das disciplinas cursadas</div>
                 <div class="document">
-                    <img src="{{ asset('img/requisitionDetails/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
+                    <img src="{{ asset('img/student/detail/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
                     <a href="{{ Storage::disk('public')->url($req->taken_discs_syllabus)}}" id="taken-syllabus" target="_blank">Ementa</a>
                 </div>
                 <div class="doc-text">Ementa da disciplina a ser dispensada</div>
                 <div class="document">
-                    <img src="{{ asset('img/requisitionDetails/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
+                    <img src="{{ asset('img/student/detail/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
                     <a href="{{ Storage::disk('public')->url($req->requested_disc_syllabus)}}" target="_blank">Ementa</a>
                 </div>
             </article>

@@ -25,7 +25,7 @@ class StudentController extends Controller
         $routeName = Route::currentRouteName();
 
         if ($routeName === 'student.show') {
-            return view('pages.student.requisitionDetails', ['req' => $req, 'takenDiscs' => $req->takenDisciplines]);
+            return view('pages.student.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines]);
         } elseif ($routeName === 'student.edit') {
             return view('pages.student.editRequisition', ['req' => $req, 'takenDiscs' => $req->takenDisciplines]);
         }

@@ -2,7 +2,7 @@
 
 @section('head')
     <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/student/editRequisition.css') }}">
-    <script src="{{ asset('js/editRequisition.js')}}" defer></script>
+    <script src="{{ asset('js/student/editRequisition.js')}}" defer></script>
 
     <!-- ionicons -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>

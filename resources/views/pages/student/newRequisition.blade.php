@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('head')
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/newRequisition.css') }}">
-    <script src="{{ asset('js/newRequisition.js')}}" defer></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/student/newRequisition.css') }}">
+    <script src="{{ asset('js/student/newRequisition.js')}}" defer></script>
 
     <!-- ionicons -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>

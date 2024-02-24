@@ -5,8 +5,8 @@
 @import "/css/components/form/course.css";
 @import "/css/components/form/documents/write.css";
 @import "/css/components/form/observations.css";
-@import "/css/components/form/decision.css";
-@import "/css/components/form/result.css";
+/* @import "/css/components/form/review.css"; */
+/* @import "/css/components/form/result.css"; */
 
 /* css específico da página */
 :root {
@@ -47,7 +47,7 @@ header .button {
 }
 
 h1 {
-    /* font-size: 1.3rem; */
+    font-size: 1.3rem;
     margin-top: var(--body-gaps);
 }
 
@@ -167,9 +167,9 @@ input[type="radio"] {
         width: 9rem;
     }
 
-    /* h1 {
+    h1 {
         font-size: 1.4rem;
-    } */
+    }
 
     header .button {
         width: 6.5rem;

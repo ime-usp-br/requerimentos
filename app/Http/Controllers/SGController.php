@@ -167,6 +167,6 @@ class SGController extends Controller
             $titleMsg = 'Requerimento salvo';        
         }
 
-        return redirect()->route('sg.requisition', ['requisitionId' => request('req-id')])->with('success', ['title message' => $titleMsg, 'body message' => $bodyMsg]);
+        return redirect()->route('sg.show', ['requisitionId' => $requisitionId])->with('success', ['title message' => $titleMsg, 'body message' => $bodyMsg]);
     }
 }

@@ -11,7 +11,7 @@
     <script src="https://cdn.datatables.net/plug-ins/1.13.7/sorting/datetime-moment.js" defer></script>
 
     <!-- nosso javascript -->
-    <script src="{{ asset('js/list.js')}}" defer></script>
+    <script src="{{ asset('js/student/list.js')}}" defer></script>
 
     <!-- nosso css -->
     <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/student/list.css') }}"> 

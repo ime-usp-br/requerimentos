@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/sg/new-request.css') }}">
-    <script src="{{ asset('js/sg/newRequest.js')}}" defer></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/sg/newRequisition.css') }}">
+    <script src="{{ asset('js/sg/newRequisition.js')}}" defer></script>
 
     <!-- ionicons -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
