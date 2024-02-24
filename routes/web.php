@@ -16,7 +16,7 @@ Route::middleware('auth')->group(function() {
     Route::prefix('aluno')->group(function () {
         Route::get('/lista', [StudentController::class, 'list'])->name('student.list');
 
-        Route::view('/novo-requerimento', 'pages.newRequisition')->name('student.newRequisition');
+        Route::view('/novo-requerimento', 'pages.student.newRequisition')->name('student.newRequisition');
 
         Route::get('/detalhe/{requisitionId}', [StudentController::class, 'show'])->name('student.show');
 

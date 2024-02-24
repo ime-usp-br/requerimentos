@@ -16,7 +16,7 @@ class StudentController extends Controller
 
         $reqs = Requisition::with('takenDisciplines')->select('created_at', 'requested_disc', 'nusp', 'situation', 'id')->where('nusp', $user->codpes)->get();
 
-        return view('pages.list', ['reqs' => $reqs]);
+        return view('pages.student.list', ['reqs' => $reqs]);
     }
 
     public function show($requisitionId) {
@@ -25,9 +25,9 @@ class StudentController extends Controller
         $routeName = Route::currentRouteName();
 
         if ($routeName === 'student.show') {
-            return view('pages.requisitionDetails', ['req' => $req, 'takenDiscs' => $req->takenDisciplines]);
+            return view('pages.student.requisitionDetails', ['req' => $req, 'takenDiscs' => $req->takenDisciplines]);
         } elseif ($routeName === 'student.edit') {
-            return view('pages.editRequisition', ['req' => $req, 'takenDiscs' => $req->takenDisciplines]);
+            return view('pages.student.editRequisition', ['req' => $req, 'takenDiscs' => $req->takenDisciplines]);
         }
     }
 
