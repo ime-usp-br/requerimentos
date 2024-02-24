@@ -12,6 +12,16 @@ Route::get('/acesso-negado', function() {
     return view('pages.accessDenied');
 });
 
+Route::get('/roteador-usuario', function() {
+    $user = Auth::user();
+
+    if ($user->name === 'Guilherme Simoes Santos Marin') {
+        return redirect()->route('student.list');
+    } elseif ($user->name === 'João') {
+        return redirect()->route('sg.list');
+    }
+});
+
 Route::middleware('auth')->group(function() {
 
     Route::prefix('aluno')->group(function () {
@@ -30,8 +40,14 @@ Route::middleware('auth')->group(function() {
     });
 
     Route::prefix('secretaria')->group(function () {
-        
+
         Route::get('/lista', [SGController::class, 'list'])->name('sg.list');
+
+        Route::view('/novo-requerimento', 'pages.sg.newRequisition')->name('sg.newRequisition');
+
+        Route::post('/novo-requerimento', [SGController::class, 'create'])->name('sg.create');
+
+        
     });
 
 
