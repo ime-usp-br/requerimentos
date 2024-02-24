@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SGController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StudentController;
 
@@ -14,6 +15,7 @@ Route::get('/acesso-negado', function() {
 Route::middleware('auth')->group(function() {
 
     Route::prefix('aluno')->group(function () {
+
         Route::get('/lista', [StudentController::class, 'list'])->name('student.list');
 
         Route::view('/novo-requerimento', 'pages.student.newRequisition')->name('student.newRequisition');
@@ -25,6 +27,11 @@ Route::middleware('auth')->group(function() {
         Route::get('/atualizar/{requisitionId}', [StudentController::class, 'show'])->name('student.edit');
 
         Route::post('/atualizar/{requisitionId}', [StudentController::class, 'update'])->name('student.update');
+    });
+
+    Route::prefix('secretaria')->group(function () {
+        
+        Route::get('/lista', [SGController::class, 'list'])->name('sg.list');
     });
 
 
