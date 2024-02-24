@@ -22,7 +22,7 @@
         <h1>Seus requerimentos</h1>
         <nav>
             <a href="{{ route('student.newRequisition') }}" class="button">Criar requerimento</a>
-            <form action="{{ $logout_url }}" method="POST" id="form">
+            <form action="{{ '/' . $logout_url }}" method="POST" id="form">
                 @csrf
             </form>
             <button type="submit" form="form" class="button">Sair</button>

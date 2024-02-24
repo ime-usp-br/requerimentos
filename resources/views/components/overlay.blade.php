@@ -5,7 +5,7 @@
             <div class="overlay-title">
                 {{ $title }}
             </div>
-            <img class="close-button" src="{{ asset('img/newRequisition/close-button.svg') }}" alt="Close button" >
+            <img class="close-button" src="{{ asset('img/overlay/close-button.svg') }}" alt="Close button" >
         </div>
 
         {{ $slot }}
