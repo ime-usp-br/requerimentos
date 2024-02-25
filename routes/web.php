@@ -51,6 +51,11 @@ Route::middleware('auth')->group(function() {
 
         Route::post('/atualizar/{requisitionId}', [SGController::class, 'update'])->name('sg.update');
 
+        Route::get('/usuarios', [SGController::class, 'users'])->name('sg.users');
+
+        Route::post('/criar-papel', function() {
+            dd('ola');
+        })->name('role.create');
     });
 
 

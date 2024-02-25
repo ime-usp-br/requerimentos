@@ -169,4 +169,8 @@ class SGController extends Controller
 
         return redirect()->route('sg.show', ['requisitionId' => $requisitionId])->with('success', ['title message' => $titleMsg, 'body message' => $bodyMsg]);
     }
+
+    public function users() {
+        return view('pages.sg.users');
+    }
 }
