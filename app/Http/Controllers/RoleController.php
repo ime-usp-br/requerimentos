@@ -49,4 +49,26 @@ class RoleController extends Controller
 
         return response()->noContent();
     }
+
+    public function switchRole(Request $request) {
+        // dd($request->roleSwitch);
+        // if (Auth::user()->hasRole($request->roleSwitch)) {
+        $user = Auth::user();
+        $user->current_role_id = (int) $request->roleSwitch;
+        $user->save();
+        
+        $rolesRedirects = [[RoleId::REVIEWER, 'reviewer.list'],
+                            [RoleId::SG, 'sg.list'],
+                            [RoleId::MAC_COORD, 'coordinator.list'],
+                            [RoleId::MAT_COORD, 'coordinator.list'],
+                            [RoleId::MAE_COORD, 'coordinator.list'],
+                            [RoleId::MAP_COORD, 'coordinator.list']];
+        
+        foreach ($rolesRedirects as $roleRedirect) {
+            if ($user->current_role_id === $roleRedirect[0]) {
+                return redirect()->route($roleRedirect[1]);
+            }
+        }
+        // dd($request->roleSwitch);
+    }
 }

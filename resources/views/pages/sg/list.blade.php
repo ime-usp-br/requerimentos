@@ -26,18 +26,24 @@
                 <a href="{{ route('sg.newRequisition') }}" class="button">Criar requerimento</a>
                 <a href="/" class="button">Sair</a>
             </nav>
-            <form action="/trocar-papel" method="POST" class="role-switch">
-                @csrf
-                <label class="role">
-                    Papel
-                    <select name="roleSwitch">
-                        <option value="aluno">Aluno</option>
-                        <option value="parecerista">Parecerista</option>
-                        <option value="coordenador">Coordenador</option>
-                        <option value="sg">Secretaria</option>
-                    </select>
-                </label>
-            </form>
+            @if (Auth::user()->roles()->count() > 1)
+                <form action="{{ route('role.switch') }}" method="POST" class="role-switch">
+                    @csrf
+                    <label class="role">
+                        Papel
+                        <select name="roleSwitch">
+                            @foreach (Auth::user()->roles as $role)
+                                <option value="{{ $role->id }}" 
+                                    @if($role->id === Auth::user()->current_role_id) 
+                                        selected 
+                                    @endif
+                                >{{ $role->name }}</option>  
+                            @endforeach
+                        </select>
+                    </label>
+                </form>                
+            @endif
+
         </div>
     </header>
     
