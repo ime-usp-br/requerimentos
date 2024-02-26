@@ -2,12 +2,9 @@
 
 use App\Http\Controllers\AuxController;
 use Illuminate\Support\Facades\Route;
-use App\Models\User;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SGController;
-use App\Enums\RoleId;
-use Spatie\Permission\Models\Role;
 
 Route::get('/', function () {
     return view('pages.home');

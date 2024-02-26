@@ -41,10 +41,10 @@ class CreateRequisitionsTable extends Migration
             $table->text('result_text')->nullable();
             
             // parecerista
-            $table->enum('reviewer_decision', ['Sem decisão', 'Deferido', 'Indeferido']);
-            $table->text('appraisal')->nullable();
-            $table->unsignedInteger('reviewer_nusp')->nullable();
-            $table->string('reviewer_name')->nullable();
+            // $table->enum('reviewer_decision', ['Sem decisão', 'Deferido', 'Indeferido']);
+            // $table->text('appraisal')->nullable();
+            // $table->unsignedInteger('reviewer_nusp')->nullable();
+            // $table->string('reviewer_name')->nullable();
         });
     }
 

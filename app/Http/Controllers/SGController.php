@@ -66,12 +66,12 @@ class SGController extends Controller
         $req->requested_disc_type = $data['requested-disc-type'];
         $req->requested_disc_code = $data['requested-disc-code'];
         $req->situation = "Encaminhado para a secretaria";
-        $req->reviewer_name = null;
+        // $req->reviewer_name = null;
         $req->result = 'Sem resultado';
         $req->result_text = null;
-        $req->appraisal = null;
-        $req->reviewer_nusp = null;
-        $req->reviewer_decision = 'Sem decisão';
+        // $req->appraisal = null;
+        // $req->reviewer_nusp = null;
+        // $req->reviewer_decision = 'Sem decisão';
         $req->taken_discs_record = $request->file('taken-disc-record')->store('test');
         $req->current_course_record = $request->file('course-record')->store('test');
         $req->taken_discs_syllabus = $request->file('taken-disc-syllabus')->store('test');
@@ -137,10 +137,10 @@ class SGController extends Controller
         // dados vindo direto da request
         $reqToBeUpdated->result = request('result');
         $reqToBeUpdated->result_text = request('result-text');
-        $reqToBeUpdated->appraisal = request('appraisal');
-        $reqToBeUpdated->reviewer_decision = request('decision');
-        $reqToBeUpdated->reviewer_name = request('reviewer_name');
-        $reqToBeUpdated->reviewer_nusp = request('reviewer_nusp');
+        // $reqToBeUpdated->appraisal = request('appraisal');
+        // $reqToBeUpdated->reviewer_decision = request('decision');
+        // $reqToBeUpdated->reviewer_name = request('reviewer_name');
+        // $reqToBeUpdated->reviewer_nusp = request('reviewer_nusp');
         $reqToBeUpdated->observations = request('observations');
 
         if ($request->button === 'validate') {

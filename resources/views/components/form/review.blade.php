@@ -1,7 +1,7 @@
 <fieldset class="decision">
     <legend>Parecer</legend>
 
-    @if ($req->reviewer_decision !== 'Sem decisão')
+    {{--@if ($req->reviewer_decision !== 'Sem decisão')
         <div class="reviewer-id">
             <label class="large-field">
                 Nome do parecerista
@@ -13,7 +13,7 @@
                 <input type="text" name="reviewer_nusp"  value="{{ $req->reviewer_nusp }}">
             </label>
         </div>
-    @endif
+    @endif--}}
 
     <div class="appraisal-title">Decisão</div>
     <div class="decision-radio" >
@@ -23,9 +23,10 @@
                 id="unfinished" 
                 name="decision" 
                 value="Sem decisão" 
-                @if(isset($req) && $req->reviewer_decision == 'Sem decisão') 
-                    checked 
-                @endif
+                checked
+                {{--@if(isset($req) && $req->reviewer_decision == 'Sem decisão') 
+                     
+                @endif--}}
             />
             <span class="label-visible">
                 <span class="fake-radiobutton"></span>
@@ -39,9 +40,9 @@
                 id="accepted" 
                 name="decision" 
                 value="Deferido"
-                @if(isset($req) && $req->reviewer_decision == 'Deferido') 
+                {{--@if(isset($req) && $req->reviewer_decision == 'Deferido') 
                      checked
-                @endif
+                @endif--}}
             />
             <span class="label-visible">
                 <span class="fake-radiobutton"></span>
@@ -55,9 +56,9 @@
                 id="rejected" 
                 name="decision" 
                 value="Indeferido" 
-                @if(isset($req) && $req->reviewer_decision == 'Indeferido') 
+                {{--@if(isset($req) && $req->reviewer_decision == 'Indeferido') 
                      checked
-                @endif
+                @endif--}}
             />
             <span class="label-visible">
                 <span class="fake-radiobutton"></span>
@@ -71,5 +72,6 @@
     </div> -->
     <div class="appraisal-title">Justificativa</div>
 
-    <label class="appraisal"><textarea name="appraisal">{{ isset($req) ? $req->appraisal : null }}</textarea></label>
+    {{--<label class="appraisal"><textarea name="appraisal">{{ isset($req) ? $req->appraisal : null }}</textarea></label>--}}
+    <label class="appraisal"><textarea name="appraisal"></textarea></label>
 </fieldset>
