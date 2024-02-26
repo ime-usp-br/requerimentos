@@ -1,8 +1,14 @@
 <?php
 
-use App\Http\Controllers\SGController;
+
+use App\Http\Controllers\AuxController;
 use Illuminate\Support\Facades\Route;
+use App\Models\User;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SGController;
+use App\Enums\RoleId;
+use Spatie\Permission\Models\Role;
 
 Route::get('/', function () {
     return view('pages.home');
@@ -12,18 +18,11 @@ Route::get('/acesso-negado', function() {
     return view('pages.accessDenied');
 });
 
-Route::get('/roteador-usuario', function() {
-    $user = Auth::user();
+Route::get('/callback', [AuxController::class, 'callbackHandler']);
 
-    if ($user->name === 'Guilherme Simoes Santos Marin') {
-        return redirect()->route('student.list');
-    } elseif ($user->name === 'João') {
-        return redirect()->route('sg.list');
-    }
-});
 
 Route::middleware('auth')->group(function() {
-
+    
     Route::prefix('aluno')->group(function () {
 
         Route::get('/lista', [StudentController::class, 'list'])->name('student.list');
@@ -53,10 +52,22 @@ Route::middleware('auth')->group(function() {
 
         Route::get('/usuarios', [SGController::class, 'users'])->name('sg.users');
 
-        Route::post('/criar-papel', function() {
-            dd('ola');
-        })->name('role.create');
+        Route::post('/dar-papel', [RoleController::class, 'addRole'])->name('role.add');
+
+        Route::post('/trocar-papel', [RoleController::class, 'switchRole'])->name('role.switch');
+
+        Route::post('/remover-papel', [RoleController::class, 'removeRole'])->name('role.remove');
     });
 
+    Route::prefix('coordenador')->group(function () {
+        Route::get('/lista', function() {
+            echo "pagina do coordenador";
+        })->name('coordinator.list');
+    });
 
+    Route::prefix('parecerista')->group(function () {
+        Route::get('/lista', function() {
+            echo "pagina do parecerista";
+        })->name('reviewer.list');
+    });
 });

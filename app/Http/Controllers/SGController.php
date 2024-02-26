@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Requisition;
 use Illuminate\Http\Request;
 use App\Models\TakenDisciplines;
+use App\Models\User;
+
 // use Illuminate\Support\Facades\Auth;
 // use Illuminate\Support\Facades\Route;
 
@@ -171,6 +173,13 @@ class SGController extends Controller
     }
 
     public function users() {
-        return view('pages.sg.users');
+        $selectedColumns = ['name', 'codpes', 'id'];
+
+        $usersWithRoles = User::whereHas('roles')->select($selectedColumns)->get();
+
+        // $reqs = Requisition::select($selectedColumns)->get();
+
+        return view('pages.sg.users', ['users' => $usersWithRoles]);
     }
+
 }

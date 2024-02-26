@@ -23,25 +23,61 @@ window.onload = function () {
     const text = (document.querySelector(
         "#table_filter"
     ).firstChild.firstChild.textContent = "Pesquisar");
+    
+    
 
+    // funcionalidade dos botões de remoção de papel
     const table = $("#table").DataTable();
     $("#table tbody").on("click", ".button", function () {
+        const parentForm = $(this).parent();
+        parentForm.submit();
+
         table.row($(this).parents("tr")).remove().draw();
     });
 
+    // const forms = document.querySelectorAll(".button-form");
+
+    // forms.forEach(form => {
+    //     form.addEventListener('submit', function(event) {
+    //         event.preventDefault();
+    //     });
+    // });
+
+
+    // form.addEventListener("submit", (event) => {
+        
+
+        // if (event.submitter) {
+        //     const clickedButton = event.submitter;
+        //     const btnType = document.querySelector("#btnType");
+        //     if (
+        //         clickedButton.textContent ===
+        //         "Encaminhar para o departamento"
+        //     ) {
+        //         btnType.value = "validate";
+        //     } else if (clickedButton.textContent === "Salvar mudanças") {
+        //         btnType.value = "save";
+        //     }
+        // }
+        // form.submit();
+    // });
+
+    // faz o overlay aparecer quando o botão de adicionar é clickado
     const popupButton = document.querySelector("nav button");
     popupButton.onclick = (event) => {
         const overlayContainer = document.querySelector(".overlay-container");
         overlayContainer.classList.add("overlay-show");
     };
 
+    // fecha o overlay
     const closeButton = document.querySelector(".close-button");
     closeButton.onclick = (event) => {
         const overlayContainer = document.querySelector(".overlay-container");
         overlayContainer.classList.remove("overlay-show");
     };
 
-    const radioButtons = document.getElementsByName("type");
+    // faz a opção por departamento aparecer
+    const radioButtons = document.getElementsByName("role");
     radioButtons.forEach((button) => {
         button.onchange = (event) => {
             const departmentRadio = document.querySelector(".department-radio");
@@ -58,4 +94,9 @@ window.onload = function () {
             }
         };
     });
+
+    // const table = $("#table").DataTable();
+    // $("#table tbody").on("click", "tr", function () {
+    //     window.location.href = "detalhe/" + table.row(this).data()[5];
+    // });
 };
