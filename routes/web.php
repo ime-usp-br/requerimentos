@@ -1,6 +1,5 @@
 <?php
 
-
 use App\Http\Controllers\AuxController;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
@@ -23,7 +22,7 @@ Route::get('/callback', [AuxController::class, 'callbackHandler']);
 
 Route::middleware('auth')->group(function() {
     
-    Route::prefix('aluno')->group(function () {
+    Route::prefix('aluno')->middleware('role:Aluno')->group(function () {
 
         Route::get('/lista', [StudentController::class, 'list'])->name('student.list');
 
@@ -38,7 +37,7 @@ Route::middleware('auth')->group(function() {
         Route::post('/atualizar/{requisitionId}', [StudentController::class, 'update'])->name('student.update');
     });
 
-    Route::prefix('secretaria')->group(function () {
+    Route::prefix('secretaria')->middleware('role:Secretaria de Graduação')->group(function () {
 
         Route::get('/lista', [SGController::class, 'list'])->name('sg.list');
 
