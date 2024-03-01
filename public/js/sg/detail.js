@@ -5,9 +5,9 @@ window.onload = function() {
         if (event.submitter) {
             const clickedButton = event.submitter;
             const btnType = document.querySelector("#btnType");
-            if (clickedButton.textContent === 'Encaminhar para o departamento') {
+            if (clickedButton.id === "validation-btn") {
                 btnType.value = "validate";
-            } else if (clickedButton.textContent === 'Salvar mudanças') {
+            } else if (clickedButton.id === "save-btn") {
                 btnType.value = "save";
             } 
         }
