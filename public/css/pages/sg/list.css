@@ -187,7 +187,7 @@ header {
 @media screen and (min-width: 1280px) {
     :root {
         --page-margin: 3rem;
-        --body-gaps: 3rem;
+        /* --body-gaps: 3rem; */
     }
 
     header {
@@ -226,7 +226,6 @@ header {
 @media screen and (min-width: 1440px) {
     :root {
         --page-margin: 3.8rem;
-        --body-gaps: 3rem;
     }
 
 

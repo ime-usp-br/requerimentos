@@ -1,0 +1,201 @@
+
+/* css específico da página */
+:root {
+    --page-margin: 1rem;
+    --body-gaps: 1.3rem;
+    height: 100%;
+}
+
+body {
+    height: min-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--body-gaps);
+    height: 100%;
+}
+
+.content {
+    padding: 0 var(--page-margin);
+    display: flex;
+    flex-direction: column;
+    gap: var(--body-gaps);
+}
+
+h1 {
+    /* font-size: 1.4rem; */
+    margin: 1.2rem 0;
+}
+
+section {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 1rem;
+    gap: 1.2rem;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: var(--body-gaps);
+}
+
+header .button {
+    width: 8rem;
+    height: 2.2rem;
+}
+
+.title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1.1rem;
+}
+
+.label {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.justification {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.field {
+    display: flex;
+    gap: 1.2rem;
+}
+
+.textarea {
+    border: none;
+    outline: 1.6px solid var(--gray);
+    border-radius: 3.2px;
+    resize: none;
+    background-color: var(--white);
+    overflow-wrap: break-word;
+    min-width: 19rem;
+    height: 13rem;
+    font-size: 1rem;
+    cursor: default;
+    /* padding-right: 2rem; */
+}
+
+.button {
+    width: 8.5rem;
+    height: 2.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    background: var(--blue);
+    color: var(--white);
+    border-radius: 4.64px;
+    border: none;
+    cursor: pointer;
+}
+
+.button:hover {
+    box-shadow: 0 0 8px rgba(0,0,0,0.6);
+}
+
+.result {
+    margin-bottom: 2.5rem;
+}
+
+h2 {
+    font-size: 1.3rem;
+}
+
+@media screen and (min-width: 410px) {
+    header .button {
+        width: 6.5rem;
+        height: 2.5rem;
+    }
+}
+
+@media screen and (min-width: 600px) {
+    :root {
+        --page-margin: 1.8rem;
+    }
+
+    h1 {
+        margin: 2rem 0;
+    }
+
+    .textarea {
+        width: 28rem;
+    }
+}
+
+@media screen and (min-width: 760px) {
+    :root {
+        --page-margin: 3rem;
+        font-size: 1.1rem;
+    }
+
+    header .button {
+        width: 8.5rem;
+    }
+
+    h1 {
+        margin: 2.5rem 0;
+    }
+}
+
+@media screen and (min-width: 1020px) {
+    :root {
+        --page-margin: 5rem;
+        font-size: 1.3rem;
+    }
+}
+
+@media screen and (min-width: 1280px) {
+    :root {
+        font-size: 1.4rem;
+    }
+
+    section {
+        border-radius: 0.43rem;
+        border: 1px solid rgba(0,0,0,0.3);
+        background-color: var(--light-blue);
+        padding: 2rem 3rem;
+        
+    }
+
+    .textarea {
+        width: 32rem;
+    }
+
+}
+
+@media screen and (min-width: 1440px) {
+    :root {
+        --page-margin: 8rem;
+        font-size: 1.5rem;
+    }
+}
+
+@media screen and (min-width: 1920px) {
+    :root {
+        --page-margin: 11.7rem;
+        font-size: 1.6rem;
+    }
+
+    h1 {
+        margin: 3rem 0;
+    }
+}
+
+@media screen and (min-width: 2000px) {
+    :root {
+        font-size: 1.8rem;
+    }
+}
+
+

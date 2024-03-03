@@ -17,6 +17,7 @@ class CreateReviewsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->enum('reviewer_decision', ['Sem decisão', 'Deferido', 'Indeferido']);
+            $table->foreignId('requisition_id')->constrained()->cascadeOnDelete();
             $table->text('justification')->nullable();
             $table->unsignedInteger('reviewer_nusp')->nullable();
             $table->string('reviewer_name')->nullable();

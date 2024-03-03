@@ -11,6 +11,7 @@
 /* css específico da página */
 :root {
     --page-margin: 1rem;
+    --body-gaps: 1.4rem;
 }
 
 body {
@@ -23,20 +24,23 @@ body {
     padding: 0 var(--page-margin);
     display: flex;
     flex-direction: column;
+    /* justify-content: space-between; */
+    gap: var(--body-gaps);
 }
 
 h1 {
-    font-size: 1.4rem;
-    margin: 1.2rem 0;
+    /* font-size: 1.4rem; */
+    /* margin: 1.2rem 0; */
+    margin-top: var(--body-gaps);
 }
 
-nav {
+/* nav {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
     justify-content: space-evenly;
     margin-bottom: 1.2rem;
-}
+} */
 
 form {
     display: flex;
@@ -72,7 +76,7 @@ form {
 
 .button {
     width: 8.5rem;
-    /* height: 2.5rem; */
+    min-height: 2.5rem;
     font-weight: 600;
     font-size: 0.9rem;
     display: flex;
@@ -160,26 +164,26 @@ input[type="radio"] {
     left: 6px;
 }
 
-.bottom-nav {
+.nav {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 1.5rem;
-    margin-top: 2.8rem;
+    /* margin-bottom: 1.5rem; */
+    /* margin-top: 2.8rem; */
 }
 
-.bottom-nav .button {
+.nav .button {
     width: 6.2rem;
     font-size: 0.8rem;
 }
 
 @media screen and (min-width: 410px) {
-    .bottom-nav button {
+    .nav button {
         width: 9rem;
     }
 }
 
 @media screen and (min-width: 425px) {
-    .bottom-nav button {
+    .nav button {
         width: 9rem;
     }
 }
@@ -187,6 +191,7 @@ input[type="radio"] {
 @media screen and (min-width: 600px) {
     :root {
         --page-margin: 1.8rem;
+        --body-gaps: 1.6rem;
     }
 
     .status {
@@ -198,28 +203,28 @@ input[type="radio"] {
         width: auto;
     } 
 
-    nav {
+    /* nav {
         margin-bottom: 2rem;
         justify-content: space-between;
-    }
+    } */
 
     .large-field {
         width: 24.8rem;
     }
 
-    h1 {
+    /* h1 {
         margin: 2rem 0;
-    }
+    } */
 
     textarea {
         width: 28rem;
     }
 
-    .bottom-nav {
+    .nav {
         justify-content: space-around;
     }
 
-    .bottom-nav .button {
+    .nav .button {
         width: 10rem;
         height: 2.8rem;
         font-size: 0.9rem;
@@ -232,17 +237,17 @@ input[type="radio"] {
         font-size: 1.1rem;
     }
 
-    .bottom-nav .button {
+    .nav .button {
         width: 11rem;
     } 
 
-    h1 {
+    /* h1 {
         margin: 2.5rem 0;
-    }
+    } */
 
-    nav {
+    /* nav {
         margin-bottom: 2.5rem;
-    }
+    } */
 }
 
 @media screen and (min-width: 830px) {
@@ -284,14 +289,15 @@ input[type="radio"] {
         width: 32rem;
     }
 
-    nav .button {
+    /* nav .button {
         width: 10rem;
-    }
+    } */
 }
 
 @media screen and (min-width: 1440px) {
     :root {
         --page-margin: 8rem;
+        --body-gaps: 1.9rem;
         font-size: 1.5rem;
     }
 }
@@ -302,13 +308,13 @@ input[type="radio"] {
         font-size: 1.6rem;
     }
 
-    nav {
+    /* nav {
         margin-bottom: 3rem;
-    }
+    } */
 
-    h1 {
+    /* h1 {
         margin: 3rem 0;
-    }
+    } */
 
     .large-field {
         width: 29.8rem;

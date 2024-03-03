@@ -5,8 +5,8 @@ window.onload = function() {
         if (event.submitter) {
             const clickedButton = event.submitter;
             const btnType = document.querySelector("#btnType");
-            if (clickedButton.id === "validation-btn") {
-                btnType.value = "validate";
+            if (clickedButton.id === "send-btn") {
+                btnType.value = "send";
             } else if (clickedButton.id === "save-btn") {
                 btnType.value = "save";
             } 

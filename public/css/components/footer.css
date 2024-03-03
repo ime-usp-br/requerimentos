@@ -1,5 +1,6 @@
 footer {
     margin-top: 1.2rem;
+    margin-top: var(--body-gaps);
     display: flex;
     background-color: var(--blue);
 }

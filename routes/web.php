@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\AuxController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\StudentController;
-use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SGController;
+use App\Http\Controllers\AuxController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\StudentController;
 
 Route::get('/', function () {
     return view('pages.home');
@@ -19,8 +20,8 @@ Route::get('/callback', [AuxController::class, 'callbackHandler']);
 
 Route::middleware('auth')->group(function() {
     
-    Route::prefix('aluno')->middleware('role:Aluno')->group(function () {
-
+    // Route::prefix('aluno')->middleware('role:Aluno')->group(function () {
+    Route::prefix('aluno')->group(function () {
         Route::get('/lista', [StudentController::class, 'list'])->name('student.list');
 
         Route::view('/novo-requerimento', 'pages.student.newRequisition')->name('student.newRequisition');
@@ -34,7 +35,8 @@ Route::middleware('auth')->group(function() {
         Route::post('/atualizar/{requisitionId}', [StudentController::class, 'update'])->name('student.update');
     });
 
-    Route::prefix('secretaria')->middleware('role:Secretaria de Graduação')->group(function () {
+    // Route::prefix('secretaria')->middleware('role:Secretaria de Graduação')->group(function () {
+    Route::prefix('secretaria')->group(function () {
 
         Route::get('/lista', [SGController::class, 'list'])->name('sg.list');
 
@@ -47,6 +49,12 @@ Route::middleware('auth')->group(function() {
         Route::post('/atualizar/{requisitionId}', [SGController::class, 'update'])->name('sg.update');
 
         Route::get('/usuarios', [SGController::class, 'users'])->name('sg.users');
+        
+        Route::get('/pareceres/{requisitionId}', [SGController::class, 'reviews'])->name('sg.reviews');
+
+        Route::get('/escolher-parecerista/{requisitionId}', [SGController::class, 'reviewerPick'])->name('sg.reviewerPick');
+
+        Route::post('/enviar-requerimento/{requisitionId}', [ReviewController::class, 'createReview'])->name('sg.sendToReviewer');
 
         Route::post('/dar-papel', [RoleController::class, 'addRole'])->name('role.add');
 

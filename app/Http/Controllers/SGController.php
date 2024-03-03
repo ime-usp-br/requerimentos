@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Enums\RoleName;
 use App\Models\Requisition;
 use Illuminate\Http\Request;
 use App\Models\TakenDisciplines;
-use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 // use Illuminate\Support\Facades\Auth;
 // use Illuminate\Support\Facades\Route;
@@ -143,7 +145,7 @@ class SGController extends Controller
         // $reqToBeUpdated->reviewer_nusp = request('reviewer_nusp');
         $reqToBeUpdated->observations = request('observations');
 
-        if ($request->button === 'validate') {
+        if ($request->button === 'send') {
             $reqToBeUpdated->validated_by_sg = true;
         } 
 
@@ -161,15 +163,15 @@ class SGController extends Controller
             $takenDisc->save();
         }
 
-        if ($request->button === 'validate') {
-            $bodyMsg = 'O requerimento foi enviado para o departamento';
-            $titleMsg = 'Requerimento enviado';
+        if ($request->button === 'send') {
+            // $bodyMsg = 'O requerimento foi enviado para o departamento';
+            // $titleMsg = 'Requerimento enviado';
+            return redirect()->route('sg.reviewerPick', ['requisitionId' => $requisitionId]);
         } elseif ($request->button === 'save') {
             $bodyMsg = 'As informações do requerimento foram salvas';
-            $titleMsg = 'Requerimento salvo';        
+            $titleMsg = 'Requerimento salvo';     
+            return redirect()->route('sg.show', ['requisitionId' => $requisitionId])->with('success', ['title message' => $titleMsg, 'body message' => $bodyMsg]);   
         }
-
-        return redirect()->route('sg.show', ['requisitionId' => $requisitionId])->with('success', ['title message' => $titleMsg, 'body message' => $bodyMsg]);
     }
 
     public function users() {
@@ -180,6 +182,20 @@ class SGController extends Controller
         // $reqs = Requisition::select($selectedColumns)->get();
 
         return view('pages.sg.users', ['users' => $usersWithRoles]);
+    }
+
+    public function reviews($requisitionId) {
+        $req = Requisition::with('reviews')->find($requisitionId);
+        
+        return view('pages.sg.reviews', ['requisitionId' => $requisitionId, 'reviews' => $req->reviews]);
+    }
+
+    public function reviewerPick($requisitionId) {
+        $reviewRole = Role::where('name', RoleName::REVIEWER)->first();
+
+        $reviewers = $reviewRole->users;
+
+        return view('pages.sg.reviewerPick', ['reviewers' => $reviewers, 'requisitionId' => $requisitionId]);
     }
 
 }

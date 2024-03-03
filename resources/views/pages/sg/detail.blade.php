@@ -42,12 +42,13 @@
     </x-overlay>
 
     <div class="content">
-        <h1>Painel de análise do requerimento {{ $req->id }} </h1>
-        <nav>
-            <div class="status">
+        <h1>Detalhes do requerimento {{ $req->id }} </h1>
+        <nav class="nav">
+            <!-- <div class="status">
                 <span>Situação</span>
                 <span><ion-icon name="ellipse-outline"></ion-icon>Aguardando parecer</span>
-            </div>
+            </div> -->
+            <a href="{{ route('sg.reviews', ['requisitionId' => $req->id ]) }}" class="button">Pareceres</a>
             <a href="#" class="button" >Histórico do requerimento</a>
             <a href="{{ route('sg.list') }}" class="button">Voltar</a>
         </nav>
@@ -73,9 +74,9 @@
 
             <x-form.observations :req="$req" />
 
-            <hr>
+            {{--<hr>
 
-            <x-form.review :req="$req" />
+            <x-form.review :req="$req" />--}}
 
             <hr>
 
@@ -85,10 +86,10 @@
             <input type="hidden" name="button" id="btnType">
         </form>
 
-        <div class="bottom-nav"> 
+        <div class="nav"> 
             <a href="{{ route('sg.list') }}" class="button">Voltar</a>
             <button type="submit" form="form" class="button" id="save-btn">Salvar mudanças</button>
-            <button type="submit" form="form" class="button" id="validation-btn">Encaminhar para um parecerista</button>
+            <button type="submit" form="form" class="button" id="send-btn">Encaminhar para um parecerista</button>
         </div>
         
     </div>

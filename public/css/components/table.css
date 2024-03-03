@@ -47,6 +47,10 @@ div.dt-buttons > .dt-button {
     border-radius: 3.2px;
 }
 
+#table {
+    width: 100% !important;
+}
+
 @media screen and (min-width: 390px) {
 
     #table_filter input {
@@ -75,9 +79,9 @@ div.dt-buttons > .dt-button {
         width: 100%;
     }
 
-    #table {
+    /* #table {
         width: 100% !important;
-    }
+    } */
 }
 
 @media screen and (min-width: 1536px) {

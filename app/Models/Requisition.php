@@ -12,4 +12,8 @@ class Requisition extends Model
     public function takenDisciplines() {
         return $this->hasMany(TakenDisciplines::class);
     }
+
+    public function reviews() {
+        return $this->hasMany(Review::class);
+    }
 }
