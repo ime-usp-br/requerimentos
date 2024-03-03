@@ -20,11 +20,13 @@ class RoleController extends Controller
 
         $data = $request->validate($inputArray);
 
-        $user = User::where('codpes', $data['nusp'])->first();
+        // $user = User::where('codpes', $data['nusp'])->first();
+
+        $user = User::firstOrCreate(['codpes' => $data['nusp']], ['codpes' => $data['nusp'], 'current_role_id' => 1]);
         
         if ($data['role'] === 'Coordenador') {
             $department = $data['department'];
-
+            
             if ($department === 'MAC') {
                 $user->assignRole(RoleName::MAC_COORD);
             } elseif($department === 'MAT') {

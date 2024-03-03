@@ -125,11 +125,11 @@
             @foreach ($users as $user)
                 @foreach ($user->roles as $role)
                     <tr>
-                        <td>{{ $user->name }}</td>
+                        <td>{{ $user->name ?? 'Desconhecido (usuário nunca logou no site)' }}</td>
                         <td>{{ $user->codpes }}</td>
                         <td>{{ $role->name }}</td>
                         <td>
-                            <form action="/secretaria/remover-papel" method="POST" class="button-form">
+                            <form action="{{ route('role.remove') }}" method="POST" class="button-form">
                                 @csrf
                                 <input type="hidden" name="nusp" value="{{ $user->codpes }}">
                                 <input type="hidden" name="role" value="{{ $role->name }}">
