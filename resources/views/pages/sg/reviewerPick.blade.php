@@ -34,7 +34,7 @@
         <x-table :columns="['Nome', 'Número USP', '', 'Id']">
             @foreach ($reviewers as $reviewer)
                 <tr>
-                    <td>{{ $reviewer->name ?? 'Desconhecido' }}</td>
+                    <td>{{ $reviewer->name ?? 'Desconhecido (usuário nunca logou no site)' }}</td>
                     <td>{{ $reviewer->codpes }}</td>
                     <td>
                         <form action="{{ route('sg.sendToReviewer', ['requisitionId' => $requisitionId ]) }}" method="POST" class="button-form">
