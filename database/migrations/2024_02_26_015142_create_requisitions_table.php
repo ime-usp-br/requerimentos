@@ -26,6 +26,7 @@ class CreateRequisitionsTable extends Migration
             $table->string('requested_disc');
             $table->enum('requested_disc_type', ['Extracurricular', 'Obrigatória', 'Optativa Eletiva', 'Optativa Livre']);
             $table->string('situation');
+            $table->string('internal_status');
             $table->string('requested_disc_code');
             $table->text('observations')->nullable();
 
@@ -39,11 +40,12 @@ class CreateRequisitionsTable extends Migration
             $table->enum('result', ['Sem resultado', 'Inconsistência nas informações', 'Deferido', 'Indeferido']);
             $table->text('result_text')->nullable();
             
+            
             // parecerista
-            $table->enum('reviewer_decision', ['Sem decisão', 'Deferido', 'Indeferido']);
-            $table->text('appraisal')->nullable();
-            $table->unsignedInteger('reviewer_nusp')->nullable();
-            $table->string('reviewer_name')->nullable();
+            // $table->enum('reviewer_decision', ['Sem decisão', 'Deferido', 'Indeferido']);
+            // $table->text('appraisal')->nullable();
+            // $table->unsignedInteger('reviewer_nusp')->nullable();
+            // $table->string('reviewer_name')->nullable();
         });
     }
 
