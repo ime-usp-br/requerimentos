@@ -28,7 +28,6 @@ class CreateRequisitionsTable extends Migration
             $table->string('situation');
             $table->string('requested_disc_code');
             $table->text('observations')->nullable();
-            $table->boolean('validated_by_sg');
 
             // arquivos
             $table->string('taken_discs_record');
