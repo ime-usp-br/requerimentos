@@ -54,7 +54,7 @@
                     <td>{{ \Illuminate\Support\Carbon::parse($req->created_at->toDateString())->format('d/m/Y') }}</td>
                     <td>{{ $req->student_name }}</td>
                     <td>{{ $req->nusp }}</td>
-                    <td>{{ $req->situation }}</td>
+                    <td>{{ $req->internal_status }}</td>
                     <td>{{ $req->department }}</td>
                     <td>{{ $req->id }}</td>
                 </tr>

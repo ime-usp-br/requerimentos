@@ -16,4 +16,8 @@ class Requisition extends Model
     public function reviews() {
         return $this->hasMany(Review::class);
     }
+
+    public function events() {
+        return $this->hasMany(Event::class);
+    }
 }

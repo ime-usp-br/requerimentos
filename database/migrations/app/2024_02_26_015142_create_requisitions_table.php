@@ -26,9 +26,9 @@ class CreateRequisitionsTable extends Migration
             $table->string('requested_disc');
             $table->enum('requested_disc_type', ['Extracurricular', 'Obrigatória', 'Optativa Eletiva', 'Optativa Livre']);
             $table->string('situation');
+            $table->string('internal_status');
             $table->string('requested_disc_code');
             $table->text('observations')->nullable();
-            $table->boolean('validated_by_sg');
 
             // arquivos
             $table->string('taken_discs_record');
@@ -39,6 +39,7 @@ class CreateRequisitionsTable extends Migration
             // resultado
             $table->enum('result', ['Sem resultado', 'Inconsistência nas informações', 'Deferido', 'Indeferido']);
             $table->text('result_text')->nullable();
+            
             
             // parecerista
             // $table->enum('reviewer_decision', ['Sem decisão', 'Deferido', 'Indeferido']);

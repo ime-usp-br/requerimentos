@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Event;
 use App\Enums\RoleName;
+use App\Enums\EventType;
 use App\Models\Requisition;
 use Illuminate\Http\Request;
 use App\Models\TakenDisciplines;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Auth;
 
 // use Illuminate\Support\Facades\Auth;
 // use Illuminate\Support\Facades\Route;
@@ -15,7 +18,7 @@ use Spatie\Permission\Models\Role;
 class SGController extends Controller
 {
     public function list() {
-        $selectedColumns = ['created_at', 'student_name', 'nusp', 'situation', 'department', 'id'];
+        $selectedColumns = ['created_at', 'student_name', 'nusp', 'internal_status', 'department', 'id'];
 
         $reqs = Requisition::select($selectedColumns)->get();
 
@@ -67,7 +70,8 @@ class SGController extends Controller
         $req->requested_disc = $data['requested-disc-name'];
         $req->requested_disc_type = $data['requested-disc-type'];
         $req->requested_disc_code = $data['requested-disc-code'];
-        $req->situation = "Encaminhado para a secretaria";
+        $req->situation = EventType::SENT_TO_SG;
+        $req->internal_status = EventType::SENT_TO_SG;
         // $req->reviewer_name = null;
         $req->result = 'Sem resultado';
         $req->result_text = null;
@@ -79,7 +83,6 @@ class SGController extends Controller
         $req->taken_discs_syllabus = $request->file('taken-disc-syllabus')->store('test');
         $req->requested_disc_syllabus = $request->file('requested-disc-syllabus')->store('test');
         $req->observations = $request->observations;
-        $req->validated_by_sg = false;
 
         $req->save();
 
@@ -94,6 +97,14 @@ class SGController extends Controller
             $takenDisc->requisition_id = $req->id;
             $takenDisc->save();
         }
+
+        $event = new Event;
+        $event->type = EventType::SENT_TO_SG;
+        $event->requisition_id = $req->id;
+        
+        $event->author_name = Auth::user()->name; 
+        $event->author_nusp = Auth::user()->codpes;
+        $event->save();
 
         return redirect()->route('sg.newRequisition')->with('success', ['title message' => 'Requerimento criado', 'body message' => 'O requerimento foi criado com sucesso. Acompanhe o andamento pela página inicial.']);
     }
@@ -136,19 +147,32 @@ class SGController extends Controller
         $reqToBeUpdated->requested_disc_type = $data['requested-disc-type'];
         $reqToBeUpdated->requested_disc_code = $data['requested-disc-code'];
         
-        // dados vindo direto da request
-        $reqToBeUpdated->result = request('result');
+        if ($reqToBeUpdated->result !== request('result')) {
+            $reqToBeUpdated->result = request('result');
+
+            $user = Auth::user();
+            if (request('result') === 'Inconsistência nas informações') {
+                $type = EventType::BACK_TO_STUDENT;
+            } elseif (request('result') === 'Deferido') {
+                $type = EventType::ACCEPTED;
+            } elseif (request('result') === 'Indeferido') {
+                $type = EventType::REJECTED;
+            } elseif (request('result') === 'Sem resultado') {
+                $type = EventType::IN_REVALUATION;
+            }
+
+            $event = new Event;
+            $event->type = $type;
+            $event->requisition_id = $requisitionId;
+            $event->author_name = Auth::user()->name; 
+            $event->author_nusp = Auth::user()->codpes;
+            $reqToBeUpdated->situation = $type;
+            $reqToBeUpdated->internal_status = $type;
+            $event->save();
+        }
+
         $reqToBeUpdated->result_text = request('result-text');
-        // $reqToBeUpdated->appraisal = request('appraisal');
-        // $reqToBeUpdated->reviewer_decision = request('decision');
-        // $reqToBeUpdated->reviewer_name = request('reviewer_name');
-        // $reqToBeUpdated->reviewer_nusp = request('reviewer_nusp');
         $reqToBeUpdated->observations = request('observations');
-
-        if ($request->button === 'send') {
-            $reqToBeUpdated->validated_by_sg = true;
-        } 
-
         $reqToBeUpdated->save();
 
         for ($i = 1; $i <= $takenDiscCount; $i++) {
