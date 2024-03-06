@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Enums\RoleName;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class RoleAndPermissionSeeder extends Seeder
@@ -18,12 +19,14 @@ class RoleAndPermissionSeeder extends Seeder
 
         // $roles = ['Aluno', 'Secretaria de Graduação', 'Parecerista', 'Coordenador do MAC', 'Coordenador do MAE', 'Coordenador do MAP', 'Coordenador do MAT'];
 
-        $roles = [RoleName::STUDENT, RoleName::SG, RoleName::REVIEWER, RoleName::MAC_COORD, RoleName::MAE_COORD, RoleName::MAP_COORD, RoleName::MAT_COORD];
+        $roleNames = [RoleName::STUDENT, RoleName::SG, RoleName::REVIEWER, RoleName::MAC_COORD, RoleName::MAE_COORD, RoleName::MAP_COORD, RoleName::MAT_COORD];
 
-        foreach ($roles as $roleName) {
+        foreach ($roleNames as $roleName) {
             if (!Role::where('name', $roleName)->exists()) {
                 Role::create(['name' => $roleName]);
             }
         } 
+
+        Permission::create(['name' => 'admin']);
     }
 }
