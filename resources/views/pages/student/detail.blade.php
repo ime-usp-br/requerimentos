@@ -20,10 +20,10 @@
 
         @if ($req->result === 'Inconsistência nas informações')
             <section class="result">
-                <h2>Problema nas informações fornecidas</h2>
+                <h2>Inconsistência nos dados fornecidos</h2>
                 @if ($req->result_text)
                     <div class="field-wrapper">
-                        Atualize as seguintes informações do seu requerimento
+                        Por favor, atualize as seguintes informações do seu requerimento
                         <div class="field result-text large-field">{{ $req->result_text }}</div>
                     </div>
                 @endif
