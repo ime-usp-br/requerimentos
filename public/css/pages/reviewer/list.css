@@ -1,0 +1,275 @@
+@import "/css/components/table.css";
+
+:root {
+    --page-margin: 0.6rem;
+    --body-gaps: 2.6rem;
+    height: 100%;
+}
+
+body {
+    /* min-height: 100vh; */
+    height: 100%;
+    /* height: min(100%, 100vh); */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--body-gaps);
+}
+
+.header-buttons {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+h1 {
+    /* padding: 0 var(--page-margin); */
+    padding-left: var(--page-margin);
+    margin-top: var(--body-gaps);
+    /* font-size: 1.6rem; */
+}
+
+.header-top {
+    display: flex;
+    /* flex-direction: column; */
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 0 var(--page-margin);
+}
+
+.role {
+    display: flex;
+    flex-direction: column;
+    /* align-items: flex-end; */
+    font-weight: 500;
+    font-size: 0.9rem;
+    width: 7.5rem;
+    width: fit-content;
+    position: absolute;
+    /* bottom: 8rem;
+    left: 14.5rem; */
+    right: var(--page-margin);
+    bottom: calc(100% + var(--body-gaps));
+    /* height: 3rem; */
+}
+
+select {
+    height: 2.18rem;
+    background-color: var(--white);
+    border: none;
+    outline: 1.6px solid var(--gray);
+    border-radius: 3.2px;
+    font-size: 1rem;
+}
+
+tbody tr {
+    cursor: pointer;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-items: flex-end;
+    padding: 0 var(--page-margin);
+    width: 100%;
+}
+
+header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--body-gaps);
+    justify-content: space-between;
+}
+
+
+
+.button {
+    width: 6.5rem;
+    height: 2.5rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    background: var(--blue);
+    color: var(--white);
+    border-radius: 4.64px;
+    cursor: pointer;
+}
+
+.button:hover {
+    box-shadow: 0 0 8px rgba(0,0,0,0.6);
+}
+
+.content {
+    flex: 1 0 auto;
+    /* min-height: 67.5rem; */
+}
+
+@media screen and (max-width: 599px) {
+    h1 {
+        font-size: 1.6rem;
+    }
+}
+
+@media screen and (min-width: 370px) {
+    .button {
+        width: 6.7rem;
+    }
+}
+
+@media screen and (min-width: 390px) {
+    .button {
+        width: 7rem;
+    }
+}
+
+@media screen and (min-width: 410px) {
+    :root {
+        --body-gaps: 2rem;
+    }
+
+    .button {
+        width: 7.3rem;
+        font-size: 1rem;
+    }
+}
+
+@media screen and (min-width: 600px) {
+    :root {
+        --page-margin: 1.3rem;
+        --body-gaps: 2rem;
+    }
+
+    .content {
+        min-height: 61.5rem;
+    }
+    
+    .button {
+        width: 8.5rem;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    :root {
+        --page-margin: 2rem;
+        --body-gaps: 2.5rem;
+        font-size: 1.1rem;
+    }
+
+    .content {
+        min-height: 45rem;
+    }
+    
+    .button {
+        width: 9.5rem;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    :root {
+        font-size: 1.3rem;
+    }
+
+    .button {
+        width: 9rem;
+    }
+
+    .content {
+        min-height: 33.95rem;
+    }
+}
+
+@media screen and (min-width: 1280px) {
+    :root {
+        --page-margin: 3rem;
+        /* --body-gaps: 3rem; */
+    }
+
+    header {
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: space-between;
+        padding: 0 var(--page-margin);
+    }
+
+    .header-buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+    }
+
+    .role {
+        position: static;
+    }
+
+    h1 {
+        padding: 0;
+    }
+
+    nav {
+        gap: 1rem;
+        padding: 0;
+    }
+
+    .content {
+        padding: 0 var(--page-margin);
+        display: flex;
+        justify-content: center;
+    }
+}
+
+@media screen and (min-width: 1440px) {
+    :root {
+        --page-margin: 3.8rem;
+    }
+
+
+    .content {
+        padding: 0 var(--page-margin);
+        display: flex;
+        justify-content: center;
+    }
+}
+
+@media screen and (min-width: 1536px) {
+    :root {
+        --page-margin: 4.2rem;
+    }
+
+    .button {
+        width: 10rem;
+    }
+
+    .content {
+        min-height: 33rem;
+    }
+}
+
+@media screen and (min-width: 1600px) {
+    :root {
+        font-size: 1.4rem;
+        --page-margin: 4.5rem;
+    }
+}
+
+@media screen and (min-width: 1920px) {
+    :root {
+        font-size: 1.5rem;
+        --page-margin: 6rem;
+    }
+
+    .content {
+        min-height: 31rem;
+    }
+}
+
+/* @media screen and (min-width: 2500px) {
+    header {
+        gap: 32rem;
+    }
+} */

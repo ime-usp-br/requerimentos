@@ -15,7 +15,7 @@
         </div>
     @endif--}}
 
-    <div class="appraisal-title">Decisão</div>
+    <!--<div class="appraisal-title">Decisão</div>-->
     <div class="decision-radio" >
         <label class="radio-button" >
             <input 

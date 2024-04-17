@@ -70,8 +70,8 @@ Route::middleware('auth')->group(function() {
     });
 
     Route::prefix('parecerista')->group(function () {
-        Route::get('/lista', function() {
-            echo "pagina do parecerista";
-        })->name('reviewer.list');
+        Route::get('/lista', [ReviewController::class, 'list'])->name('reviewer.list');
+
+        Route::get('/detalhe/{requisitionId}', [ReviewController::class, 'show'])->name('reviewer.show');
     });
 });
