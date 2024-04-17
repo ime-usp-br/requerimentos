@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\DocumentType;
+use App\Models\Document;
 use App\Models\User;
 use App\Models\Event;
 use App\Enums\RoleName;
@@ -26,6 +28,43 @@ class SGController extends Controller
     }
 
     public function show($requisitionId) {
+        $req = Requisition::with('takenDisciplines', 'documents')->find($requisitionId);
+        
+        $documents = $req->documents->sortByDesc('created_at');
+        // dd($req->documents);
+
+        $takenDiscsRecords = [];
+        $currentCourseRecords = [];
+        $takenDiscSyllabi = [];
+        $requestedDiscSyllabi = [];
+
+        foreach ($documents as $document) {
+            switch ($document->type) {
+                case DocumentType::TAKEN_DISCS_RECORD:
+                    array_push($takenDiscsRecords, $document);
+                    break;
+                case DocumentType::CURRENT_COURSE_RECORD:
+                    array_push($currentCourseRecords, $document);
+                    break;
+                case DocumentType::TAKEN_DISCS_SYLLABUS:
+                    array_push($takenDiscSyllabi, $document);
+                    break;
+                case DocumentType::REQUESTED_DISC_SYLLABUS:
+                    array_push($requestedDiscSyllabi, $document);
+                    break;
+            }
+        }
+
+        return view('pages.sg.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines, 'takenDiscsRecords' => $takenDiscsRecords, 'currentCourseRecords' => $currentCourseRecords, 'takenDiscSyllabi' => $takenDiscSyllabi, 'requestedDiscSyllabi' => $requestedDiscSyllabi]);
+    }
+
+    public function readOnlyShow($requisitionId) {
+        $req = Requisition::with('takenDisciplines')->find($requisitionId);
+        
+        return view('pages.sg.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines]);
+    }
+
+    public function editableShow($requisitionId) {
         $req = Requisition::with('takenDisciplines')->find($requisitionId);
         
         return view('pages.sg.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines]);
@@ -75,9 +114,7 @@ class SGController extends Controller
         // $req->reviewer_name = null;
         $req->result = 'Sem resultado';
         $req->result_text = null;
-        // $req->appraisal = null;
-        // $req->reviewer_nusp = null;
-        // $req->reviewer_decision = 'Sem decisão';
+
         $req->taken_discs_record = $request->file('taken-disc-record')->store('test');
         $req->current_course_record = $request->file('course-record')->store('test');
         $req->taken_discs_syllabus = $request->file('taken-disc-syllabus')->store('test');
@@ -85,6 +122,30 @@ class SGController extends Controller
         $req->observations = $request->observations;
 
         $req->save();
+
+        $takenDiscsRecord = new Document;
+        $takenDiscsRecord->path = $request->file('taken-disc-record')->store('test');
+        $takenDiscsRecord->requisition_id = $req->id;
+        $takenDiscsRecord->type = DocumentType::TAKEN_DISCS_RECORD;
+        $takenDiscsRecord->save();
+
+        $currentCourseRecord = new Document;
+        $currentCourseRecord->path = $request->file('course-record')->store('test');
+        $currentCourseRecord->requisition_id = $req->id;
+        $currentCourseRecord->type = DocumentType::CURRENT_COURSE_RECORD;
+        $currentCourseRecord->save();
+
+        $takenDiscSyllabus = new Document;
+        $takenDiscSyllabus->path = $request->file('taken-disc-syllabus')->store('test');
+        $takenDiscSyllabus->requisition_id = $req->id;
+        $takenDiscSyllabus->type = DocumentType::TAKEN_DISCS_SYLLABUS;
+        $takenDiscSyllabus->save();
+
+        $requestedDiscSyllabus = new Document;
+        $requestedDiscSyllabus->path = $request->file('requested-disc-syllabus')->store('test');
+        $requestedDiscSyllabus->requisition_id = $req->id;
+        $requestedDiscSyllabus->type = DocumentType::REQUESTED_DISC_SYLLABUS;
+        $requestedDiscSyllabus->save();
 
         for ($i = 1; $i <= $takenDiscCount; $i++) {
             $takenDisc = new TakenDisciplines;

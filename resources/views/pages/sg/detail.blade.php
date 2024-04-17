@@ -68,7 +68,7 @@
             
             <hr>
 
-            <x-form.documents.read :req="$req"/>
+            <x-form.documents.read :takenDiscsRecords="$takenDiscsRecords" :currentCourseRecords="$currentCourseRecords" :takenDiscSyllabi="$takenDiscSyllabi" :requestedDiscSyllabi="$requestedDiscSyllabi"/>
 
             <hr>
 

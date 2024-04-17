@@ -76,7 +76,8 @@ form {
 
 .button {
     width: 8.5rem;
-    min-height: 2.5rem;
+    /* min-height: 2.5rem; */
+    height: 2.5rem;
     font-weight: 600;
     font-size: 0.9rem;
     display: flex;

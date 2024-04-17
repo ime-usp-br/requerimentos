@@ -21,4 +21,18 @@ window.onload = function() {
             document.querySelector(".overlay-container");
         overlayContainer.style.display = "none";
     };
+
+    // const options = document.querySelectorAll(".option");
+    const selects = document.querySelectorAll('.docs-select');
+
+    selects.forEach((select) => {
+        select.addEventListener('change', function() {
+            const filesWrapper = select.parentNode.parentNode;
+            const linkButton = filesWrapper.querySelector('a');
+            
+            linkButton.href = select.value;
+        });
+        // console.log(selects);
+    });
+    // console.log(options);
 }
