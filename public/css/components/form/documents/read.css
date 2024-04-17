@@ -1,0 +1,19 @@
+.documents {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.doc-text {
+    font-weight: 500;
+}
+
+.document {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pdf-icon {
+    width: 3.2rem;
+}

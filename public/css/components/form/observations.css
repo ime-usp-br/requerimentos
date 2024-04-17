@@ -1,0 +1,10 @@
+.observations {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.observations label {
+    display: flex;
+    flex-direction: column;
+}

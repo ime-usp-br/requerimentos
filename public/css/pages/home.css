@@ -1,0 +1,112 @@
+:root {
+    --page-margin: 0.6rem;
+    --body-gaps: 1.8rem;
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-image: url("/img/home/background.png");
+    background-size: cover;
+    background-position: center center;
+    min-height: 100%;
+}
+
+.button {
+    width: 12rem;
+    height: 3rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 11px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    background: var(--blue);
+    color: var(--white);
+    border-radius: 4.64px;
+    cursor: pointer;
+}
+
+.button:hover {
+    box-shadow: 0 0 8px rgba(0,0,0,0.6);
+}
+
+header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+header img {
+    margin: 1.5rem 0;
+}
+
+@media screen and (min-width: 600px) {
+    :root {
+        --page-margin: 1.3rem;
+        font-size: 1.1rem;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    header {
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 0 var(--page-margin);
+    }
+}
+
+@media screen and (min-width: 820px) {
+    :root {
+        --page-margin: 2.5rem;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    :root {
+        --page-margin: 2.5rem;
+        font-size: 1.3rem;
+    }
+}
+
+@media screen and (min-width: 1280px) {
+    header img {
+        width: 17rem;
+    }
+}
+
+@media screen and (min-width: 1440px) {
+    :root {
+        --page-margin: 3rem;
+        font-size: 1.4rem;
+    }
+
+    header img {
+        width: 19rem;
+    }
+}
+
+@media screen and (min-width: 1920px) {
+    :root {
+        font-size: 1.5rem;
+    }
+    
+    header img {
+        width: 20rem;
+    }
+}
+
+@media screen and (min-width: 2100px) {
+    :root {
+        font-size: 1.6rem;
+    }
+    
+    header img {
+        width: 20rem;
+    }
+}

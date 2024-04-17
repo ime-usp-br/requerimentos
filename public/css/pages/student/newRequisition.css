@@ -1,0 +1,289 @@
+/* css dos componentes contidos na página */
+@import "/css/components/overlay.css";
+@import "/css/components/form/disciplines/write.css";
+/* @import "/css/components/form/personal.css"; */
+@import "/css/components/form/course.css";
+@import "/css/components/form/documents/write.css";
+@import "/css/components/form/observations.css";
+/* @import "/css/components/form/review.css";
+@import "/css/components/form/result.css"; */
+
+/* css específico da página */
+:root {
+    --page-margin: 1rem;
+    --body-gaps: 1.6rem;
+    /* width: max-content;
+    max-width: 100vw; */
+    /* height: 100%;
+    overflow: hidden; */
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    /* max-width: 100vw; */
+    /* height: 100%;
+    overflow-x: hidden; */
+    /* overflow-x: hidden; */
+    /* width: min-content; */
+}
+
+.content {
+    padding: 0 var(--page-margin);
+    display: flex;
+    flex-direction: column;
+    gap: var(--body-gaps);
+}
+
+header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+header .button {
+    width: 6rem;
+    height: 2.2rem;
+}
+
+h1 {
+    /* font-size: 1.3rem; */
+    margin-top: var(--body-gaps);
+}
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-evenly;
+    margin-bottom: 1.2rem;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 1rem;
+}
+
+.button {
+    width: 8.5rem;
+    height: 2.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    background: var(--blue);
+    color: var(--white);
+    border-radius: 0.29rem;
+    border: none;
+    cursor: pointer;
+}
+
+.button:hover {
+    box-shadow: 0 0 8px rgba(0,0,0,0.6);
+}
+
+input[type='text'], input[type='email'] {
+    padding: 0;
+    border: none;
+    outline: 1.6px solid var(--gray);
+    border-radius: 3.2px;
+    height: 2.18rem;
+    font-size: 1rem;
+}
+
+fieldset {
+    border: none;
+    margin: 0;
+}
+
+hr {
+    margin: 1.5rem 0;
+    padding: 0;
+    background-color: rgba(240,240,240);
+    color: rgba(240,240,240);
+    height: 0.5px;
+}
+
+legend {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1.1rem;
+}
+
+select {
+    height: 2.18rem;
+    background-color: var(--white);
+    border: none;
+    outline: 1.6px solid var(--gray);
+    border-radius: 3.2px;
+    font-size: 1rem;
+}
+
+label {
+    font-weight: 500;
+    font-size: 0.8rem;
+}
+
+textarea {
+    border: none;
+    outline: 1.6px solid var(--gray);
+    border-radius: 3.2px;
+    resize: none;
+
+    min-width: 19rem;
+    height: 13rem;
+    font-size: 1rem;
+}
+
+input[type="radio"] {
+    visibility: hidden;
+    position: absolute;
+    top: 2px;
+    left: 6px;
+}
+
+.error-message {
+    color: red;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.bottom-nav {
+    display: flex;
+    justify-content: space-between;
+}
+
+.bottom-nav .button {
+    min-width: 7.7rem;
+}
+
+@media screen and (min-width: 410px) {
+    .bottom-nav button {
+        width: 9rem;
+    }
+
+    /* h1 {
+        font-size: 1.4rem;
+    } */
+
+    header .button {
+        width: 6.5rem;
+        height: 2.5rem;
+    }
+}
+
+@media screen and (min-width: 425px) {
+    .bottom-nav button {
+        width: 9rem;
+    }
+}
+
+@media screen and (min-width: 600px) {
+    :root {
+        --body-gaps: 2rem;
+        --page-margin: 1.8rem;
+    }
+
+    textarea {
+        width: 28rem;
+    }
+
+    nav {
+        margin-bottom: 2rem;
+        justify-content: space-between;
+    }
+
+    .bottom-nav {
+        justify-content: space-around;
+    }
+
+    .bottom-nav .button {
+        width: 10rem;
+        height: 2.8rem;
+    }
+}
+
+@media screen and (min-width: 760px) {
+
+    :root {
+        --page-margin: 3rem;
+        font-size: 1.1rem;
+    }
+
+    .bottom-nav .button {
+        width: 11rem;
+    } 
+
+    nav {
+        margin-bottom: 2.5rem;
+    }
+
+    header .button {
+        width: 8.5rem;
+    }
+}
+
+@media screen and (min-width: 1020px) {
+
+    :root {
+        --page-margin: 5rem;
+        /* --body-gaps: 1.8rem;  */
+        font-size: 1.3rem;
+    }
+}
+
+@media screen and (min-width: 1280px) {
+
+    :root {
+        font-size: 1.4rem;
+    }
+
+    form {
+        border-radius: 0.43rem;
+        border: 1px solid rgba(0,0,0,0.3);
+        background-color: var(--light-blue);
+        padding: 3rem 2.5rem;
+    }
+
+    fieldset {
+        padding: 0 0.5rem;
+    }
+
+    textarea {
+        width: 32rem;
+    }
+
+    nav .button {
+        width: 10rem;
+    }
+}
+
+@media screen and (min-width: 1440px) {
+    :root {
+        --page-margin: 8rem;
+        /* --body-gaps: 2rem; */
+        font-size: 1.5rem;
+    }
+}
+
+@media screen and (min-width: 1920px) {
+    :root {
+        --page-margin: 11.7rem;
+        font-size: 1.6rem;
+    }
+
+    nav {
+        margin-bottom: 3rem;
+    }
+}
+
+@media screen and (min-width: 2000px) {
+    :root {
+        font-size: 1.8rem;
+    }
+}
