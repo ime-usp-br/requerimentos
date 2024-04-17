@@ -8593,5 +8593,9 @@
         "php": "^7.3|^8.0"
     },
     "platform-dev": [],
+//<<<<<<< parecerista
     "plugin-api-version": "2.6.0"
+//=======
+    //"plugin-api-version": "2.0.0"
+//>>>>>>> main
 }
