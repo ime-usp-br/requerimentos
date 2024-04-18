@@ -10,6 +10,15 @@
 @endsection
 
 @section('content')
+    {{--@if ($errors->any())
+        <div>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li> {{ $error }} </li>
+                @endforeach
+            </ul>
+        </div>
+    @endif--}}
     <x-overlay>
         <x-slot name="title">
             @if (session()->has('success'))
@@ -36,7 +45,7 @@
                     display: block;
                 }
             </style>
-            <p class="overlay-error-message">Os erros podem ter sido causados por campos obrigatórios não preenchidos ou por inconsistência nos dados inseridos.</p>
+            <p class="overlay-error-message">Os erros podem ter sido causados por problemas nos arquivos selecionados ou por inconsistência nos dados inseridos.</p>
         @endif
     </x-overlay>
 
