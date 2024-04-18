@@ -62,5 +62,5 @@
         </label>
     </div>
     
-    <label class="result-text">Insira aqui o texto que será retornado para o aluno<textarea name="result-text">{{ isset($req) ? $req->result_text : null }}</textarea></label>
+    <label class="result-text">Insira aqui o texto que será retornado para o aluno<textarea name="result-text" >{{ isset($req) ? $req->result_text : null }}</textarea></label>
 </fieldset>

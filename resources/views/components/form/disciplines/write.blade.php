@@ -8,23 +8,23 @@
             <div class="disc">
                 <label class="disc-name">
                     Nome: 
-                    <input type="text" name="disc1-name" id="disc-name" required>
+                    <input type="text" name="disc1-name" id="disc-name" value="{{ old('disc1-name') }}" required>
                 </label>
                 @error('disc1-name')
                     <style>
                         .disc-name input {
                             outline: 1.6px solid red;
                         }
-                        .taken-disc-name {
+                        .disc-name {
                             color: red;
                         }
                     </style>
                 @enderror
                 <label class="disc-institution">
                     Instituição em que foi cursada:
-                    <input type="text" name="disc1-institution" id="disc-institution" required>
+                    <input type="text" name="disc1-institution" id="disc-institution" value="{{ old('disc1-institution') }}" required>
                 </label>
-                @error('disc-institution')
+                @error('disc1-institution')
                     <style>
                         .disc-institution input {
                             outline: 1.6px solid red;
@@ -37,7 +37,7 @@
                 <div class="disc-middle-row">
                     <label class="disc-code">
                         Sigla
-                        <input type="text" name="disc1-code" id="disc-code">
+                        <input type="text" name="disc1-code" id="disc-code" value="{{ old('disc1-code') }}">
                     </label>
                     @error('disc1-code')
                         <style>
@@ -51,7 +51,7 @@
                     @enderror
                     <label class="disc-year">
                         Ano: 
-                        <input type="text" name="disc1-year" id="disc-year" required>
+                        <input type="text" name="disc1-year" id="disc-year" value="{{ old('disc1-year') }}" required>
                     </label>
                     @error('disc1-year')
                         <style>
@@ -65,7 +65,7 @@
                     @enderror
                     <label class="disc-grade">
                         Nota: 
-                        <input type="text" name="disc1-grade" id="disc-grade" required>
+                        <input type="text" name="disc1-grade" id="disc-grade" value="{{ old('disc1-grade') }}" required>
                     </label>
                     @error('disc1-grade')
                         <style>
@@ -83,8 +83,20 @@
                         Semestre:
                         <select name="disc1-semester" id="disc-semester" required>
                             <option value="">Selecione o semestre</option>
-                            <option value="Primeiro">Primeiro</option>
-                            <option value="Segundo">Segundo</option>
+                            <option value="Primeiro"
+                                @if(old('disc1-semester') === 'Primeiro') 
+                                    selected 
+                                @endif
+                            >
+                                Primeiro
+                            </option>
+                            <option value="Segundo"
+                                @if(old('disc1-semester') === 'Segundo') 
+                                    selected 
+                                @endif
+                            >
+                                Segundo
+                            </option>
                         </select>
                     </label>
                     @error('disc1-semester')
@@ -119,7 +131,7 @@
         <div class="disc">
             <label class="requested-disc-name">
                 Nome: 
-                <input type="text" id="disc-name" name="requested-disc-name" required>
+                <input type="text" id="disc-name" name="requested-disc-name" value="{{ old('requested-disc-name') }}" required>
             </label>
             @error('requested-disc-name')
                 <style>
@@ -136,10 +148,37 @@
                 <label class="requested-disc-type">
                     Tipo:
                     <select name="requested-disc-type" id="disc-type" required>
-                        <option value="">Selecione o tipo</option>
-                        <option value="Extracurricular">Extracurricular</option>
-                        <option value="Obrigatória">Obrigatória</option><option value="Optativa Eletiva">Optativa Eletiva</option>
-                        <option value="Optativa Livre">Optativa Livre</option>
+                        <option value="">
+                            Selecione o tipo
+                        </option>
+                        <option value="Extracurricular"
+                            @if(old('requested-disc-type') === 'Extracurricular') 
+                                selected 
+                            @endif
+                        >
+                            Extracurricular
+                        </option>
+                        <option value="Obrigatória"
+                            @if(old('requested-disc-type') === 'Obrigatória') 
+                                selected 
+                            @endif
+                        >
+                            Obrigatória
+                        </option>
+                        <option value="Optativa Eletiva"
+                            @if(old('requested-disc-type') === 'Optativa Eletiva') 
+                                selected 
+                            @endif
+                        >
+                            Optativa Eletiva
+                        </option>
+                        <option value="Optativa Livre"
+                            @if(old('requested-disc-type') === 'Optativa Livre') 
+                                selected 
+                            @endif
+                        >
+                            Optativa Livre
+                        </option>
                     </select>
                 </label>
                 @error('requested-disc-type')
@@ -154,7 +193,7 @@
                 @enderror
                 <label class="requested-disc-code">
                     Sigla
-                    <input type="text" name="requested-disc-code" id="disc-code" required>
+                    <input type="text" name="requested-disc-code" id="disc-code" value="{{ old('requested-disc-code') }}" required>
                 </label>
                 @error('requested-disc-code')
                     <style>
@@ -172,11 +211,41 @@
                 Departamento:
                 <select name="disc-department" required>
                     <option value="">Selecione o departamento</option>
-                    <option value="MAC">MAC</option>
-                    <option value="MAE">MAE</option>
-                    <option value="MAP">MAP</option>
-                    <option value="MAT">MAT</option>
-                    <option value="Disciplina de fora do IME">Disciplina de fora do IME</option>
+                    <option value="MAC"
+                        @if(old('disc-department') === 'MAC') 
+                            selected 
+                        @endif
+                    >
+                        MAC
+                    </option>
+                    <option value="MAE"
+                        @if(old('disc-department') === 'MAE') 
+                            selected 
+                        @endif
+                    >
+                        MAE
+                    </option>
+                    <option value="MAP"
+                        @if(old('disc-department') === 'MAP') 
+                            selected 
+                        @endif
+                    >
+                        MAP
+                    </option>
+                    <option value="MAT"
+                        @if(old('disc-department') === 'MAC') 
+                            selected 
+                        @endif
+                    >
+                        MAT
+                    </option>
+                    <option value="Disciplina de fora do IME"
+                        @if(old('disc-department') === 'Disciplina de fora do IME') 
+                            selected 
+                        @endif
+                    >
+                        Disciplina de fora do IME
+                    </option>
                 </select>
             </label>
             @error('disc-department')

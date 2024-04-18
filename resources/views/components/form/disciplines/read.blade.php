@@ -6,11 +6,11 @@
             @foreach($takenDiscs as $disc)
                 <div class="disc">
                     <label>
-                        Nome <input type="text" name="{{ 'disc' . $loop->iteration . '-name'}}" value="{{ $disc->name }}" id="disc-name" required>
+                        Nome <input type="text" name="{{ 'disc' . $loop->iteration . '-name'}}" value="{{ $disc->name }}" id="disc-name" required readonly>
                     </label>
                     <label class="disc-institution">
                         Instituição em que foi cursada
-                        <input type="text" name="{{ 'disc' . $loop->iteration . '-institution' }}" id="disc-institution" value="{{ $disc->institution }}" required>
+                        <input type="text" name="{{ 'disc' . $loop->iteration . '-institution' }}" id="disc-institution" value="{{ $disc->institution }}" required readonly>
                     </label>
                     @error('disc-institution')
                         <style>
@@ -25,21 +25,21 @@
                     <div class="disc-middle-row">
                         <label class="disc-code">
                             Sigla
-                            <input type="text" name="{{ 'disc' . $loop->iteration . '-code' }}" value="{{ $disc->code }}" id="disc-code">
+                            <input type="text" name="{{ 'disc' . $loop->iteration . '-code' }}" value="{{ $disc->code }}" id="disc-code" readonly >
                         </label>
                         <label>
                             Ano 
-                            <input type="text" name="{{ 'disc' . $loop->iteration . '-year'}}" value="{{ $disc->year }}" id="disc-year" required>
+                            <input type="text" name="{{ 'disc' . $loop->iteration . '-year'}}" value="{{ $disc->year }}" id="disc-year" required readonly >
                         </label>
                         <label>
-                            Nota <input type="text" name="{{ 'disc' . $loop->iteration . '-grade'}}" value="{{ $disc->grade }}" id="disc-grade" required>
+                            Nota <input type="text" name="{{ 'disc' . $loop->iteration . '-grade'}}" value="{{ $disc->grade }}" id="disc-grade" required readonly>
                         </label>
                     </div>
 
                     <div class="disc-last-row">
                         <label>
                             Semestre 
-                            <select name="{{ 'disc' . $loop->iteration .'-semester' }}" id="disc-semester">
+                            <select name="{{ 'disc' . $loop->iteration .'-semester' }}" id="disc-semester" disabled >
                                 <option 
                                     value=""
                                     >
@@ -67,7 +67,7 @@
                             <a href="#" class="button record-button">Histórico</a>
                         @endif
                     </div>
-                    <input type="hidden" name="{{ 'disc' . $loop->iteration . '-id'}}" value="{{$disc->id}}">
+                    <input type="hidden" name="{{ 'disc' . $loop->iteration . '-id'}}" value="{{$disc->id}}" >
                 </div>
             @endforeach
         </div>
@@ -78,11 +78,11 @@
         <div class="disc-list">
             <div class="disc">
                 <label>
-                    Nome <input type="text" name="requested-disc-name" value="{{ $req->requested_disc }}" id="disc-name" required>
+                    Nome <input type="text" name="requested-disc-name" value="{{ $req->requested_disc }}" id="disc-name" required readonly >
                 </label>
                 <label class="disc-department">
                     Departamento
-                    <select name="disc-department" required>
+                    <select name="disc-department" required disabled >
                         <option value="">
                             Selecione o departamento
                         </option>
@@ -144,7 +144,7 @@
                 
                 <label>
                     Tipo 
-                    <select id="disc-type" name="requested-disc-type">
+                    <select id="disc-type" name="requested-disc-type" disabled>
                         <option value="">Selecione o tipo</option>
                         <option 
                             value="Extracurricular" 
@@ -184,7 +184,7 @@
                 <div class="disc-last-row">
                     <label class="disc-code">
                         Sigla
-                        <input type="text" name="requested-disc-code" value="{{ $req->requested_disc_code }}" id="disc-code" required>
+                        <input type="text" name="requested-disc-code" value="{{ $req->requested_disc_code }}" id="disc-code" required readonly >
                     </label>
                     
                     @if ($withRecordButton)

@@ -42,7 +42,14 @@
     </x-overlay>
 
     <div class="content">
-        <h1>Detalhes do requerimento {{ $req->id }} </h1>
+        <header>
+            <h1>Detalhes do requerimento {{ $req->id }} </h1>
+            <select class="mode-select">
+                <option value="readonly">Modo de exibição</option>
+                <option value="edit">Modo de edição</option>
+            </select>
+        </header>
+        
         <nav class="nav">
             <!-- <div class="status">
                 <span>Situação</span>

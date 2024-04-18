@@ -49,6 +49,16 @@ form {
     font-size: 1rem;
 }
 
+header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.mode-select {
+    width: fit-content;
+}
+
 .status {
     display: flex;
     flex-direction: column;
@@ -193,6 +203,13 @@ input[type="radio"] {
     :root {
         --page-margin: 1.8rem;
         --body-gaps: 1.6rem;
+    }
+
+    header {
+        flex-direction: row;
+        align-items: flex-end;
+        gap: 1rem;
+        justify-content: space-between;
     }
 
     .status {
