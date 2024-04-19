@@ -35,6 +35,22 @@ window.onload = function() {
     });
     // console.log(options);
 
+    const inputs = document.querySelectorAll("input");
+    const selects = document.querySelectorAll("select");
+    
+    inputs.forEach((input) => {
+        input.readOnly = true;
+    });
+
+    selects.forEach((select) => {
+        if (
+            !select.classList.contains("docs-select") &&
+            !select.classList.contains("mode-select")
+        ) {
+            select.disabled = true;
+        }
+    });
+
     const modeSelect = document.querySelector('.mode-select');
 
     modeSelect.addEventListener('change', function() {

@@ -3,7 +3,7 @@
     <div class="name-wrapper">
         <label class="name" >
             Nome completo
-            <input type="text" name="name" value='{{ $req->student_name ?? null}}' required readonly>
+            <input type="text" name="name" value='{{ $req->student_name ?? null}}' required>
         </label>
         @error('name')
             <style>
@@ -21,7 +21,7 @@
         @enderror
         <label class="email">
             Email
-            <input type="email" name="email" value='{{ $req->email ?? null}}' required readonly >
+            <input type="email" name="email" value='{{ $req->email ?? null}}' required>
         </label>
         @error('email')
             <style>
@@ -39,7 +39,7 @@
     <div class="nusp-email-wrapper">
         <label class="nusp">
             Número USP
-            <input type="text" name="nusp" value='{{ $req->nusp ?? null}}' required readonly>
+            <input type="text" name="nusp" value='{{ $req->nusp ?? null}}' required>
             
         </label>
         @error('nusp')
