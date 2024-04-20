@@ -9,16 +9,16 @@
                     Arquivos
                     <select class="docs-select">
                         @foreach ($takenDiscsRecords as $record)
-                            <option value="{{ Storage::disk('public')->url($record->path) }}" class="option">
+                            <option value="{{ $record->id }}" class="option">
                                 Arquivo inserido em {{ \Illuminate\Support\Carbon::parse($record->created_at->toDateTimeString())->format('d/m/Y \à\s H:i') }}
                             </option>
                         @endforeach
                     </select>
                 </label>
-                <a href="{{ Storage::disk('public')->url($takenDiscsRecords[0]->path)}}" class="button file-link" target="_black">Link do arquivo</a>
+                <a href="{{ '/documento/' . $takenDiscsRecords[0]->id }}" class="button file-link" target="_black">Link do arquivo</a>
             </div>
         @else
-            <a href="{{ Storage::disk('public')->url($takenDiscsRecords[0]->path)}}" id="taken" >Histórico escolar</a>
+            <a href="{{ '/documento/' . $takenDiscsRecords[0]->id }}" id="taken">Histórico escolar</a>
         @endif
     </div>
     <div class="doc-text">Histórico do curso atual</div>
@@ -30,17 +30,17 @@
                     Arquivos
                     <select class="docs-select">
                         @foreach ($currentCourseRecords as $record)
-                            <option value="{{ Storage::disk('public')->url($record->path) }}" class="option">
+                            <option value="{{ $record->id }}" class="option">
                                 Arquivo inserido em {{ \Illuminate\Support\Carbon::parse($record->created_at->toDateTimeString())->format('d/m/Y \à\s H:i') }}
                             </option>
                         @endforeach
                     </select> 
                 </label>
-                <a href="{{ Storage::disk('public')->url($currentCourseRecords[0]->path)}}" class="button file-link" target="_black">Link do arquivo</a>
+                <a href="{{ '/documento/' . $currentCourseRecords[0]->id }}" class="button file-link" target="_black">Link do arquivo</a>
             </div>
 
         @else
-            <a href="{{ Storage::disk('public')->url($currentCourseRecords[0]->path)}}" id="taken" >Histórico escolar</a>
+            <a href="{{ '/documento/' . $currentCourseRecords[0]->id }}" id="taken" >Histórico escolar</a>
         @endif
     </div>
     
@@ -53,16 +53,16 @@
                     Arquivos
                     <select class="docs-select">
                         @foreach ($takenDiscSyllabi as $syllabus)
-                            <option value="{{ Storage::disk('public')->url($syllabus->path) }}" class="option">
+                            <option value="{{ $syllabus->id }}" class="option">
                                 Arquivo inserido em {{ \Illuminate\Support\Carbon::parse($syllabus->created_at->toDateTimeString())->format('d/m/Y \à\s H:i') }}
                             </option>
                         @endforeach
                     </select> 
                 </label>
-                <a href="{{ Storage::disk('public')->url($takenDiscSyllabi[0]->path)}}" class="button file-link" target="_black">Link do arquivo</a>
+                <a href="{{ '/documento/' . $takenDiscSyllabi[0]->id }}" class="button file-link" target="_black">Link do arquivo</a>
             </div>
         @else
-            <a href="{{ Storage::disk('public')->url($takenDiscSyllabi[0]->path)}}" id="taken">Ementa</a>
+            <a href="{{ '/documento/' . $takenDiscSyllabi[0]->id }}" id="taken">Ementa</a>
         @endif
     </div>
     <div class="doc-text">Ementa da disciplina a ser dispensada</div>
@@ -74,16 +74,16 @@
                     Arquivos
                     <select class="docs-select">
                         @foreach ($requestedDiscSyllabi as $syllabus)
-                            <option value="{{ Storage::disk('public')->url($syllabus->path) }}" class="option" >
+                            <option value="{{ $syllabus->id }}" class="option" >
                                 Arquivo inserido em {{ \Illuminate\Support\Carbon::parse($syllabus->created_at->toDateTimeString())->format('d/m/Y \à\s H:i') }}
                             </option>
                         @endforeach
                     </select>                     
                 </label>
-                <a href="{{ Storage::disk('public')->url($requestedDiscSyllabi[0]->path)}}" class="button file-link" target="_black">Link do arquivo</a>
+                <a href="{{ '/documento/' . $requestedDiscSyllabi[0]->id }}" class="button file-link" target="_black">Link do arquivo</a>
             </div>
         @else
-            <a href="{{ Storage::disk('public')->url($requestedDiscSyllabi[0]->path)}}" id="taken">Ementa</a>
+            <a href="{{ '/documento/' . $requestedDiscSyllabi[0]->id }}" id="taken">Ementa</a>
         @endif
     </div>
 </fieldset>
