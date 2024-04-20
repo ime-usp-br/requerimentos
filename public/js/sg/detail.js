@@ -1,9 +1,15 @@
 window.onload = function() {
     // o form está sendo submetido por javascript para diferenciar entre
-    // os dois botões que podem ser clickados para submetê-lo
+    // os dois botões que podem ser clickados para submetê-lo, e para
+    // remover o atributo "disabled" dos selects 
     const form = document.querySelector("#form");
     form.addEventListener("submit", (event) => {
         event.preventDefault();
+        
+        document.querySelectorAll("select").forEach((select) => {
+            select.disabled = false;
+        });
+
         if (event.submitter) {
             const clickedButton = event.submitter;
             const btnType = document.querySelector("#btnType");

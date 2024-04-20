@@ -173,7 +173,6 @@ class SGController extends Controller
     public function update($requisitionId, Request $request) {
         // dd($request);
         $takenDiscCount = (int) $request->takenDiscCount;
-
         $discsArray = [];
 
         for ($i = 1; $i <= $takenDiscCount; $i++) {
