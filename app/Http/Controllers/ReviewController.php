@@ -91,15 +91,6 @@ class ReviewController extends Controller
         $req->save();
         $event->save();
 
-
-        // $review = new Review;
-        // $review->reviewer_decision = 'Sem decisão';
-        // $review->requisition_id = $requisitionId;
-        // $review->justification = null;
-        // $review->reviewer_nusp = $request->nusp;
-        // $review->reviewer_name = $request->name;
-        // $review->save();
-
         return response()->noContent();
     }
 

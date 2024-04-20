@@ -51,10 +51,6 @@
         </header>
         
         <nav class="nav">
-            <!-- <div class="status">
-                <span>Situação</span>
-                <span><ion-icon name="ellipse-outline"></ion-icon>Aguardando parecer</span>
-            </div> -->
             <a href="{{ route('sg.reviews', ['requisitionId' => $req->id ]) }}" class="button">Pareceres</a>
             <a href="#" class="button" >Histórico do requerimento</a>
             <a href="{{ route('sg.list') }}" class="button">Voltar</a>
@@ -81,15 +77,10 @@
 
             <x-form.observations :req="$req" />
 
-            {{--<hr>
-
-            <x-form.review :req="$req" />--}}
-
             <hr>
 
             <x-form.result :req="$req" />
             
-            <!-- <input type="hidden" name="req-id" value="{{ $req->id }}"> -->
             <input type="hidden" name="button" id="btnType">
         </form>
 
