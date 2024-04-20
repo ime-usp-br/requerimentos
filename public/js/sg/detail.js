@@ -5,7 +5,7 @@ window.onload = function() {
     const form = document.querySelector("#form");
     form.addEventListener("submit", (event) => {
         event.preventDefault();
-        
+
         document.querySelectorAll("select").forEach((select) => {
             select.disabled = false;
         });
@@ -40,7 +40,7 @@ window.onload = function() {
             const filesWrapper = docSelect.parentNode.parentNode;
             const linkButton = filesWrapper.querySelector("a");
 
-            linkButton.href = `/document/${docSelect.value}`;
+            linkButton.href = `/documento/${docSelect.value}`;
         });
     });
     ////////////////////////////////////////////////////////////////////////////

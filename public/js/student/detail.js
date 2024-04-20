@@ -1,16 +1,16 @@
 window.onload = function() {
 
-    // const options = document.querySelectorAll(".option");
-    const selects = document.querySelectorAll('.docs-select');
+    // adiciona os event handlers que vão mudar o link dos botões
+    // para o arquivo correspondente a opção selecionada no select
+    const docSelects = document.querySelectorAll(".docs-select");
 
-    selects.forEach((select) => {
-        select.addEventListener('change', function() {
-            const filesWrapper = select.parentNode.parentNode;
-            const linkButton = filesWrapper.querySelector('a');
-            
-            linkButton.href = select.value;
+    docSelects.forEach((docSelect) => {
+        docSelect.addEventListener("change", function () {
+            const filesWrapper = docSelect.parentNode.parentNode;
+            const linkButton = filesWrapper.querySelector("a");
+
+            linkButton.href = `/documento/${docSelect.value}`;
         });
-        // console.log(selects);
     });
-    // console.log(options);
+    ////////////////////////////////////////////////////////////////////////////
 }
