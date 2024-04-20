@@ -96,9 +96,6 @@ class StudentController extends Controller
 
         $data = $request->validate(array_merge($inputArray, $discsArray));
 
-        // dd($data["disc1-grade"], 5.2, number_format((float) $data["disc1-grade"], 2, '.', ''));
-        // dd(number_format((float) $data["disc1-grade"], 2, '.', ''));
-
         $req = new Requisition;
         $req->department = $data['disc-department'];
         $req->nusp = $user->codpes;
@@ -110,7 +107,6 @@ class StudentController extends Controller
         $req->requested_disc_code = $data['requested-disc-code'];
         $req->situation = EventType::SENT_TO_SG;
         $req->internal_status = EventType::SENT_TO_SG;
-        // $req->reviewer_name = null;
         $req->result = 'Sem resultado';
         $req->result_text = null;
         $req->taken_discs_record = $request->file('taken-disc-record')->store('test');

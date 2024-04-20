@@ -31,7 +31,6 @@ class SGController extends Controller
         $req = Requisition::with('takenDisciplines', 'documents')->find($requisitionId);
         
         $documents = $req->documents->sortByDesc('created_at');
-        // dd($req->documents);
 
         $takenDiscsRecords = [];
         $currentCourseRecords = [];
@@ -111,7 +110,6 @@ class SGController extends Controller
         $req->requested_disc_code = $data['requested-disc-code'];
         $req->situation = EventType::SENT_TO_SG;
         $req->internal_status = EventType::SENT_TO_SG;
-        // $req->reviewer_name = null;
         $req->result = 'Sem resultado';
         $req->result_text = null;
 
@@ -171,7 +169,6 @@ class SGController extends Controller
     }
 
     public function update($requisitionId, Request $request) {
-        // dd($request);
         $takenDiscCount = (int) $request->takenDiscCount;
         $discsArray = [];
 
@@ -248,8 +245,6 @@ class SGController extends Controller
         }
 
         if ($request->button === 'send') {
-            // $bodyMsg = 'O requerimento foi enviado para o departamento';
-            // $titleMsg = 'Requerimento enviado';
             return redirect()->route('sg.reviewerPick', ['requisitionId' => $requisitionId]);
         } elseif ($request->button === 'save') {
             $bodyMsg = 'As informações do requerimento foram salvas';
@@ -262,8 +257,6 @@ class SGController extends Controller
         $selectedColumns = ['name', 'codpes', 'id'];
 
         $usersWithRoles = User::whereHas('roles')->select($selectedColumns)->get();
-
-        // $reqs = Requisition::select($selectedColumns)->get();
 
         return view('pages.sg.users', ['users' => $usersWithRoles]);
     }

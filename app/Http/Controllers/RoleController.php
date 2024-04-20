@@ -20,8 +20,6 @@ class RoleController extends Controller
 
         $data = $request->validate($inputArray);
 
-        // $user = User::where('codpes', $data['nusp'])->first();
-
         $user = User::firstOrCreate(['codpes' => $data['nusp']], ['codpes' => $data['nusp'], 'current_role_id' => 1]);
         
         if ($data['role'] === 'Coordenador') {
@@ -53,8 +51,6 @@ class RoleController extends Controller
     }
 
     public function switchRole(Request $request) {
-        // dd($request->roleSwitch);
-        // if (Auth::user()->hasRole($request->roleSwitch)) {
         $user = Auth::user();
         $user->current_role_id = (int) $request->roleSwitch;
         $user->save();
@@ -71,6 +67,5 @@ class RoleController extends Controller
                 return redirect()->route($roleRedirect[1]);
             }
         }
-        // dd($request->roleSwitch);
     }
 }

@@ -82,7 +82,6 @@ window.onload = function () {
     filePickerButtons = document.querySelectorAll(".document input");
 
     filePickerButtons.forEach((button) => {
-        // console.log(button)
 
         button.onchange = (event) => {
             const selectedFile = document.querySelector(`.${button.id}`);
@@ -102,17 +101,7 @@ window.onload = function () {
             );
         };
     });
-    // console.log(filePickerButtons)
 
-    // submitButton = document.querySelector(".bottom-nav button");
-    // submitButton.onclick = (event) => {
-    //     event.preventDefault();
-    //     const takenDiscInput = document.querySelector("#taken-disc-count");
-    //     takenDiscInput.value = takenDiscCount;
-    //     console.log(takenDiscInput)
-    //     const form = document.querySelector("#form");
-    //     form.submit();
-    // }
 
     const form = document.querySelector("#form");
     form.addEventListener("submit", (event) => {

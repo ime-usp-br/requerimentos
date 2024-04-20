@@ -15,7 +15,6 @@ class GlobalController extends Controller
     public function callbackHandler() {
         $userSenhaUnica = Socialite::driver('senhaunica')->user();
 
-        // dd($userSenhaUnica);
         if ($userSenhaUnica->vinculo[0]["siglaUnidade"] != "IME") {
             return redirect('/acesso-negado');
         }
