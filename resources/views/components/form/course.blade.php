@@ -7,15 +7,20 @@
                 <option value="">Selecione o seu curso atual</option>
                 <option 
                     value="Bacharelado em Ciência da Computação"
-                    @if(isset($req) && $req->course == 'Bacharelado em Ciência da Computação') 
+                    @if(isset($req) && $req->course === 'Bacharelado em Ciência da Computação') 
                         selected 
+                    @elseif (old('course') === 'Bacharelado em Ciência da Computação')
+                        selected
                     @endif
+                    
                     >
                     Bacharelado em Ciência da Computação
                 </option>
                 <option 
                     value="Bacharelado em Estatística"
-                    @if(isset($req) && $req->course == 'Bacharelado em Estatística') 
+                    @if(isset($req) && $req->course === 'Bacharelado em Estatística') 
+                        selected
+                    @elseif (old('course') === 'Bacharelado em Estatística')
                         selected 
                     @endif
                     >
@@ -23,7 +28,9 @@
                 </option>
                 <option 
                     value="Bacharelado em Matemática"
-                    @if(isset($req) && $req->course == 'Bacharelado em Matemática') 
+                    @if(isset($req) && $req->course === 'Bacharelado em Matemática') 
+                        selected 
+                    @elseif (old('course') === 'Bacharelado em Matemática')
                         selected 
                     @endif
                     >
@@ -31,7 +38,9 @@
                 </option>
                 <option 
                     value="Bacharelado em Matemática Aplicada"
-                    @if(isset($req) && $req->course == 'Bacharelado em Matemática Aplicada') 
+                    @if(isset($req) && $req->course === 'Bacharelado em Matemática Aplicada') 
+                        selected 
+                    @elseif (old('course') === 'Bacharelado em Matemática Aplicada')
                         selected 
                     @endif
                     >
@@ -39,7 +48,9 @@
                 </option>
                 <option 
                     value="Bacharelado em Matemática Aplicada e Computacional" class="bmac-option"
-                    @if(isset($req) && $req->course == 'Bacharelado em Matemática Aplicada e Computacional') 
+                    @if(isset($req) && $req->course === 'Bacharelado em Matemática Aplicada e Computacional') 
+                        selected 
+                    @elseif (old('course') === 'Bacharelado em Matemática Aplicada e Computacional')
                         selected 
                     @endif
                     >

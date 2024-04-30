@@ -6,15 +6,21 @@ use Illuminate\View\Component;
 
 class Read extends Component
 {
-    public $req;
+    public $takenDiscsRecords; 
+    public $currentCourseRecords;
+    public $takenDiscSyllabi;
+    public $requestedDiscSyllabi;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($req = null)
+    public function __construct($takenDiscsRecords, $currentCourseRecords, $takenDiscSyllabi, $requestedDiscSyllabi)
     {
-        $this->req = $req;
+        $this->takenDiscsRecords = $takenDiscsRecords;
+        $this->currentCourseRecords = $currentCourseRecords;
+        $this->takenDiscSyllabi = $takenDiscSyllabi;
+        $this->requestedDiscSyllabi = $requestedDiscSyllabi;
     }
 
     /**

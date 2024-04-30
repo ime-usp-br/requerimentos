@@ -22,7 +22,7 @@
 
 @section('content')
     <header>
-        <h1>Administração de usuários</h1>
+        <h1>Administração de papéis</h1>
         <nav>
             <button class="button">Adicionar um papel</button>
             <a href="{{ route('sg.list') }}" class="button">Voltar</a>
@@ -133,7 +133,7 @@
                                 @csrf
                                 <input type="hidden" name="nusp" value="{{ $user->codpes }}">
                                 <input type="hidden" name="role" value="{{ $role->name }}">
-                                <button class="button" type="button" >Remover permissão</button>
+                                <button class="button" type="button" >Remover papel</button>
                             </form>
                         </td>
                         <td>{{ $user->id }}</td>

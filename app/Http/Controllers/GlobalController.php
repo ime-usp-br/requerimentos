@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
-use App\Enums\RoleName;
 use App\Enums\RoleId;
+use App\Enums\RoleName;
+use App\Models\Document;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Laravel\Socialite\Facades\Socialite;
 
-class AuxController extends Controller
+class GlobalController extends Controller
 {
     public function callbackHandler() {
         $userSenhaUnica = Socialite::driver('senhaunica')->user();
@@ -58,37 +60,29 @@ class AuxController extends Controller
         $user->save();
         \Auth::login($user, true);
         return redirect()->route('student.list');
-
-        // if ($user->hasRole(RoleName::REVIEWER)) {
-        //     $user->current_role_id = RoleId::REVIEWER;
-            // $homePage = 'reviewer.list';
-        //     $homePage = 'sg.list';
-        // } elseif ($user->hasRole(RoleName::SG)) {
-        //     $user->current_role_id = 2;
-        //     $homePage = 'sg.list';
-        // } elseif ($user->hasRole(RoleName::MAC_COORD)) {
-        //     $user->current_role_id = RoleId::MAC_COORD;
-        //     $homePage = 'coordinator.list';
-        // } elseif ($user->hasRole(RoleName::MAT_COORD)) {
-        //     $user->current_role_id = RoleId::MAT_COORD;
-        //     $homePage = 'coordinator.list';
-        // } elseif ($user->hasRole(RoleName::MAE_COORD)) {
-        //     $user->current_role_id = RoleId::MAE_COORD;
-        //     $homePage = 'coordinator.list';
-        // } elseif ($user->hasRole(RoleName::MAP_COORD)) {
-        //     $user->current_role_id = RoleId::MAP_COORD;
-        //     $homePage = 'coordinator.list';
-        // }  
-        // } else {
-        //     $user->current_role_id = 1;
-        //     $homePage = 'student.list';
-        // }
-        
-        // $user->save();
-
-        // $user->setDefaultPermission();
-        // \Auth::login($user, true);
-
-        // return redirect()->route($homePage);
     }
+
+    public function documentHandler($documentId) {
+
+        $user = Auth::user();
+
+        $document = Document::with('requisition')->find($documentId);
+
+        if (!$document) {
+            abort(404);
+        } 
+
+        if ($user->current_role_id !== RoleId::STUDENT) {
+            $filePath = Storage::disk('local')->path($document->path);
+            return response()->file($filePath, ['Content-Disposition' => 'inline; filename="Documento"']);
+        }
+
+        if ($user->codpes !== $document->requisition->nusp) {
+            abort(404);
+        }
+
+        $filePath = Storage::disk('local')->path($document->path);
+        return response()->file($filePath, ['Content-Disposition' => 'inline; filename="Documento"']);
+    }
+    
 }

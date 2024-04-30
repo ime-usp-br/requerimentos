@@ -67,7 +67,7 @@
                             <a href="#" class="button record-button">Histórico</a>
                         @endif
                     </div>
-                    <input type="hidden" name="{{ 'disc' . $loop->iteration . '-id'}}" value="{{$disc->id}}">
+                    <input type="hidden" name="{{ 'disc' . $loop->iteration . '-id'}}" value="{{$disc->id}}" >
                 </div>
             @endforeach
         </div>

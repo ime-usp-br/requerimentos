@@ -20,10 +20,10 @@
 
         @if ($req->result === 'Inconsistência nas informações')
             <section class="result">
-                <h2>Problema nas informações fornecidas</h2>
+                <h2>Inconsistência nos dados fornecidos</h2>
                 @if ($req->result_text)
                     <div class="field-wrapper">
-                        Atualize as seguintes informações do seu requerimento
+                        Por favor, atualize as seguintes informações do seu requerimento
                         <div class="field result-text large-field">{{ $req->result_text }}</div>
                     </div>
                 @endif
@@ -142,23 +142,90 @@
                 <div class="doc-text" >Histórico com as disciplinas cursadas e aprovadas</div>
                 <div class="document">
                     <img src="{{ asset('img/student/detail/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
-                    <a href="{{ Storage::disk('public')->url($req->taken_discs_record)}}" id="taken" target="_blank" >Histórico escolar</a>
+                    @if (count($takenDiscsRecords) > 1)
+                        <div class="files-wrapper">
+                            <label class="files">
+                                Arquivos
+                                <select class="docs-select">
+                                    @foreach ($takenDiscsRecords as $record)
+                                        <option value="{{ $record->id }}" class="option">
+                                            Arquivo inserido em {{ \Illuminate\Support\Carbon::parse($record->created_at->toDateTimeString())->format('d/m/Y \à\s H:i') }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </label>
+                            <a href="{{ '/documento/' . $takenDiscsRecords[0]->id }}" class="button file-link" target="_black">Link do arquivo</a>
+                        </div>
+                    @else
+                        <a href="{{ '/documento/' . $takenDiscsRecords[0]->id }}" id="taken">Histórico escolar</a>
+                    @endif
+
+                    {{--<a href="{{ Storage::disk('public')->url($req->taken_discs_record)}}" id="taken" target="_blank" >Histórico escolar</a>--}}
                 </div>
                 <div class="doc-text">Histórico do curso atual</div>
                 <div class="document">
                     <img src="{{ asset('img/student/detail/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
-                    <a href="{{ Storage::disk('public')->url($req->current_course_record)}}" id="current-course" target="_blank">Histórico escolar</a>
+                    @if (count($currentCourseRecords) > 1)
+                        <div class="files-wrapper">
+                            <label class="files">
+                                Arquivos
+                                <select class="docs-select">
+                                    @foreach ($currentCourseRecords as $record)
+                                        <option value="{{ $record->id }}" class="option">
+                                            Arquivo inserido em {{ \Illuminate\Support\Carbon::parse($record->created_at->toDateTimeString())->format('d/m/Y \à\s H:i') }}
+                                        </option>
+                                    @endforeach
+                                </select> 
+                            </label>
+                            <a href="{{ '/documento/' . $currentCourseRecords[0]->id }}" class="button file-link" target="_black">Link do arquivo</a>
+                        </div>
+
+                    @else
+                        <a href="{{ '/documento/' . $currentCourseRecords[0]->id }}" id="taken" >Histórico escolar</a>
+                    @endif
                 </div>
                 
                 <div class="doc-text">Ementas das disciplinas cursadas</div>
                 <div class="document">
                     <img src="{{ asset('img/student/detail/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
-                    <a href="{{ Storage::disk('public')->url($req->taken_discs_syllabus)}}" id="taken-syllabus" target="_blank">Ementa</a>
+                    @if (count($takenDiscSyllabi) > 1)
+                        <div class="files-wrapper">
+                            <label class="files">
+                                Arquivos
+                                <select class="docs-select">
+                                    @foreach ($takenDiscSyllabi as $syllabus)
+                                        <option value="{{ $syllabus->id }}" class="option">
+                                            Arquivo inserido em {{ \Illuminate\Support\Carbon::parse($syllabus->created_at->toDateTimeString())->format('d/m/Y \à\s H:i') }}
+                                        </option>
+                                    @endforeach
+                                </select> 
+                            </label>
+                            <a href="{{ '/documento/' . $takenDiscSyllabi[0]->id }}" class="button file-link" target="_black">Link do arquivo</a>
+                        </div>
+                    @else
+                        <a href="{{ '/documento/' . $takenDiscSyllabi[0]->id }}" id="taken">Ementa</a>
+                    @endif
                 </div>
                 <div class="doc-text">Ementa da disciplina a ser dispensada</div>
                 <div class="document">
                     <img src="{{ asset('img/student/detail/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
-                    <a href="{{ Storage::disk('public')->url($req->requested_disc_syllabus)}}" target="_blank">Ementa</a>
+                    @if (count($requestedDiscSyllabi) > 1)
+                        <div class="files-wrapper">
+                            <label class="files">
+                                Arquivos
+                                <select class="docs-select">
+                                    @foreach ($requestedDiscSyllabi as $syllabus)
+                                        <option value="{{ $syllabus->id }}" class="option" >
+                                            Arquivo inserido em {{ \Illuminate\Support\Carbon::parse($syllabus->created_at->toDateTimeString())->format('d/m/Y \à\s H:i') }}
+                                        </option>
+                                    @endforeach
+                                </select>                     
+                            </label>
+                            <a href="{{ '/documento/' . $requestedDiscSyllabi[0]->id }}" class="button file-link" target="_black">Link do arquivo</a>
+                        </div>
+                    @else
+                        <a href="{{ '/documento/' . $requestedDiscSyllabi[0]->id }}" id="taken">Ementa</a>
+                    @endif
                 </div>
             </article>
 

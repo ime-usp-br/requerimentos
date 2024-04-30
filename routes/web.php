@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\GlobalController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SGController;
-use App\Http\Controllers\AuxController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\StudentController;
@@ -11,12 +11,17 @@ Route::get('/', function () {
     return view('pages.home');
 });
 
+Route::get('/phpinfo', function () {
+    phpinfo();
+});
+
 Route::get('/acesso-negado', function() {
     return view('pages.accessDenied');
 });
 
-Route::get('/callback', [AuxController::class, 'callbackHandler']);
+Route::get('/callback', [GlobalController::class, 'callbackHandler']);
 
+Route::get('/documento/{documentId}', [GlobalController::class, 'documentHandler'])->name('document.show');
 
 Route::middleware('auth')->group(function() {
     
