@@ -1,64 +1,46 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Sistema de requisitos para aproveitamentos de estudos
+O código foi desenvolvido pelo Apoio SG a partir do final de 2023 e ao longo de 2024.
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
 
-## About Laravel
+Todo o sistema é construído utilizando [Laravel](https://laravel.com/).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+# Instalação 
+### Pré-requisitos
+Para instalar o sistema na sua máquina local, você precisa as seguintes ferramentas instaladas:
+- PHP >8.0 & <8.3
+- [Composer](https://getcomposer.org/download/)
+- MySQL, instale e configure o um banco de dados vazio para o sistema. 
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Instalando o Sistema
+Clone o arquivo para sua máquina:
+`git clone https://github.com/ime-usp-br/requerimentos.git`
 
-## Learning Laravel
+Copie o .env.example e crie um .env para configurar variáveis do seu sistema:
+`cp .env.example .env`
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Dentro do .env, edite as informações sobre o banco de dados em `DB_CONNECTION, DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME. DB_PASSWORD`. Note que o .env é excluído do git pelo .gitignore, então nenhuma informação será pública.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Dentro do .env, edite as credenciais do uspdev, com os dados disponíveis [aqui](https://docs.google.com/document/d/13hr-9QoXMzwY7mkKf8EkCtZ5Oxvyo5veutSnN306NQk/edit?usp=sharing).
 
-## Laravel Sponsors
+Agora, execute a seguinte sequência de comandos:
+`composer install` para insalar as bibliotecas do projeto
+`php artisan key:generate` 
+`php artisan migrate` para criar no banco de dados os datasets do projeto.
+`php artisan db:seed` para carregar no banco os dados iniciasi.
+`php artisan serve` para carregar o sistema na sua máquina local.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+#####Você deve conseguir acessar o sistema em localhost:8000 :)
 
-### Premium Partners
+# Troubleshooting
+## Tenho erros ao rodar composer install
+Provavelmente há algum problema na compatibilidade entre a versão dos seus programas. Garanta que o php está dentre as versões listadas. Além disso, verifique se você ativiou em php.ini todas as bibliotecas necessárias, e se você tem elas baixadas.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+## php artisan migrate não encontrou nenhuma migração
+Possivelmente isso é um problema de localização dos arquivos. Verifique que os arquivos de migrations estão dentro da pasta `database/migrations` e que o Laravel tem acesso a eles. Se o nome de caminho para chegar até os arquivos de migrações conter carecteres especiais, como "[]", é possível que o Laravel não consiga identificá-lo.
 
-## Contributing
+## Não consigo rodar o composer
+Pode ser que você não tenha adicionado ele ao PATH da sua máquina. Em sistemas opercionais baseados em Debian, verifique se o arquivo composer.phar está em `/usr/local/bin/composer`.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Também é possível rodar o composer a partir do caminho onde o script está instalado. Se ele estiver no diretório onde você está acessando, utilize `php composer.phar install`.
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
