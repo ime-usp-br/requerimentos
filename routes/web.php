@@ -78,5 +78,7 @@ Route::middleware('auth')->group(function() {
         Route::get('/lista', [ReviewController::class, 'list'])->name('reviewer.list');
 
         Route::get('/detalhe/{requisitionId}', [ReviewController::class, 'show'])->name('reviewer.show');
+        
+        Route::post('/atualizar/{requisitionId}', [ReviewController::class, 'update'])->name('review.update');
     });
 });
