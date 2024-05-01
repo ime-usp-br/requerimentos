@@ -55,7 +55,7 @@
         </nav>
 
         <!--===================== ARRUMAR AQUI ================================= -->
-        <form method="POST" action="{{ route('sg.update', ['requisitionId' => $req->id])}}" id="form" >
+        <form method="POST" action="{{ route('reviewer.update', ['requisitionId' => $req->id])}}" id="form" >
             @csrf
 
             <x-form.personal :withRecordButton="true" :req="$req"/>

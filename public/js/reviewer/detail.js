@@ -7,9 +7,9 @@ window.onload = function() {
             const btnType = document.querySelector("#btnType");
             if (clickedButton.id === "send-btn") {
                 btnType.value = "send";
-            } else if (clickedButton.id === "save-btn") {
-                btnType.value = "save";
-            } 
+            } //else if (clickedButton.id === "save-btn") {
+                //btnType.value = "save";
+            //} 
         }
         form.submit();
     });
