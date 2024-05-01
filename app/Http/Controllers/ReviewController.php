@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\DocumentType;
+use App\Models\Document;
 use App\Models\User;
 use App\Models\Event;
 use App\Models\Requisition;
@@ -30,9 +32,35 @@ class ReviewController extends Controller
     }
 
     public function show($requisitionId){
-        $req = Requisition::with('takenDisciplines')->find($requisitionId);
         
-        return view('pages.reviewer.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines]);
+        $req = Requisition::with('takenDisciplines', 'documents')->find($requisitionId);
+        
+        $documents = $req->documents->sortByDesc('created_at');
+        // dd($req->documents);
+
+        $takenDiscsRecords = [];
+        $currentCourseRecords = [];
+        $takenDiscSyllabi = [];
+        $requestedDiscSyllabi = [];
+
+        foreach ($documents as $document) {
+            switch ($document->type) {
+                case DocumentType::TAKEN_DISCS_RECORD:
+                    array_push($takenDiscsRecords, $document);
+                    break;
+                case DocumentType::CURRENT_COURSE_RECORD:
+                    array_push($currentCourseRecords, $document);
+                    break;
+                case DocumentType::TAKEN_DISCS_SYLLABUS:
+                    array_push($takenDiscSyllabi, $document);
+                    break;
+                case DocumentType::REQUESTED_DISC_SYLLABUS:
+                    array_push($requestedDiscSyllabi, $document);
+                    break;
+            }
+        }
+        
+        return view('pages.reviewer.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines, 'takenDiscsRecords' => $takenDiscsRecords, 'currentCourseRecords' => $currentCourseRecords, 'takenDiscSyllabi' => $takenDiscSyllabi, 'requestedDiscSyllabi' => $requestedDiscSyllabi]);
 
     }
 
