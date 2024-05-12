@@ -42,17 +42,17 @@ class GlobalController extends Controller
 
         $rolesInfo = [[RoleName::REVIEWER, RoleId::REVIEWER, 'sg.list'],
                       [RoleName::SG, RoleId::SG, 'sg.list'],
-                      [RoleName::MAC_SECRETARY, RoleId::MAC_SECRETARY, 'coordinator.list'],
-                      [RoleName::MAT_SECRETARY, RoleId::MAT_SECRETARY, 'coordinator.list'],
-                      [RoleName::MAE_SECRETARY, RoleId::MAE_SECRETARY, 'coordinator.list'],
-                      [RoleName::MAP_SECRETARY, RoleId::MAP_SECRETARY, 'coordinator.list']];
+                      [RoleName::MAC_SECRETARY, RoleId::MAC_SECRETARY, 'department.list', 'mac'],
+                      [RoleName::MAT_SECRETARY, RoleId::MAT_SECRETARY, 'department.list', 'mat'],
+                      [RoleName::MAE_SECRETARY, RoleId::MAE_SECRETARY, 'department.list', 'mae'],
+                      [RoleName::MAP_SECRETARY, RoleId::MAP_SECRETARY, 'department.list', 'map']];
 
         foreach ($rolesInfo as $roleInfo) {
             if ($user->hasRole($roleInfo[0])) {
                 $user->current_role_id = $roleInfo[1];
                 $user->save();
                 \Auth::login($user, true);
-                return redirect()->route($roleInfo[2]);
+                return redirect()->route($roleInfo[2], ['departmentName' => $roleInfo[3]]);
             }
         }
         $user->current_role_id = RoleId::STUDENT;

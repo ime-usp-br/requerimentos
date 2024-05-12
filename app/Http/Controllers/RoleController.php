@@ -57,14 +57,14 @@ class RoleController extends Controller
         
         $rolesRedirects = [[RoleId::REVIEWER, 'reviewer.list'],
                            [RoleId::SG, 'sg.list'],
-                           [RoleId::MAC_SECRETARY, 'coordinator.list'],
-                           [RoleId::MAT_SECRETARY, 'coordinator.list'],
-                           [RoleId::MAE_SECRETARY, 'coordinator.list'],
-                           [RoleId::MAP_SECRETARY, 'coordinator.list']];
+                           [RoleId::MAC_SECRETARY, 'department.list', 'mac'],
+                           [RoleId::MAT_SECRETARY, 'department.list', 'mat'],
+                           [RoleId::MAE_SECRETARY, 'department.list', 'mae'],
+                           [RoleId::MAP_SECRETARY, 'department.list', 'map']];
         
         foreach ($rolesRedirects as $roleRedirect) {
             if ($user->current_role_id === $roleRedirect[0]) {
-                return redirect()->route($roleRedirect[1]);
+                return redirect()->route($roleRedirect[1], ['departmentName' => $roleRedirect[2] ?? NULL]);
             }
         }
     }

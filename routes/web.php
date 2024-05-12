@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Controllers\GlobalController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SGController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\GlobalController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\DepartmentController;
 
 Route::get('/', function () {
     return view('pages.home');
@@ -68,10 +69,8 @@ Route::middleware('auth')->group(function() {
         Route::post('/remover-papel', [RoleController::class, 'removeRole'])->name('role.remove');
     });
 
-    Route::prefix('coordenador')->group(function () {
-        Route::get('/lista', function() {
-            echo "pagina do coordenador";
-        })->name('coordinator.list');
+    Route::prefix('departamento')->group(function () {
+        Route::get('/{departmentName}/lista', [DepartmentController::class, 'list'])->name('department.list');
     });
 
     Route::prefix('parecerista')->group(function () {
