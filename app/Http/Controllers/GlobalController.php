@@ -42,10 +42,10 @@ class GlobalController extends Controller
 
         $rolesInfo = [[RoleName::REVIEWER, RoleId::REVIEWER, 'sg.list'],
                       [RoleName::SG, RoleId::SG, 'sg.list'],
-                      [RoleName::MAC_COORD, RoleId::MAC_COORD, 'coordinator.list'],
-                      [RoleName::MAT_COORD, RoleId::MAT_COORD, 'coordinator.list'],
-                      [RoleName::MAE_COORD, RoleId::MAE_COORD, 'coordinator.list'],
-                      [RoleName::MAP_COORD, RoleId::MAP_COORD, 'coordinator.list']];
+                      [RoleName::MAC_SECRETARY, RoleId::MAC_SECRETARY, 'coordinator.list'],
+                      [RoleName::MAT_SECRETARY, RoleId::MAT_SECRETARY, 'coordinator.list'],
+                      [RoleName::MAE_SECRETARY, RoleId::MAE_SECRETARY, 'coordinator.list'],
+                      [RoleName::MAP_SECRETARY, RoleId::MAP_SECRETARY, 'coordinator.list']];
 
         foreach ($rolesInfo as $roleInfo) {
             if ($user->hasRole($roleInfo[0])) {

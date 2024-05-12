@@ -207,7 +207,7 @@ class SGController extends Controller
         if ($reqToBeUpdated->result !== request('result')) {
             $reqToBeUpdated->result = request('result');
 
-            $user = Auth::user();
+            // $user = Auth::user();
             if (request('result') === 'Inconsistência nas informações') {
                 $type = EventType::BACK_TO_STUDENT;
             } elseif (request('result') === 'Deferido') {

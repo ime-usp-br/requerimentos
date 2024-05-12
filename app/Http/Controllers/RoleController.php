@@ -26,13 +26,13 @@ class RoleController extends Controller
             $department = $data['department'];
             
             if ($department === 'MAC') {
-                $user->assignRole(RoleName::MAC_COORD);
+                $user->assignRole(RoleName::MAC_SECRETARY);
             } elseif($department === 'MAT') {
-                $user->assignRole(RoleName::MAT_COORD);
+                $user->assignRole(RoleName::MAT_SECRETARY);
             } elseif($department === 'MAE') {
-                $user->assignRole(RoleName::MAE_COORD);
+                $user->assignRole(RoleName::MAE_SECRETARY);
             } elseif($department === 'MAP') {
-                $user->assignRole(RoleName::MAP_COORD);
+                $user->assignRole(RoleName::MAP_SECRETARY);
             }
         } else {
             $user->assignRole($data['role']);
@@ -56,11 +56,11 @@ class RoleController extends Controller
         $user->save();
         
         $rolesRedirects = [[RoleId::REVIEWER, 'reviewer.list'],
-                            [RoleId::SG, 'sg.list'],
-                            [RoleId::MAC_COORD, 'coordinator.list'],
-                            [RoleId::MAT_COORD, 'coordinator.list'],
-                            [RoleId::MAE_COORD, 'coordinator.list'],
-                            [RoleId::MAP_COORD, 'coordinator.list']];
+                           [RoleId::SG, 'sg.list'],
+                           [RoleId::MAC_SECRETARY, 'coordinator.list'],
+                           [RoleId::MAT_SECRETARY, 'coordinator.list'],
+                           [RoleId::MAE_SECRETARY, 'coordinator.list'],
+                           [RoleId::MAP_SECRETARY, 'coordinator.list']];
         
         foreach ($rolesRedirects as $roleRedirect) {
             if ($user->current_role_id === $roleRedirect[0]) {

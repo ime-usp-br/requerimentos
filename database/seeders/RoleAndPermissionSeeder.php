@@ -19,7 +19,7 @@ class RoleAndPermissionSeeder extends Seeder
 
         // $roles = ['Aluno', 'Secretaria de Graduação', 'Parecerista', 'Coordenador do MAC', 'Coordenador do MAE', 'Coordenador do MAP', 'Coordenador do MAT'];
 
-        $roleNames = [RoleName::STUDENT, RoleName::SG, RoleName::REVIEWER, RoleName::MAC_COORD, RoleName::MAE_COORD, RoleName::MAP_COORD, RoleName::MAT_COORD];
+        $roleNames = [RoleName::STUDENT, RoleName::SG, RoleName::REVIEWER, RoleName::MAC_SECRETARY, RoleName::MAE_SECRETARY, RoleName::MAP_SECRETARY, RoleName::MAT_SECRETARY];
 
         foreach ($roleNames as $roleName) {
             if (!Role::where('name', $roleName)->exists()) {
