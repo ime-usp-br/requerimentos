@@ -52,7 +52,7 @@ class GlobalController extends Controller
                 $user->current_role_id = $roleInfo[1];
                 $user->save();
                 \Auth::login($user, true);
-                return redirect()->route($roleInfo[2], ['departmentName' => $roleInfo[3]]);
+                return redirect()->route($roleInfo[2], ['departmentName' => $roleInfo[3] ?? NULL]);
             }
         }
         $user->current_role_id = RoleId::STUDENT;
