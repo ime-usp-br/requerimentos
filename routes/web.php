@@ -71,6 +71,8 @@ Route::middleware('auth')->group(function() {
 
     Route::prefix('departamento')->group(function () {
         Route::get('/{departmentName}/lista', [DepartmentController::class, 'list'])->name('department.list');
+
+        Route::get('/detalhe/{requisitionId}', [DepartmentController::class, 'show'])->name('department.show');
     });
 
     Route::prefix('parecerista')->group(function () {

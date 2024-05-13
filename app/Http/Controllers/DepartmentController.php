@@ -25,4 +25,34 @@ class DepartmentController extends Controller
         return view('pages.department.list', ['reqs' => $reqs]);
     }
 
+    public function show($requisitionId) {
+        $req = Requisition::with('takenDisciplines', 'documents')->find($requisitionId);
+        
+        $documents = $req->documents->sortByDesc('created_at');
+
+        $takenDiscsRecords = [];
+        $currentCourseRecords = [];
+        $takenDiscSyllabi = [];
+        $requestedDiscSyllabi = [];
+
+        foreach ($documents as $document) {
+            switch ($document->type) {
+                case DocumentType::TAKEN_DISCS_RECORD:
+                    array_push($takenDiscsRecords, $document);
+                    break;
+                case DocumentType::CURRENT_COURSE_RECORD:
+                    array_push($currentCourseRecords, $document);
+                    break;
+                case DocumentType::TAKEN_DISCS_SYLLABUS:
+                    array_push($takenDiscSyllabi, $document);
+                    break;
+                case DocumentType::REQUESTED_DISC_SYLLABUS:
+                    array_push($requestedDiscSyllabi, $document);
+                    break;
+            }
+        }
+
+        return view('pages.department.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines, 'takenDiscsRecords' => $takenDiscsRecords, 'currentCourseRecords' => $currentCourseRecords, 'takenDiscSyllabi' => $takenDiscSyllabi, 'requestedDiscSyllabi' => $requestedDiscSyllabi, 'departmentName' => strtolower($req->department)]);
+    }
+
 }

@@ -3,7 +3,7 @@
 @section('head')
     
     <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/sg/detail.css') }}">
-    <script src="{{ asset('js/sg/detail.js')}}" defer></script>
+    <script src="{{ asset('js/department/detail.js')}}" defer></script>
 
     <!-- ionicons -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
@@ -29,7 +29,7 @@
             </style>
             <p>{{ session('success')['body message'] }}</p>
             <div class="overlay-nav">
-                <a href="{{ route('sg.list') }}" class="button">Voltar para a página inicial</a>
+                <a href="{{ route('department.list', ['departmentName' => $departmentName]) }}" class="button">Voltar para a página inicial</a>
             </div>
         @elseif($errors->any())
             <style>
@@ -53,7 +53,7 @@
         <nav class="nav">
             <a href="{{ route('sg.reviews', ['requisitionId' => $req->id ]) }}" class="button">Pareceres</a>
             <a href="#" class="button" >Histórico do requerimento</a>
-            <a href="{{ route('sg.list') }}" class="button">Voltar</a>
+            <a href="{{ route('department.list', ['departmentName' => $departmentName]) }}" class="button">Voltar</a>
         </nav>
 
         <form method="POST" action="{{ route('sg.update', ['requisitionId' => $req->id])}}" id="form" >
@@ -85,7 +85,7 @@
         </form>
 
         <div class="nav"> 
-            <a href="{{ route('sg.list') }}" class="button">Voltar</a>
+            <a href="{{ route('department.list', ['departmentName' => $departmentName]) }}" class="button">Voltar</a>
             <button type="submit" form="form" class="button" id="save-btn">Salvar mudanças</button>
             <button type="submit" form="form" class="button" id="send-btn">Encaminhar para um parecerista</button>
         </div>
