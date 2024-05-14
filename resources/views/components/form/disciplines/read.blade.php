@@ -64,7 +64,7 @@
                             </select>
                         </label>
                         @if ($withRecordButton)
-                            <a href="#" class="button record-button">Histórico</a>
+                            <a href="#" class="button record-button">Histórico Cursado</a>
                         @endif
                     </div>
                     <input type="hidden" name="{{ 'disc' . $loop->iteration . '-id'}}" value="{{$disc->id}}" >
@@ -188,7 +188,7 @@
                     </label>
                     
                     @if ($withRecordButton)
-                        <a href="#" class="button record-button">Histórico</a>
+                        <a href="../historico-disciplina/{{ $req->requested_disc_code }}?detail={{$req->id}}" class="button record-button">Histórico Requerida</a>
                     @endif
                     
                 </div>

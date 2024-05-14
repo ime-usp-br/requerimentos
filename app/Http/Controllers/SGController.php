@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use App\Models\TakenDisciplines;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 
 // use Illuminate\Support\Facades\Auth;
 // use Illuminate\Support\Facades\Route;
@@ -73,7 +75,7 @@ class SGController extends Controller
     public function create(Request $request) {
         $takenDiscCount = (int) $request->takenDiscCount;
         $discsArray = [];
-
+        
         for ($i = 1; $i <= $takenDiscCount; $i++) {
             $discsArray["disc$i-name"] = 'required | max:255';
             $discsArray["disc$i-code"] = 'max:255';
@@ -262,10 +264,23 @@ class SGController extends Controller
         $selectedColumns = ['name', 'codpes', 'id'];
 
         $usersWithRoles = User::whereHas('roles')->select($selectedColumns)->get();
-
-        // $reqs = Requisition::select($selectedColumns)->get();
-
         return view('pages.sg.users', ['users' => $usersWithRoles]);
+    }
+
+    public function discHistory($subjectId) {
+        $history = Requisition::select('taken_disciplines.code',
+                                        'taken_disciplines.institution',
+                                        'requisitions.requested_disc_code', 
+                                        'requisitions.result',
+                                        DB::raw('YEAR(requisitions.updated_at) AS result_year'),
+                                        'taken_disciplines.year AS taken_year',
+                                        DB::raw('count(*) as repeticoes'))
+                                ->where('requested_disc_code', $subjectId)
+                                ->join('taken_disciplines', 'requisitions.id', '=', 'taken_disciplines.requisition_id') //inner join
+                                ->groupBy('requested_disc_code', 'institution', 'code', 'result', 'result_year', 'taken_year')
+                                ->get();
+
+        return view('pages.sg.discHistory', ['history' => $history]);
     }
 
     public function reviews($requisitionId) {
