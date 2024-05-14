@@ -12,4 +12,5 @@ class EventType
     const RETURNED_BY_REVIEWER = 'Retornado por um parecerista';
     const IN_REVALUATION = 'Em reavaliação';
     const RESEND_BY_STUDENT = 'Reenviado pelo aluno depois de atualização';
+    const SENT_TO_DEPARTMENT = 'Enviado para análise do departamento';
 }

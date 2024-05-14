@@ -112,6 +112,7 @@ class SGController extends Controller
         $req->internal_status = EventType::SENT_TO_SG;
         $req->result = 'Sem resultado';
         $req->result_text = null;
+        $req->validated = False;
 
         $req->taken_discs_record = $request->file('taken-disc-record')->store('test');
         $req->current_course_record = $request->file('course-record')->store('test');
@@ -204,7 +205,10 @@ class SGController extends Controller
         $reqToBeUpdated->requested_disc_type = $data['requested-disc-type'];
         $reqToBeUpdated->requested_disc_code = $data['requested-disc-code'];
         
-        if ($reqToBeUpdated->result !== request('result')) {
+        // situação atual do requerimento será determinada pela potencial  
+        // mudança de resultado quando o usuário clica no botão 
+        // "Salvar alterações"
+        if ($request->button === 'save' && $reqToBeUpdated->result !== request('result')) {
             $reqToBeUpdated->result = request('result');
 
             // $user = Auth::user();
@@ -223,9 +227,22 @@ class SGController extends Controller
             $event->requisition_id = $requisitionId;
             $event->author_name = Auth::user()->name; 
             $event->author_nusp = Auth::user()->codpes;
+            
             $reqToBeUpdated->situation = $type;
             $reqToBeUpdated->internal_status = $type;
             $event->save();
+
+        } elseif ($request->button === 'department') {
+            
+            $event = new Event;
+            $event->type = EventType::SENT_TO_DEPARTMENT;
+            $event->requisition_id = $requisitionId;
+            $event->author_name = Auth::user()->name; 
+            $event->author_nusp = Auth::user()->codpes;
+
+            $reqToBeUpdated->situation = EventType::SENT_TO_DEPARTMENT;
+            $reqToBeUpdated->internal_status = EventType::SENT_TO_DEPARTMENT;
+            $reqToBeUpdated->validated = true;
         }
 
         $reqToBeUpdated->result_text = request('result-text');
@@ -244,13 +261,17 @@ class SGController extends Controller
             $takenDisc->save();
         }
 
-        if ($request->button === 'send') {
+        if ($request->button === 'reviewer') {
             return redirect()->route('sg.reviewerPick', ['requisitionId' => $requisitionId]);
+        } elseif ($request->button === 'department') {
+            $bodyMsg = 'As informações do requerimento foram salvas e enviadas para o departamento';
+            $titleMsg = 'Requerimento enviado';     
         } elseif ($request->button === 'save') {
             $bodyMsg = 'As informações do requerimento foram salvas';
             $titleMsg = 'Requerimento salvo';     
-            return redirect()->route('sg.show', ['requisitionId' => $requisitionId])->with('success', ['title message' => $titleMsg, 'body message' => $bodyMsg]);   
         }
+        
+        return redirect()->route('sg.show', ['requisitionId' => $requisitionId])->with('success', ['title message' => $titleMsg, 'body message' => $bodyMsg]);
     }
 
     public function users() {

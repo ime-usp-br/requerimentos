@@ -24,6 +24,7 @@ class ReviewController extends Controller
 
         $req = Requisition::find($requisitionId);
         $req->situation = EventType::SENT_TO_REVIEWERS;
+        $req->validated = true;
 
         if ($request->name) {
             $event->message = "Enviado para o parecerista " . $request->name;

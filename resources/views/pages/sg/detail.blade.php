@@ -86,8 +86,9 @@
 
         <div class="nav"> 
             <a href="{{ route('sg.list') }}" class="button">Voltar</a>
-            <button type="submit" form="form" class="button" id="save-btn">Salvar mudanças</button>
-            <button type="submit" form="form" class="button" id="send-btn">Encaminhar para um parecerista</button>
+            <button type="submit" form="form" class="button" id="save-btn">Salvar alterações</button>
+            <button type="submit" form="form" class="button" id="department-btn">Enviar para o departamento</button>
+            <button type="submit" form="form" class="button" id="reviewer-btn">Enviar para um parecerista</button>
         </div>
         
     </div>

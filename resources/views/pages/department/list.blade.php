@@ -22,7 +22,7 @@
         <h1>Requerimentos</h1>
         <div class="header-buttons">
             <nav>
-                {{--<a href="{{ route('sg.users') }}" class="button">Administrar papéis</a>--}}
+                <!-- <a href="{{ route('sg.users') }}" class="button">Adicionar pareceristas</a> -->
                 {{--<a href="{{ route('sg.newRequisition') }}" class="button">Criar requerimento</a>--}}
                 <a href="/" class="button">Sair</a>
             </nav>
@@ -48,14 +48,13 @@
     </header>
     
     <div class="content">
-        <x-table :columns="['Data de criação', 'Aluno', 'Número USP', 'Situação', 'Departamento', 'Id']">
+        <x-table :columns="['Data de criação', 'Aluno', 'Número USP', 'Situação', 'Id']">
             @foreach ($reqs as $req)
                 <tr>
                     <td>{{ \Illuminate\Support\Carbon::parse($req->created_at->toDateString())->format('d/m/Y') }}</td>
                     <td>{{ $req->student_name }}</td>
                     <td>{{ $req->nusp }}</td>
                     <td>{{ $req->internal_status }}</td>
-                    <td>{{ $req->department }}</td>
                     <td>{{ $req->id }}</td>
                 </tr>
             @endforeach

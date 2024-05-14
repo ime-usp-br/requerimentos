@@ -20,7 +20,7 @@ class DepartmentController extends Controller
 
         $selectedColumns = ['created_at', 'student_name', 'nusp', 'internal_status', 'department', 'id'];
 
-        $reqs = Requisition::select($selectedColumns)->where('department', strtoupper($departmentName))->get();
+        $reqs = Requisition::select($selectedColumns)->where('department', strtoupper($departmentName))->where('validated', true)->get();
 
         return view('pages.department.list', ['reqs' => $reqs]);
     }
@@ -54,5 +54,13 @@ class DepartmentController extends Controller
 
         return view('pages.department.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines, 'takenDiscsRecords' => $takenDiscsRecords, 'currentCourseRecords' => $currentCourseRecords, 'takenDiscSyllabi' => $takenDiscSyllabi, 'requestedDiscSyllabi' => $requestedDiscSyllabi, 'departmentName' => strtolower($req->department)]);
     }
+
+    // public function reviewers() {
+    //     $selectedColumns = ['name', 'codpes', 'id'];
+
+    //     $usersWithRoles = User::whereHas('roles')->select($selectedColumns)->get();
+
+    //     return view('pages.department.reviewers', ['reviewers' => $usersWithRoles]);
+    // }
 
 }

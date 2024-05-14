@@ -28,6 +28,7 @@ class CreateRequisitionsTable extends Migration
             $table->string('situation');
             $table->string('internal_status');
             $table->string('requested_disc_code');
+            $table->boolean('validated');
             $table->text('observations')->nullable();
 
             // arquivos

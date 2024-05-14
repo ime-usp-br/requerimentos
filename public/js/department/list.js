@@ -22,7 +22,7 @@ window.onload = function () {
         pageLength: 10,
 
         // a tabela tem uma coluna de IDs dos requerimentos que não é visível na página
-        columnDefs: [{ visible: false, targets: 5 }],
+        columnDefs: [{ visible: false, targets: 4 }],
     });
     
     const text = (document.querySelector(
@@ -33,7 +33,7 @@ window.onload = function () {
     const table = $("#table").DataTable();
     $("#table tbody").on("click", "tr", function () {
         // console.log(window.location.href);
-        window.location.href = "/departamento/detalhe/" + table.row(this).data()[5];
+        window.location.href = "/departamento/detalhe/" + table.row(this).data()[4];
     }); 
 
     

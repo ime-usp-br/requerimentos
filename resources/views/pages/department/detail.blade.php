@@ -76,10 +76,6 @@
             <hr>
 
             <x-form.observations :req="$req" />
-
-            <hr>
-
-            <x-form.result :req="$req" />
             
             <input type="hidden" name="button" id="btnType">
         </form>

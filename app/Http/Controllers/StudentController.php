@@ -114,6 +114,7 @@ class StudentController extends Controller
         $req->taken_discs_syllabus = $request->file('taken-disc-syllabus')->store('test');
         $req->requested_disc_syllabus = $request->file('requested-disc-syllabus')->store('test');
         $req->observations = $request->observations;
+        $req->validated = False;
 
         $req->save();
 
