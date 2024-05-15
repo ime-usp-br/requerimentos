@@ -24,6 +24,8 @@ Route::get('/callback', [GlobalController::class, 'callbackHandler']);
 
 Route::get('/documento/{documentId}', [GlobalController::class, 'documentHandler'])->name('document.show');
 
+Route::post('/trocar-papel', [RoleController::class, 'switchRole'])->name('role.switch');
+
 Route::middleware('auth')->group(function() {
     
     // Route::prefix('aluno')->middleware('role:Aluno')->group(function () {
@@ -61,23 +63,26 @@ Route::middleware('auth')->group(function() {
         Route::get('/escolher-parecerista/{requisitionId}', [SGController::class, 'reviewerPick'])->name('sg.reviewerPick');
 
         Route::post('/enviar-requerimento/{requisitionId}', [ReviewController::class, 'createReview'])->name('sg.sendToReviewer');
-
-        Route::post('/dar-papel', [RoleController::class, 'addRole'])->name('role.add');
-
-        Route::post('/trocar-papel', [RoleController::class, 'switchRole'])->name('role.switch');
-
-        Route::post('/remover-papel', [RoleController::class, 'removeRole'])->name('role.remove');
     });
 
     Route::prefix('departamento')->group(function () {
         Route::get('/{departmentName}/lista', [DepartmentController::class, 'list'])->name('department.list');
 
-        Route::get('/detalhe/{requisitionId}', [DepartmentController::class, 'show'])->name('department.show');
+        Route::get('/{departmentName}/detalhe/{requisitionId}', [DepartmentController::class, 'show'])->name('department.show');
+
+        Route::get('/{departmentName}/usuarios', [DepartmentController::class, 'users'])->name('department.users');
     });
 
     Route::prefix('parecerista')->group(function () {
         Route::get('/lista', function() {
             echo "pagina do parecerista";
         })->name('reviewer.list');
+    });
+
+    Route::group(['middleware' => 'role:Secretaria de Graduação,Secretaria do MAC,Secretaria do MAT,Secretaria do MAE,Secretaria do MAP'], function () {
+        
+        Route::post('/dar-papel', [RoleController::class, 'addRole'])->name('role.add');
+
+        Route::post('/remover-papel', [RoleController::class, 'removeRole'])->name('role.remove');
     });
 });

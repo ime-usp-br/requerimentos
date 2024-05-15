@@ -33,7 +33,11 @@ window.onload = function () {
     const table = $("#table").DataTable();
     $("#table tbody").on("click", "tr", function () {
         // console.log(window.location.href);
-        window.location.href = "/departamento/detalhe/" + table.row(this).data()[4];
+        // console.log(this.dataset.department);
+        window.location.href = `/departamento/${
+            this.dataset.department
+        }/detalhe/${table.row(this).data()[4]}`;
+        // window.location.href = "/departamento/detalhe/" + table.row(this).data()[4];
     }); 
 
     
@@ -45,8 +49,10 @@ window.onload = function () {
     // });
     
     const role = document.querySelector('.role select');
-    role.onchange = (event) => {
-        const form = document.querySelector(".role-switch");
-        form.submit();
+    if (role) {
+        role.onchange = (event) => {
+            const form = document.querySelector(".role-switch");
+            form.submit();
+        };
     }
 };

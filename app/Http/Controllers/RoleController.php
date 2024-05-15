@@ -12,6 +12,7 @@ use Spatie\Permission\Models\Role;
 class RoleController extends Controller
 {
     public function addRole(Request $request) {
+
         $inputArray = [
             'nusp' => 'required | numeric | integer',
             'role' => 'required',
@@ -22,7 +23,7 @@ class RoleController extends Controller
 
         $user = User::firstOrCreate(['codpes' => $data['nusp']], ['codpes' => $data['nusp'], 'current_role_id' => 1]);
         
-        if ($data['role'] === 'Coordenador') {
+        if ($data['role'] === 'Department') {
             $department = $data['department'];
             
             if ($department === 'MAC') {
@@ -38,7 +39,7 @@ class RoleController extends Controller
             $user->assignRole($data['role']);
         }
 
-        return redirect()->route('sg.users');
+        return back();
     }
 
     public function removeRole(Request $request) {
