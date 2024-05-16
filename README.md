@@ -12,6 +12,19 @@ Para instalar o sistema na sua máquina local, você precisa as seguintes ferram
 - [Composer](https://getcomposer.org/download/)
 - MySQL, instale e configure o um banco de dados vazio para o sistema. 
 
+### Ativando bibliotecas do composer
+Com o comando 
+`php --ini`
+encontre o arquivo de configuração do seu php.
+Descomente as linhas (retirando o ';' ) 
+
+```
+extension=pdo_dblib;
+extension=pdo_mysql;
+```
+
+Pode ser necessário baixar essas biblioteas.
+
 ### Instalando o Sistema
 Clone o arquivo para sua máquina:
 `git clone https://github.com/ime-usp-br/requerimentos.git`
@@ -27,10 +40,10 @@ Agora, execute a seguinte sequência de comandos:
 `composer install` para insalar as bibliotecas do projeto
 `php artisan key:generate` 
 `php artisan migrate` para criar no banco de dados os datasets do projeto.
-`php artisan db:seed` para carregar no banco os dados iniciasi.
+`php artisan db:seed` para carregar no banco os dados inicias.
 `php artisan serve` para carregar o sistema na sua máquina local.
 
-#####Você deve conseguir acessar o sistema em localhost:8000 :)
+*Você deve conseguir acessar o sistema em localhost:8000 :)*
 
 # Troubleshooting
 ## Tenho erros ao rodar composer install

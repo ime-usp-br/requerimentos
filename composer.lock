@@ -2373,7 +2373,7 @@
             },
             "require": {
                 "nette/utils": "^2.5.7 || ^3.1.5 ||  ^4.0",
-                "php": ">=7.1 <8.2"
+                "php": ">=7.1 <8.4"
             },
             "require-dev": {
                 "nette/tester": "^2.3 || ^2.4",
@@ -2434,7 +2434,7 @@
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.2 <8.3"
+                "php": ">=7.2 <8.4"
             },
             "conflict": {
                 "nette/di": "<3.0.6"
@@ -8593,9 +8593,5 @@
         "php": "^7.3|^8.0"
     },
     "platform-dev": [],
-//<<<<<<< parecerista
     "plugin-api-version": "2.6.0"
-//=======
-    //"plugin-api-version": "2.0.0"
-//>>>>>>> main
 }
