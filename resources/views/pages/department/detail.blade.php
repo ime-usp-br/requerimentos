@@ -44,10 +44,6 @@
     <div class="content">
         <header>
             <h1>Detalhes do requerimento {{ $req->id }} </h1>
-            <select class="mode-select">
-                <option value="readonly">Modo de exibição</option>
-                <option value="edit">Modo de edição</option>
-            </select>
         </header>
         
         <nav class="nav">
@@ -82,7 +78,6 @@
 
         <div class="nav"> 
             <a href="{{ route('department.list', ['departmentName' => $departmentName]) }}" class="button">Voltar</a>
-            <button type="submit" form="form" class="button" id="save-btn">Salvar mudanças</button>
             <button type="submit" form="form" class="button" id="send-btn">Encaminhar para um parecerista</button>
         </div>
         

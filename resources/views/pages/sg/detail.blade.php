@@ -63,11 +63,11 @@
 
             <hr>
 
-            <x-form.course :req="$req"/>
+            <x-form.course :req="$req" :readOnly="False"/>
 
             <hr>
 
-            <x-form.disciplines.read :takenDiscs="$takenDiscs" :req="$req" :withRecordButton="true" />
+            <x-form.disciplines.read :takenDiscs="$takenDiscs" :req="$req" :withRecordButton="true" :readOnly="False" />
             
             <hr>
 
