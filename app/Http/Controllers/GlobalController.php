@@ -9,15 +9,26 @@ use App\Models\Document;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Collection;
+
 
 class GlobalController extends Controller
 {
     public function callbackHandler() {
         $userSenhaUnica = Socialite::driver('senhaunica')->user();
 
-        // dd($userSenhaUnica);
-        if ($userSenhaUnica->vinculo[0]["siglaUnidade"] != "IME") {
-            return redirect('/acesso-negado');
+        
+        // Verificando se o usuário é do IME
+        $fromIME = false;
+        foreach ($userSenhaUnica->vinculo as $vinculo){
+            if (isset($vinculo["siglaUnidade"]) && $vinculo["siglaUnidade"] === 'IME') {
+                $fromIME = true;
+                break; 
+            }
+        }
+        
+        if (!$fromIME) {
+            redirect('/acesso-negado');
         }
 
         // se onlyLocalUsers = true, não vamos permitir usuários não cadastrados de logar
