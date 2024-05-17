@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
-use App\Models\Requisition;
 use App\Models\Review;
+use App\Enums\RoleName;
 use App\Enums\EventType;
+use App\Models\Requisition;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
@@ -35,5 +37,13 @@ class ReviewController extends Controller
         $event->save();
 
         return response()->noContent();
+    }
+
+    public function reviewerPick($requisitionId) {
+        $reviewRole = Role::where('name', RoleName::REVIEWER)->first();
+
+        $reviewers = $reviewRole->users;
+
+        return view('pages.reviewer.reviewerPick', ['reviewers' => $reviewers, 'requisitionId' => $requisitionId]);
     }
 }

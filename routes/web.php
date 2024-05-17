@@ -26,6 +26,7 @@ Route::get('/documento/{documentId}', [GlobalController::class, 'documentHandler
 
 Route::post('/trocar-papel', [RoleController::class, 'switchRole'])->name('role.switch');
 
+
 Route::middleware('auth')->group(function() {
     
     // Route::prefix('aluno')->middleware('role:Aluno')->group(function () {
@@ -60,8 +61,6 @@ Route::middleware('auth')->group(function() {
         
         Route::get('/pareceres/{requisitionId}', [SGController::class, 'reviews'])->name('sg.reviews');
 
-        Route::get('/escolher-parecerista/{requisitionId}', [SGController::class, 'reviewerPick'])->name('sg.reviewerPick');
-
         Route::post('/enviar-requerimento/{requisitionId}', [ReviewController::class, 'createReview'])->name('sg.sendToReviewer');
     });
 
@@ -84,5 +83,7 @@ Route::middleware('auth')->group(function() {
         Route::post('/dar-papel', [RoleController::class, 'addRole'])->name('role.add');
 
         Route::post('/remover-papel', [RoleController::class, 'removeRole'])->name('role.remove');
+
+        Route::get('/escolher-parecerista/{requisitionId}', [ReviewController::class, 'reviewerPick'])->name('review.reviewerPick');
     });
 });

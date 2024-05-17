@@ -11,7 +11,7 @@ use App\Enums\EventType;
 use App\Models\Requisition;
 use Illuminate\Http\Request;
 use App\Models\TakenDisciplines;
-use Spatie\Permission\Models\Role;
+
 use Illuminate\Support\Facades\Auth;
 
 // use Illuminate\Support\Facades\Auth;
@@ -262,7 +262,7 @@ class SGController extends Controller
         }
 
         if ($request->button === 'reviewer') {
-            return redirect()->route('sg.reviewerPick', ['requisitionId' => $requisitionId]);
+            return redirect()->route('review.reviewerPick', ['requisitionId' => $requisitionId]);
         } elseif ($request->button === 'department') {
             $bodyMsg = 'As informações do requerimento foram salvas e enviadas para o departamento';
             $titleMsg = 'Requerimento enviado';     
@@ -286,14 +286,6 @@ class SGController extends Controller
         $req = Requisition::with('reviews')->find($requisitionId);
         
         return view('pages.sg.reviews', ['requisitionId' => $requisitionId, 'reviews' => $req->reviews]);
-    }
-
-    public function reviewerPick($requisitionId) {
-        $reviewRole = Role::where('name', RoleName::REVIEWER)->first();
-
-        $reviewers = $reviewRole->users;
-
-        return view('pages.sg.reviewerPick', ['reviewers' => $reviewers, 'requisitionId' => $requisitionId]);
     }
 
 }

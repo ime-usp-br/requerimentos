@@ -52,7 +52,7 @@
             <a href="{{ route('department.list', ['departmentName' => $departmentName]) }}" class="button">Voltar</a>
         </nav>
 
-        <form method="POST" action="{{ route('sg.update', ['requisitionId' => $req->id])}}" id="form" >
+        <form method="GET" action="{{ route('review.reviewerPick', ['requisitionId' => $req->id])}}" id="form" >
             @csrf
 
             <x-form.personal :withRecordButton="true" :req="$req"/>
