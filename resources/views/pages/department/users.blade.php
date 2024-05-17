@@ -17,7 +17,8 @@
     <!-- nosso javascript -->
     <script src="{{ asset('js/department/users.js')}}" defer></script>
     <!-- <link rel="stylesheet" type="text/css" href="{{ asset('css/users.css') }}"> -->
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/sg/users.css') }}">     
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/sg/users.css') }}">
+    <title>Administração de usuários</title>     
 @endsection
 
 @section('content')

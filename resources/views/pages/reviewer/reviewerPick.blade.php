@@ -17,7 +17,9 @@
     <!-- nosso javascript -->
     <script src="{{ asset('js/sg/reviewerPick.js')}}" defer></script>
     <!-- <link rel="stylesheet" type="text/css" href="{{ asset('css/users.css') }}"> -->
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/sg/reviewerPick.css') }}">     
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/sg/reviewerPick.css') }}">  
+    
+    <title>Escolha do parecerista</title>
 @endsection
 
 @section('content')

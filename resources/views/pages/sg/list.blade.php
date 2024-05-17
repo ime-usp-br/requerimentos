@@ -15,6 +15,7 @@
 
     <script src="{{ asset('js/sg/list.js')}}" defer></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/sg/list.css') }}">
+    <title>Lista de requerimentos</title>
 @endsection
 
 @section('content')
