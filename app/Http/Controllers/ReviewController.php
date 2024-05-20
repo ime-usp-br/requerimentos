@@ -32,8 +32,13 @@ class ReviewController extends Controller
     }
 
     public function show($requisitionId){
-        
+
+        $user = Auth::user();
+        //$reqReview = Review::where("requisition_id", $requisitionId, "reviewer_nusp", $user->codpes)->first();
+
         $req = Requisition::with('takenDisciplines', 'documents')->find($requisitionId);
+        $selectedColumns = ['student_name', 'nusp','requested_disc' ,'reviewer_decision', 'justification'];
+        $reqs = Review::where('reviewer_nusp', $user->codpes)->join('requisitions', 'requisition_id', '=', 'requisitions.id')->select($selectedColumns)->get();
         
         $documents = $req->documents->sortByDesc('created_at');
         // dd($req->documents);
@@ -60,7 +65,7 @@ class ReviewController extends Controller
             }
         }
         
-        return view('pages.reviewer.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines, 'takenDiscsRecords' => $takenDiscsRecords, 'currentCourseRecords' => $currentCourseRecords, 'takenDiscSyllabi' => $takenDiscSyllabi, 'requestedDiscSyllabi' => $requestedDiscSyllabi]);
+        return view('pages.reviewer.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines, 'takenDiscsRecords' => $takenDiscsRecords, 'currentCourseRecords' => $currentCourseRecords, 'takenDiscSyllabi' => $takenDiscSyllabi, 'requestedDiscSyllabi' => $requestedDiscSyllabi, 'reqs' =>$reqs]);
 
     }
 
@@ -99,45 +104,13 @@ class ReviewController extends Controller
     }
 
     public function update($requisitionId, Request $request){
-        $reqToBeUpdated = Review::find($requisitionId);
+        $user = Auth::user();
 
-        $takenDiscCount = (int) $request->takenDiscCount;
-
-        $discsArray = [];
-
-        for ($i = 1; $i <= $takenDiscCount; $i++) {
-            $discsArray["disc$i-name"] = 'required | max:255';
-            $discsArray["disc$i-code"] = 'max:255';
-            $discsArray["disc$i-year"] = 'required | numeric | integer';
-            $discsArray["disc$i-grade"] = 'required | numeric';
-            $discsArray["disc$i-semester"] = 'required';
-            $discsArray["disc$i-institution"] = 'required';
-        }
-
-        $inputArray = [
-            'name' => 'required | max:255',
-            'email' => 'required | max:255 | email ',
-            'nusp' => 'required | numeric | integer',
-            'course' => 'required | max:255',
-            'requested-disc-name' => 'required | max:255',
-            'requested-disc-type' => 'required',
-            'requested-disc-code' => 'required',
-            'disc-department' => 'required',
-            'appraisal' => 'required',
-            'decision' => "required"
-        ];
-        $data = $request->validate(array_merge($inputArray, $discsArray));
+        $reqToBeUpdated = Review::where("requisition_id", $requisitionId)->where("reviewer_nusp", $user->codpes)->first();
+        //dd($reqToBeUpdated);
             // dd($data);
         $reqRequisition = Requisition::find($requisitionId);
-        $reqRequisition->department = $data['disc-department'];
-        $reqRequisition->nusp = $data['nusp'];
-        $reqRequisition->student_name = $data['name'];
-        $reqRequisition->email = $data['email'];
-        $reqRequisition->course = $data['course'];
-        $reqRequisition->requested_disc = $data['requested-disc-name'];
-        $reqRequisition->requested_disc_type = $data['requested-disc-type'];
-        $reqRequisition->requested_disc_code = $data['requested-disc-code'];
-        //dd($reqToBeUpdated);
+   
 
         if($reqToBeUpdated->reviewer_decision !== request('decision')){
             $reqToBeUpdated->reviewer_decision = request('decision');
@@ -167,17 +140,6 @@ class ReviewController extends Controller
         $reqToBeUpdated->save();
 
         $reqRequisition->save();
-        for ($i = 1; $i <= $takenDiscCount; $i++) {
-            $takenDisc = TakenDisciplines::find(request("disc$i-id"));
-            $takenDisc->name = $data["disc$i-name"];
-            $takenDisc->code = $data["disc$i-code"] ?? "";
-            $takenDisc->year = $data["disc$i-year"];
-            $takenDisc->grade = $data["disc$i-grade"];
-            $takenDisc->semester = $data["disc$i-semester"];
-            $takenDisc->institution = $data["disc$i-institution"];
-            $takenDisc->requisition_id = $requisitionId;
-            $takenDisc->save();
-        }
 
 
         if($request->button === 'send'){

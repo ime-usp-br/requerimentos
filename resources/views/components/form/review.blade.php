@@ -24,8 +24,8 @@
                 name="decision" 
                 value="Sem decisão" 
                 checked
-                {{--@if(isset($req) && $req->reviewer_decision == 'Sem decisão') 
-                     
+                {{--@if(isset($reqs) && $reqs->reviewer_decision == 'Sem decisão') 
+                    checked
                 @endif--}}
             />
             <span class="label-visible">
@@ -40,7 +40,7 @@
                 id="accepted" 
                 name="decision" 
                 value="Deferido"
-                {{--@if(isset($req) && $req->reviewer_decision == 'Deferido') 
+                {{--@if(isset($reqs) && $reqs->reviewer_decision == 'Deferido') 
                      checked
                 @endif--}}
             />
@@ -56,7 +56,7 @@
                 id="rejected" 
                 name="decision" 
                 value="Indeferido" 
-                {{--@if(isset($req) && $req->reviewer_decision == 'Indeferido') 
+                {{--@if(isset($reqs) && $reqs->reviewer_decision == 'Indeferido') 
                      checked
                 @endif--}}
             />
@@ -72,6 +72,6 @@
     </div> -->
     <div class="appraisal-title">Justificativa</div>
 
-    {{--<label class="appraisal"><textarea name="appraisal">{{ isset($req) ? $req->appraisal : null }}</textarea></label>--}}
-    <label class="appraisal"><textarea name="appraisal"></textarea></label>
+    {{--<label class="appraisal"><textarea name="appraisal">{{ isset($reqs) ? $reqs->justification : null }}</textarea></label>--}}
+    <label class="appraisal"><textarea name="appraisal">{{ isset($reqs) ? $reqs->justification : null }}</textarea></label>
 </fieldset>

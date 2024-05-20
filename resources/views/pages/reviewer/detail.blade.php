@@ -78,11 +78,11 @@
 
             <hr>
 
-            <x-form.review :req="$req" />
+            <x-form.review :reqs="$reqs" />
 
             <hr>
 
-            {{--<x-form.result :req="$req" />--}}
+            {{--<x-form.result :reqs="$reqs" />--}}
             
             <!-- <input type="hidden" name="req-id" value="{{ $req->id }}"> -->
             <input type="hidden" name="button" id="btnType">
