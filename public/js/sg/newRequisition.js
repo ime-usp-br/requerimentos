@@ -108,6 +108,20 @@ window.onload = function () {
         event.preventDefault();
         const takenDiscInput = document.querySelector("#taken-disc-count");
         takenDiscInput.value = takenDiscCount;
+
+        const fileInputs = document.querySelectorAll(".file-input");
+        for (let fileInput of fileInputs) {
+            const maxFileSize = 5 * 1024 * 1024;
+            const file = fileInput.files[0];
+
+            if (file && file.size > maxFileSize) {
+                alert(
+                    "Um ou mais arquivos escolhidos excedem o limite de 5mb de tamanho"
+                );
+                return;
+            }
+        }
+        
         form.submit();
     });
 

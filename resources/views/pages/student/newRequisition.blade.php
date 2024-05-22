@@ -11,15 +11,6 @@
 @endsection
 
 @section('content')
-    {{--@if ($errors->any())
-        <div>
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li> {{ $error }} </li>
-                @endforeach
-            </ul>
-        </div>
-    @endif--}}
     <x-overlay>
         <x-slot name="title">
             @if (session()->has('success'))
@@ -60,9 +51,7 @@
         <form method="POST" action="{{ route('student.create')}}" id="form" enctype="multipart/form-data">
             @csrf
 
-            {{--<x-form.personal :withRecordButton="false"/> <hr> --}}
-            
-            <x-form.course />
+            <x-form.course :readOnly="False"/>
 
             <hr>
 
@@ -74,7 +63,7 @@
             
             <hr>
 
-            <x-form.observations />
+            <x-form.observations :readOnly="False" />
 
         </form>
 
