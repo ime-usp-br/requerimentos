@@ -12,6 +12,7 @@ Route::get('/', function () {
     return view('pages.home');
 });
 
+// rota usada para achar informações sobre a configuração de php da máquina
 Route::get('/phpinfo', function () {
     phpinfo();
 });
