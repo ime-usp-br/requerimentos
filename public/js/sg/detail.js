@@ -13,8 +13,10 @@ window.onload = function() {
         if (event.submitter) {
             const clickedButton = event.submitter;
             const btnType = document.querySelector("#btnType");
-            if (clickedButton.id === "send-btn") {
-                btnType.value = "send";
+            if (clickedButton.id === "reviewer-btn") {
+                btnType.value = "reviewer";
+            } else if (clickedButton.id === "department-btn") {
+                btnType.value = "department";
             } else if (clickedButton.id === "save-btn") {
                 btnType.value = "save";
             }

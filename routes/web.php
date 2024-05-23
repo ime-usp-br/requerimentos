@@ -1,16 +1,18 @@
 <?php
 
-use App\Http\Controllers\GlobalController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SGController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\GlobalController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\DepartmentController;
 
 Route::get('/', function () {
     return view('pages.home');
 });
 
+// rota usada para achar informações sobre a configuração de php da máquina
 Route::get('/phpinfo', function () {
     phpinfo();
 });
@@ -22,6 +24,9 @@ Route::get('/acesso-negado', function() {
 Route::get('/callback', [GlobalController::class, 'callbackHandler']);
 
 Route::get('/documento/{documentId}', [GlobalController::class, 'documentHandler'])->name('document.show');
+
+Route::post('/trocar-papel', [RoleController::class, 'switchRole'])->name('role.switch');
+
 
 Route::middleware('auth')->group(function() {
     
@@ -59,21 +64,15 @@ Route::middleware('auth')->group(function() {
         
         Route::get('/pareceres/{requisitionId}', [SGController::class, 'reviews'])->name('sg.reviews');
 
-        Route::get('/escolher-parecerista/{requisitionId}', [SGController::class, 'reviewerPick'])->name('sg.reviewerPick');
-
         Route::post('/enviar-requerimento/{requisitionId}', [ReviewController::class, 'createReview'])->name('sg.sendToReviewer');
-
-        Route::post('/dar-papel', [RoleController::class, 'addRole'])->name('role.add');
-
-        Route::post('/trocar-papel', [RoleController::class, 'switchRole'])->name('role.switch');
-
-        Route::post('/remover-papel', [RoleController::class, 'removeRole'])->name('role.remove');
     });
 
-    Route::prefix('coordenador')->group(function () {
-        Route::get('/lista', function() {
-            echo "pagina do coordenador";
-        })->name('coordinator.list');
+    Route::prefix('departamento')->group(function () {
+        Route::get('/{departmentName}/lista', [DepartmentController::class, 'list'])->name('department.list');
+
+        Route::get('/{departmentName}/detalhe/{requisitionId}', [DepartmentController::class, 'show'])->name('department.show');
+
+        Route::get('/{departmentName}/usuarios', [DepartmentController::class, 'users'])->name('department.users');
     });
 
     Route::prefix('parecerista')->group(function () {
@@ -82,5 +81,14 @@ Route::middleware('auth')->group(function() {
         Route::get('/detalhe/{requisitionId}', [ReviewController::class, 'show'])->name('reviewer.show');
         
         Route::post('/atualizar/{requisitionId}', [ReviewController::class, 'update'])->name('reviewer.update');
+    });
+
+    Route::group(['middleware' => 'role:Secretaria de Graduação,Secretaria do MAC,Secretaria do MAT,Secretaria do MAE,Secretaria do MAP'], function () {
+        
+        Route::post('/dar-papel', [RoleController::class, 'addRole'])->name('role.add');
+
+        Route::post('/remover-papel', [RoleController::class, 'removeRole'])->name('role.remove');
+
+        Route::get('/escolher-parecerista/{requisitionId}', [ReviewController::class, 'reviewerPick'])->name('review.reviewerPick');
     });
 });

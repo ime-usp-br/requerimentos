@@ -8,15 +8,17 @@ class Personal extends Component
 {
     public $withRecordButton;
     public $req;
+    public $readOnly;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($withRecordButton, $req = null)
+    public function __construct($withRecordButton, $req = null, $readOnly = True)
     {
         $this->withRecordButton = $withRecordButton;
         $this->req = $req;
+        $this->readOnly = $readOnly;
         //
     }
 

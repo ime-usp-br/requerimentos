@@ -13,7 +13,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js" defer></script>
     <script src="https://cdn.datatables.net/plug-ins/1.13.7/sorting/datetime-moment.js" defer></script>
 
-    <script src="{{ asset('js/sg/list.js')}}" defer></script>
+    <script src="{{ asset('js/department/list.js')}}" defer></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/sg/list.css') }}">
     <title>Lista de requerimentos</title>
 @endsection
@@ -23,8 +23,8 @@
         <h1>Requerimentos</h1>
         <div class="header-buttons">
             <nav>
-                <a href="{{ route('sg.users') }}" class="button">Administrar papéis</a>
-                <a href="{{ route('sg.newRequisition') }}" class="button">Criar requerimento</a>
+                <a href="{{ route('department.users', ['departmentName' => $departmentName]) }}" class="button">Administrar papéis</a>
+                {{--<a href="{{ route('sg.newRequisition') }}" class="button">Criar requerimento</a>--}}
                 <a href="/" class="button">Sair</a>
             </nav>
             @if (Auth::user()->roles()->count() > 1)
@@ -49,14 +49,13 @@
     </header>
     
     <div class="content">
-        <x-table :columns="['Data de criação', 'Aluno', 'Número USP', 'Situação', 'Departamento', 'Id']">
+        <x-table :columns="['Data de criação', 'Aluno', 'Número USP', 'Situação', 'Id']">
             @foreach ($reqs as $req)
-                <tr>
+                <tr data-department="{{ $departmentName }}">
                     <td>{{ \Illuminate\Support\Carbon::parse($req->created_at->toDateString())->format('d/m/Y') }}</td>
                     <td>{{ $req->student_name }}</td>
                     <td>{{ $req->nusp }}</td>
                     <td>{{ $req->internal_status }}</td>
-                    <td>{{ $req->department }}</td>
                     <td>{{ $req->id }}</td>
                 </tr>
             @endforeach

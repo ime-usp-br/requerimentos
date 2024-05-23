@@ -7,6 +7,14 @@
     gap: 2rem;
 }
 
+.small-field {
+    width: 5.45rem;
+}
+
+.type-input {
+    width: 9rem;
+}
+
 .taken {
     display: flex;
     flex-direction: column;
@@ -82,9 +90,9 @@
     /* width: 100%; */
 }
 
-.large-field {
+/* .large-field {
     width: 17.3rem;
-}
+} */
 
 #disc-type {
     width: 9rem;

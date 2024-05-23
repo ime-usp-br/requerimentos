@@ -6,12 +6,12 @@ use App\Enums\DocumentType;
 use App\Models\Document;
 use App\Models\User;
 use App\Models\Event;
-use App\Models\Requisition;
-use App\Models\TakenDisciplines;
 use App\Models\Review;
+use App\Enums\RoleName;
 use App\Enums\EventType;
-use Spatie\Permission\Models\Role;
+use App\Models\Requisition;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
@@ -82,6 +82,7 @@ class ReviewController extends Controller
 
         $req = Requisition::find($requisitionId);
         $req->situation = EventType::SENT_TO_REVIEWERS;
+        $req->validated = true;
 
         if ($request->name) {
             $event->message = "Enviado para o parecerista " . $request->name;
@@ -94,49 +95,11 @@ class ReviewController extends Controller
         return response()->noContent();
     }
 
-    public function update($requisitionId, Request $request){
-        $user = Auth::user();
+    public function reviewerPick($requisitionId) {
+        $reviewRole = Role::where('name', RoleName::REVIEWER)->first();
 
-        $reqToBeUpdated = Review::where("requisition_id", $requisitionId)->where("reviewer_nusp", $user->codpes)->first();
-        //dd($reqToBeUpdated);
-            // dd($data);
-        $reqRequisition = Requisition::find($requisitionId);
-   
+        $reviewers = $reviewRole->users;
 
-        if($reqToBeUpdated->reviewer_decision !== request('decision')){
-            $reqToBeUpdated->reviewer_decision = request('decision');
-
-            $user = Auth::user();
-            if(request('decision') === 'Sem decisão'){
-                $tipo = EventType::IN_REVALUATION;
-            }
-            elseif(request('decision') === 'Deferido'){
-                $tipo = EventType::ACCEPTED;
-            }
-            elseif(request('decision') === 'Indeferido'){
-                $tipo = EventType::REJECTED;
-            }
-            $event = new Event;
-            $event->type = $tipo;
-            $event->requisition_id = $requisitionId;
-            $event->author_name = Auth::user()->name; 
-            $event->author_nusp = Auth::user()->codpes;
-            $reqRequisition->situation = EventType::RETURNED_BY_REVIEWER;
-            $reqRequisition->internal_status = EventType::RETURNED_BY_REVIEWER;
-            $event->save();
-        }
-
-        $reqToBeUpdated->justification = request('appraisal');
-
-        $reqToBeUpdated->save();
-
-        $reqRequisition->save();
-
-
-        if($request->button === 'send'){
-            $bodyMsg = 'As informações do requerimento foram salvas';
-            $titleMsg = 'Requerimento enviado para secretaria';  
-            return redirect()->route('reviewer.list', ['requisitionId' => $requisitionId])->with('sucess', ['title message' => $titleMsg,'body message' => $bodyMsg]);
-        };
+        return view('pages.reviewer.reviewerPick', ['reviewers' => $reviewers, 'requisitionId' => $requisitionId]);
     }
 }

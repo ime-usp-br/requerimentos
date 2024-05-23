@@ -56,7 +56,8 @@ header {
 }
 
 .mode-select {
-    width: fit-content;
+    /* width: fit-content; */
+    width: 100%;
 }
 
 .status {
@@ -154,6 +155,10 @@ label {
     font-size: 0.8rem;
 }
 
+select:disabled {
+    color: black;
+}
+
 textarea {
     border: none;
     outline: 1.6px solid var(--gray);
@@ -164,9 +169,6 @@ textarea {
     font-size: 1rem;
 }
 
-.large-field {
-    width: 17.3rem;
-}
 
 input[type="radio"] {
     visibility: hidden;
@@ -178,26 +180,38 @@ input[type="radio"] {
 .nav {
     display: flex;
     justify-content: space-between;
+    flex-direction: column;
+    gap: 0.6rem;
     /* margin-bottom: 1.5rem; */
     /* margin-top: 2.8rem; */
 }
 
+/* .bottom-nav {
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.bottom-nav.nav .button {
+    width: 100%;
+}  */
+
 .nav .button {
-    width: 6.2rem;
-    font-size: 0.8rem;
+    /* width: 6.2rem; */
+    width: 100%;
+    font-size: 1.1rem;
 }
 
-@media screen and (min-width: 410px) {
+/* @media screen and (min-width: 410px) {
     .nav button {
         width: 9rem;
     }
-}
+} */
 
-@media screen and (min-width: 425px) {
+/* @media screen and (min-width: 425px) {
     .nav button {
         width: 9rem;
     }
-}
+} */
 
 @media screen and (min-width: 600px) {
     :root {
@@ -238,8 +252,14 @@ input[type="radio"] {
         width: 28rem;
     }
 
+    .mode-select {
+        width: fit-content;
+    }
+
     .nav {
         justify-content: space-around;
+        flex-direction: row;
+        gap: 0.5rem;
     }
 
     .nav .button {

@@ -15,25 +15,25 @@
     <script src="https://cdn.datatables.net/plug-ins/1.13.7/sorting/datetime-moment.js" defer></script>
 
     <!-- nosso javascript -->
-    <script src="{{ asset('js/sg/users.js')}}" defer></script>
+    <script src="{{ asset('js/department/users.js')}}" defer></script>
     <!-- <link rel="stylesheet" type="text/css" href="{{ asset('css/users.css') }}"> -->
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/sg/users.css') }}">  
-    <title>Administração de usuários</title>    
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/sg/users.css') }}">
+    <title>Administração de usuários</title>     
 @endsection
 
 @section('content')
     <header>
-        <h1>Administração de papéis</h1>
+        <h1>Administração de usuários</h1>
         <nav>
             <button class="button">Adicionar um papel</button>
-            <a href="{{ route('sg.list') }}" class="button">Voltar</a>
+            <a href="{{ route('department.list', ['departmentName' => $departmentName]) }}" class="button">Voltar</a>
         </nav>
     </header>
     
     <div class="overlay-container">
         <div class="overlay-content">
             <div class="overlay-header">
-                <div class="overlay-title">Adicione um papel</div>
+                <div class="overlay-title">Adicione um papel a um usuário</div>
                 <img class="close-button" src="{{ asset('img/overlay/close-button.svg') }}" alt="Close button" >
             </div>
             
@@ -48,81 +48,29 @@
                 <div class="type-radio" >
 
                     <label class="radio-button">
-                        <input type="radio" id="reviewer" name="role" value="Parecerista"/>
+                        <input type="radio" id="reviewer" name="role" value="{{ \App\Enums\RoleName::REVIEWER }}"/>
                         <span class="label-visible">
                             <span class="fake-radiobutton"></span>
                             Parecerista
                         </span>
                     </label>
-                    
-                    <label class="radio-button">
-                        <input type="radio" id="grad-secretary" name="role" value="Secretaria de Graduação" />
-                        <span class="label-visible">
-                            <span class="fake-radiobutton"></span>
-                            Secretaria de Graduação
-                        </span>
-                    </label>
 
                     <label class="radio-button" >
-                        <input type="radio" id="coordination" name="role" value="Coordenador">
+                        <input type="radio" id="coordination" name="role" value="Department">
                         <span class="label-visible">
                             <span class="fake-radiobutton"></span>
-                            Coordenador
+                            Secretaria do {{ strtoupper($departmentName) }}
                         </span>
                     </label>
-<!-- 
-                    <label class="radio-button">
-                        <input type="radio" id="dept-secretary" name="type" value="dept-secretary" />
-                        <span class="label-visible">
-                            <span class="fake-radiobutton"></span>
-                            Secretaria de Departamento
-                        </span>
-                    </label> -->
                 </div>
-
-                <div class="department-title">Departamento</div>
-                <div class="department-radio">
-                    <div class="type-radio" >
-                        <label class="radio-button">
-                            <input type="radio" id="MAC" name="department" value="MAC" checked/>
-                            <span class="label-visible">
-                                <span class="fake-radiobutton"></span>
-                                MAC
-                            </span>
-                        </label>
-
-                        <label class="radio-button">
-                            <input type="radio" id="MAP" name="department" value="MAP"/>
-                            <span class="label-visible">
-                                <span class="fake-radiobutton"></span>
-                                MAP
-                            </span>
-                        </label>
-
-                        <label class="radio-button" >
-                            <input type="radio" id="MAT" name="department" value="MAT">
-                            <span class="label-visible">
-                                <span class="fake-radiobutton"></span>
-                                MAT
-                            </span>
-                        </label>
-
-                        <label class="radio-button">
-                            <input type="radio" id="MAE" name="department" value="MAE" />
-                            <span class="label-visible">
-                                <span class="fake-radiobutton"></span>
-                                MAE
-                            </span>
-                        </label>
-                    </div>
-                </div>
+                <input type="hidden" name="department" value="{{ strtoupper($departmentName) }}">
                 <button type="submit" class="button">Adicionar</button>
             </form>
         </div>
     </div>
 
     <div class="content">
-        <x-table :columns="['Nome', 'Número USP', 'Papel', '', 'Id']">
+        <x-table :columns="['Nome do usuário', 'Número USP', 'Papel', '', 'Id']">
             @foreach ($users as $user)
                 @foreach ($user->roles as $role)
                     <tr>

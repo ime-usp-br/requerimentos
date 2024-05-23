@@ -6,7 +6,8 @@
 
     <!-- ionicons -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>    
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>  
+    <title>Edição do requerimento</title>  
 @endsection
 
 @section('content')
@@ -49,11 +50,11 @@
         <form method="POST" action="{{ route('student.update', ['requisitionId' => $req->id])}}" id="form" enctype="multipart/form-data">
             @csrf
 
-            <x-form.course :req="$req"/>
+            <x-form.course :req="$req" :readOnly="False"/>
 
             <hr>
 
-            <x-form.disciplines.read :takenDiscs="$takenDiscs" :req="$req" :withRecordButton="false" />
+            <x-form.disciplines.read :takenDiscs="$takenDiscs" :req="$req" :withRecordButton="False" :readOnly="False"/>
 
             <hr>
 
@@ -61,7 +62,7 @@
             
             <hr>
 
-            <x-form.observations :req="$req"/>
+            <x-form.observations :req="$req" :shownInternally="False" :readOnly="False"/>
             
             <input type="hidden" name="button" id="btnType">
         </form>

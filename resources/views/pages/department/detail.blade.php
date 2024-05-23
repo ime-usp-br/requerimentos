@@ -3,7 +3,7 @@
 @section('head')
     
     <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/sg/detail.css') }}">
-    <script src="{{ asset('js/sg/detail.js')}}" defer></script>
+    <script src="{{ asset('js/department/detail.js')}}" defer></script>
 
     <!-- ionicons -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
@@ -29,7 +29,7 @@
             </style>
             <p>{{ session('success')['body message'] }}</p>
             <div class="overlay-nav">
-                <a href="{{ route('sg.list') }}" class="button">Voltar para a página inicial</a>
+                <a href="{{ route('department.list', ['departmentName' => $departmentName]) }}" class="button">Voltar para a página inicial</a>
             </div>
         @elseif($errors->any())
             <style>
@@ -44,30 +44,26 @@
     <div class="content">
         <header>
             <h1>Detalhes do requerimento {{ $req->id }} </h1>
-            <select class="mode-select">
-                <option value="readonly">Modo de exibição</option>
-                <option value="edit">Modo de edição</option>
-            </select>
         </header>
         
         <nav class="nav">
             <a href="{{ route('sg.reviews', ['requisitionId' => $req->id ]) }}" class="button">Pareceres</a>
             <a href="#" class="button" >Histórico do requerimento</a>
-            <a href="{{ route('sg.list') }}" class="button">Voltar</a>
+            <a href="{{ route('department.list', ['departmentName' => $departmentName]) }}" class="button">Voltar</a>
         </nav>
 
-        <form method="POST" action="{{ route('sg.update', ['requisitionId' => $req->id])}}" id="form" >
+        <form method="GET" action="{{ route('review.reviewerPick', ['requisitionId' => $req->id])}}" id="form" >
             @csrf
 
             <x-form.personal :withRecordButton="true" :req="$req"/>
 
             <hr>
 
-            <x-form.course :req="$req" :readOnly="False"/>
+            <x-form.course :req="$req"/>
 
             <hr>
 
-            <x-form.disciplines.read :takenDiscs="$takenDiscs" :req="$req" :withRecordButton="true" :readOnly="False" />
+            <x-form.disciplines.read :takenDiscs="$takenDiscs" :req="$req" :withRecordButton="true" />
             
             <hr>
 
@@ -76,19 +72,13 @@
             <hr>
 
             <x-form.observations :req="$req" />
-
-            <hr>
-
-            <x-form.result :req="$req" />
             
             <input type="hidden" name="button" id="btnType">
         </form>
 
         <div class="nav"> 
-            <a href="{{ route('sg.list') }}" class="button">Voltar</a>
-            <button type="submit" form="form" class="button" id="save-btn">Salvar alterações</button>
-            <button type="submit" form="form" class="button" id="department-btn">Enviar para o departamento</button>
-            <button type="submit" form="form" class="button" id="reviewer-btn">Enviar para um parecerista</button>
+            <a href="{{ route('department.list', ['departmentName' => $departmentName]) }}" class="button">Voltar</a>
+            <button type="submit" form="form" class="button" id="send-btn">Encaminhar para um parecerista</button>
         </div>
         
     </div>
