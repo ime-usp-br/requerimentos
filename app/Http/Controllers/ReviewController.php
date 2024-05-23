@@ -135,4 +135,10 @@ class ReviewController extends Controller
 
         return view('pages.reviewer.reviewerPick', ['reviewers' => $reviewers, 'requisitionId' => $requisitionId]);
     }
+
+    public function reviews($requisitionId) {
+        $req = Requisition::with('reviews')->find($requisitionId);
+        
+        return view('pages.reviewer.reviews', ['requisitionId' => $requisitionId, 'reviews' => $req->reviews]);
+    }
 }

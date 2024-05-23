@@ -44,12 +44,7 @@
     <div class="content">
         <h1>Detalhes do requerimento {{ $req->id }} </h1>
         <nav class="nav">
-            <!-- <div class="status">
-                <span>Situação</span>
-                <span><ion-icon name="ellipse-outline"></ion-icon>Aguardando parecer</span>
-            </div> 
-            <a href="{{ route('sg.reviews', ['requisitionId' => $req->id ]) }}" class="button">Pareceres</a>
-            -->
+            <a href="{{ route('reviewer.reviews', ['requisitionId' => $req->id ]) }}" class="button">Pareceres</a>
             <a href="#" class="button" >Histórico do requerimento</a>
             <a href="{{ route('reviewer.list') }}" class="button">Voltar</a>
         </nav>

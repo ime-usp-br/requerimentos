@@ -51,7 +51,7 @@
         </header>
         
         <nav class="nav">
-            <a href="{{ route('sg.reviews', ['requisitionId' => $req->id ]) }}" class="button">Pareceres</a>
+            <a href="{{ route('reviewer.reviews', ['requisitionId' => $req->id ]) }}" class="button">Pareceres</a>
             <a href="#" class="button" >Histórico do requerimento</a>
             <a href="{{ route('sg.list') }}" class="button">Voltar</a>
         </nav>

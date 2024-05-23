@@ -62,8 +62,6 @@ Route::middleware('auth')->group(function() {
 
         Route::get('/usuarios', [SGController::class, 'users'])->name('sg.users');
         
-        Route::get('/pareceres/{requisitionId}', [SGController::class, 'reviews'])->name('sg.reviews');
-
         Route::post('/enviar-requerimento/{requisitionId}', [ReviewController::class, 'createReview'])->name('sg.sendToReviewer');
     });
 
@@ -83,12 +81,16 @@ Route::middleware('auth')->group(function() {
         Route::post('/atualizar/{requisitionId}', [ReviewController::class, 'update'])->name('reviewer.update');
     });
 
-    Route::group(['middleware' => 'role:Secretaria de Graduação,Secretaria do MAC,Secretaria do MAT,Secretaria do MAE,Secretaria do MAP'], function () {
+    Route::group(['middleware' => 'role:Secretaria de Graduação,Secretaria do MAC,Secretaria do MAT,Secretaria do MAE,Secretaria do MAP,Parecerista'], function () {
         
         Route::post('/dar-papel', [RoleController::class, 'addRole'])->name('role.add');
 
         Route::post('/remover-papel', [RoleController::class, 'removeRole'])->name('role.remove');
 
-        Route::get('/escolher-parecerista/{requisitionId}', [ReviewController::class, 'reviewerPick'])->name('review.reviewerPick');
+        Route::get('/escolher-parecerista/{requisitionId}', [ReviewController::class, 'reviewerPick'])->name('reviewer.reviewerPick');
+        
+        Route::get('/pareceres/{requisitionId}', [ReviewController::class, 'reviews'])->name('reviewer.reviews');
+
+
     });
 });

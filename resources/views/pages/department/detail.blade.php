@@ -47,12 +47,12 @@
         </header>
         
         <nav class="nav">
-            <a href="{{ route('sg.reviews', ['requisitionId' => $req->id ]) }}" class="button">Pareceres</a>
+            <a href="{{ route('reviewer.reviews', ['requisitionId' => $req->id ]) }}" class="button">Pareceres</a>
             <a href="#" class="button" >Histórico do requerimento</a>
             <a href="{{ route('department.list', ['departmentName' => $departmentName]) }}" class="button">Voltar</a>
         </nav>
 
-        <form method="GET" action="{{ route('review.reviewerPick', ['requisitionId' => $req->id])}}" id="form" >
+        <form method="GET" action="{{ route('reviewer.reviewerPick', ['requisitionId' => $req->id])}}" id="form" >
             @csrf
 
             <x-form.personal :withRecordButton="true" :req="$req"/>

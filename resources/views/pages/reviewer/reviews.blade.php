@@ -14,7 +14,7 @@
     <div class="content">
         <header>
             <h1>Pareceres</h1>
-            <a href="{{ route('sg.show', ['requisitionId' => $requisitionId ])}}" class="button">Voltar</a>
+            <a href="{{ url()->previous() }}" class="button">Voltar</a>
         </header>
 
         @forelse ($reviews as $review)

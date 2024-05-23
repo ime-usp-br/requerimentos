@@ -299,10 +299,4 @@ class SGController extends Controller
         return view('pages.sg.discHistory', ['history' => $history]);
     }
 
-    public function reviews($requisitionId) {
-        $req = Requisition::with('reviews')->find($requisitionId);
-        
-        return view('pages.sg.reviews', ['requisitionId' => $requisitionId, 'reviews' => $req->reviews]);
-    }
-
 }
