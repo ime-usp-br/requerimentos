@@ -8,7 +8,7 @@
     <!-- ionicons -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-    
+    <title>Detalhes do requerimento</title>
 @endsection
 
 @section('content')
@@ -54,7 +54,6 @@
             <a href="{{ route('reviewer.list') }}" class="button">Voltar</a>
         </nav>
 
-        <!--===================== ARRUMAR AQUI ================================= -->
         <form method="POST" action="{{ route('reviewer.update', ['requisitionId' => $req->id])}}" id="form" >
             @csrf
 
@@ -78,20 +77,16 @@
 
             <hr>
 
-            <x-form.review :req="$reqs" />
+            <x-form.review :req="$req" :review="$review" />
 
-            <hr>
-
-            {{--<x-form.result :req="$reqs" />--}}
-            
             <!-- <input type="hidden" name="req-id" value="{{ $req->id }}"> -->
             <input type="hidden" name="button" id="btnType">
         </form>
 
         <div class="nav"> 
             <a href="{{ route('reviewer.list') }}" class="button">Voltar</a>
-           <!-- <button type="submit" form="form" class="button" id="save-btn">Salvar mudanças</button> -->
-            <button type="submit" form="form" class="button" id="send-btn">Encaminhar para um Secretaria</button>
+           <button type="submit" form="form" class="button" id="save-btn">Salvar mudanças</button>
+            <!-- <button type="submit" form="form" class="button" id="send-btn">Encaminhar para um Secretaria</button> -->
         </div>
         
     </div>

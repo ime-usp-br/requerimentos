@@ -45,19 +45,16 @@
     </header>
     
     <div class="content"> 
-        <x-table :columns="['Data de criação', 'Aluno', 'Número USP', 'Disciplina Requirida', 'id']">
+        <x-table :columns="['Data de criação', 'Aluno', 'Número USP', 'Disciplina Requirida', 'Id']">
             @foreach ($reqs as $req)
                 <tr>
-                    <td>{{ \Illuminate\Support\Carbon::parse($req->created_at->toDateString())->format('d/m/Y') }}</td>
+                    <td>{{ \Illuminate\Support\Carbon::parse($req->created_at)->format('d/m/Y') }}</td>
                     <td>{{ $req->student_name }}</td>
                     <td>{{ $req->nusp }}</td>
                     <td>{{ $req->requested_disc}}</td>
                     <td>{{ $req->id }}</td>
-                    <td></td> 
                 </tr>
             @endforeach
         </x-table>
     </div>
 @endsection
-
-<!--  -->

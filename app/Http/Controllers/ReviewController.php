@@ -2,46 +2,42 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\DocumentType;
-use App\Models\Document;
-use App\Models\User;
 use App\Models\Event;
 use App\Models\Review;
 use App\Enums\RoleName;
 use App\Enums\EventType;
+use App\Enums\DocumentType;
 use App\Models\Requisition;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
     public function list() {
+
         $user = Auth::user();
 
-        $selectedColumns = ['requisitions.created_at', 'student_name', 'nusp','requested_disc' ,'requisitions.id'];
-        $selectId =['created_at', 'requisition_id' ] ;
+        $selectedColumns = ['requisitions.created_at', 'student_name', 'nusp','requested_disc','requisitions.id'];
 
-        //pegando os valores de 
-        $reqs = Review::where('reviewer_nusp', $user->codpes)->join('requisitions', 'requisition_id', '=', 'requisitions.id')->select($selectedColumns)->get();
-        //$reqs = Review::where('reviewer_nusp', $user->codpes)->leftJoin('requisitions', 'review.requisition_id', '=', 'id')->select($selectedColumns)->get();
-    
-        //$reqs = Requisition::select($selectedColumns)->where('id', $teste[0])->get();
+        // $reqs = Review::where('reviewer_nusp', $user->codpes)->join('requisitions', 'requisition_id', '=', 'requisitions.id')->select($selectedColumns)->get();
+
+        $reqs = DB::table('reviews')->join('requisitions', 'reviews.requisition_id', '=', 'requisitions.id')->where('reviewer_nusp', $user->codpes)->select($selectedColumns)->get();
+
 
         return view('pages.reviewer.list', ['reqs' => $reqs]);
     }
 
-    public function show($requisitionId){
+    public function show($requisitionId) {
 
         $user = Auth::user();
-        //$reqReview = Review::where("requisition_id", $requisitionId, "reviewer_nusp", $user->codpes)->first();
 
         $req = Requisition::with('takenDisciplines', 'documents')->find($requisitionId);
-        $selectedColumns = ['student_name', 'nusp','requested_disc' ,'reviewer_decision', 'justification'];
-        $reqs = Review::where('reviewer_nusp', $user->codpes)->join('requisitions', 'requisition_id', '=', 'requisitions.id')->select($selectedColumns)->get();
+
+        $review = Review::where('reviewer_nusp', $user->codpes)->where('requisition_id', $requisitionId)->first();
         
         $documents = $req->documents->sortByDesc('created_at');
-        // dd($req->documents);
 
         $takenDiscsRecords = [];
         $currentCourseRecords = [];
@@ -65,7 +61,7 @@ class ReviewController extends Controller
             }
         }
         
-        return view('pages.reviewer.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines, 'takenDiscsRecords' => $takenDiscsRecords, 'currentCourseRecords' => $currentCourseRecords, 'takenDiscSyllabi' => $takenDiscSyllabi, 'requestedDiscSyllabi' => $requestedDiscSyllabi, 'reqs' =>$reqs]);
+        return view('pages.reviewer.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines, 'takenDiscsRecords' => $takenDiscsRecords, 'currentCourseRecords' => $currentCourseRecords, 'takenDiscSyllabi' => $takenDiscSyllabi, 'requestedDiscSyllabi' => $requestedDiscSyllabi, 'review' => $review]);
 
     }
 
@@ -81,10 +77,16 @@ class ReviewController extends Controller
         $event->author_nusp = $user->codpes;
 
         $req = Requisition::find($requisitionId);
+
+        // $req->situation é o que aparece na linha do requerimento na tabela 
+        // para o aluno (não contém o nome do parecerista)
         $req->situation = EventType::SENT_TO_REVIEWERS;
         $req->validated = true;
 
         if ($request->name) {
+            // a $event->message/$req->internal_status contém o nome do  
+            // parecerista, mas não aparece para o aluno, é usada apenas  
+            // internamente
             $event->message = "Enviado para o parecerista " . $request->name;
             $req->internal_status = $event->message;
         }
@@ -93,6 +95,37 @@ class ReviewController extends Controller
         $event->save();
 
         return response()->noContent();
+    }
+
+    public function update($requisitionId, Request $request) {
+
+        $user = Auth::user();
+
+        $reviewToBeUpdated = Review::where('requisition_id', $requisitionId)->where('reviewer_nusp', $user->codpes)->first();
+
+        $reviewToBeUpdated->reviewer_decision = $request->decision;
+        $reviewToBeUpdated->justification = $request->justification;
+        $reviewToBeUpdated->save();
+
+        $event = new Event;
+        $event->type = EventType::RETURNED_BY_REVIEWER;
+        $event->requisition_id = $requisitionId;
+        $event->author_name = $user->name; 
+        $event->author_nusp = $user->codpes;
+
+        $req = Requisition::find($requisitionId);
+        $req->situation = EventType::RETURNED_BY_REVIEWER;
+
+        $event->message = "Retornado pelo parecerista " . $user->name;
+        $req->internal_status = $event->message;
+
+        $event->save();
+        $req->save();
+
+        $bodyMsg = 'As informações do parecer foram salvas';
+        $titleMsg = 'Parecer salvo';  
+
+        return redirect()->route('reviewer.show', ['requisitionId' => $requisitionId])->with('success', ['title message' => $titleMsg, 'body message' => $bodyMsg]);
     }
 
     public function reviewerPick($requisitionId) {
