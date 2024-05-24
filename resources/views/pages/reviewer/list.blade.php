@@ -15,6 +15,7 @@
 
     <script src="{{ asset('js/reviewer/list.js')}}" defer></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/reviewer/list.css') }}">
+    <title>Lista de requerimentos</title>
 @endsection
 
 @section('content')
