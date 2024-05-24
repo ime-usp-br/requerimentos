@@ -67,60 +67,67 @@ class ReviewController extends Controller
 
     public function createReview($requisitionId, Request $request) {
         
-        Review::firstOrCreate(['reviewer_nusp' => $request->nusp, 'requisition_id' => $requisitionId], ['reviewer_decision' => 'Sem decisão', 'requisition_id' => $requisitionId, 'justification' => null, 'reviewer_nusp' => $request->nusp, 'reviewer_name' => $request->name]);
+        DB::transaction(function() use ($request, $requisitionId) {
 
-        $user = Auth::user();
-        $event = new Event;
-        $event->type = EventType::SENT_TO_REVIEWERS;
-        $event->requisition_id = $requisitionId;
-        $event->author_name = $user->name; 
-        $event->author_nusp = $user->codpes;
+            Review::firstOrCreate(['reviewer_nusp' => $request->nusp, 'requisition_id' => $requisitionId], ['reviewer_decision' => 'Sem decisão', 'requisition_id' => $requisitionId, 'justification' => null, 'reviewer_nusp' => $request->nusp, 'reviewer_name' => $request->name]);
 
-        $req = Requisition::find($requisitionId);
+            $user = Auth::user();
 
-        // $req->situation é o que aparece na linha do requerimento na tabela 
-        // para o aluno (não contém o nome do parecerista)
-        $req->situation = EventType::SENT_TO_REVIEWERS;
-        $req->validated = true;
+            $event = new Event;
+            $event->type = EventType::SENT_TO_REVIEWERS;
+            $event->requisition_id = $requisitionId;
+            $event->author_name = $user->name; 
+            $event->author_nusp = $user->codpes;
 
-        if ($request->name) {
-            // a $event->message/$req->internal_status contém o nome do  
-            // parecerista, mas não aparece para o aluno, é usada apenas  
-            // internamente
-            $event->message = "Enviado para o parecerista " . $request->name;
-            $req->internal_status = $event->message;
-        }
+            $req = Requisition::find($requisitionId);
 
-        $req->save();
-        $event->save();
+            // $req->situation é o que aparece na linha do requerimento na tabela 
+            // para o aluno (não contém o nome do parecerista)
+            $req->situation = EventType::SENT_TO_REVIEWERS;
+            $req->validated = true;
 
+            if ($request->name) {
+                // a $event->message/$req->internal_status contém o nome do  
+                // parecerista, mas não aparece para o aluno, é usada apenas  
+                // internamente
+                $event->message = "Enviado para o parecerista " . $request->name;
+                $req->internal_status = $event->message;
+            }
+
+            $req->save();
+            $event->save();
+        });
+        
         return response()->noContent();
     }
 
     public function update($requisitionId, Request $request) {
 
-        $user = Auth::user();
+        DB::transaction(function() use ($request, $requisitionId) {
 
-        $reviewToBeUpdated = Review::where('requisition_id', $requisitionId)->where('reviewer_nusp', $user->codpes)->first();
+            $user = Auth::user();
 
-        $reviewToBeUpdated->reviewer_decision = $request->decision;
-        $reviewToBeUpdated->justification = $request->justification;
-        $reviewToBeUpdated->save();
+            $reviewToBeUpdated = Review::where('requisition_id', $requisitionId)->where('reviewer_nusp', $user->codpes)->first();
 
-        $event = new Event;
-        $event->type = EventType::RETURNED_BY_REVIEWER;
-        $event->requisition_id = $requisitionId;
-        $event->author_name = $user->name; 
-        $event->author_nusp = $user->codpes;
+            $reviewToBeUpdated->reviewer_decision = $request->decision;
+            $reviewToBeUpdated->justification = $request->justification;
+            $reviewToBeUpdated->save();
 
-        $req = Requisition::find($requisitionId);
-        $req->situation = EventType::RETURNED_BY_REVIEWER;
+            $event = new Event;
+            $event->type = EventType::RETURNED_BY_REVIEWER;
+            $event->requisition_id = $requisitionId;
+            $event->author_name = $user->name; 
+            $event->author_nusp = $user->codpes;
 
-        $event->message = "Retornado pelo parecerista " . $user->name;
-        $req->internal_status = $event->message;
+            $req = Requisition::find($requisitionId);
+            $req->situation = EventType::RETURNED_BY_REVIEWER;
 
-        $event->save();
-        $req->save();
+            $event->message = "Retornado pelo parecerista " . $user->name;
+            $req->internal_status = $event->message;
+
+            $event->save();
+            $req->save();
+        });
 
         $bodyMsg = 'As informações do parecer foram salvas';
         $titleMsg = 'Parecer salvo';  

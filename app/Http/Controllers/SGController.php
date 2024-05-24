@@ -59,18 +59,6 @@ class SGController extends Controller
         return view('pages.sg.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines, 'takenDiscsRecords' => $takenDiscsRecords, 'currentCourseRecords' => $currentCourseRecords, 'takenDiscSyllabi' => $takenDiscSyllabi, 'requestedDiscSyllabi' => $requestedDiscSyllabi]);
     }
 
-    public function readOnlyShow($requisitionId) {
-        $req = Requisition::with('takenDisciplines')->find($requisitionId);
-        
-        return view('pages.sg.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines]);
-    }
-
-    public function editableShow($requisitionId) {
-        $req = Requisition::with('takenDisciplines')->find($requisitionId);
-        
-        return view('pages.sg.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines]);
-    }
-
     public function create(Request $request) {
         $takenDiscCount = (int) $request->takenDiscCount;
         $discsArray = [];
@@ -101,72 +89,75 @@ class SGController extends Controller
 
         $data = $request->validate(array_merge($inputArray, $discsArray));
 
-        $req = new Requisition;
-        $req->department = $data['disc-department'];
-        $req->nusp = $data['nusp'];
-        $req->student_name = $data['name'];
-        $req->email = $data['email'];
-        $req->course = $data['course'];
-        $req->requested_disc = $data['requested-disc-name'];
-        $req->requested_disc_type = $data['requested-disc-type'];
-        $req->requested_disc_code = $data['requested-disc-code'];
-        $req->situation = EventType::SENT_TO_SG;
-        $req->internal_status = EventType::SENT_TO_SG;
-        $req->result = 'Sem resultado';
-        $req->result_text = null;
-        $req->validated = False;
+        DB::transaction(function() use ($data, $takenDiscCount, $request) {
 
-        $req->taken_discs_record = $request->file('taken-disc-record')->store('test');
-        $req->current_course_record = $request->file('course-record')->store('test');
-        $req->taken_discs_syllabus = $request->file('taken-disc-syllabus')->store('test');
-        $req->requested_disc_syllabus = $request->file('requested-disc-syllabus')->store('test');
-        $req->observations = $request->observations;
+            $req = new Requisition;
+            $req->department = $data['disc-department'];
+            $req->nusp = $data['nusp'];
+            $req->student_name = $data['name'];
+            $req->email = $data['email'];
+            $req->course = $data['course'];
+            $req->requested_disc = $data['requested-disc-name'];
+            $req->requested_disc_type = $data['requested-disc-type'];
+            $req->requested_disc_code = $data['requested-disc-code'];
+            $req->situation = EventType::SENT_TO_SG;
+            $req->internal_status = EventType::SENT_TO_SG;
+            $req->result = 'Sem resultado';
+            $req->result_text = null;
+            $req->validated = False;
 
-        $req->save();
+            $req->taken_discs_record = $request->file('taken-disc-record')->store('test');
+            $req->current_course_record = $request->file('course-record')->store('test');
+            $req->taken_discs_syllabus = $request->file('taken-disc-syllabus')->store('test');
+            $req->requested_disc_syllabus = $request->file('requested-disc-syllabus')->store('test');
+            $req->observations = $request->observations;
 
-        $takenDiscsRecord = new Document;
-        $takenDiscsRecord->path = $request->file('taken-disc-record')->store('test');
-        $takenDiscsRecord->requisition_id = $req->id;
-        $takenDiscsRecord->type = DocumentType::TAKEN_DISCS_RECORD;
-        $takenDiscsRecord->save();
+            $req->save();
 
-        $currentCourseRecord = new Document;
-        $currentCourseRecord->path = $request->file('course-record')->store('test');
-        $currentCourseRecord->requisition_id = $req->id;
-        $currentCourseRecord->type = DocumentType::CURRENT_COURSE_RECORD;
-        $currentCourseRecord->save();
+            $takenDiscsRecord = new Document;
+            $takenDiscsRecord->path = $request->file('taken-disc-record')->store('test');
+            $takenDiscsRecord->requisition_id = $req->id;
+            $takenDiscsRecord->type = DocumentType::TAKEN_DISCS_RECORD;
+            $takenDiscsRecord->save();
 
-        $takenDiscSyllabus = new Document;
-        $takenDiscSyllabus->path = $request->file('taken-disc-syllabus')->store('test');
-        $takenDiscSyllabus->requisition_id = $req->id;
-        $takenDiscSyllabus->type = DocumentType::TAKEN_DISCS_SYLLABUS;
-        $takenDiscSyllabus->save();
+            $currentCourseRecord = new Document;
+            $currentCourseRecord->path = $request->file('course-record')->store('test');
+            $currentCourseRecord->requisition_id = $req->id;
+            $currentCourseRecord->type = DocumentType::CURRENT_COURSE_RECORD;
+            $currentCourseRecord->save();
 
-        $requestedDiscSyllabus = new Document;
-        $requestedDiscSyllabus->path = $request->file('requested-disc-syllabus')->store('test');
-        $requestedDiscSyllabus->requisition_id = $req->id;
-        $requestedDiscSyllabus->type = DocumentType::REQUESTED_DISC_SYLLABUS;
-        $requestedDiscSyllabus->save();
+            $takenDiscSyllabus = new Document;
+            $takenDiscSyllabus->path = $request->file('taken-disc-syllabus')->store('test');
+            $takenDiscSyllabus->requisition_id = $req->id;
+            $takenDiscSyllabus->type = DocumentType::TAKEN_DISCS_SYLLABUS;
+            $takenDiscSyllabus->save();
 
-        for ($i = 1; $i <= $takenDiscCount; $i++) {
-            $takenDisc = new TakenDisciplines;
-            $takenDisc->name = $data["disc$i-name"];
-            $takenDisc->code = $data["disc$i-code"] ?? "";
-            $takenDisc->year = $data["disc$i-year"];
-            $takenDisc->grade = $data["disc$i-grade"];
-            $takenDisc->semester = $data["disc$i-semester"];
-            $takenDisc->institution = $data["disc$i-institution"];
-            $takenDisc->requisition_id = $req->id;
-            $takenDisc->save();
-        }
+            $requestedDiscSyllabus = new Document;
+            $requestedDiscSyllabus->path = $request->file('requested-disc-syllabus')->store('test');
+            $requestedDiscSyllabus->requisition_id = $req->id;
+            $requestedDiscSyllabus->type = DocumentType::REQUESTED_DISC_SYLLABUS;
+            $requestedDiscSyllabus->save();
 
-        $event = new Event;
-        $event->type = EventType::SENT_TO_SG;
-        $event->requisition_id = $req->id;
-        
-        $event->author_name = Auth::user()->name; 
-        $event->author_nusp = Auth::user()->codpes;
-        $event->save();
+            for ($i = 1; $i <= $takenDiscCount; $i++) {
+                $takenDisc = new TakenDisciplines;
+                $takenDisc->name = $data["disc$i-name"];
+                $takenDisc->code = $data["disc$i-code"] ?? "";
+                $takenDisc->year = $data["disc$i-year"];
+                $takenDisc->grade = $data["disc$i-grade"];
+                $takenDisc->semester = $data["disc$i-semester"];
+                $takenDisc->institution = $data["disc$i-institution"];
+                $takenDisc->requisition_id = $req->id;
+                $takenDisc->save();
+            }
+
+            $event = new Event;
+            $event->type = EventType::SENT_TO_SG;
+            $event->requisition_id = $req->id;
+            
+            $event->author_name = Auth::user()->name; 
+            $event->author_nusp = Auth::user()->codpes;
+            $event->save();
+        });
 
         return redirect()->route('sg.newRequisition')->with('success', ['title message' => 'Requerimento criado', 'body message' => 'O requerimento foi criado com sucesso. Acompanhe o andamento pela página inicial.']);
     }
@@ -196,72 +187,75 @@ class SGController extends Controller
         ];
 
         $data = $request->validate(array_merge($inputArray, $discsArray));
-        
-        $reqToBeUpdated = Requisition::find($requisitionId);
-        $reqToBeUpdated->department = $data['disc-department'];
-        $reqToBeUpdated->nusp = $data['nusp'];
-        $reqToBeUpdated->student_name = $data['name'];
-        $reqToBeUpdated->email = $data['email'];
-        $reqToBeUpdated->course = $data['course'];
-        $reqToBeUpdated->requested_disc = $data['requested-disc-name'];
-        $reqToBeUpdated->requested_disc_type = $data['requested-disc-type'];
-        $reqToBeUpdated->requested_disc_code = $data['requested-disc-code'];
-        
-        // situação atual do requerimento será determinada pela potencial  
-        // mudança de resultado quando o usuário clica no botão 
-        // "Salvar alterações"
-        if ($request->button === 'save' && $reqToBeUpdated->result !== request('result')) {
-            $reqToBeUpdated->result = request('result');
 
-            // $user = Auth::user();
-            if (request('result') === 'Inconsistência nas informações') {
-                $type = EventType::BACK_TO_STUDENT;
-            } elseif (request('result') === 'Deferido') {
-                $type = EventType::ACCEPTED;
-            } elseif (request('result') === 'Indeferido') {
-                $type = EventType::REJECTED;
-            } elseif (request('result') === 'Sem resultado') {
-                $type = EventType::IN_REVALUATION;
+        DB::transaction(function() use ($data, $takenDiscCount, $request, $requisitionId) {
+
+            $reqToBeUpdated = Requisition::find($requisitionId);
+            $reqToBeUpdated->department = $data['disc-department'];
+            $reqToBeUpdated->nusp = $data['nusp'];
+            $reqToBeUpdated->student_name = $data['name'];
+            $reqToBeUpdated->email = $data['email'];
+            $reqToBeUpdated->course = $data['course'];
+            $reqToBeUpdated->requested_disc = $data['requested-disc-name'];
+            $reqToBeUpdated->requested_disc_type = $data['requested-disc-type'];
+            $reqToBeUpdated->requested_disc_code = $data['requested-disc-code'];
+            
+            // situação atual do requerimento será determinada pela potencial  
+            // mudança de resultado quando o usuário clica no botão 
+            // "Salvar alterações"
+            if ($request->button === 'save' && $reqToBeUpdated->result !== request('result')) {
+                $reqToBeUpdated->result = request('result');
+
+                // $user = Auth::user();
+                if (request('result') === 'Inconsistência nas informações') {
+                    $type = EventType::BACK_TO_STUDENT;
+                } elseif (request('result') === 'Deferido') {
+                    $type = EventType::ACCEPTED;
+                } elseif (request('result') === 'Indeferido') {
+                    $type = EventType::REJECTED;
+                } elseif (request('result') === 'Sem resultado') {
+                    $type = EventType::IN_REVALUATION;
+                }
+
+                $event = new Event;
+                $event->type = $type;
+                $event->requisition_id = $requisitionId;
+                $event->author_name = Auth::user()->name; 
+                $event->author_nusp = Auth::user()->codpes;
+                
+                $reqToBeUpdated->situation = $type;
+                $reqToBeUpdated->internal_status = $type;
+                $event->save();
+
+            } elseif ($request->button === 'department') {
+                
+                $event = new Event;
+                $event->type = EventType::SENT_TO_DEPARTMENT;
+                $event->requisition_id = $requisitionId;
+                $event->author_name = Auth::user()->name; 
+                $event->author_nusp = Auth::user()->codpes;
+
+                $reqToBeUpdated->situation = EventType::SENT_TO_DEPARTMENT;
+                $reqToBeUpdated->internal_status = EventType::SENT_TO_DEPARTMENT;
+                $reqToBeUpdated->validated = true;
             }
 
-            $event = new Event;
-            $event->type = $type;
-            $event->requisition_id = $requisitionId;
-            $event->author_name = Auth::user()->name; 
-            $event->author_nusp = Auth::user()->codpes;
-            
-            $reqToBeUpdated->situation = $type;
-            $reqToBeUpdated->internal_status = $type;
-            $event->save();
+            $reqToBeUpdated->result_text = request('result-text');
+            $reqToBeUpdated->observations = request('observations');
+            $reqToBeUpdated->save();
 
-        } elseif ($request->button === 'department') {
-            
-            $event = new Event;
-            $event->type = EventType::SENT_TO_DEPARTMENT;
-            $event->requisition_id = $requisitionId;
-            $event->author_name = Auth::user()->name; 
-            $event->author_nusp = Auth::user()->codpes;
-
-            $reqToBeUpdated->situation = EventType::SENT_TO_DEPARTMENT;
-            $reqToBeUpdated->internal_status = EventType::SENT_TO_DEPARTMENT;
-            $reqToBeUpdated->validated = true;
-        }
-
-        $reqToBeUpdated->result_text = request('result-text');
-        $reqToBeUpdated->observations = request('observations');
-        $reqToBeUpdated->save();
-
-        for ($i = 1; $i <= $takenDiscCount; $i++) {
-            $takenDisc = TakenDisciplines::find(request("disc$i-id"));
-            $takenDisc->name = $data["disc$i-name"];
-            $takenDisc->code = $data["disc$i-code"] ?? "";
-            $takenDisc->year = $data["disc$i-year"];
-            $takenDisc->grade = $data["disc$i-grade"];
-            $takenDisc->semester = $data["disc$i-semester"];
-            $takenDisc->institution = $data["disc$i-institution"];
-            $takenDisc->requisition_id = $requisitionId;
-            $takenDisc->save();
-        }
+            for ($i = 1; $i <= $takenDiscCount; $i++) {
+                $takenDisc = TakenDisciplines::find(request("disc$i-id"));
+                $takenDisc->name = $data["disc$i-name"];
+                $takenDisc->code = $data["disc$i-code"] ?? "";
+                $takenDisc->year = $data["disc$i-year"];
+                $takenDisc->grade = $data["disc$i-grade"];
+                $takenDisc->semester = $data["disc$i-semester"];
+                $takenDisc->institution = $data["disc$i-institution"];
+                $takenDisc->requisition_id = $requisitionId;
+                $takenDisc->save();
+            }
+        });
 
         if ($request->button === 'reviewer') {
             return redirect()->route('review.reviewerPick', ['requisitionId' => $requisitionId]);
