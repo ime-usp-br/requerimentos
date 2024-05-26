@@ -258,7 +258,7 @@ class SGController extends Controller
         });
 
         if ($request->button === 'reviewer') {
-            return redirect()->route('review.reviewerPick', ['requisitionId' => $requisitionId]);
+            return redirect()->route('reviewer.reviewerPick', ['requisitionId' => $requisitionId]);
         } elseif ($request->button === 'department') {
             $bodyMsg = 'As informações do requerimento foram salvas e enviadas para o departamento';
             $titleMsg = 'Requerimento enviado';     
