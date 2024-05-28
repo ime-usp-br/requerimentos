@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRequisitionsTable extends Migration
+class CreateRequisitionsVersionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,21 @@ class CreateRequisitionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('requisitions', function (Blueprint $table) {
+        // essa tabela contém versões anteriores dos requerimentos, armazenadas
+        // quando qualquer campo do requerimento é modificado. A tabela 
+        // requisitions contém sempre a versão mais recente. 
+        Schema::create('requisitions_versions', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->enum('department', ['MAC', 'MAE', 'MAT', 'MAP', 'Disciplina de fora do IME']);
             
             $table->unsignedInteger('nusp');
-            $table->unsignedInteger('latest_version');
+
+            // chave primária (id do requerimento na tabela requisitions + 
+            // número dessa versão)
+            $table->foreignId('requisition_id')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('version');
+
             $table->string('student_name');
             $table->string('email');
             
@@ -32,7 +40,7 @@ class CreateRequisitionsTable extends Migration
             $table->boolean('validated');
             $table->text('observations')->nullable();
 
-            // arquivos
+            // caminho dos arquivos
             $table->string('taken_discs_record');
             $table->string('current_course_record');
             $table->string('taken_discs_syllabus');
@@ -51,6 +59,6 @@ class CreateRequisitionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('requisitions');
+        Schema::dropIfExists('requisitions_versions');
     }
 }

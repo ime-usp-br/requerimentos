@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTakenDisciplinesTable extends Migration
+class CreateTakenDisciplinesVersionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateTakenDisciplinesTable extends Migration
      */
     public function up()
     {
-        Schema::create('taken_disciplines', function (Blueprint $table) {
+        Schema::create('taken_disciplines_versions', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             // isso tem que se chamar requisition_id para a chave estrangeira funcionar 
@@ -25,7 +25,7 @@ class CreateTakenDisciplinesTable extends Migration
             // verificar se a entrada do usuario se conforma a isso na rota
             $table->float("grade", 4, 2);
             $table->string("institution");
-            $table->unsignedInteger('latest_version');
+            $table->unsignedInteger('version');
         });
     }
 
@@ -36,6 +36,6 @@ class CreateTakenDisciplinesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('taken_disciplines');
+        Schema::dropIfExists('taken_disciplines_versions');
     }
 }

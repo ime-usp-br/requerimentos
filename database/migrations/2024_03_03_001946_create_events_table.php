@@ -19,9 +19,13 @@ class CreateEventsTable extends Migration
             $table->timestamps();
             $table->enum('type', [EventType::ACCEPTED, EventType::BACK_TO_STUDENT, EventType::REJECTED, EventType::RETURNED_BY_REVIEWER, EventType::SENT_TO_REVIEWERS, EventType::SENT_TO_SG, EventType::IN_REVALUATION, EventType::RESEND_BY_STUDENT, EventType::SENT_TO_DEPARTMENT]);
             $table->string('message')->nullable();
+
             $table->foreignId('requisition_id')->constrained()->cascadeOnDelete();
+            $table->unsignedInteger('version');
+
             $table->string('author_name');
             $table->unsignedInteger('author_nusp');
+            
         });
     }
 
