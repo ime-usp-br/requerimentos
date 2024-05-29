@@ -66,7 +66,6 @@ class StudentController extends Controller
     }
 
     public function create(Request $request) {
-        
 
         $takenDiscCount = (int) $request->takenDiscCount;
         $discsArray = [];
@@ -118,7 +117,7 @@ class StudentController extends Controller
             $req->requested_disc_syllabus = $request->file('requested-disc-syllabus')->store('test');
             $req->observations = $request->observations;
             $req->validated = False;
-
+            $req->latest_version = 1;
             $req->save();
 
             $takenDiscsRecord = new Document;
@@ -154,6 +153,7 @@ class StudentController extends Controller
                 $takenDisc->semester = $data["disc$i-semester"];
                 $takenDisc->institution = $data["disc$i-institution"];
                 $takenDisc->requisition_id = $req->id;
+                $takenDisc->latest_version = 1;
                 $takenDisc->save();
             }
 
@@ -162,6 +162,7 @@ class StudentController extends Controller
             $event->requisition_id = $req->id;
             $event->author_name = $user->name; 
             $event->author_nusp = $user->codpes;
+            $event->version = 1;
             $event->save();
         });
         
@@ -263,6 +264,7 @@ class StudentController extends Controller
             $event->requisition_id = $requisitionId;
             $event->author_name = Auth::user()->name; 
             $event->author_nusp = Auth::user()->codpes;
+            $event->version = $reqToBeUpdated->latest_version;
             $event->save();
         });
 

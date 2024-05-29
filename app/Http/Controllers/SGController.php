@@ -6,7 +6,6 @@ use App\Enums\DocumentType;
 use App\Models\Document;
 use App\Models\User;
 use App\Models\Event;
-use App\Enums\RoleName;
 use App\Enums\EventType;
 use App\Models\Requisition;
 use Illuminate\Http\Request;
@@ -105,6 +104,7 @@ class SGController extends Controller
             $req->result = 'Sem resultado';
             $req->result_text = null;
             $req->validated = False;
+            $req->latest_version = 1;
 
             $req->taken_discs_record = $request->file('taken-disc-record')->store('test');
             $req->current_course_record = $request->file('course-record')->store('test');
@@ -147,6 +147,7 @@ class SGController extends Controller
                 $takenDisc->semester = $data["disc$i-semester"];
                 $takenDisc->institution = $data["disc$i-institution"];
                 $takenDisc->requisition_id = $req->id;
+                $takenDisc->latest_version = 1;
                 $takenDisc->save();
             }
 
@@ -156,6 +157,7 @@ class SGController extends Controller
             
             $event->author_name = Auth::user()->name; 
             $event->author_nusp = Auth::user()->codpes;
+            $event->version = 1;
             $event->save();
         });
 
@@ -191,6 +193,17 @@ class SGController extends Controller
         DB::transaction(function() use ($data, $takenDiscCount, $request, $requisitionId) {
 
             $reqToBeUpdated = Requisition::find($requisitionId);
+            
+            if (!$reqToBeUpdated) {
+                throw new \Exception('Não existe requisição com o id fornecido');
+            }
+
+            // foreach ($validatedData as $key => $value) {
+            //     $updateIsNeeded = false; 
+
+            // }
+            
+            $reqToBeUpdated = Requisition::find($requisitionId);
             $reqToBeUpdated->department = $data['disc-department'];
             $reqToBeUpdated->nusp = $data['nusp'];
             $reqToBeUpdated->student_name = $data['name'];
@@ -200,9 +213,8 @@ class SGController extends Controller
             $reqToBeUpdated->requested_disc_type = $data['requested-disc-type'];
             $reqToBeUpdated->requested_disc_code = $data['requested-disc-code'];
             
-            // situação atual do requerimento será determinada pela potencial  
-            // mudança de resultado quando o usuário clica no botão 
-            // "Salvar alterações"
+            // situação atual do requerimento será modificada de acordo com o  
+            // tipo de botão que foi usado pelo usuário para submeter o form 
             if ($request->button === 'save' && $reqToBeUpdated->result !== request('result')) {
                 $reqToBeUpdated->result = request('result');
 
@@ -222,11 +234,12 @@ class SGController extends Controller
                 $event->requisition_id = $requisitionId;
                 $event->author_name = Auth::user()->name; 
                 $event->author_nusp = Auth::user()->codpes;
+                $event->version = $reqToBeUpdated->latest_version;
                 
                 $reqToBeUpdated->situation = $type;
                 $reqToBeUpdated->internal_status = $type;
                 $event->save();
-
+            
             } elseif ($request->button === 'department') {
                 
                 $event = new Event;
@@ -234,6 +247,7 @@ class SGController extends Controller
                 $event->requisition_id = $requisitionId;
                 $event->author_name = Auth::user()->name; 
                 $event->author_nusp = Auth::user()->codpes;
+                $event->version = $reqToBeUpdated->latest_version;
 
                 $reqToBeUpdated->situation = EventType::SENT_TO_DEPARTMENT;
                 $reqToBeUpdated->internal_status = EventType::SENT_TO_DEPARTMENT;

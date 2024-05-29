@@ -73,18 +73,19 @@ class ReviewController extends Controller
 
             $user = Auth::user();
 
-            $event = new Event;
-            $event->type = EventType::SENT_TO_REVIEWERS;
-            $event->requisition_id = $requisitionId;
-            $event->author_name = $user->name; 
-            $event->author_nusp = $user->codpes;
-
             $req = Requisition::find($requisitionId);
 
             // $req->situation é o que aparece na linha do requerimento na tabela 
             // para o aluno (não contém o nome do parecerista)
             $req->situation = EventType::SENT_TO_REVIEWERS;
             $req->validated = true;
+
+            $event = new Event;
+            $event->type = EventType::SENT_TO_REVIEWERS;
+            $event->requisition_id = $requisitionId;
+            $event->author_name = $user->name; 
+            $event->author_nusp = $user->codpes;
+            $event->version = $req->latest_version;
 
             if ($request->name) {
                 // a $event->message/$req->internal_status contém o nome do  
@@ -113,14 +114,15 @@ class ReviewController extends Controller
             $reviewToBeUpdated->justification = $request->justification;
             $reviewToBeUpdated->save();
 
+            $req = Requisition::find($requisitionId);
+            $req->situation = EventType::RETURNED_BY_REVIEWER;
+
             $event = new Event;
             $event->type = EventType::RETURNED_BY_REVIEWER;
             $event->requisition_id = $requisitionId;
             $event->author_name = $user->name; 
             $event->author_nusp = $user->codpes;
-
-            $req = Requisition::find($requisitionId);
-            $req->situation = EventType::RETURNED_BY_REVIEWER;
+            $event->version = $req->latest_version;
 
             $event->message = "Retornado pelo parecerista " . $user->name;
             $req->internal_status = $event->message;
