@@ -14,7 +14,7 @@ class CreateRequisitionsVersionsTable extends Migration
     public function up()
     {
         // essa tabela contém versões anteriores dos requerimentos, armazenadas
-        // quando qualquer campo do requerimento é modificado. A tabela 
+        // quando qualquer campo do requerimento/disciplinas é modificado. A tabela 
         // requisitions contém sempre a versão mais recente. 
         Schema::create('requisitions_versions', function (Blueprint $table) {
             $table->id();
@@ -34,17 +34,11 @@ class CreateRequisitionsVersionsTable extends Migration
             $table->enum('course', ['Bacharelado em Ciência da Computação', 'Bacharelado em Estatística', 'Bacharelado em Matemática', 'Bacharelado em Matemática Aplicada', 'Bacharelado em Matemática Aplicada e Computacional', 'Licenciatura em Matemática']);
             $table->string('requested_disc');
             $table->enum('requested_disc_type', ['Extracurricular', 'Obrigatória', 'Optativa Eletiva', 'Optativa Livre']);
-            $table->string('situation');
-            $table->string('internal_status');
+            // $table->string('situation');
+            // $table->string('internal_status');
             $table->string('requested_disc_code');
-            $table->boolean('validated');
+            // $table->boolean('validated');
             $table->text('observations')->nullable();
-
-            // caminho dos arquivos
-            $table->string('taken_discs_record');
-            $table->string('current_course_record');
-            $table->string('taken_discs_syllabus');
-            $table->string('requested_disc_syllabus');
 
             // resultado
             $table->enum('result', ['Sem resultado', 'Inconsistência nas informações', 'Deferido', 'Indeferido']);

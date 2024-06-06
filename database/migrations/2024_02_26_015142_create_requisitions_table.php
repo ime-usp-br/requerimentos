@@ -14,6 +14,7 @@ class CreateRequisitionsTable extends Migration
     public function up()
     {
         Schema::create('requisitions', function (Blueprint $table) {
+
             $table->id();
             $table->timestamps();
             $table->enum('department', ['MAC', 'MAE', 'MAT', 'MAP', 'Disciplina de fora do IME']);
@@ -31,12 +32,6 @@ class CreateRequisitionsTable extends Migration
             $table->string('requested_disc_code');
             $table->boolean('validated');
             $table->text('observations')->nullable();
-
-            // arquivos
-            $table->string('taken_discs_record');
-            $table->string('current_course_record');
-            $table->string('taken_discs_syllabus');
-            $table->string('requested_disc_syllabus');
 
             // resultado
             $table->enum('result', ['Sem resultado', 'Inconsistência nas informações', 'Deferido', 'Indeferido']);
