@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\DocumentType;
-use App\Models\Document;
 use App\Models\User;
 use App\Models\Event;
 use App\Enums\EventType;
+use App\Models\Document;
+use App\Enums\DocumentType;
 use App\Models\Requisition;
-use Illuminate\Http\Request;
 use App\Models\TakenDisciplines;
+use Illuminate\Support\Facades\DB;
+// use Illuminate\Http\Request;
+use App\Models\RequisitionsVersion;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-
+use App\Models\TakenDisciplinesVersion;
+use App\Http\Requests\RequisitionUpdateRequest;
+use App\Http\Requests\RequisitionCreationRequest;
 
 // use Illuminate\Support\Facades\Auth;
 // use Illuminate\Support\Facades\Route;
@@ -58,37 +61,11 @@ class SGController extends Controller
         return view('pages.sg.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines, 'takenDiscsRecords' => $takenDiscsRecords, 'currentCourseRecords' => $currentCourseRecords, 'takenDiscSyllabi' => $takenDiscSyllabi, 'requestedDiscSyllabi' => $requestedDiscSyllabi]);
     }
 
-    public function create(Request $request) {
-        $takenDiscCount = (int) $request->takenDiscCount;
-        $discsArray = [];
-        
-        for ($i = 1; $i <= $takenDiscCount; $i++) {
-            $discsArray["disc$i-name"] = 'required | max:255';
-            $discsArray["disc$i-code"] = 'max:255';
-            $discsArray["disc$i-year"] = 'required | numeric | integer';
-            $discsArray["disc$i-grade"] = 'required | numeric';
-            $discsArray["disc$i-semester"] = 'required';
-            $discsArray["disc$i-institution"] = 'required';
-        }
+    public function create(RequisitionCreationRequest $request) {
 
-        $inputArray = [
-            'name' => 'required | max:255',
-            'email' => 'required | max:255 | email ',
-            'nusp' => 'required | numeric | integer',
-            'course' => 'required | max:255',
-            'requested-disc-name' => 'required | max:255',
-            'requested-disc-type' => 'required',
-            'requested-disc-code' => 'required',
-            'taken-disc-record' => 'required | file | mimes:pdf',
-            'course-record' => 'required | file | mimes:pdf',
-            'taken-disc-syllabus' => 'required | file | mimes:pdf',
-            'requested-disc-syllabus' => 'required | file | mimes:pdf',
-            'disc-department' => 'required'
-        ];
+        $data = $request->validated();
 
-        $data = $request->validate(array_merge($inputArray, $discsArray));
-
-        DB::transaction(function() use ($data, $takenDiscCount, $request) {
+        DB::transaction(function() use ($data, $request) {
 
             $req = new Requisition;
             $req->department = $data['disc-department'];
@@ -106,10 +83,10 @@ class SGController extends Controller
             $req->validated = False;
             $req->latest_version = 1;
 
-            $req->taken_discs_record = $request->file('taken-disc-record')->store('test');
-            $req->current_course_record = $request->file('course-record')->store('test');
-            $req->taken_discs_syllabus = $request->file('taken-disc-syllabus')->store('test');
-            $req->requested_disc_syllabus = $request->file('requested-disc-syllabus')->store('test');
+            // $req->taken_discs_record = $request->file('taken-disc-record')->store('test');
+            // $req->current_course_record = $request->file('course-record')->store('test');
+            // $req->taken_discs_syllabus = $request->file('taken-disc-syllabus')->store('test');
+            // $req->requested_disc_syllabus = $request->file('requested-disc-syllabus')->store('test');
             $req->observations = $request->observations;
 
             $req->save();
@@ -138,12 +115,12 @@ class SGController extends Controller
             $requestedDiscSyllabus->type = DocumentType::REQUESTED_DISC_SYLLABUS;
             $requestedDiscSyllabus->save();
 
-            for ($i = 1; $i <= $takenDiscCount; $i++) {
+            for ($i = 1; $i <= $request->takenDiscCount; $i++) {
                 $takenDisc = new TakenDisciplines;
                 $takenDisc->name = $data["disc$i-name"];
                 $takenDisc->code = $data["disc$i-code"] ?? "";
                 $takenDisc->year = $data["disc$i-year"];
-                $takenDisc->grade = $data["disc$i-grade"];
+                $takenDisc->grade = number_format((float) $data["disc$i-grade"], 2, '.', '');
                 $takenDisc->semester = $data["disc$i-semester"];
                 $takenDisc->institution = $data["disc$i-institution"];
                 $takenDisc->requisition_id = $req->id;
@@ -164,68 +141,117 @@ class SGController extends Controller
         return redirect()->route('sg.newRequisition')->with('success', ['title message' => 'Requerimento criado', 'body message' => 'O requerimento foi criado com sucesso. Acompanhe o andamento pela página inicial.']);
     }
 
-    public function update($requisitionId, Request $request) {
-        $takenDiscCount = (int) $request->takenDiscCount;
-        $discsArray = [];
+    public function update(RequisitionUpdateRequest $request, $requisitionId) {
+        
+        // $takenDiscCount = (int) $request->takenDiscCount;
+        // $discsArray = [];
 
-        for ($i = 1; $i <= $takenDiscCount; $i++) {
-            $discsArray["disc$i-name"] = 'required | max:255';
-            $discsArray["disc$i-code"] = 'max:255';
-            $discsArray["disc$i-year"] = 'required | numeric | integer';
-            $discsArray["disc$i-grade"] = 'required | numeric';
-            $discsArray["disc$i-semester"] = 'required';
-            $discsArray["disc$i-institution"] = 'required';
-        }
+        // for ($i = 1; $i <= $takenDiscCount; $i++) {
+        //     $discsArray["disc$i-name"] = 'required | max:255';
+        //     $discsArray["disc$i-code"] = 'max:255';
+        //     $discsArray["disc$i-year"] = 'required | numeric | integer';
+        //     $discsArray["disc$i-grade"] = 'required | numeric';
+        //     $discsArray["disc$i-semester"] = 'required';
+        //     $discsArray["disc$i-institution"] = 'required';
+        // }
 
-        $inputArray = [
-            'name' => 'required | max:255',
-            'email' => 'required | max:255 | email ',
-            'nusp' => 'required | numeric | integer',
-            'course' => 'required | max:255',
-            'requested-disc-name' => 'required | max:255',
-            'requested-disc-type' => 'required',
-            'requested-disc-code' => 'required',
-            'disc-department' => 'required'
-        ];
+        // $inputArray = [
+        //     'name' => 'required | max:255',
+        //     'email' => 'required | max:255 | email ',
+        //     'nusp' => 'required | numeric | integer',
+        //     'course' => 'required | max:255',
+        //     'requested-disc-name' => 'required | max:255',
+        //     'requested-disc-type' => 'required',
+        //     'requested-disc-code' => 'required',
+        //     'disc-department' => 'required'
+        // ];
 
-        $data = $request->validate(array_merge($inputArray, $discsArray));
+        // $data = $request->validate(array_merge($inputArray, $discsArray));
+        
+        $data = $request->validated();
 
-        DB::transaction(function() use ($data, $takenDiscCount, $request, $requisitionId) {
+        $requisitionData = $request->getRequisitionData();
+        $takenDisciplinesData = $request->getDisciplinesData();
+
+        DB::transaction(function() use ($requisitionData, 
+                                        $takenDisciplinesData, 
+                                        $request, 
+                                        $requisitionId) {
 
             $reqToBeUpdated = Requisition::find($requisitionId);
-            
-            if (!$reqToBeUpdated) {
-                throw new \Exception('Não existe requisição com o id fornecido');
+
+            // vendo se eu preciso de fato atualizar as tabelas
+            $someFieldWasChanged = False;
+
+            foreach($requisitionData as $key => $value) {
+                if ($reqToBeUpdated->$key !== $value) {
+                    $someFieldWasChanged = True;
+                    break;
+                }
             }
 
-            // foreach ($validatedData as $key => $value) {
-            //     $updateIsNeeded = false; 
+            for ($i = 1; $i <= $request->takenDiscCount; $i++) {
 
-            // }
-            
-            $reqToBeUpdated = Requisition::find($requisitionId);
-            $reqToBeUpdated->department = $data['disc-department'];
-            $reqToBeUpdated->nusp = $data['nusp'];
-            $reqToBeUpdated->student_name = $data['name'];
-            $reqToBeUpdated->email = $data['email'];
-            $reqToBeUpdated->course = $data['course'];
-            $reqToBeUpdated->requested_disc = $data['requested-disc-name'];
-            $reqToBeUpdated->requested_disc_type = $data['requested-disc-type'];
-            $reqToBeUpdated->requested_disc_code = $data['requested-disc-code'];
-            
-            // situação atual do requerimento será modificada de acordo com o  
-            // tipo de botão que foi usado pelo usuário para submeter o form 
-            if ($request->button === 'save' && $reqToBeUpdated->result !== request('result')) {
-                $reqToBeUpdated->result = request('result');
+                $takenDisc = TakenDisciplines::find(request("disc$i-id"));
 
-                // $user = Auth::user();
-                if (request('result') === 'Inconsistência nas informações') {
+                foreach($takenDisc->getAttributes() as $key => $value) {
+
+                    if (isset($takenDisciplinesData["disc$i-" . $key]) && 
+                        $takenDisciplinesData["disc$i-" . $key] !== $value) {
+                        $someFieldWasChanged = True;
+                        break 2;
+                    }
+                }
+            }
+
+            if (!$someFieldWasChanged) {
+
+                if ($request->button === 'department') {
+                    $event = new Event;
+                    $event->type = EventType::SENT_TO_DEPARTMENT;
+                    $event->requisition_id = $requisitionId;
+                    $event->author_name = Auth::user()->name; 
+                    $event->author_nusp = Auth::user()->codpes;
+                    $event->version = $reqToBeUpdated->latest_version;
+                    $event->save();
+
+                    $reqToBeUpdated->situation = EventType::SENT_TO_DEPARTMENT;
+                    $reqToBeUpdated->internal_status = EventType::SENT_TO_DEPARTMENT;
+                    $reqToBeUpdated->validated = true;
+                    $reqToBeUpdated->save();
+                }
+
+                return;
+            }
+
+            // criando uma versão nova na tabela de versões
+            $newReqVersion = new RequisitionsVersion;
+            $fields = $reqToBeUpdated->toArray();
+            unset($fields['latest_version'], 
+                  $fields['id'], 
+                  $fields['created_at'], 
+                  $fields['updated_at'],
+                  $fields['situation'], 
+                  $fields['internal_status'], 
+                  $fields['validated']);
+            $newReqVersion->fill($fields);
+            $newReqVersion->requisition_id = $reqToBeUpdated->id;
+            $newReqVersion->version = $reqToBeUpdated->latest_version;
+            $newReqVersion->save(); 
+
+
+            // atualizando a versão mais recente
+            $reqToBeUpdated->latest_version = $reqToBeUpdated->latest_version + 1;
+
+            if ($reqToBeUpdated->result !== $requisitionData['result']) {
+
+                if ($requisitionData['result'] === 'Inconsistência nas informações') {
                     $type = EventType::BACK_TO_STUDENT;
-                } elseif (request('result') === 'Deferido') {
+                } elseif ($requisitionData['result'] === 'Deferido') {
                     $type = EventType::ACCEPTED;
-                } elseif (request('result') === 'Indeferido') {
+                } elseif ($requisitionData['result'] === 'Indeferido') {
                     $type = EventType::REJECTED;
-                } elseif (request('result') === 'Sem resultado') {
+                } elseif ($requisitionData['result'] === 'Sem resultado') {
                     $type = EventType::IN_REVALUATION;
                 }
 
@@ -239,36 +265,53 @@ class SGController extends Controller
                 $reqToBeUpdated->situation = $type;
                 $reqToBeUpdated->internal_status = $type;
                 $event->save();
-            
-            } elseif ($request->button === 'department') {
-                
+            } 
+
+            if ($request->button === 'department') {
+
                 $event = new Event;
                 $event->type = EventType::SENT_TO_DEPARTMENT;
                 $event->requisition_id = $requisitionId;
                 $event->author_name = Auth::user()->name; 
                 $event->author_nusp = Auth::user()->codpes;
                 $event->version = $reqToBeUpdated->latest_version;
+                $event->save();
 
                 $reqToBeUpdated->situation = EventType::SENT_TO_DEPARTMENT;
                 $reqToBeUpdated->internal_status = EventType::SENT_TO_DEPARTMENT;
                 $reqToBeUpdated->validated = true;
             }
 
-            $reqToBeUpdated->result_text = request('result-text');
-            $reqToBeUpdated->observations = request('observations');
+            $reqToBeUpdated->fill($requisitionData);
             $reqToBeUpdated->save();
 
-            for ($i = 1; $i <= $takenDiscCount; $i++) {
+            for ($i = 1; $i <= $request->takenDiscCount; $i++) {
+
                 $takenDisc = TakenDisciplines::find(request("disc$i-id"));
-                $takenDisc->name = $data["disc$i-name"];
-                $takenDisc->code = $data["disc$i-code"] ?? "";
-                $takenDisc->year = $data["disc$i-year"];
-                $takenDisc->grade = $data["disc$i-grade"];
-                $takenDisc->semester = $data["disc$i-semester"];
-                $takenDisc->institution = $data["disc$i-institution"];
-                $takenDisc->requisition_id = $requisitionId;
+
+                // criando as versões das disciplinas
+                $newDiscVersion = new TakenDisciplinesVersion;
+                $fields = $takenDisc->toArray();
+                unset($fields['latest_version'], 
+                      $fields['id'], 
+                      $fields['created_at'], 
+                      $fields['updated_at']);
+                $newDiscVersion->fill($fields);
+                $newDiscVersion->version = $reqToBeUpdated->latest_version - 1;
+                $newDiscVersion->save();
+
+                // atualizando a versão mais recente
+                $takenDisc->name = $takenDisciplinesData["disc$i-name"];
+                $takenDisc->code = $takenDisciplinesData["disc$i-code"] ?? "";
+                $takenDisc->year = $takenDisciplinesData["disc$i-year"];
+                $takenDisc->grade = $takenDisciplinesData["disc$i-grade"];
+                $takenDisc->semester = $takenDisciplinesData["disc$i-semester"];
+                $takenDisc->institution = $takenDisciplinesData["disc$i-institution"];
+                $takenDisc->requisition_id = $reqToBeUpdated->id;
+                $takenDisc->latest_version = $reqToBeUpdated->latest_version;
                 $takenDisc->save();
             }
+            
         });
 
         if ($request->button === 'reviewer') {
