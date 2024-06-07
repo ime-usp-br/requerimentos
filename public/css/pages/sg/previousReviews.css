@@ -97,6 +97,10 @@ header {
     background-color: rgb(255, 203, 203);
 }
 
+ul {
+    list-style-type: none;
+}
+
 
 @media screen and (min-width: 600px) {
     :root {

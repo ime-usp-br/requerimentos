@@ -56,7 +56,6 @@ class SGController extends Controller
                     break;
             }
         }
-
         return view('pages.sg.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines, 'takenDiscsRecords' => $takenDiscsRecords, 'currentCourseRecords' => $currentCourseRecords, 'takenDiscSyllabi' => $takenDiscSyllabi, 'requestedDiscSyllabi' => $requestedDiscSyllabi]);
     }
 
@@ -267,20 +266,29 @@ class SGController extends Controller
         return view('pages.sg.users', ['users' => $usersWithRoles]);
     }
 
-    public function discHistory($subjectId) {
-        $history = Requisition::select('taken_disciplines.code',
+    public function previousReviews($requestedId) {
+        $previousReviews = Requisition::where('requisitions.requested_disc_code', $requestedId)
+                                    ->select(
+                                        'requisitions.id',
+                                        'taken_disciplines.code AS taken_codes',
+                                        'taken_disciplines.year AS year_taken',
+                                        'taken_disciplines.semester AS semester_taken',
                                         'taken_disciplines.institution',
-                                        'requisitions.requested_disc_code', 
-                                        'requisitions.result',
-                                        DB::raw('YEAR(requisitions.updated_at) AS result_year'),
-                                        'taken_disciplines.year AS taken_year',
-                                        DB::raw('count(*) as repeticoes'))
-                                ->where('requested_disc_code', $subjectId)
+                                        'requisitions.result', 
+                                        'requisitions.updated_at AS result_date',
+                                        'requisitions.result_text AS result_text'
+                                    )
                                 ->join('taken_disciplines', 'requisitions.id', '=', 'taken_disciplines.requisition_id') //inner join
-                                ->groupBy('requested_disc_code', 'institution', 'code', 'result', 'result_year', 'taken_year')
-                                ->get();
+                                ->get()
+                                ->groupBy('id');
+        
+        $previousReviewsFiltered = $previousReviews->filter(function ($group){
+            return $group->contains(function ($object){
+                return $object->institution === request()->institution;
+            });
+        });
 
-        return view('pages.sg.discHistory', ['history' => $history]);
+        return view('pages.sg.previousReviews', ['requisitions' => $previousReviewsFiltered]);
     }
 
     public function reviews($requisitionId) {

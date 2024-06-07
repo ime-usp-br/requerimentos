@@ -49,7 +49,7 @@ Route::middleware('auth')->group(function() {
 
         Route::get('/detalhe/{requisitionId}', [SGController::class, 'show'])->name('sg.show');
         
-        Route::get('/historico-disciplina/{subjectID}', [SGController::class, 'discHistory'])->name('sg.discHistory');
+        Route::get('/pareceres-anteriores/{subjectID}', [SGController::class, 'previousReviews'])->name('sg.previousReviews');
 
         Route::post('/novo-requerimento', [SGController::class, 'create'])->name('sg.create');
 
