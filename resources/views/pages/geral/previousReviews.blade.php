@@ -16,10 +16,10 @@
     <script src="https://cdn.datatables.net/plug-ins/1.13.7/sorting/datetime-moment.js" defer></script>
 
     <!-- nosso javascript -->
-    <script src="{{ asset('js/sg/previousReviews.js')}}" defer></script>
+    <script src="{{ asset('js/geral/previousReviews.js')}}" defer></script>
     
     <!-- nosso css -->
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/sg/previousReviews.css') }}">     
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/geral/previousReviews.css') }}">     
 @endsection
 
 @section('content')
@@ -28,6 +28,8 @@
         <nav>
             <a href="../detalhe/{{request()->input('detail')}}" class="button">Voltar</a>
         </nav>
+
+        {{-- {{dd($role)}} --}}
         
     </header>
     

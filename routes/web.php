@@ -6,6 +6,7 @@ use App\Http\Controllers\SGController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\PreviousReviews;
 
 Route::get('/', function () {
     return view('pages.home');
@@ -23,8 +24,11 @@ Route::get('/callback', [GlobalController::class, 'callbackHandler']);
 
 Route::get('/documento/{documentId}', [GlobalController::class, 'documentHandler'])->name('document.show');
 
+
+//adicionar middleware de autenticação
+Route::get('/{role}/pareceres-anteriores/{subjectID}', [PreviousReviews::class, 'previousReviews'])->name('geral.previousReviews');
+
 Route::middleware('auth')->group(function() {
-    
     // Route::prefix('aluno')->middleware('role:Aluno')->group(function () {
     Route::prefix('aluno')->group(function () {
         Route::get('/lista', [StudentController::class, 'list'])->name('student.list');
@@ -48,8 +52,6 @@ Route::middleware('auth')->group(function() {
         Route::view('/novo-requerimento', 'pages.sg.newRequisition')->name('sg.newRequisition');
 
         Route::get('/detalhe/{requisitionId}', [SGController::class, 'show'])->name('sg.show');
-        
-        Route::get('/pareceres-anteriores/{subjectID}', [SGController::class, 'previousReviews'])->name('sg.previousReviews');
 
         Route::post('/novo-requerimento', [SGController::class, 'create'])->name('sg.create');
 
@@ -83,4 +85,5 @@ Route::middleware('auth')->group(function() {
         
         Route::post('/atualizar/{requisitionId}', [ReviewController::class, 'update'])->name('reviewer.update');
     });
+
 });
