@@ -48,7 +48,7 @@
         
         <nav class="nav">
             <a href="{{ route('reviewer.reviews', ['requisitionId' => $req->id ]) }}" class="button">Pareceres</a>
-            <a href="#" class="button" >Histórico do requerimento</a>
+            <a href="{{ route('record.requisition', ['requisitionId' => $req->id]) }}" class="button" >Histórico do requerimento</a>
             <a href="{{ route('department.list', ['departmentName' => $departmentName]) }}" class="button">Voltar</a>
         </nav>
 

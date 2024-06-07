@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SGController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\GlobalController;
+use App\Http\Controllers\RecordController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\DepartmentController;
@@ -81,7 +82,7 @@ Route::middleware('auth')->group(function() {
         Route::post('/atualizar/{requisitionId}', [ReviewController::class, 'update'])->name('reviewer.update');
     });
 
-    Route::group(['middleware' => 'role:Secretaria de Graduação,Secretaria do MAC,Secretaria do MAT,Secretaria do MAE,Secretaria do MAP,Parecerista'], function () {
+    // Route::group(['middleware' => 'role:Secretaria de Graduação,Secretaria do MAC,Secretaria do MAT,Secretaria do MAE,Secretaria do MAP,Parecerista'], function () {
         
         Route::post('/dar-papel', [RoleController::class, 'addRole'])->name('role.add');
 
@@ -91,6 +92,9 @@ Route::middleware('auth')->group(function() {
         
         Route::get('/pareceres/{requisitionId}', [ReviewController::class, 'reviews'])->name('reviewer.reviews');
 
+        Route::get('/historico/requerimento/{requisitionId}', [RecordController::class, 'requisitionRecord'])->name('record.requisition');
 
-    });
+        Route::get('/historico/versao/{eventId}', [RecordController::class, 'requisitionVersion'])->name('record.requisitionVersion');
+
+    // });
 });

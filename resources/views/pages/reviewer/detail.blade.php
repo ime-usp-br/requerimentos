@@ -45,7 +45,7 @@
         <h1>Detalhes do requerimento {{ $req->id }} </h1>
         <nav class="nav">
             <a href="{{ route('reviewer.reviews', ['requisitionId' => $req->id ]) }}" class="button">Pareceres</a>
-            <a href="#" class="button" >Histórico do requerimento</a>
+            <a href="{{ route('record.requisition', ['requisitionId' => $req->id]) }}" class="button">Histórico do requerimento</a>
             <a href="{{ route('reviewer.list') }}" class="button">Voltar</a>
         </nav>
 
