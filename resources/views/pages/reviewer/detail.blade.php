@@ -78,15 +78,15 @@
 
             <hr>
 
-            <x-form.review :req="$reqs" />
+            <x-form.review :review="$review" />
 
             <hr>
 
             {{--<x-form.result :req="$reqs" />--}}
             
             <!-- <input type="hidden" name="req-id" value="{{ $req->id }}"> -->
-            <input type="hidden" name="button" id="btnType">
         </form>
+        <input type="hidden" name="button" id="btnType">
 
         <div class="nav"> 
             <a href="{{ route('reviewer.list') }}" class="button">Voltar</a>

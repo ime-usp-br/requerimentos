@@ -188,7 +188,7 @@
                     </label>
                     
                     @if ($withRecordButton)
-                        <a href="../pareceres-anteriores/{{ $req->requested_disc_code }}?detail={{ $req->id }}&institution={{ $req->takenDisciplines[0]->institution}}&code={{ $req->takenDisciplines[0]->code}}" class="button record-button">Pareceres anteriores</a>
+                        <a href="../pareceres-anteriores/{{ $req->requested_disc_code }}?detail={{ $req->id }}&institution={{ $req->takenDisciplines[0]->institution}}" class="button record-button">Pareceres anteriores</a>
                     @endif
                     
                 </div>

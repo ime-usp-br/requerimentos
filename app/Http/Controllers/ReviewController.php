@@ -3,14 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Enums\DocumentType;
-use App\Models\Document;
-use App\Models\User;
 use App\Models\Event;
 use App\Models\Requisition;
-use App\Models\TakenDisciplines;
 use App\Models\Review;
 use App\Enums\EventType;
-use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -32,14 +28,12 @@ class ReviewController extends Controller
     }
 
     public function show($requisitionId){
-
-        $user = Auth::user();
         //$reqReview = Review::where("requisition_id", $requisitionId, "reviewer_nusp", $user->codpes)->first();
 
         $req = Requisition::with('takenDisciplines', 'documents')->find($requisitionId);
         $selectedColumns = ['student_name', 'nusp','requested_disc' ,'reviewer_decision', 'justification'];
-        $reqs = Review::where('reviewer_nusp', $user->codpes)->join('requisitions', 'requisition_id', '=', 'requisitions.id')->select($selectedColumns)->get();
-        
+        $review = Review::where('requisition_id', $requisitionId)->join('requisitions', 'requisition_id', '=', 'requisitions.id')->select($selectedColumns)->get();
+
         $documents = $req->documents->sortByDesc('created_at');
         // dd($req->documents);
 
@@ -65,7 +59,7 @@ class ReviewController extends Controller
             }
         }
         
-        return view('pages.reviewer.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines, 'takenDiscsRecords' => $takenDiscsRecords, 'currentCourseRecords' => $currentCourseRecords, 'takenDiscSyllabi' => $takenDiscSyllabi, 'requestedDiscSyllabi' => $requestedDiscSyllabi, 'reqs' =>$reqs]);
+        return view('pages.reviewer.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines, 'takenDiscsRecords' => $takenDiscsRecords, 'currentCourseRecords' => $currentCourseRecords, 'takenDiscSyllabi' => $takenDiscSyllabi, 'requestedDiscSyllabi' => $requestedDiscSyllabi, 'review' =>$review]);
 
     }
 
