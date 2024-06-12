@@ -2,12 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use ReflectionClass;
+use App\Enums\RoleId;
 use App\Models\Event;
+use App\Models\Review;
+use App\Models\Document;
+use App\Enums\DocumentType;
+use App\Models\Requisition;
+use Illuminate\Support\Facades\DB;
+use App\Models\RequisitionsVersion;
+use Illuminate\Support\Facades\Auth;
+use App\Models\TakenDisciplinesVersion;
 
 class RecordController extends Controller
 {
-    
-    public function requisitionRecord() {
+    public function requisitionRecord($requisitionId) {
 
         $selectedColumns = ['created_at', 
                             'type', 
@@ -15,40 +24,26 @@ class RecordController extends Controller
                             'author_nusp', 
                             'id'];
 
-        $events = Event::select($selectedColumns)->get();
+        $events = Event::where('requisition_id', $requisitionId)
+                        ->select($selectedColumns)
+                        ->get();
 
-        return view('pages.records.requisitionRecord', ['events' => $events]);
+        $roleToPreviousRouteMappings = 
+        [ RoleId::REVIEWER => route('reviewer.show', ['requisitionId' => $requisitionId]),
+          RoleId::SG => route('sg.show', ['requisitionId' => $requisitionId]),
+          RoleId::MAC_SECRETARY => route('department.show', ['departmentName' => 'mac', 'requisitionId' => $requisitionId]),
+          RoleId::MAE_SECRETARY => route('department.show', ['departmentName' => 'mae', 'requisitionId' => $requisitionId]),
+          RoleId::MAT_SECRETARY => route('department.show', ['departmentName' => 'mat', 'requisitionId' => $requisitionId]),
+          RoleId::MAP_SECRETARY => route('department.show', ['departmentName' => 'mac', 'requisitionId' => $requisitionId])
+        ];
+
+        $previousRoute = $roleToPreviousRouteMappings[Auth::user()->current_role_id];
+
+        return view('pages.records.requisitionRecord', ['events' => $events, 'previousRoute' => $previousRoute]);
     }
 
     public function requisitionVersion($eventId) {
 
         echo('ola');
-        // $event = Event::find($requisitionId);
-        
-        // $documents = $req->documents->sortByDesc('created_at');
-
-        // $takenDiscsRecords = [];
-        // $currentCourseRecords = [];
-        // $takenDiscSyllabi = [];
-        // $requestedDiscSyllabi = [];
-
-        // foreach ($documents as $document) {
-        //     switch ($document->type) {
-        //         case DocumentType::TAKEN_DISCS_RECORD:
-        //             array_push($takenDiscsRecords, $document);
-        //             break;
-        //         case DocumentType::CURRENT_COURSE_RECORD:
-        //             array_push($currentCourseRecords, $document);
-        //             break;
-        //         case DocumentType::TAKEN_DISCS_SYLLABUS:
-        //             array_push($takenDiscSyllabi, $document);
-        //             break;
-        //         case DocumentType::REQUESTED_DISC_SYLLABUS:
-        //             array_push($requestedDiscSyllabi, $document);
-        //             break;
-        //     }
-        // }
-
-        // return view('pages.department.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines, 'takenDiscsRecords' => $takenDiscsRecords, 'currentCourseRecords' => $currentCourseRecords, 'takenDiscSyllabi' => $takenDiscSyllabi, 'requestedDiscSyllabi' => $requestedDiscSyllabi, 'departmentName' => $departmentName]);
     }
 }
