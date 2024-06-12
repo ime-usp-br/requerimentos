@@ -23,7 +23,7 @@
     <header>
         <h1>Andamento do requerimento</h1>
         <nav>
-            <a href="{{ url()->previous() }}" class="button">Voltar</a>
+            <a href="{{ $previousRoute }}" class="button">Voltar</a>
         </nav>
     </header>
     <div class="content">
