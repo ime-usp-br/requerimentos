@@ -64,10 +64,10 @@
                     </label>
 
                     <label class="radio-button" >
-                        <input type="radio" id="coordination" name="role" value="Coordenador">
+                        <input type="radio" id="coordination" name="role" value="Department">
                         <span class="label-visible">
                             <span class="fake-radiobutton"></span>
-                            Coordenador
+                            Secretaria de Departamento
                         </span>
                     </label>
 <!-- 
