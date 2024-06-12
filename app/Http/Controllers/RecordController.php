@@ -44,6 +44,61 @@ class RecordController extends Controller
 
     public function requisitionVersion($eventId) {
 
-        echo('ola');
+        $event = Event::find($eventId);
+        $requisitionId = $event->requisition_id;
+
+        $requisitionVersion = Requisition::find($requisitionId);
+
+        if ($requisitionVersion->latest_version !== $event->version) {
+            $requisitionVersion = RequisitionsVersion
+                            ::where('requisition_id', $requisitionId)
+                            ->where('version', $event->version)
+                            ->first();
+        }
+
+        $requisitionVersionDocuments = Document
+                                    ::where('created_at', 
+                                            '<=', 
+                                            $event->created_at)
+                                    ->where('requisition_id', $requisitionId)
+                                    ->get(); 
+
+        $takenDisciplines = TakenDisciplinesVersion
+                            ::where('requisition_id', $requisitionId)
+                            ->where('version', $event->version)
+                            ->get();
+
+        $takenDiscsRecords = [];
+        $currentCourseRecords = [];
+        $takenDiscSyllabi = [];
+        $requestedDiscSyllabi = [];
+
+        foreach ($requisitionVersionDocuments as $document) {
+            
+            switch ($document->type) {
+                case DocumentType::TAKEN_DISCS_RECORD:
+                    array_push($takenDiscsRecords, $document);
+                    break;
+                case DocumentType::CURRENT_COURSE_RECORD:
+                    array_push($currentCourseRecords, $document);
+                    break;
+                case DocumentType::TAKEN_DISCS_SYLLABUS:
+                    array_push($takenDiscSyllabi, $document);
+                    break;
+                case DocumentType::REQUESTED_DISC_SYLLABUS:
+                    array_push($requestedDiscSyllabi, $document);
+                    break;
+            }
+        }
+
+        return view('pages.records.requisitionVersion', 
+                    ['req' => $requisitionVersion, 
+                    'event' => $event,
+                    'takenDiscs' => $takenDisciplines, 
+                    'takenDiscsRecords' => $takenDiscsRecords, 
+                    'currentCourseRecords' => $currentCourseRecords, 
+                    'takenDiscSyllabi' => $takenDiscSyllabi, 
+                    'requestedDiscSyllabi' => $requestedDiscSyllabi]);
+        
     }
 }
