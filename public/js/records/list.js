@@ -9,8 +9,8 @@ window.onload = function () {
 
         // ordenando as linhas pela primeira coluna, em ordem decrescente
         order: [
-                [0, "desc"],
-                [1, "desc"]
+                [1, "desc"],
+                [2, "desc"]
                ],
 
         // permitindo um scroll horizontal quando a tabela não cabe na tela
