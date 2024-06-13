@@ -68,6 +68,7 @@ class RecordController extends Controller
                                             '<=', 
                                             $event->created_at)
                                     ->where('requisition_id', $requisitionId)
+                                    ->orderBy('created_at', 'desc')
                                     ->get(); 
 
         
