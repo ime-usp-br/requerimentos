@@ -27,10 +27,12 @@
         </nav>
     </header>
     <div class="content">
-        <x-table :columns="['Data de ocorrência', 'Tipo de evento', 'Usuário responsável pelo evento', 'Número USP do usuário responsável', 'Id']">
+        <x-table :columns="['Data de ocorrência', 'Horário de ocorrência', 'Tipo de evento', 'Usuário responsável pelo evento', 'Número USP do usuário responsável', 'Id']">
             @foreach ($events as $event)
                 <tr>
-                    <td>{{ \Illuminate\Support\Carbon::parse($event->created_at->toDateString())->format('d/m/Y') }}</td>
+                    {{--<td>{{ \Illuminate\Support\Carbon::parse($event->created_at->toDateString())->format('d/m/Y') }}</td>--}}
+                    <td>{{ $event->created_at->format('d/m/Y') }}</td>
+                    <td> {{ $event->created_at->format('H:i')}} </td>
                     <td>{{ $event->type }}</td>
                     <td>{{ $event->author_name }}</td>
                     <td>{{ $event->author_nusp }}</td>
