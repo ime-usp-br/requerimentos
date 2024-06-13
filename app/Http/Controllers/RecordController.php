@@ -47,14 +47,21 @@ class RecordController extends Controller
         $event = Event::find($eventId);
         $requisitionId = $event->requisition_id;
 
-        $requisitionVersion = Requisition::find($requisitionId);
+        $requisitionVersion = Requisition::with('takenDisciplines')->find($requisitionId);
+        $takenDisciplines = $requisitionVersion->takenDisciplines;
 
         if ($requisitionVersion->latest_version !== $event->version) {
+
             $requisitionVersion = RequisitionsVersion
                             ::where('requisition_id', $requisitionId)
                             ->where('version', $event->version)
                             ->first();
-        }
+            
+            $takenDisciplines = TakenDisciplinesVersion
+                            ::where('requisition_id', $requisitionId)
+                            ->where('version', $event->version)
+                            ->get();
+        } 
 
         $requisitionVersionDocuments = Document
                                     ::where('created_at', 
@@ -63,10 +70,9 @@ class RecordController extends Controller
                                     ->where('requisition_id', $requisitionId)
                                     ->get(); 
 
-        $takenDisciplines = TakenDisciplinesVersion
-                            ::where('requisition_id', $requisitionId)
-                            ->where('version', $event->version)
-                            ->get();
+        
+
+        // dd($takenDisciplines);
 
         $takenDiscsRecords = [];
         $currentCourseRecords = [];
