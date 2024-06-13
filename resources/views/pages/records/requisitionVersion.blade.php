@@ -8,13 +8,13 @@
     <!-- ionicons -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-    <title>Detalhes da versão</title>
+    <title>Detalhes do requerimento</title>
 @endsection
 
 @section('content')
     <div class="content">
         <header>
-            <h1>Detalhes da versão </h1>
+            <h1>Detalhes do requerimento </h1>
             <a href="{{ route('record.requisition', ['requisitionId' => $event->requisition_id ]) }}" class="button">Voltar</a>
         </header>
         

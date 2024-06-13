@@ -16,24 +16,24 @@
     <!-- nosso css -->
     <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/student/list.css') }}"> 
 
-    <title>Lista de requerimentos</title>
+    <title>Histórico do requerimento</title>
 @endsection
 
 @section('content')
     <header>
-        <h1>Andamento do requerimento</h1>
+        <h1>Histórico do requerimento</h1>
         <nav>
             <a href="{{ $previousRoute }}" class="button">Voltar</a>
         </nav>
     </header>
     <div class="content">
-        <x-table :columns="['Data de ocorrência', 'Horário de ocorrência', 'Tipo de evento', 'Usuário responsável pelo evento', 'Número USP do usuário responsável', 'Id']">
+        <x-table :columns="['Evento', 'Data de ocorrência', 'Horário de ocorrência', 'Usuário responsável pelo evento', 'Número USP do usuário responsável', 'Id']">
             @foreach ($events as $event)
                 <tr>
                     {{--<td>{{ \Illuminate\Support\Carbon::parse($event->created_at->toDateString())->format('d/m/Y') }}</td>--}}
+                    <td>{{ $event->type }}</td>
                     <td>{{ $event->created_at->format('d/m/Y') }}</td>
                     <td> {{ $event->created_at->format('H:i')}} </td>
-                    <td>{{ $event->type }}</td>
                     <td>{{ $event->author_name }}</td>
                     <td>{{ $event->author_nusp }}</td>
                     <td>{{ $event->id }}</td>

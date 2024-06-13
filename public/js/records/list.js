@@ -8,7 +8,10 @@ window.onload = function () {
         dom: '<"table_nav"f>tp',
 
         // ordenando as linhas pela primeira coluna, em ordem decrescente
-        order: [[0, "desc"]],
+        order: [
+                [0, "desc"],
+                [1, "desc"]
+               ],
 
         // permitindo um scroll horizontal quando a tabela não cabe na tela
         scrollX: true,
