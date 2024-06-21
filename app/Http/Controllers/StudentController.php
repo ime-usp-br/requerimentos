@@ -154,13 +154,14 @@ class StudentController extends Controller
     public function update(RequisitionUpdateRequest $request, $requisitionId) {
 
         // isso aqui pode ser movido para o arquivo da RequisitionUpdateRequest
+        // $reqToBeUpdated = Requisition::find($requisitionId);
+        // $user = Auth::user();
+
+        // if (!$reqToBeUpdated || $reqToBeUpdated->nusp !== $user->codpes || $reqToBeUpdated->result !== 'Inconsistência nas informações') {
+        //     abort(403);
+        // }
+        
         $reqToBeUpdated = Requisition::find($requisitionId);
-        $user = Auth::user();
-
-        if (!$reqToBeUpdated || $reqToBeUpdated->nusp !== $user->codpes || $reqToBeUpdated->result !== 'Inconsistência nas informações') {
-            abort(403);
-        }
-
         $requisitionData = $request->getRequisitionData();
         $takenDisciplinesData = $request->getDisciplinesData();
 

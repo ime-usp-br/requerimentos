@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Requisition;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RequisitionUpdateRequest extends FormRequest
@@ -14,18 +16,29 @@ class RequisitionUpdateRequest extends FormRequest
     public function authorize()
     {
 
-        // $routeName = $this->route()->getName();
+        $requisitionId = $this->route('requisitionId');
+        $reqToBeUpdated = Requisition::find($requisitionId);
 
-        // if ($routeName === 'student.update') {
+        if (!$reqToBeUpdated) {
+            abort(404);
+        }
+
+        $routeName = $this->route()->getName();
+
+        if ($routeName === 'student.update') {
             
-        //     $reqToBeUpdated = Requisition::find($requisitionId);
-        //     $user = Auth::user();
+            $user = Auth::user();
 
-        //     if (!$reqToBeUpdated || $reqToBeUpdated->nusp !== $user->codpes || $reqToBeUpdated->result !== 'Inconsistência nas informações') {
-        //         abort(403);
-        //     }
-        // }
+            // requerimento não é do aluno que está tentando atualizar
+            if ($reqToBeUpdated->nusp !== $user->codpes) {
+                abort(404);
+            }
 
+            // aluno não está autorizado a atualizar (retorna um 403) 
+            if ($reqToBeUpdated->result !== 'Inconsistência nas informações') {
+                return false;
+            }
+        }
 
         return true;
     }
@@ -84,6 +97,7 @@ class RequisitionUpdateRequest extends FormRequest
 
     protected function passedValidation() 
     {
+
         $validatedData = $this->validated();
         $routeName = $this->route()->getName();
 
