@@ -58,19 +58,28 @@ class AuthorizationTest extends TestCase
         $response->assertStatus(404);
     }
 
-    // public function test_student_cant_access_sg_list_page()
-    // {
-    //     $response = $this->get('/');
+    public function test_student_cant_access_sg_list_page()
+    {
 
-    //     $response->assertStatus(200);
-    // } 
+        $studentUser = User::factory()->create([
+            'current_role_id' => RoleId::STUDENT,
+        ]);
 
-    // public function test_student_cant_access_reviewer_list_page()
-    // {
-    //     $response = $this->get('/');
+        $response = $this->actingAs($studentUser)->get(route('sg.list'));
 
-    //     $response->assertStatus(200);
-    // } 
+        $response->assertStatus(404);
+    } 
+
+    public function test_student_cant_access_reviewer_list_page()
+    {
+        $studentUser = User::factory()->create([
+            'current_role_id' => RoleId::STUDENT,
+        ]);
+
+        $response = $this->actingAs($studentUser)->get(route('reviewer.list'));
+
+        $response->assertStatus(404);
+    } 
     
     // public function test_student_cant_update_its_requisition_when_not_allowed_by_sg()
     // {

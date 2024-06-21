@@ -26,7 +26,6 @@ class CheckCurrentRole
             }
         }
         
-        abort(403, 'Você não está autorizado a acessar essa página.');
-        // talvez seja melhor deixar como 404 pra não vazar info do backend
+        abort(404);
     }
 }
