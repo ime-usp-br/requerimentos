@@ -81,12 +81,26 @@ class AuthorizationTest extends TestCase
         $response->assertStatus(404);
     } 
     
-    // public function test_student_cant_update_its_requisition_when_not_allowed_by_sg()
-    // {
-    //     $response = $this->get('/');
+    public function test_student_cant_update_its_requisition_when_not_allowed_by_sg()
+    {   
+        $requisitionId = $this->faker->unique()->numberBetween(1, 99999999);
+        $studentUserNUSP = $this->faker->unique()->numberBetween(10000000, 99999999);
 
-    //     $response->assertStatus(200);
-    // } 
+        $studentUser = User::factory()->create([
+            'current_role_id' => RoleId::STUDENT,
+            'codpes' => $studentUserNUSP,
+        ]);
+
+        Requisition::factory()->create([
+            'result' => 'Sem resultado',
+            'id' => $requisitionId,
+            'nusp' => $studentUserNUSP,
+        ]);
+
+        $response = $this->actingAs($studentUser)->get(route('student.edit', ['requisitionId' => $requisitionId]));
+
+        $response->assertStatus(403);
+    } 
     
     // public function test_student_cant_see_other_students_requisition_detail_page()
     // {

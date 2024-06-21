@@ -63,8 +63,10 @@ class StudentController extends Controller
             }
 
             return view('pages.student.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines, 'takenDiscsRecords' => $takenDiscsRecords, 'currentCourseRecords' => $currentCourseRecords, 'takenDiscSyllabi' => $takenDiscSyllabi, 'requestedDiscSyllabi' => $requestedDiscSyllabi]);
-        } elseif ($routeName === 'student.edit') {
+        } elseif ($routeName === 'student.edit' && $req->result === 'Inconsistência nas informações') {
             return view('pages.student.editRequisition', ['req' => $req, 'takenDiscs' => $req->takenDisciplines]);
+        } else {
+            abort(403);
         }
     }
 
