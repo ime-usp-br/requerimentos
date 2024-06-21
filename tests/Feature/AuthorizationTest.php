@@ -102,10 +102,23 @@ class AuthorizationTest extends TestCase
         $response->assertStatus(403);
     } 
     
-    // public function test_student_cant_see_other_students_requisition_detail_page()
-    // {
-    //     $response = $this->get('/');
+    public function test_student_cant_see_other_students_requisition_detail_page()
+    {
+        
+        $studentUser = User::factory()->create([
+            'current_role_id' => RoleId::STUDENT,
+            'codpes' => $this->faker->unique()->numberBetween(10000000, 99999999),
+        ]);
 
-    //     $response->assertStatus(200);
-    // }  
+        $requisitionId = $this->faker->unique()->numberBetween(1, 99999999);
+
+        Requisition::factory()->create([
+            'nusp' => $this->faker->unique()->numberBetween(10000000, 99999999),
+            'id' => $requisitionId
+        ]);
+
+        $response = $this->actingAs($studentUser)->get(route('student.show', ['requisitionId' => $requisitionId]));
+
+        $response->assertStatus(404);
+    }  
 }
