@@ -33,7 +33,6 @@ class CreateRequisitionsTable extends Migration
             $table->boolean('validated');
             $table->text('observations')->nullable();
 
-            // resultado
             $table->enum('result', ['Sem resultado', 'Inconsistência nas informações', 'Deferido', 'Indeferido']);
             $table->text('result_text')->nullable();
         });

@@ -54,7 +54,7 @@ class RequisitionWriteTest extends TestCase
             'requested-disc-name' => $this->faker->sentence(3),
             'requested-disc-type' => $this->faker->randomElement(['Obrigatória', 'Extracurricular', 'Optativa Livre', 'Optativa Eletiva']),
             'requested-disc-code' => $this->faker->word(),
-            'disc-department' => $this->faker->randomElement(['MAC', 'MAE', 'MAP', 'MAP', 'Disciplina de fora do IME']),
+            'disc-department' => $this->faker->randomElement(['MAC', 'MAE', 'MAT', 'MAP', 'Disciplina de fora do IME']),
             'takenDiscCount' => '2',
             'observations' => $this->faker->sentence(30),
             'taken-disc-record' => $takenDiscRecord,
