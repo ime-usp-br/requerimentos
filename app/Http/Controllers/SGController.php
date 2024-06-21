@@ -143,31 +143,6 @@ class SGController extends Controller
 
     public function update(RequisitionUpdateRequest $request, $requisitionId) {
         
-        // $takenDiscCount = (int) $request->takenDiscCount;
-        // $discsArray = [];
-
-        // for ($i = 1; $i <= $takenDiscCount; $i++) {
-        //     $discsArray["disc$i-name"] = 'required | max:255';
-        //     $discsArray["disc$i-code"] = 'max:255';
-        //     $discsArray["disc$i-year"] = 'required | numeric | integer';
-        //     $discsArray["disc$i-grade"] = 'required | numeric';
-        //     $discsArray["disc$i-semester"] = 'required';
-        //     $discsArray["disc$i-institution"] = 'required';
-        // }
-
-        // $inputArray = [
-        //     'name' => 'required | max:255',
-        //     'email' => 'required | max:255 | email ',
-        //     'nusp' => 'required | numeric | integer',
-        //     'course' => 'required | max:255',
-        //     'requested-disc-name' => 'required | max:255',
-        //     'requested-disc-type' => 'required',
-        //     'requested-disc-code' => 'required',
-        //     'disc-department' => 'required'
-        // ];
-
-        // $data = $request->validate(array_merge($inputArray, $discsArray));
-        
         $data = $request->validated();
 
         $requisitionData = $request->getRequisitionData();
