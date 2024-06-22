@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\RoleName;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SGController;
 use App\Http\Controllers\RoleController;
@@ -31,7 +32,7 @@ Route::post('/trocar-papel', [RoleController::class, 'switchRole'])->name('role.
 
 Route::middleware('auth')->group(function() {
     
-    // Route::prefix('aluno')->middleware('role:Aluno')->group(function () {
+    // Route::prefix('aluno')->middleware('role:' . RoleName::STUDENT)->group(function () {
     Route::prefix('aluno')->group(function () {
         Route::get('/lista', [StudentController::class, 'list'])->name('student.list');
 
@@ -46,24 +47,25 @@ Route::middleware('auth')->group(function() {
         Route::post('/atualizar/{requisitionId}', [StudentController::class, 'update'])->name('student.update');
     });
 
-    // Route::prefix('secretaria')->middleware('role:Secretaria de Graduação')->group(function () {
-    Route::prefix('secretaria')->group(function () {
+    Route::prefix('secretaria')->middleware('role:' . RoleName::SG)->group(function () {
+        Route::prefix('secretaria')->group(function () {
 
-        Route::get('/lista', [SGController::class, 'list'])->name('sg.list');
+            Route::get('/lista', [SGController::class, 'list'])->name('sg.list');
 
-        Route::view('/novo-requerimento', 'pages.sg.newRequisition')->name('sg.newRequisition');
+            Route::view('/novo-requerimento', 'pages.sg.newRequisition')->name('sg.newRequisition');
 
-        Route::get('/detalhe/{requisitionId}', [SGController::class, 'show'])->name('sg.show');
-        
-        Route::get('/historico-disciplina/{subjectID}', [SGController::class, 'discHistory'])->name('sg.discHistory');
+            Route::get('/detalhe/{requisitionId}', [SGController::class, 'show'])->name('sg.show');
+            
+            Route::get('/historico-disciplina/{subjectID}', [SGController::class, 'discHistory'])->name('sg.discHistory');
 
-        Route::post('/novo-requerimento', [SGController::class, 'create'])->name('sg.create');
+            Route::post('/novo-requerimento', [SGController::class, 'create'])->name('sg.create');
 
-        Route::post('/atualizar/{requisitionId}', [SGController::class, 'update'])->name('sg.update');
+            Route::post('/atualizar/{requisitionId}', [SGController::class, 'update'])->name('sg.update');
 
-        Route::get('/usuarios', [SGController::class, 'users'])->name('sg.users');
-        
-        Route::post('/enviar-requerimento/{requisitionId}', [ReviewController::class, 'createReview'])->name('sg.sendToReviewer');
+            Route::get('/usuarios', [SGController::class, 'users'])->name('sg.users');
+            
+            Route::post('/enviar-requerimento/{requisitionId}', [ReviewController::class, 'createReview'])->name('sg.sendToReviewer');
+        });
     });
 
     Route::prefix('departamento')->group(function () {
@@ -73,14 +75,16 @@ Route::middleware('auth')->group(function() {
 
         Route::get('/{departmentName}/usuarios', [DepartmentController::class, 'users'])->name('department.users');
     });
-
-    Route::prefix('parecerista')->group(function () {
+    
+    Route::prefix('parecerista')->middleware('role:'. RoleName::REVIEWER)->group(function () {
+    // Route::prefix('parecerista')->group(function () {
         Route::get('/lista', [ReviewController::class, 'list'])->name('reviewer.list');
 
         Route::get('/detalhe/{requisitionId}', [ReviewController::class, 'show'])->name('reviewer.show');
         
         Route::post('/atualizar/{requisitionId}', [ReviewController::class, 'update'])->name('reviewer.update');
     });
+    // });
 
     // Route::group(['middleware' => 'role:Secretaria de Graduação,Secretaria do MAC,Secretaria do MAT,Secretaria do MAE,Secretaria do MAP,Parecerista'], function () {
         

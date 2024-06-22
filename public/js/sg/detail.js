@@ -1,6 +1,6 @@
 window.onload = function() {
     // o form está sendo submetido por javascript para diferenciar entre
-    // os dois botões que podem ser clickados para submetê-lo, e para
+    // os três botões que podem ser clickados para submetê-lo, e para
     // remover o atributo "disabled" dos selects 
     const form = document.querySelector("#form");
     form.addEventListener("submit", (event) => {
