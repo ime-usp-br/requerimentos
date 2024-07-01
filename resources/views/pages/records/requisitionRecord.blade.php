@@ -31,7 +31,7 @@
             @foreach ($events as $event)
                 <tr>
                     {{--<td>{{ \Illuminate\Support\Carbon::parse($event->created_at->toDateString())->format('d/m/Y') }}</td>--}}
-                    <td>{{ $event->type }}</td>
+                    <td>{{ is_null($event->message) ? $event->type : $event->message }}</td>
                     <td>{{ $event->created_at->format('d/m/Y') }}</td>
                     <td> {{ $event->created_at->format('H:i')}} </td>
                     <td>{{ $event->author_name }}</td>

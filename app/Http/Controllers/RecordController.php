@@ -22,7 +22,8 @@ class RecordController extends Controller
                             'type', 
                             'author_name', 
                             'author_nusp', 
-                            'id'];
+                            'id',
+                            'message'];
 
         $events = Event::where('requisition_id', $requisitionId)
                         ->select($selectedColumns)
