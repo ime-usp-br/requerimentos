@@ -63,7 +63,7 @@ Route::middleware('auth')->group(function() {
 
         Route::get('/usuarios', [SGController::class, 'users'])->name('sg.users');
         
-        Route::post('/enviar-requerimento/{requisitionId}', [ReviewController::class, 'createReview'])->name('sg.sendToReviewer');
+
     });
 
     Route::prefix('departamento')->group(function () {
@@ -94,9 +94,12 @@ Route::middleware('auth')->group(function() {
         
         Route::get('/pareceres/{requisitionId}', [ReviewController::class, 'reviews'])->name('reviewer.reviews');
 
+        Route::post('/enviar-requerimento/{requisitionId}', [ReviewController::class, 'createReview'])->name('reviewer.sendToReviewer');
+
         Route::get('/historico/requerimento/{requisitionId}', [RecordController::class, 'requisitionRecord'])->name('record.requisition');
 
         Route::get('/historico/versao/{eventId}', [RecordController::class, 'requisitionVersion'])->name('record.requisitionVersion');
+
 
     // });
 });
