@@ -30,7 +30,6 @@
         <x-table :columns="['Evento', 'Data de ocorrência', 'Horário de ocorrência', 'Usuário responsável pelo evento', 'Número USP do usuário responsável', 'Id']">
             @foreach ($events as $event)
                 <tr>
-                    {{--<td>{{ \Illuminate\Support\Carbon::parse($event->created_at->toDateString())->format('d/m/Y') }}</td>--}}
                     <td>{{ is_null($event->message) ? $event->type : $event->message }}</td>
                     <td>{{ $event->created_at->format('d/m/Y') }}</td>
                     <td> {{ $event->created_at->format('H:i')}} </td>

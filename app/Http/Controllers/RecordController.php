@@ -74,8 +74,6 @@ class RecordController extends Controller
 
         
 
-        // dd($takenDisciplines);
-
         $takenDiscsRecords = [];
         $currentCourseRecords = [];
         $takenDiscSyllabi = [];

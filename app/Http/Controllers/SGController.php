@@ -82,11 +82,6 @@ class SGController extends Controller
             $req->result_text = null;
             $req->validated = False;
             $req->latest_version = 1;
-
-            // $req->taken_discs_record = $request->file('taken-disc-record')->store('test');
-            // $req->current_course_record = $request->file('course-record')->store('test');
-            // $req->taken_discs_syllabus = $request->file('taken-disc-syllabus')->store('test');
-            // $req->requested_disc_syllabus = $request->file('requested-disc-syllabus')->store('test');
             $req->observations = $request->observations;
 
             $req->save();

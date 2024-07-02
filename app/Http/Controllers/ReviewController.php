@@ -21,10 +21,7 @@ class ReviewController extends Controller
 
         $selectedColumns = ['requisitions.created_at', 'student_name', 'nusp','requested_disc','requisitions.id'];
 
-        // $reqs = Review::where('reviewer_nusp', $user->codpes)->join('requisitions', 'requisition_id', '=', 'requisitions.id')->select($selectedColumns)->get();
-
         $reqs = DB::table('reviews')->join('requisitions', 'reviews.requisition_id', '=', 'requisitions.id')->where('reviewer_nusp', $user->codpes)->select($selectedColumns)->get();
-
 
         return view('pages.reviewer.list', ['reqs' => $reqs]);
     }
