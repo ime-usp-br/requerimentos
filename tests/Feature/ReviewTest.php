@@ -112,4 +112,53 @@ class ReviewTest extends TestCase
         ]);
 
     }
+
+    public function test_review_was_successfully_updated_by_reviewer()
+    {
+
+        $initialReview = Review::factory()->create([
+            'requisition_id' => $this->req->id
+        ]);
+        
+        // criando um parecerista 
+        $reviewer = User::factory()->create([
+            'current_role_id' => RoleId::REVIEWER,
+            'name' => $initialReview->reviewer_name,
+            'codpes' => $initialReview->reviewer_nusp,
+        ]);
+
+        $postData = [
+            'decision' => $this->faker->randomElement(['Sem decisão', 'Deferido', 'Indeferido']),
+            'justification' => $this->faker->sentence(40)
+        ];
+
+        $response = $this->followingRedirects()->actingAs($reviewer)->post(route('reviewer.update', $this->req->id), $postData);
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('events', [
+            'type' => EventType::RETURNED_BY_REVIEWER,
+            'message' => "Retornado pelo parecerista " . $reviewer->name,
+            'requisition_id' => $this->req->id,
+            'version' => $this->req->latest_version,
+            'author_name' => $reviewer->name,
+            'author_nusp' => $reviewer->codpes
+        ]);
+
+        $this->assertDatabaseHas('requisitions', [
+            'internal_status' => "Retornado pelo parecerista " . $reviewer->name,
+            'situation' => EventType::RETURNED_BY_REVIEWER,
+            'id' => $this->req->id,
+        ]);
+
+        $this->assertDatabaseHas('reviews', [
+            'reviewer_nusp' => $reviewer->codpes,
+            'requisition_id' => $this->req->id,
+            'reviewer_decision' => $postData['decision'],
+            'justification' => $postData['justification'],
+            'reviewer_name' => $reviewer->name
+        ]);
+        
+        $response->assertSee(['Parecer salvo', 'As informações do parecer foram salvas']);
+    }
 }
