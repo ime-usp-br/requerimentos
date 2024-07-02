@@ -16,7 +16,7 @@ class RequisitionReadTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
-    protected $frontEndTablePageSize = 10;
+    protected $tablePageSize = 10;
 
     protected function setUp() : void 
     {
@@ -24,17 +24,16 @@ class RequisitionReadTest extends TestCase
 
         $this->seed();
         $this->setUpFaker();
-
     }
 
-    public function test_new_requisitions_are_shown_on_student_list_page()
+    public function test_new_requisitions_are_being_shown_on_student_list_page()
     {
 
         $studentUser = User::factory()->create([
             'current_role_id' => RoleId::STUDENT,
         ]);
         
-        Requisition::factory()->count($this->frontEndTablePageSize)->create([
+        Requisition::factory()->count($this->tablePageSize)->create([
             'student_name' =>  $studentUser->name,
             'nusp' => $studentUser->codpes
         ]);
@@ -42,7 +41,7 @@ class RequisitionReadTest extends TestCase
         $requisitions = Requisition::all();
 
         TakenDisciplines::factory()
-                        ->count(3 * $this->frontEndTablePageSize)
+                        ->count(3 * $this->tablePageSize)
                         ->create(['requisition_id' => $this->faker->randomElement($requisitions)->id,
                         ]);
 
@@ -62,9 +61,9 @@ class RequisitionReadTest extends TestCase
         }
     }
 
-    public function test_new_requisitions_are_shown_on_sg_list_page()
+    public function test_new_requisitions_are_being_shown_on_sg_list_page()
     {
-        Requisition::factory()->count($this->frontEndTablePageSize)->create();
+        Requisition::factory()->count($this->tablePageSize)->create();
 
         $userFromSG = User::factory()->create([
             'current_role_id' => RoleId::SG,
@@ -83,10 +82,10 @@ class RequisitionReadTest extends TestCase
         }
     }
 
-    public function test_new_requisitions_are_shown_on_reviewer_list_page()
+    public function test_new_requisitions_are_being_shown_on_reviewer_list_page()
     {
 
-        Requisition::factory()->count($this->frontEndTablePageSize)->create();
+        Requisition::factory()->count($this->tablePageSize)->create();
 
         $reviewer = User::factory()->create([
             'current_role_id' => RoleId::REVIEWER,
@@ -94,7 +93,7 @@ class RequisitionReadTest extends TestCase
 
         $requisitions = Requisition::all();
 
-        Review::factory()->count($this->frontEndTablePageSize)->create([
+        Review::factory()->count($this->tablePageSize)->create([
             'requisition_id' => $this->faker->randomElement($requisitions)->id,
             'reviewer_nusp' => $reviewer->codpes,
             'reviewer_name' => $reviewer->name
