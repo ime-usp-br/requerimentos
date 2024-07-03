@@ -43,10 +43,6 @@ class GlobalController extends Controller
             $user = User::firstOrNew(['codpes' => $userSenhaUnica->codpes]);
         }
 
-        if ($user->codpes === 10758748) {
-            $user->givePermissionTo('admin');
-        }
-
         // bind dos dados retornados
         $user->codpes = $userSenhaUnica->codpes;
         $user->email = $userSenhaUnica->email ?? $userSenhaUnica->emailUsp ?? $userSenhaUnica->emailAlternativo ?? 'invalido' . $user->codpes . '@usp.br';
