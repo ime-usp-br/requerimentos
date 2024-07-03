@@ -244,15 +244,152 @@ class RequisitionWriteTest extends TestCase
         }
     }
 
-    // public function test_requisition_was_successfully_updated_on_student_update_page()
-    // {
+    public function test_requisition_was_successfully_updated_on_student_update_page()
+    {
+        $requisitionId = $this->faker->numberBetween(1, 99999999);
+        $userNUSP = $this->faker->numberBetween(10000000, 99999999);
+        $studentUser = User::factory()->create([
+            'current_role_id' => RoleId::STUDENT,
+            'codpes' => $userNUSP,
+        ]);
+        
+        $req = Requisition::factory()->create([
+            'id' => $requisitionId,
+            'result' => 'Inconsistência nas informações',
+            'nusp' => $userNUSP,
+        ]);
 
+        $firstDiscId = $this->faker->numberBetween(1, 99999999);
+        $firstDisc = TakenDisciplines::factory()->create([
+            'requisition_id' => $requisitionId,
+            'id' => $firstDiscId,
+        ]);
 
-    // }
+        $secondDiscId = $this->faker->numberBetween(1, 99999999);
+        $secondDisc = TakenDisciplines::factory()->create([
+            'requisition_id' => $requisitionId,
+            'id' => $secondDiscId
+        ]);
+
+        // documentos falsos
+        $takenDiscRecord = UploadedFile::fake()->create('takenDiscRecord.pdf', 500);
+        $courseRecord = UploadedFile::fake()->create('courseRecord.pdf', 2000);
+        $takenDiscSyllabus = UploadedFile::fake()->create('takenDiscSyllabus.pdf', 1000);
+        $requestedDiscSyllabus = UploadedFile::fake()->create('requestedDiscSyllabus.pdf', 200);
+
+        $postData = [
+            'course' => $this->faker->randomElement(['Bacharelado em Matemática', 'Bacharelado em Estatística', 'Bacharelado em Ciência da Computação', 'Bacharelado em Matemática', 'Bacharelado em Matemática Aplicada e Computacional', 'Bacharelado em Matemática Aplicada', 'Licenciatura em Matemática']),
+            'disc1-name' => $this->faker->sentence(3),
+            'disc1-institution' => $this->faker->sentence(3),
+            'disc1-code' => $this->faker->word(),
+            'disc1-year' => $this->faker->year(),
+            'disc1-grade' => $this->faker->randomFloat(2, 0, 10),
+            'disc1-semester' => $this->faker->randomElement(['Primeiro', 'Segundo']),
+            'disc1-id' => $firstDiscId,
+            'disc2-name' => $this->faker->sentence(3),
+            'disc2-institution' => $this->faker->sentence(3),
+            'disc2-code' => $this->faker->word(),
+            'disc2-year' => $this->faker->year(),
+            'disc2-grade' => $this->faker->randomFloat(2, 0, 10),
+            'disc2-semester' => $this->faker->randomElement(['Primeiro', 'Segundo']),
+            'disc2-id' => $secondDiscId,
+            'requested-disc-name' => $this->faker->sentence(3),
+            'requested-disc-type' => $this->faker->randomElement(['Obrigatória', 'Extracurricular', 'Optativa Livre', 'Optativa Eletiva']),
+            'requested-disc-code' => $this->faker->word(),
+            'disc-department' => $this->faker->randomElement(['MAC', 'MAE', 'MAT', 'MAP', 'Disciplina de fora do IME']),
+            'takenDiscCount' => '2',
+            'observations' => $this->faker->sentence(30),
+            'button' => null,
+            'taken-disc-record' => $takenDiscRecord,
+            'course-record' => $courseRecord,
+            'taken-disc-syllabus' => $takenDiscSyllabus,
+            'requested-disc-syllabus' => $requestedDiscSyllabus,
+        ];
+
+        $response = $this->followingRedirects()->actingAs($studentUser)->post(route('student.update', ['requisitionId' => $requisitionId]), $postData);
+
+        $response->assertStatus(200);
+
+        $response->assertSee(['Requerimento salvo', 'As novas informações do requerimento foram salvas com sucesso']);
+
+        $updatedReq = Requisition::where(['id' => $requisitionId])->first();
+
+        $this->assertDatabaseHas('events', [
+            'type' => EventType::RESEND_BY_STUDENT,
+            'requisition_id' => $requisitionId,
+            'author_name' => $studentUser->name,
+            'author_nusp' => $studentUser->codpes,
+            'version' => $updatedReq->latest_version, 
+        ]);
+
+        $this->assertDatabaseHas('requisitions', [
+            'department' => $postData['disc-department'], 
+            'requested_disc' => $postData['requested-disc-name'],
+            'requested_disc_type' => $postData['requested-disc-type'],
+            'requested_disc_code' => $postData['requested-disc-code'],
+            'course' => $postData['course'],
+            'observations' => $postData['observations'],
+            'situation' => EventType::RESEND_BY_STUDENT,
+            'internal_status' => EventType::RESEND_BY_STUDENT,
+            'latest_version' => $updatedReq->latest_version,
+        ]);
+        
+        $reqFields = $req->toArray();
+        unset($reqFields['latest_version'], 
+              $reqFields['id'], 
+              $reqFields['created_at'], 
+              $reqFields['updated_at'],
+              $reqFields['situation'], 
+              $reqFields['internal_status'], 
+              $reqFields['validated']);
+        $this->assertDatabaseHas('requisitions_versions', $reqFields);
+
+        $this->assertDatabaseHas('taken_disciplines', [
+            'name' => $postData['disc1-name'],
+            'code' => $postData['disc1-code'],
+            'year' => $postData['disc1-year'],
+            'semester' => $postData['disc1-semester'],
+            'grade' => $postData['disc1-grade'],
+            'institution' => $postData['disc1-institution'],
+            'requisition_id' => $requisitionId,
+        ]);
+
+        $firstDiscFields = $firstDisc->toArray();
+        unset($firstDiscFields['latest_version'], 
+              $firstDiscFields['id'], 
+              $firstDiscFields['created_at'], 
+              $firstDiscFields['updated_at']);
+        $this->assertDatabaseHas('taken_disciplines_versions', $firstDiscFields);
+
+        $this->assertDatabaseHas('taken_disciplines', [
+            'name' => $postData['disc2-name'],
+            'code' => $postData['disc2-code'],
+            'year' => $postData['disc2-year'],
+            'semester' => $postData['disc2-semester'],
+            'grade' => $postData['disc2-grade'],
+            'institution' => $postData['disc2-institution'],
+            'requisition_id' => $requisitionId,
+        ]);
+
+        $secondDiscFields = $secondDisc->toArray();
+        unset($secondDiscFields['latest_version'], 
+              $secondDiscFields['id'], 
+              $secondDiscFields['created_at'], 
+              $secondDiscFields['updated_at']);
+        $this->assertDatabaseHas('taken_disciplines_versions', $secondDiscFields);
+
+        $documentTypes = [DocumentType::TAKEN_DISCS_RECORD, DocumentType::CURRENT_COURSE_RECORD, DocumentType::TAKEN_DISCS_SYLLABUS, DocumentType::REQUESTED_DISC_SYLLABUS];
+
+        foreach ($documentTypes as $documentType) {
+            $this->assertDatabaseHas('documents', [
+                'requisition_id' => $requisitionId,
+                'type' => $documentType,
+            ]);
+        }
+    }
 
     public function test_requisition_was_successfully_updated_on_sg_requisition_detail_page()
     {   
-
         $requisitionId = $this->faker->numberBetween(1, 99999999);
         $userNUSP = $this->faker->numberBetween(10000000, 99999999);
         $userFromSG = User::factory()->create([
@@ -442,7 +579,5 @@ class RequisitionWriteTest extends TestCase
               $secondDiscFields['created_at'], 
               $secondDiscFields['updated_at']);
         $this->assertDatabaseHas('taken_disciplines_versions', $secondDiscFields);
-
-        
     }
 }

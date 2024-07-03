@@ -117,6 +117,7 @@ class RequisitionUpdateRequest extends FormRequest
             ];
         } elseif ($routeName === 'student.update') {
             $this->requisitionData = [
+                'course' => $validatedData['course'],
                 'department' => $validatedData['disc-department'],
                 'requested_disc' => $validatedData['requested-disc-name'],
                 'requested_disc_type' => $validatedData['requested-disc-type'],
@@ -139,7 +140,7 @@ class RequisitionUpdateRequest extends FormRequest
     }
 
     public function getRequisitionData() 
-    {
+    {   
         return $this->requisitionData;
     }
 

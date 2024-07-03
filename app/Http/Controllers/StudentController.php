@@ -13,6 +13,7 @@ use App\Models\RequisitionsVersion;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Models\TakenDisciplinesVersion;
+use Illuminate\Support\Facades\Session;
 use App\Http\Requests\RequisitionUpdateRequest;
 use App\Http\Requests\RequisitionCreationRequest;
 
@@ -28,6 +29,7 @@ class StudentController extends Controller
     }
 
     public function show($requisitionId) {
+        
         $req = Requisition::with('takenDisciplines', 'documents')->find($requisitionId);
         $user = Auth::user();
 
@@ -63,7 +65,7 @@ class StudentController extends Controller
             }
 
             return view('pages.student.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines, 'takenDiscsRecords' => $takenDiscsRecords, 'currentCourseRecords' => $currentCourseRecords, 'takenDiscSyllabi' => $takenDiscSyllabi, 'requestedDiscSyllabi' => $requestedDiscSyllabi]);
-        } elseif ($routeName === 'student.edit' && $req->result === 'Inconsistência nas informações') {
+        } elseif ($routeName === 'student.edit' && $req->result === 'Inconsistência nas informações' || Session::has('success')) {
             return view('pages.student.editRequisition', ['req' => $req, 'takenDiscs' => $req->takenDisciplines]);
         } else {
             abort(403);
@@ -156,7 +158,7 @@ class StudentController extends Controller
         $reqToBeUpdated = Requisition::find($requisitionId);
         $requisitionData = $request->getRequisitionData();
         $takenDisciplinesData = $request->getDisciplinesData();
-
+        
         DB::transaction(function() use ($requisitionData, 
                                         $takenDisciplinesData,
                                         $request, 
@@ -169,7 +171,7 @@ class StudentController extends Controller
             $takenDiscsRecord->requisition_id = $reqToBeUpdated->id;
             $takenDiscsRecord->type = DocumentType::TAKEN_DISCS_RECORD;
             $takenDiscsRecord->save();
-
+            
             $currentCourseRecord = new Document;
             $currentCourseRecord->path = $request->file('course-record')->store('test');
             $currentCourseRecord->requisition_id = $reqToBeUpdated->id;
@@ -244,8 +246,10 @@ class StudentController extends Controller
             $newReqVersion->version = $reqToBeUpdated->latest_version;
             $newReqVersion->save();        
 
+            // dd($requisitionData);
             // atualizando a versão mais recente na tabela principal
             $reqToBeUpdated->fill($requisitionData);
+
             $reqToBeUpdated->observations = request('observations');
             $reqToBeUpdated->situation = EventType::RESEND_BY_STUDENT;
             $reqToBeUpdated->internal_status = EventType::RESEND_BY_STUDENT;
@@ -283,7 +287,7 @@ class StudentController extends Controller
             $event->save();
 
         });
-
+        
         return redirect()->route('student.edit', ['requisitionId' => $requisitionId])->with('success', ['title message' => 'Requerimento salvo', 'body message' => 'As novas informações do requerimento foram salvas com sucesso']);
     }
 }
