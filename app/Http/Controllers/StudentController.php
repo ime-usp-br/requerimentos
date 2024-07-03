@@ -33,7 +33,10 @@ class StudentController extends Controller
         $req = Requisition::with('takenDisciplines', 'documents')->find($requisitionId);
         $user = Auth::user();
 
-        if (!$req || $req->nusp !== $user->codpes) {
+        // o cast para int foi adicionado porque o banco sqlite3 retorna 
+        // $req->nusp como uma string no server de produção. Sem esse cast,
+        // os testes falham dentro do server
+        if (!$req || (int) $req->nusp !== $user->codpes) {
             abort(404);
         }
 

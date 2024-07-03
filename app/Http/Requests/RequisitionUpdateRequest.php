@@ -29,12 +29,14 @@ class RequisitionUpdateRequest extends FormRequest
             
             $user = Auth::user();
 
-            // requerimento não é do aluno que está tentando atualizar
-            if ($reqToBeUpdated->nusp !== $user->codpes) {
+            // o cast para int foi adicionado porque o banco sqlite3 retorna 
+            // $req->nusp como uma string no server de produção. Sem esse cast,
+            // os testes falham dentro do server
+            if ((int) $reqToBeUpdated->nusp !== $user->codpes) {
                 abort(404);
             }
 
-            // aluno não está autorizado a atualizar (retorna um 403) 
+            // esse "return false" retorna um 403 para o cliente 
             if ($reqToBeUpdated->result !== 'Inconsistência nas informações') {
                 return false;
             }
