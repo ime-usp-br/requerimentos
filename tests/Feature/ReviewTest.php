@@ -28,23 +28,15 @@ class ReviewTest extends TestCase
         $this->seed();
         $this->setUpFaker();
 
-        // criando um requerimento que será enviado para o parecerista
+        // criando um requerimento que será usado em cada teste
         $requisitionId = $this->faker->numberBetween(1, 99999999);
         
         $this->req = Requisition::factory()->create([
             'id' => $requisitionId,
-            'result' => 'Inconsistência nas informações',
-            'nusp' => $this->faker->numberBetween(10000000, 99999999),
         ]);
 
-        TakenDisciplines::factory()->create([
+        TakenDisciplines::factory()->count(2)->create([
             'requisition_id' => $requisitionId,
-            'id' => $this->faker->numberBetween(1, 99999999),
-        ]);
-
-        TakenDisciplines::factory()->create([
-            'requisition_id' => $requisitionId,
-            'id' => $this->faker->numberBetween(1, 99999999)
         ]);
 
         $documentTypes = [DocumentType::TAKEN_DISCS_RECORD, DocumentType::CURRENT_COURSE_RECORD, DocumentType::TAKEN_DISCS_SYLLABUS, DocumentType::REQUESTED_DISC_SYLLABUS];
@@ -62,14 +54,12 @@ class ReviewTest extends TestCase
 
         $requisitionId = $this->req->id;
 
-        // criando um usuário para enviar o requerimento para o parecerista
         $currentRoleId = $this->faker->randomElement([RoleId::SG, RoleId::MAC_SECRETARY, RoleId::MAE_SECRETARY, RoleId::MAP_SECRETARY, RoleId::MAT_SECRETARY]);
         $senderUser = User::factory()->create([
             'current_role_id' => $currentRoleId,
             'codpes' => $this->faker->numberBetween(10000000, 99999999),
         ]);
 
-        // criando um parecerista 
         $reviewerNUSP = $this->faker->numberBetween(10000000, 99999999);
         $reviewerName = $this->faker->name();
         User::factory()->create([
@@ -120,7 +110,6 @@ class ReviewTest extends TestCase
             'requisition_id' => $this->req->id
         ]);
         
-        // criando um parecerista 
         $reviewer = User::factory()->create([
             'current_role_id' => RoleId::REVIEWER,
             'name' => $initialReview->reviewer_name,
