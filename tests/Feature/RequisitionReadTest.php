@@ -6,6 +6,7 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Enums\RoleId;
 use App\Models\Review;
+use App\Enums\Department;
 use App\Models\Requisition;
 use App\Models\TakenDisciplines;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -79,6 +80,36 @@ class RequisitionReadTest extends TestCase
             $response->assertSee($requisition->nusp);
             $response->assertSee($requisition->internal_status);
             $response->assertSee($requisition->department);
+        }
+    }
+
+    public function test_new_requisitions_are_being_shown_on_department_list_page()
+    {   
+        $departments = [['name' => Department::MAC, 'roleId' => RoleId::MAC_SECRETARY],
+                        ['name' => Department::MAT, 'roleId' => RoleId::MAT_SECRETARY],
+                        ['name' => Department::MAE, 'roleId' => RoleId::MAE_SECRETARY],
+                        ['name' => Department::MAP, 'roleId' => RoleId::MAP_SECRETARY]];
+        
+        $chosenDepartment = $this->faker->randomElement($departments);
+
+        Requisition::factory()
+                   ->count($this->tablePageSize)
+                   ->create(['department' => $chosenDepartment['name'],
+                             'validated' => true]);
+        
+        $userFromDepartment = User::factory()->create([
+            'current_role_id' => $chosenDepartment['roleId'],
+        ]);
+
+        $response = $this->actingAs($userFromDepartment)->get(route('department.list', $chosenDepartment['name'])); 
+
+        $response->assertStatus(200);
+
+        $requisitions = Requisition::all();
+        foreach ($requisitions as $requisition) {
+            $response->assertSee($requisition->student_name); 
+            $response->assertSee($requisition->nusp);
+            $response->assertSee($requisition->internal_status);
         }
     }
 
