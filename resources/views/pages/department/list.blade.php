@@ -32,7 +32,7 @@
                     @csrf
                     <label class="role">
                         Papel
-                        <select name="roleSwitch">
+                        <select name="role-switch">
                             @foreach (Auth::user()->roles as $role)
                                 <option value="{{ $role->id }}" 
                                     @if($role->id === Auth::user()->current_role_id) 
