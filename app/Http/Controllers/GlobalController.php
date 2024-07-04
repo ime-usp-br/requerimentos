@@ -52,12 +52,12 @@ class GlobalController extends Controller
         // a ordem em que os elementos estão nesse vetor determina a prioridade
         // que um papel tem quando um usuário com mais de um papel loga no 
         // sistema 
-        $rolesInfo = [[RoleName::REVIEWER, RoleId::REVIEWER, 'sg.list'],
+        $rolesInfo = [[RoleName::REVIEWER, RoleId::REVIEWER, 'reviewer.list'],
                       [RoleName::MAP_SECRETARY, RoleId::MAP_SECRETARY, 'department.list', 'map'],
-                      [RoleName::SG, RoleId::SG, 'sg.list'],
                       [RoleName::MAC_SECRETARY, RoleId::MAC_SECRETARY, 'department.list', 'mac'],
                       [RoleName::MAT_SECRETARY, RoleId::MAT_SECRETARY, 'department.list', 'mat'],
-                      [RoleName::MAE_SECRETARY, RoleId::MAE_SECRETARY, 'department.list', 'mae']];
+                      [RoleName::MAE_SECRETARY, RoleId::MAE_SECRETARY, 'department.list', 'mae'],
+                      [RoleName::SG, RoleId::SG, 'sg.list']];
 
         foreach ($rolesInfo as $roleInfo) {
             if ($user->hasRole($roleInfo[0])) {
