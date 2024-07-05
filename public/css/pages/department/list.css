@@ -1,0 +1,224 @@
+@import "/css/components/table.css";
+
+:root {
+    --page-margin: 0.6rem;
+    --body-gaps: 2.5rem;
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--body-gaps);
+}
+
+.header-buttons {
+    display: flex;
+    flex-direction: column;
+}
+
+.role {
+    display: flex;
+    flex-direction: column;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+nav {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.8rem;
+    padding: 0 var(--page-margin);
+    width: 100%;
+}
+
+header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    justify-content: space-between;
+}
+
+h1 {
+    padding-left: var(--page-margin);
+    margin-top: var(--body-gaps);
+    font-size: 2.3rem;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 0 var(--page-margin);
+}
+
+select {
+    height: 2.18rem;
+    background-color: var(--white);
+    border: none;
+    outline: 1.6px solid var(--gray);
+    border-radius: 3.2px;
+    font-size: 1rem;
+}
+
+tbody tr {
+    cursor: pointer;
+}
+
+.button {
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 0.45rem;
+    height: 2.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    background: var(--blue);
+    color: var(--white);
+    border-radius: 4.64px;
+    cursor: pointer;
+}
+
+.button:hover {
+    box-shadow: 0 0 8px rgba(0,0,0,0.6);
+}
+
+.content {
+    flex: 1 0 auto;
+}
+
+@media screen and (min-width: 410px) {
+    :root {
+        --body-gaps: 2rem;
+    }
+}
+
+@media screen and (min-width: 600px) {
+    :root {
+        --page-margin: 1.3rem;
+        --body-gaps: 2rem;
+    }
+
+    .content {
+        min-height: 61.5rem;
+    }
+    
+    .button {
+        padding: 0.7rem;
+    }
+
+    nav {
+        gap: 1.1rem;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    :root {
+        --page-margin: 2rem;
+        --body-gaps: 2.5rem;
+        font-size: 1.1rem;
+    }
+
+    .content {
+        min-height: 45rem;
+    }
+    
+    .button {
+        width: 9.5rem;
+        padding: 1.5rem;
+    }
+
+    nav {
+        flex-direction: row-reverse;
+        align-items: flex-end;
+    }
+
+    header {
+        gap: 1.2rem;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    :root {
+        font-size: 1.3rem;
+    }
+
+    .button {
+        padding: 1.6rem;
+    }
+
+    .content {
+        min-height: 33.95rem;
+    }
+}
+
+@media screen and (min-width: 1280px) {
+    :root {
+        --page-margin: 3rem;
+    }
+
+    .content {
+        padding: 0 var(--page-margin);
+        display: flex;
+        justify-content: center;
+    }
+}
+
+@media screen and (min-width: 1440px) {
+    :root {
+        --page-margin: 3.8rem;
+    }
+
+    nav {
+        justify-content: flex-start;
+        align-items: flex-end;
+        gap: 1rem;
+        padding: 0;
+    }
+
+    header {
+        flex-direction: row;
+        padding: 0 var(--page-margin);
+    }
+
+    h1 {
+        padding: 0;
+    }
+}
+
+@media screen and (min-width: 1536px) {
+    :root {
+        --page-margin: 4.2rem;
+    }
+
+    .button {
+        width: 10rem;
+    }
+
+    .content {
+        min-height: 33rem;
+    }
+}
+
+@media screen and (min-width: 1600px) {
+    :root {
+        font-size: 1.4rem;
+        --page-margin: 4.5rem;
+    }
+}
+
+@media screen and (min-width: 1920px) {
+    :root {
+        font-size: 1.5rem;
+        --page-margin: 6rem;
+    }
+
+    .content {
+        min-height: 31rem;
+    }
+}
