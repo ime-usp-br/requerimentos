@@ -7,9 +7,7 @@
 }
 
 body {
-    /* min-height: 100vh; */
     height: 100%;
-    /* height: min(100%, 100vh); */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -19,7 +17,6 @@ body {
 .header-buttons {
     display: flex;
     flex-direction: column;
-    /* position: relative; */
 }
 
 .role {
@@ -27,18 +24,13 @@ body {
     flex-direction: column;
     font-weight: 500;
     font-size: 0.9rem;
-    width: 7.5rem;
-    width: min-content;
-    /* position: absolute; */
-    right: var(--page-margin);
-    bottom: calc(100% + var(--body-gaps));
 }
 
 nav {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    align-items: center;
-    align-items: flex-end;
+    gap: 0.8rem;
     padding: 0 var(--page-margin);
     width: 100%;
 }
@@ -77,11 +69,10 @@ tbody tr {
 }
 
 .button {
-    width: 6.5rem;
-    height: 2.5rem;
     font-weight: 700;
-    font-size: 0.9rem;
-    padding: 0.5rem;
+    font-size: 1.1rem;
+    padding: 0.45rem;
+    height: 2.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -99,35 +90,11 @@ tbody tr {
 
 .content {
     flex: 1 0 auto;
-    /* min-height: 67.5rem; */
-}
-
-@media screen and (max-width: 599px) {
-    h1 {
-        font-size: 1.6rem;
-    }
-}
-
-@media screen and (min-width: 370px) {
-    .button {
-        width: 6.7rem;
-    }
-}
-
-@media screen and (min-width: 390px) {
-    .button {
-        width: 7rem;
-    }
 }
 
 @media screen and (min-width: 410px) {
     :root {
         --body-gaps: 2rem;
-    }
-
-    .button {
-        width: 7.3rem;
-        font-size: 1rem;
     }
 }
 
@@ -142,7 +109,11 @@ tbody tr {
     }
     
     .button {
-        width: 8.5rem;
+        padding: 0.7rem;
+    }
+
+    nav {
+        gap: 1.1rem;
     }
 }
 
@@ -159,6 +130,16 @@ tbody tr {
     
     .button {
         width: 9.5rem;
+        padding: 1.5rem;
+    }
+
+    nav {
+        flex-direction: row-reverse;
+        align-items: flex-end;
+    }
+
+    header {
+        gap: 1.2rem;
     }
 }
 
@@ -168,54 +149,18 @@ tbody tr {
     }
 
     .button {
-        width: 9rem;
+        padding: 1.6rem;
     }
 
     .content {
         min-height: 33.95rem;
-    }
-
-    nav {
-        justify-content: flex-end;
-        gap: 1rem;
-        padding: 0;
-    }
-
-    header {
-        flex-direction: row;
-        /* align-items: flex-end; */
-        /* justify-content: space-between; */
-        padding: 0 var(--page-margin);
-    }
-
-    h1 {
-        padding: 0;
     }
 }
 
 @media screen and (min-width: 1280px) {
     :root {
         --page-margin: 3rem;
-        /* --body-gaps: 3rem; */
     }
-
-
-
-    /* .header-buttons {
-        display: flex;
-        flex-direction: row;
-        gap: 1rem;
-    } */
-
-    /* .role {
-        position: static;
-    } */
-
-    h1 {
-        padding: 0;
-    }
-
-
 
     .content {
         padding: 0 var(--page-margin);
@@ -229,11 +174,20 @@ tbody tr {
         --page-margin: 3.8rem;
     }
 
+    nav {
+        justify-content: flex-start;
+        align-items: flex-end;
+        gap: 1rem;
+        padding: 0;
+    }
 
-    .content {
+    header {
+        flex-direction: row;
         padding: 0 var(--page-margin);
-        display: flex;
-        justify-content: center;
+    }
+
+    h1 {
+        padding: 0;
     }
 }
 
@@ -268,9 +222,3 @@ tbody tr {
         min-height: 31rem;
     }
 }
-
-/* @media screen and (min-width: 2500px) {
-    header {
-        gap: 32rem;
-    }
-} */

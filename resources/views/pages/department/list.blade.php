@@ -14,38 +14,36 @@
     <script src="https://cdn.datatables.net/plug-ins/1.13.7/sorting/datetime-moment.js" defer></script>
 
     <script src="{{ asset('js/department/list.js')}}" defer></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/sg/list.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/department/list.css') }}">
     <title>Lista de requerimentos</title>
 @endsection
 
 @section('content')
     <header>
         <h1>Requerimentos</h1>
-        <div class="header-buttons">
+        <!-- <div class="header-buttons"> -->
             <nav>
+                @if (Auth::user()->roles()->count() > 1)
+                    <form action="{{ route('role.switch') }}" method="POST" class="role-switch">
+                        @csrf
+                        <label class="role">
+                            Papel
+                            <select name="role-switch">
+                                @foreach (Auth::user()->roles as $role)
+                                    <option value="{{ $role->id }}" 
+                                        @if($role->id === Auth::user()->current_role_id) 
+                                            selected 
+                                        @endif
+                                    >{{ $role->name }}</option>  
+                                @endforeach
+                            </select>
+                        </label>
+                    </form>                
+                @endif
                 <a href="{{ route('department.users', ['departmentName' => $departmentName]) }}" class="button">Administrar papéis</a>
-                {{--<a href="{{ route('sg.newRequisition') }}" class="button">Criar requerimento</a>--}}
                 <a href="/" class="button">Sair</a>
             </nav>
-            @if (Auth::user()->roles()->count() > 1)
-                <form action="{{ route('role.switch') }}" method="POST" class="role-switch">
-                    @csrf
-                    <label class="role">
-                        Papel
-                        <select name="roleSwitch">
-                            @foreach (Auth::user()->roles as $role)
-                                <option value="{{ $role->id }}" 
-                                    @if($role->id === Auth::user()->current_role_id) 
-                                        selected 
-                                    @endif
-                                >{{ $role->name }}</option>  
-                            @endforeach
-                        </select>
-                    </label>
-                </form>                
-            @endif
-
-        </div>
+        <!-- </div> -->
     </header>
     
     <div class="content">

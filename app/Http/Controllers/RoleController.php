@@ -53,7 +53,7 @@ class RoleController extends Controller
 
     public function switchRole(Request $request) {
         $user = Auth::user();
-        $user->current_role_id = (int) $request->roleSwitch;
+        $user->current_role_id = (int) $request['role-switch'];
         $user->save();
         
         $rolesRedirects = [[RoleId::REVIEWER, 'reviewer.list'],
