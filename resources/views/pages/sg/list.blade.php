@@ -21,7 +21,6 @@
 @section('content')
     <header>
         <h1>Requerimentos</h1>
-        <!-- <div class="header-buttons"> -->
             @if (Auth::user()->roles()->count() > 1)
                 <form action="{{ route('role.switch') }}" method="POST" class="role-switch">
                     @csrf
@@ -44,7 +43,6 @@
                 <a href="{{ route('sg.newRequisition') }}" class="button">Criar requerimento</a>
                 <a href="/" class="button">Sair</a>
             </nav>
-        <!-- </div> -->
     </header>
     
     <div class="content">

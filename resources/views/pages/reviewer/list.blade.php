@@ -21,10 +21,10 @@
 @section('content')
     <header>
         <h1>Requerimentos</h1>
-        <div class="header-buttons">
-            <nav>
-                <a href="/" class="button">Sair</a>
-            </nav>
+        <!-- <div class="header-buttons"> -->
+          
+        <nav> 
+            
             @if (Auth::user()->roles()->count() > 1)
                 <form action="{{ route('role.switch') }}" method="POST" class="role-switch">
                     @csrf
@@ -40,9 +40,12 @@
                             @endforeach
                         </select>
                     </label>
-                </form>                
-            @endif
-        </div>
+                </form>
+                <a href="/" class="button">Sair</a>                
+            @endif 
+        </nav>
+            
+        <!-- </div> -->
     </header>
     
     <div class="content"> 
