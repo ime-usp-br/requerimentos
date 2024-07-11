@@ -6,7 +6,7 @@
         <div>
             <label class="button">
                 Anexar arquivo
-                <input type="file" name="taken-disc-record" id="taken-disc-record" accept=".pdf">
+                <input type="file" class="file-input" name="taken-disc-record" id="taken-disc-record" accept=".pdf">
             </label>
             @error('taken-disc-record')
                 <p class="error-message">Adicione um arquivo pdf com tamanho máximo de 5mb</p>
@@ -20,7 +20,7 @@
         <div>
             <label class="button">
                 Anexar arquivo
-                <input type="file" name="course-record" id="course-record" accept=".pdf">
+                <input type="file" class="file-input" name="course-record" id="course-record" accept=".pdf">
             </label>
             @error('course-record')
                 <p class="error-message">Adicione um arquivo pdf com tamanho máximo de 5mb</p>
@@ -35,7 +35,7 @@
         <div>
             <label class="button">
                 Anexar arquivo
-                <input type="file" name="taken-disc-syllabus" id="taken-disc-syllabus" accept=".pdf">
+                <input type="file" class="file-input" name="taken-disc-syllabus" id="taken-disc-syllabus" accept=".pdf">
             </label>
             @error('course-record')
                 <p class="error-message">Adicione um arquivo pdf com tamanho máximo de 5mb</p>
@@ -49,7 +49,7 @@
         <div>
             <label class="button">
                 Anexar arquivo
-                <input type="file" name="requested-disc-syllabus" id="requested-disc-syllabus" accept=".pdf">
+                <input type="file" class="file-input" name="requested-disc-syllabus" id="requested-disc-syllabus" accept=".pdf">
             </label>
             @error('course-record')
                 <p class="error-message">Adicione um arquivo pdf com tamanho máximo de 5mb</p>

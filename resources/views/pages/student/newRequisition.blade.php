@@ -7,18 +7,10 @@
     <!-- ionicons -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>    
+    <title>Novo requerimento</title>
 @endsection
 
 @section('content')
-    {{--@if ($errors->any())
-        <div>
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li> {{ $error }} </li>
-                @endforeach
-            </ul>
-        </div>
-    @endif--}}
     <x-overlay>
         <x-slot name="title">
             @if (session()->has('success'))
@@ -59,9 +51,7 @@
         <form method="POST" action="{{ route('student.create')}}" id="form" enctype="multipart/form-data">
             @csrf
 
-            {{--<x-form.personal :withRecordButton="false"/> <hr> --}}
-            
-            <x-form.course />
+            <x-form.course :readOnly="False"/>
 
             <hr>
 
@@ -73,7 +63,7 @@
             
             <hr>
 
-            <x-form.observations />
+            <x-form.observations :readOnly="False" />
 
         </form>
 

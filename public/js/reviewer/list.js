@@ -22,7 +22,7 @@ window.onload = function () {
         pageLength: 10,
 
         // a tabela tem uma coluna de IDs dos requerimentos que não é visível na página
-        columnDefs: [{ visible: false, targets: 5 }],
+        columnDefs: [{ visible: false, targets: 4 }],
     });
     
     const text = (document.querySelector(

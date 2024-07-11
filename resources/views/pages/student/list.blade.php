@@ -15,6 +15,8 @@
 
     <!-- nosso css -->
     <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/student/list.css') }}"> 
+
+    <title>Lista de requerimentos</title>
 @endsection
 
 @section('content')

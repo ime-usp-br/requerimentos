@@ -6,6 +6,7 @@
     <!-- ionicons -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <title>Pareceres do requerimento</title>
 @endsection
 
 @section('content')
@@ -13,7 +14,7 @@
     <div class="content">
         <header>
             <h1>Pareceres</h1>
-            <a href="{{ route('sg.show', ['requisitionId' => $requisitionId ])}}" class="button">Voltar</a>
+            <a href="{{ url()->previous() }}" class="button">Voltar</a>
         </header>
 
         @forelse ($reviews as $review)

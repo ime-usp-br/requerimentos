@@ -17,7 +17,8 @@
     <!-- nosso javascript -->
     <script src="{{ asset('js/sg/users.js')}}" defer></script>
     <!-- <link rel="stylesheet" type="text/css" href="{{ asset('css/users.css') }}"> -->
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/sg/users.css') }}">     
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/sg/users.css') }}">  
+    <title>Administração de usuários</title>    
 @endsection
 
 @section('content')
@@ -63,10 +64,10 @@
                     </label>
 
                     <label class="radio-button" >
-                        <input type="radio" id="coordination" name="role" value="Coordenador">
+                        <input type="radio" id="coordination" name="role" value="Department">
                         <span class="label-visible">
                             <span class="fake-radiobutton"></span>
-                            Coordenador
+                            Secretaria de Departamento
                         </span>
                     </label>
 <!-- 

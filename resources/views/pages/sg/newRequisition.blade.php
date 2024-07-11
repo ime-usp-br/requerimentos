@@ -9,7 +9,9 @@
 
     <!-- ionicons -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>    
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>  
+    
+    <title>Novo requerimento</title>
 @endsection
 
 @section('content')
@@ -54,11 +56,11 @@
         <form method="POST" action="{{ route('sg.create')}}" id="form" enctype="multipart/form-data">
             @csrf
 
-            <x-form.personal :withRecordButton="false"/> 
+            <x-form.personal :withRecordButton="false" :readOnly="False"/> 
 
             <hr>
 
-            <x-form.course />
+            <x-form.course :readOnly="False"/>
 
             <hr>
 
@@ -70,7 +72,7 @@
             
             <hr>
 
-            <x-form.observations />
+            <x-form.observations :readOnly="False"/>
             
             <!-- <input type="hidden" name="takenDiscCount" id="taken-disc-count"> -->
         </form>

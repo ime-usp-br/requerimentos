@@ -6,11 +6,13 @@
             @foreach($takenDiscs as $disc)
                 <div class="disc">
                     <label>
-                        Nome <input type="text" name="{{ 'disc' . $loop->iteration . '-name'}}" value="{{ $disc->name }}" id="disc-name" required>
+                        <!-- Nome <input type="text" name="{{ 'disc' . $loop->iteration . '-name'}}" value="{{ $disc->name }}" id="disc-name" required {{ $readOnly ? 'readonly' : '' }}> -->
+                        Nome <input type="text" name="{{ 'disc' . $loop->iteration . '-name'}}" value="{{ $disc->name }}" class="large-field" required {{ $readOnly ? 'readonly' : '' }}>
                     </label>
                     <label class="disc-institution">
                         Instituição em que foi cursada
-                        <input type="text" name="{{ 'disc' . $loop->iteration . '-institution' }}" id="disc-institution" value="{{ $disc->institution }}" required>
+                        <!-- <input type="text" name="{{ 'disc' . $loop->iteration . '-institution' }}" id="disc-institution" value="{{ $disc->institution }}" required {{ $readOnly ? 'readonly' : '' }}> -->
+                        <input type="text" name="{{ 'disc' . $loop->iteration . '-institution' }}" class="large-field" value="{{ $disc->institution }}" required {{ $readOnly ? 'readonly' : '' }}>
                     </label>
                     @error('disc-institution')
                         <style>
@@ -25,44 +27,52 @@
                     <div class="disc-middle-row">
                         <label class="disc-code">
                             Sigla
-                            <input type="text" name="{{ 'disc' . $loop->iteration . '-code' }}" value="{{ $disc->code }}" id="disc-code">
+                            <input type="text" name="{{ 'disc' . $loop->iteration . '-code' }}" value="{{ $disc->code }}" id="disc-code" {{ $readOnly ? 'readonly' : '' }}>
                         </label>
                         <label>
                             Ano 
-                            <input type="text" name="{{ 'disc' . $loop->iteration . '-year'}}" value="{{ $disc->year }}" id="disc-year" required>
+                            <input type="text" name="{{ 'disc' . $loop->iteration . '-year'}}" value="{{ $disc->year }}" id="disc-year" required {{ $readOnly ? 'readonly' : '' }}>
                         </label>
                         <label>
-                            Nota <input type="text" name="{{ 'disc' . $loop->iteration . '-grade'}}" value="{{ $disc->grade }}" id="disc-grade" required>
+                            Nota <input type="text" name="{{ 'disc' . $loop->iteration . '-grade'}}" value="{{ $disc->grade }}" id="disc-grade" required {{ $readOnly ? 'readonly' : '' }}>
                         </label>
                     </div>
 
                     <div class="disc-last-row">
-                        <label>
-                            Semestre 
-                            <select name="{{ 'disc' . $loop->iteration .'-semester' }}" id="disc-semester">
-                                <option 
-                                    value=""
-                                    >
-                                    Selecione o semestre
-                                </option>
-                                <option 
-                                    value="Primeiro"
-                                    @if($disc->semester == 'Primeiro') 
-                                        selected 
-                                    @endif
-                                    >
-                                    Primeiro
-                                </option>
-                                <option 
-                                    value="Segundo"
-                                    @if($disc->semester == 'Segundo') 
-                                        selected 
-                                    @endif
-                                    >
-                                    Segundo
-                                </option>
-                            </select>
-                        </label>
+                        @if ($readOnly)
+                            <label>
+                                Semestre
+                                <input type="text" class="small-field" value="{{ $disc->semester ?? '' }}" readonly>
+                            </label>
+                        @else
+                            <label>
+                                Semestre 
+                                <select name="{{ 'disc' . $loop->iteration .'-semester' }}" id="disc-semester">
+                                    <option 
+                                        value=""
+                                        >
+                                        Selecione o semestre
+                                    </option>
+                                    <option 
+                                        value="Primeiro"
+                                        @if($disc->semester == 'Primeiro') 
+                                            selected 
+                                        @endif
+                                        >
+                                        Primeiro
+                                    </option>
+                                    <option 
+                                        value="Segundo"
+                                        @if($disc->semester == 'Segundo') 
+                                            selected 
+                                        @endif
+                                        >
+                                        Segundo
+                                    </option>
+                                </select>
+                            </label>
+                        @endif
+                        
                         @if ($withRecordButton)
                             <a href="#" class="button record-button">Requerimentos anteriores</a>
                         @endif
@@ -78,54 +88,63 @@
         <div class="disc-list">
             <div class="disc">
                 <label>
-                    Nome <input type="text" name="requested-disc-name" value="{{ $req->requested_disc }}" id="disc-name" required>
+                    <!-- Nome <input type="text" name="requested-disc-name" value="{{ $req->requested_disc }}" id="disc-name" required> -->
+                    Nome 
+                    <input type="text" name="requested-disc-name" value="{{ $req->requested_disc }}" class="large-field" {{ $readOnly ? 'readonly' : '' }} required>
                 </label>
                 <label class="disc-department">
-                    Departamento
-                    <select name="disc-department" required>
-                        <option value="">
-                            Selecione o departamento
-                        </option>
-                        <option 
-                            value="MAC"
-                            @if($req->department == 'MAC') 
-                                selected 
-                            @endif
-                            >
-                            MAC
-                        </option>
-                        <option 
-                            value="MAE"
-                            @if($req->department == 'MAE') 
-                                selected 
-                            @endif
-                            >
-                            MAE
-                        </option>
-                        <option 
-                            value="MAP"
-                            @if($req->department == 'MAP') 
-                                selected 
-                            @endif
-                            >MAP
-                        </option>
-                        <option 
-                            value="MAT"
-                            @if($req->department == 'MAT') 
-                                selected 
-                            @endif
-                            >
-                            MAT
-                        </option>
-                        <option 
-                            value="Disciplina de fora do IME"
-                            @if($req->department == 'Disciplina de fora do IME') 
-                                selected 
-                            @endif
-                            >
-                            Disciplina de fora do IME
-                        </option>
-                    </select>
+                    @if ($readOnly)
+                        <label>
+                            Departamento
+                            <input type="text" class="small-field" value="{{ $req->department ?? '' }}" readonly>
+                        </label>
+                    @else
+                        Departamento
+                        <select name="disc-department" required>
+                            <option value="">
+                                Selecione o departamento
+                            </option>
+                            <option 
+                                value="MAC"
+                                @if($req->department == 'MAC') 
+                                    selected 
+                                @endif
+                                >
+                                MAC
+                            </option>
+                            <option 
+                                value="MAE"
+                                @if($req->department == 'MAE') 
+                                    selected 
+                                @endif
+                                >
+                                MAE
+                            </option>
+                            <option 
+                                value="MAP"
+                                @if($req->department == 'MAP') 
+                                    selected 
+                                @endif
+                                >MAP
+                            </option>
+                            <option 
+                                value="MAT"
+                                @if($req->department == 'MAT') 
+                                    selected 
+                                @endif
+                                >
+                                MAT
+                            </option>
+                            <option 
+                                value="Disciplina de fora do IME"
+                                @if($req->department == 'Disciplina de fora do IME') 
+                                    selected 
+                                @endif
+                                >
+                                Disciplina de fora do IME
+                            </option>
+                        </select>                        
+                    @endif
                 </label>
                 @error('disc-department')
                     <style>
@@ -137,49 +156,53 @@
                         }
                     </style>
                 @enderror
-                <!-- <div class="disc-middle-row">
-                   
-                    
-                </div> -->
-                
-                <label>
-                    Tipo 
-                    <select id="disc-type" name="requested-disc-type">
-                        <option value="">Selecione o tipo</option>
-                        <option 
-                            value="Extracurricular" 
-                            @if($req->requested_disc_type == 'Extracurricular') 
-                                selected 
-                            @endif
-                            >
-                            Extracurricular
-                        </option>
-                        <option 
-                            value="Obrigatória"
-                            @if($req->requested_disc_type == 'Obrigatória') 
-                                selected 
-                            @endif
-                            >
-                            Obrigatória
-                        </option>
-                        <option 
-                            value="Optativa Eletiva" 
-                            @if($req->requested_disc_type == 'Optativa Eletiva') 
-                                selected 
-                            @endif
-                            >
-                            Optativa Eletiva
-                        </option>
-                        <option 
-                            value="Optativa Livre" 
-                            @if($req->requested_disc_type == 'Optativa Livre') 
-                                selected 
-                            @endif
-                            >
-                            Optativa Livre
-                        </option>
-                    </select>
-                </label>
+
+                @if ($readOnly)
+                    <label>
+                        Tipo
+                        <input type="text" class="type-input" value="{{ $req->requested_disc_type ?? '' }}" readonly>
+                    </label>
+                @else
+                    <label>
+                        Tipo 
+                        <select id="disc-type" name="requested-disc-type">
+                            <option value="">Selecione o tipo</option>
+                            <option 
+                                value="Extracurricular" 
+                                @if($req->requested_disc_type == 'Extracurricular') 
+                                    selected 
+                                @endif
+                                >
+                                Extracurricular
+                            </option>
+                            <option 
+                                value="Obrigatória"
+                                @if($req->requested_disc_type == 'Obrigatória') 
+                                    selected 
+                                @endif
+                                >
+                                Obrigatória
+                            </option>
+                            <option 
+                                value="Optativa Eletiva" 
+                                @if($req->requested_disc_type == 'Optativa Eletiva') 
+                                    selected 
+                                @endif
+                                >
+                                Optativa Eletiva
+                            </option>
+                            <option 
+                                value="Optativa Livre" 
+                                @if($req->requested_disc_type == 'Optativa Livre') 
+                                    selected 
+                                @endif
+                                >
+                                Optativa Livre
+                            </option>
+                        </select>
+                    </label>                    
+                @endif
+
                 
                 <div class="disc-last-row">
                     <label class="disc-code">

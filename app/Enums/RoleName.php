@@ -7,8 +7,8 @@ class RoleName
     const STUDENT = 'Aluno';
     const SG = 'Secretaria de Graduação';
     const REVIEWER = 'Parecerista';
-    const MAC_COORD = 'Coordenador do MAC';
-    const MAT_COORD = 'Coordenador do MAT';
-    const MAE_COORD = 'Coordenador do MAE';
-    const MAP_COORD = 'Coordenador do MAP';
+    const MAC_SECRETARY = 'Secretaria do MAC';
+    const MAT_SECRETARY = 'Secretaria do MAT';
+    const MAE_SECRETARY = 'Secretaria do MAE';
+    const MAP_SECRETARY = 'Secretaria do MAP';
 }

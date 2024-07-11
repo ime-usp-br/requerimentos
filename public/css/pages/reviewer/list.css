@@ -2,7 +2,7 @@
 
 :root {
     --page-margin: 0.6rem;
-    --body-gaps: 2.6rem;
+    --body-gaps: 2.5rem;
     height: 100%;
 }
 
@@ -19,51 +19,19 @@ body {
 .header-buttons {
     display: flex;
     flex-direction: column;
-    position: relative;
-}
-
-h1 {
-    /* padding: 0 var(--page-margin); */
-    padding-left: var(--page-margin);
-    margin-top: var(--body-gaps);
-    /* font-size: 1.6rem; */
-}
-
-.header-top {
-    display: flex;
-    /* flex-direction: column; */
-    justify-content: space-between;
-    align-items: flex-end;
-    padding: 0 var(--page-margin);
+    /* position: relative; */
 }
 
 .role {
     display: flex;
     flex-direction: column;
-    /* align-items: flex-end; */
     font-weight: 500;
     font-size: 0.9rem;
     width: 7.5rem;
-    width: fit-content;
-    position: absolute;
-    /* bottom: 8rem;
-    left: 14.5rem; */
+    width: min-content;
+    /* position: absolute; */
     right: var(--page-margin);
     bottom: calc(100% + var(--body-gaps));
-    /* height: 3rem; */
-}
-
-select {
-    height: 2.18rem;
-    background-color: var(--white);
-    border: none;
-    outline: 1.6px solid var(--gray);
-    border-radius: 3.2px;
-    font-size: 1rem;
-}
-
-tbody tr {
-    cursor: pointer;
 }
 
 nav {
@@ -78,11 +46,35 @@ nav {
 header {
     display: flex;
     flex-direction: column;
-    gap: var(--body-gaps);
+    gap: 0.8rem;
     justify-content: space-between;
 }
 
+h1 {
+    padding-left: var(--page-margin);
+    margin-top: var(--body-gaps);
+    font-size: 2.3rem;
+}
 
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 0 var(--page-margin);
+}
+
+select {
+    height: 2.18rem;
+    background-color: var(--white);
+    border: none;
+    outline: 1.6px solid var(--gray);
+    border-radius: 3.2px;
+    font-size: 1rem;
+}
+
+tbody tr {
+    cursor: pointer;
+}
 
 .button {
     width: 6.5rem;
@@ -182,6 +174,23 @@ header {
     .content {
         min-height: 33.95rem;
     }
+
+    nav {
+        justify-content: flex-end;
+        gap: 1rem;
+        padding: 0;
+    }
+
+    header {
+        flex-direction: row;
+        /* align-items: flex-end; */
+        /* justify-content: space-between; */
+        padding: 0 var(--page-margin);
+    }
+
+    h1 {
+        padding: 0;
+    }
 }
 
 @media screen and (min-width: 1280px) {
@@ -190,31 +199,23 @@ header {
         /* --body-gaps: 3rem; */
     }
 
-    header {
-        flex-direction: row;
-        align-items: flex-end;
-        justify-content: space-between;
-        padding: 0 var(--page-margin);
-    }
 
-    .header-buttons {
+
+    /* .header-buttons {
         display: flex;
         flex-direction: row;
         gap: 1rem;
-    }
+    } */
 
-    .role {
+    /* .role {
         position: static;
-    }
+    } */
 
     h1 {
         padding: 0;
     }
 
-    nav {
-        gap: 1rem;
-        padding: 0;
-    }
+
 
     .content {
         padding: 0 var(--page-margin);

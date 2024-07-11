@@ -1,6 +1,6 @@
 window.onload = function() {
     // o form está sendo submetido por javascript para diferenciar entre
-    // os dois botões que podem ser clickados para submetê-lo, e para
+    // os três botões que podem ser clickados para submetê-lo, e para
     // remover o atributo "disabled" dos selects 
     const form = document.querySelector("#form");
     form.addEventListener("submit", (event) => {
@@ -13,8 +13,10 @@ window.onload = function() {
         if (event.submitter) {
             const clickedButton = event.submitter;
             const btnType = document.querySelector("#btnType");
-            if (clickedButton.id === "send-btn") {
-                btnType.value = "send";
+            if (clickedButton.id === "reviewer-btn") {
+                btnType.value = "reviewer";
+            } else if (clickedButton.id === "department-btn") {
+                btnType.value = "department";
             } else if (clickedButton.id === "save-btn") {
                 btnType.value = "save";
             }

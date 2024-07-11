@@ -9,16 +9,18 @@ class Read extends Component
     public $takenDiscs;
     public $req;
     public $withRecordButton;
+    public $readOnly;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($takenDiscs, $req, $withRecordButton)
+    public function __construct($takenDiscs, $req, $withRecordButton, $readOnly = True)
     {
         $this->takenDiscs = $takenDiscs;
         $this->req = $req;
         $this->withRecordButton = $withRecordButton;
+        $this->readOnly = $readOnly;
     }
 
     /**

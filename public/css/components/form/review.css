@@ -43,12 +43,12 @@ input[type="radio"]:checked + span .fake-radiobutton:after {
     border-radius: 50%;
 }
 
-.appraisal-title {
+.justification-title {
     font-size: 1.1rem;
     font-weight: 700;
 }
 
-.appraisal {
+.justification {
     display: flex;
     flex-direction: column;
 }

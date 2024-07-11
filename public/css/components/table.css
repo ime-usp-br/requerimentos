@@ -18,10 +18,12 @@
 
 #table_filter {
     margin: 0;
+    width: 100%;
 }
 
 #table_filter input {
     width: 11.8rem;
+    width: 100%;
     padding: 5px 0;
     border: none;
     outline: 1.6px solid var(--gray);
@@ -51,18 +53,18 @@ div.dt-buttons > .dt-button {
     width: 100% !important;
 }
 
-@media screen and (min-width: 390px) {
+/* @media screen and (min-width: 390px) {
 
     #table_filter input {
         width: 13.5rem;
     }
-}
+} */
 
-@media screen and (min-width: 410px) {
+/* @media screen and (min-width: 410px) {
     #table_filter input {
         width: 15rem;
     }
-}
+} */
 
 @media screen and (min-width: 600px) {
     #table_filter input {

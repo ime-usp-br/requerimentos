@@ -8,7 +8,7 @@
     <!-- ionicons -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-    
+    <title>Detalhes do requerimento</title>
 @endsection
 
 @section('content')
@@ -51,12 +51,8 @@
         </header>
         
         <nav class="nav">
-            <!-- <div class="status">
-                <span>Situação</span>
-                <span><ion-icon name="ellipse-outline"></ion-icon>Aguardando parecer</span>
-            </div> -->
-            <a href="{{ route('sg.reviews', ['requisitionId' => $req->id ]) }}" class="button">Pareceres</a>
-            <a href="#" class="button" >Histórico do requerimento</a>
+            <a href="{{ route('reviewer.reviews', ['requisitionId' => $req->id ]) }}" class="button">Pareceres</a>
+            <a href="{{ route('record.requisition', ['requisitionId' => $req->id]) }}" class="button" >Histórico do requerimento</a>
             <a href="{{ route('sg.list') }}" class="button">Voltar</a>
         </nav>
 
@@ -67,11 +63,11 @@
 
             <hr>
 
-            <x-form.course :req="$req"/>
+            <x-form.course :req="$req" :readOnly="False"/>
 
             <hr>
 
-            <x-form.disciplines.read :takenDiscs="$takenDiscs" :req="$req" :withRecordButton="true" />
+            <x-form.disciplines.read :takenDiscs="$takenDiscs" :req="$req" :withRecordButton="true" :readOnly="False" />
             
             <hr>
 
@@ -81,22 +77,18 @@
 
             <x-form.observations :req="$req" />
 
-            {{--<hr>
-
-            <x-form.review :req="$req" />--}}
-
             <hr>
 
             <x-form.result :req="$req" />
             
-            <!-- <input type="hidden" name="req-id" value="{{ $req->id }}"> -->
             <input type="hidden" name="button" id="btnType">
         </form>
 
         <div class="nav"> 
             <a href="{{ route('sg.list') }}" class="button">Voltar</a>
-            <button type="submit" form="form" class="button" id="save-btn">Salvar mudanças</button>
-            <button type="submit" form="form" class="button" id="send-btn">Encaminhar para um parecerista</button>
+            <button type="submit" form="form" class="button" id="save-btn">Salvar alterações</button>
+            <button type="submit" form="form" class="button" id="department-btn">Enviar para o departamento</button>
+            <button type="submit" form="form" class="button" id="reviewer-btn">Enviar para um parecerista</button>
         </div>
         
     </div>

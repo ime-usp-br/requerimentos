@@ -6,16 +6,17 @@ use Illuminate\View\Component;
 
 class Review extends Component
 {
+    public $req;
     public $review;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($review = null)
+    public function __construct($req = null, $review = null)
     {
+        $this->req = $req;
         $this->review = $review;
-        
     }
 
     /**

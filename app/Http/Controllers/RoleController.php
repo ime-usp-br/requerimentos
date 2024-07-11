@@ -12,6 +12,7 @@ use Spatie\Permission\Models\Role;
 class RoleController extends Controller
 {
     public function addRole(Request $request) {
+
         $inputArray = [
             'nusp' => 'required | numeric | integer',
             'role' => 'required',
@@ -20,27 +21,25 @@ class RoleController extends Controller
 
         $data = $request->validate($inputArray);
 
-        // $user = User::where('codpes', $data['nusp'])->first();
-
         $user = User::firstOrCreate(['codpes' => $data['nusp']], ['codpes' => $data['nusp'], 'current_role_id' => 1]);
         
-        if ($data['role'] === 'Coordenador') {
+        if ($data['role'] === 'Department') {
             $department = $data['department'];
             
             if ($department === 'MAC') {
-                $user->assignRole(RoleName::MAC_COORD);
+                $user->assignRole(RoleName::MAC_SECRETARY);
             } elseif($department === 'MAT') {
-                $user->assignRole(RoleName::MAT_COORD);
+                $user->assignRole(RoleName::MAT_SECRETARY);
             } elseif($department === 'MAE') {
-                $user->assignRole(RoleName::MAE_COORD);
+                $user->assignRole(RoleName::MAE_SECRETARY);
             } elseif($department === 'MAP') {
-                $user->assignRole(RoleName::MAP_COORD);
+                $user->assignRole(RoleName::MAP_SECRETARY);
             }
         } else {
             $user->assignRole($data['role']);
         }
 
-        return redirect()->route('sg.users');
+        return back();
     }
 
     public function removeRole(Request $request) {
@@ -53,24 +52,21 @@ class RoleController extends Controller
     }
 
     public function switchRole(Request $request) {
-        // dd($request->roleSwitch);
-        // if (Auth::user()->hasRole($request->roleSwitch)) {
         $user = Auth::user();
-        $user->current_role_id = (int) $request->roleSwitch;
+        $user->current_role_id = (int) $request['role-switch'];
         $user->save();
         
         $rolesRedirects = [[RoleId::REVIEWER, 'reviewer.list'],
-                            [RoleId::SG, 'sg.list'],
-                            [RoleId::MAC_COORD, 'coordinator.list'],
-                            [RoleId::MAT_COORD, 'coordinator.list'],
-                            [RoleId::MAE_COORD, 'coordinator.list'],
-                            [RoleId::MAP_COORD, 'coordinator.list']];
+                           [RoleId::SG, 'sg.list'],
+                           [RoleId::MAC_SECRETARY, 'department.list', 'mac'],
+                           [RoleId::MAT_SECRETARY, 'department.list', 'mat'],
+                           [RoleId::MAE_SECRETARY, 'department.list', 'mae'],
+                           [RoleId::MAP_SECRETARY, 'department.list', 'map']];
         
         foreach ($rolesRedirects as $roleRedirect) {
             if ($user->current_role_id === $roleRedirect[0]) {
-                return redirect()->route($roleRedirect[1]);
+                return redirect()->route($roleRedirect[1], ['departmentName' => $roleRedirect[2] ?? NULL]);
             }
         }
-        // dd($request->roleSwitch);
     }
 }

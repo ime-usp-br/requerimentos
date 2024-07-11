@@ -8,7 +8,7 @@
     <!-- ionicons -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-    
+    <title>Detalhes do requerimento</title>
 @endsection
 
 @section('content')
@@ -44,17 +44,11 @@
     <div class="content">
         <h1>Detalhes do requerimento {{ $req->id }} </h1>
         <nav class="nav">
-            <!-- <div class="status">
-                <span>Situação</span>
-                <span><ion-icon name="ellipse-outline"></ion-icon>Aguardando parecer</span>
-            </div> 
-            <a href="{{ route('sg.reviews', ['requisitionId' => $req->id ]) }}" class="button">Pareceres</a>
-            -->
-            <a href="#" class="button" >Histórico do requerimento</a>
+            <a href="{{ route('reviewer.reviews', ['requisitionId' => $req->id ]) }}" class="button">Pareceres</a>
+            <a href="{{ route('record.requisition', ['requisitionId' => $req->id]) }}" class="button">Histórico do requerimento</a>
             <a href="{{ route('reviewer.list') }}" class="button">Voltar</a>
         </nav>
 
-        <!--===================== ARRUMAR AQUI ================================= -->
         <form method="POST" action="{{ route('reviewer.update', ['requisitionId' => $req->id])}}" id="form" >
             @csrf
 
@@ -78,20 +72,16 @@
 
             <hr>
 
-            <x-form.review :review="$review" />
+            <x-form.review :req="$req" :review="$review" />
 
-            <hr>
-
-            {{--<x-form.result :req="$reqs" />--}}
-            
             <!-- <input type="hidden" name="req-id" value="{{ $req->id }}"> -->
         </form>
         <input type="hidden" name="button" id="btnType">
 
         <div class="nav"> 
             <a href="{{ route('reviewer.list') }}" class="button">Voltar</a>
-           <!-- <button type="submit" form="form" class="button" id="save-btn">Salvar mudanças</button> -->
-            <button type="submit" form="form" class="button" id="send-btn">Encaminhar para um Secretaria</button>
+           <button type="submit" form="form" class="button" id="save-btn">Salvar mudanças</button>
+            <!-- <button type="submit" form="form" class="button" id="send-btn">Encaminhar para um Secretaria</button> -->
         </div>
         
     </div>

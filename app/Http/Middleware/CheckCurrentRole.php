@@ -21,14 +21,11 @@ class CheckCurrentRole
         $user = Auth::user();
         foreach($roleNames as $roleName) {
             $role = Role::where('name', $roleName)->first();
-            // dd($roleName);
             if ($user->current_role_id === $role->id) {
                 return $next($request);
             }
         }
         
-        abort(403, 'Você não está autorizado a acessar essa página.');
-        // talvez seja melhor deixar como 404 pra não vazar info do backend
-        // abort(404);
+        abort(404);
     }
 }

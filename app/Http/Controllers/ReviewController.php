@@ -2,40 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\DocumentType;
 use App\Models\Event;
-use App\Models\Requisition;
 use App\Models\Review;
+use App\Enums\RoleName;
 use App\Enums\EventType;
+use App\Enums\DocumentType;
+use App\Models\Requisition;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
     public function list() {
+
         $user = Auth::user();
 
-        $selectedColumns = ['requisitions.created_at', 'student_name', 'nusp','requested_disc' ,'requisitions.id'];
-        $selectId =['created_at', 'requisition_id' ] ;
+        $selectedColumns = ['requisitions.created_at', 'student_name', 'nusp','requested_disc','requisitions.id'];
 
-        //pegando os valores de 
-        $reqs = Review::where('reviewer_nusp', $user->codpes)->join('requisitions', 'requisition_id', '=', 'requisitions.id')->select($selectedColumns)->get();
-        //$reqs = Review::where('reviewer_nusp', $user->codpes)->leftJoin('requisitions', 'review.requisition_id', '=', 'id')->select($selectedColumns)->get();
-    
-        //$reqs = Requisition::select($selectedColumns)->where('id', $teste[0])->get();
+        $reqs = DB::table('reviews')->join('requisitions', 'reviews.requisition_id', '=', 'requisitions.id')->where('reviewer_nusp', $user->codpes)->select($selectedColumns)->get();
 
         return view('pages.reviewer.list', ['reqs' => $reqs]);
     }
 
-    public function show($requisitionId){
-        //$reqReview = Review::where("requisition_id", $requisitionId, "reviewer_nusp", $user->codpes)->first();
+    public function show($requisitionId) {
+
+        $user = Auth::user();
 
         $req = Requisition::with('takenDisciplines', 'documents')->find($requisitionId);
-        $selectedColumns = ['student_name', 'nusp','requested_disc' ,'reviewer_decision', 'justification'];
-        $review = Review::where('requisition_id', $requisitionId)->join('requisitions', 'requisition_id', '=', 'requisitions.id')->select($selectedColumns)->get();
 
+        $review = Review::where('reviewer_nusp', $user->codpes)->where('requisition_id', $requisitionId)->first();
+        
         $documents = $req->documents->sortByDesc('created_at');
-        // dd($req->documents);
 
         $takenDiscsRecords = [];
         $currentCourseRecords = [];
@@ -59,87 +58,93 @@ class ReviewController extends Controller
             }
         }
         
-        return view('pages.reviewer.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines, 'takenDiscsRecords' => $takenDiscsRecords, 'currentCourseRecords' => $currentCourseRecords, 'takenDiscSyllabi' => $takenDiscSyllabi, 'requestedDiscSyllabi' => $requestedDiscSyllabi, 'review' =>$review]);
+        return view('pages.reviewer.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines, 'takenDiscsRecords' => $takenDiscsRecords, 'currentCourseRecords' => $currentCourseRecords, 'takenDiscSyllabi' => $takenDiscSyllabi, 'requestedDiscSyllabi' => $requestedDiscSyllabi, 'review' => $review]);
 
     }
 
     public function createReview($requisitionId, Request $request) {
         
-        Review::firstOrCreate(['reviewer_nusp' => $request->nusp, 'requisition_id' => $requisitionId], ['reviewer_decision' => 'Sem decisão', 'requisition_id' => $requisitionId, 'justification' => null, 'reviewer_nusp' => $request->nusp, 'reviewer_name' => $request->name]);
+        DB::transaction(function() use ($request, $requisitionId) {
 
-        $user = Auth::user();
-        $event = new Event;
-        $event->type = EventType::SENT_TO_REVIEWERS;
-        $event->requisition_id = $requisitionId;
-        $event->author_name = $user->name; 
-        $event->author_nusp = $user->codpes;
+            Review::firstOrCreate(['reviewer_nusp' => $request->nusp, 'requisition_id' => $requisitionId], ['reviewer_decision' => 'Sem decisão', 'requisition_id' => $requisitionId, 'justification' => null, 'reviewer_nusp' => $request->nusp, 'reviewer_name' => $request->name]);
 
-        $req = Requisition::find($requisitionId);
-        $req->situation = EventType::SENT_TO_REVIEWERS;
+            $user = Auth::user();
 
-        if ($request->name) {
-            $event->message = "Enviado para o parecerista " . $request->name;
-            $req->internal_status = $event->message;
-        }
+            $req = Requisition::find($requisitionId);
 
-        $req->save();
-        $event->save();
+            // $req->situation é o que aparece na linha do requerimento na tabela 
+            // para o aluno (não contém o nome do parecerista)
+            $req->situation = EventType::SENT_TO_REVIEWERS;
+            $req->validated = true;
 
+            $event = new Event;
+            $event->type = EventType::SENT_TO_REVIEWERS;
+            $event->requisition_id = $requisitionId;
+            $event->author_name = $user->name; 
+            $event->author_nusp = $user->codpes;
+            $event->version = $req->latest_version;
 
-        // $review = new Review;
-        // $review->reviewer_decision = 'Sem decisão';
-        // $review->requisition_id = $requisitionId;
-        // $review->justification = null;
-        // $review->reviewer_nusp = $request->nusp;
-        // $review->reviewer_name = $request->name;
-        // $review->save();
+            if ($request->name) {
+                // a $event->message/$req->internal_status contém o nome do  
+                // parecerista, mas não aparece para o aluno, é usada apenas  
+                // internamente
+                $event->message = "Enviado para o parecerista " . $request->name;
+                $req->internal_status = $event->message;
+            }
 
+            $req->save();
+            $event->save();
+        });
+        
         return response()->noContent();
     }
 
-    public function update($requisitionId, Request $request){
-        $user = Auth::user();
+    public function update($requisitionId, Request $request) {
 
-        $reqToBeUpdated = Review::where("requisition_id", $requisitionId)->where("reviewer_nusp", $user->codpes)->first();
-        //dd($reqToBeUpdated);
-            // dd($data);
-        $reqRequisition = Requisition::find($requisitionId);
-   
-
-        if($reqToBeUpdated->reviewer_decision !== request('decision')){
-            $reqToBeUpdated->reviewer_decision = request('decision');
+        DB::transaction(function() use ($request, $requisitionId) {
 
             $user = Auth::user();
-            if(request('decision') === 'Sem decisão'){
-                $tipo = EventType::IN_REVALUATION;
-            }
-            elseif(request('decision') === 'Deferido'){
-                $tipo = EventType::ACCEPTED;
-            }
-            elseif(request('decision') === 'Indeferido'){
-                $tipo = EventType::REJECTED;
-            }
+
+            $reviewToBeUpdated = Review::where('requisition_id', $requisitionId)->where('reviewer_nusp', $user->codpes)->first();
+
+            $reviewToBeUpdated->reviewer_decision = $request->decision;
+            $reviewToBeUpdated->justification = $request->justification;
+            $reviewToBeUpdated->save();
+
+            $req = Requisition::find($requisitionId);
+            $req->situation = EventType::RETURNED_BY_REVIEWER;
+
             $event = new Event;
-            $event->type = $tipo;
+            $event->type = EventType::RETURNED_BY_REVIEWER;
             $event->requisition_id = $requisitionId;
-            $event->author_name = Auth::user()->name; 
-            $event->author_nusp = Auth::user()->codpes;
-            $reqRequisition->situation = EventType::RETURNED_BY_REVIEWER;
-            $reqRequisition->internal_status = EventType::RETURNED_BY_REVIEWER;
+            $event->author_name = $user->name; 
+            $event->author_nusp = $user->codpes;
+            $event->version = $req->latest_version;
+
+            $event->message = "Retornado pelo parecerista " . $user->name;
+            $req->internal_status = $event->message;
+
             $event->save();
-        }
+            $req->save();
+        });
 
-        $reqToBeUpdated->justification = request('appraisal');
+        $bodyMsg = 'As informações do parecer foram salvas';
+        $titleMsg = 'Parecer salvo';  
 
-        $reqToBeUpdated->save();
+        return redirect()->route('reviewer.show', ['requisitionId' => $requisitionId])->with('success', ['title message' => $titleMsg, 'body message' => $bodyMsg]);
+    }
 
-        $reqRequisition->save();
+    public function reviewerPick($requisitionId) {
+        $reviewRole = Role::where('name', RoleName::REVIEWER)->first();
 
+        $reviewers = $reviewRole->users;
 
-        if($request->button === 'send'){
-            $bodyMsg = 'As informações do requerimento foram salvas';
-            $titleMsg = 'Requerimento enviado para secretaria';  
-            return redirect()->route('reviewer.list', ['requisitionId' => $requisitionId])->with('sucess', ['title message' => $titleMsg,'body message' => $bodyMsg]);
-        };
+        return view('pages.reviewer.reviewerPick', ['reviewers' => $reviewers, 'requisitionId' => $requisitionId]);
+    }
+
+    public function reviews($requisitionId) {
+        $req = Requisition::with('reviews')->find($requisitionId);
+        
+        return view('pages.reviewer.reviews', ['requisitionId' => $requisitionId, 'reviews' => $req->reviews]);
     }
 }

@@ -25,6 +25,7 @@ class CreateTakenDisciplinesTable extends Migration
             // verificar se a entrada do usuario se conforma a isso na rota
             $table->float("grade", 4, 2);
             $table->string("institution");
+            $table->unsignedInteger('latest_version');
         });
     }
 

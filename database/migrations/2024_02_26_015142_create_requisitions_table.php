@@ -14,11 +14,13 @@ class CreateRequisitionsTable extends Migration
     public function up()
     {
         Schema::create('requisitions', function (Blueprint $table) {
+
             $table->id();
             $table->timestamps();
             $table->enum('department', ['MAC', 'MAE', 'MAT', 'MAP', 'Disciplina de fora do IME']);
             
             $table->unsignedInteger('nusp');
+            $table->unsignedInteger('latest_version');
             $table->string('student_name');
             $table->string('email');
             
@@ -28,24 +30,11 @@ class CreateRequisitionsTable extends Migration
             $table->string('situation');
             $table->string('internal_status');
             $table->string('requested_disc_code');
+            $table->boolean('validated');
             $table->text('observations')->nullable();
 
-            // arquivos
-            $table->string('taken_discs_record');
-            $table->string('current_course_record');
-            $table->string('taken_discs_syllabus');
-            $table->string('requested_disc_syllabus');
-
-            // resultado
             $table->enum('result', ['Sem resultado', 'Inconsistência nas informações', 'Deferido', 'Indeferido']);
             $table->text('result_text')->nullable();
-            
-            
-            // parecerista
-            // $table->enum('reviewer_decision', ['Sem decisão', 'Deferido', 'Indeferido']);
-            // $table->text('appraisal')->nullable();
-            // $table->unsignedInteger('reviewer_nusp')->nullable();
-            // $table->string('reviewer_name')->nullable();
         });
     }
 

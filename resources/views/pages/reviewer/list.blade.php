@@ -15,21 +15,22 @@
 
     <script src="{{ asset('js/reviewer/list.js')}}" defer></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/reviewer/list.css') }}">
+    <title>Lista de requerimentos</title>
 @endsection
 
 @section('content')
     <header>
         <h1>Requerimentos</h1>
-        <div class="header-buttons">
-            <nav>
-                <a href="/" class="button">Sair</a>
-            </nav>
+        <!-- <div class="header-buttons"> -->
+          
+        <nav> 
+            
             @if (Auth::user()->roles()->count() > 1)
                 <form action="{{ route('role.switch') }}" method="POST" class="role-switch">
                     @csrf
                     <label class="role">
                         Papel
-                        <select name="roleSwitch">
+                        <select name="role-switch">
                             @foreach (Auth::user()->roles as $role)
                                 <option value="{{ $role->id }}" 
                                     @if($role->id === Auth::user()->current_role_id) 
@@ -39,25 +40,25 @@
                             @endforeach
                         </select>
                     </label>
-                </form>                
-            @endif
-        </div>
+                </form>
+                <a href="/" class="button">Sair</a>                
+            @endif 
+        </nav>
+            
+        <!-- </div> -->
     </header>
     
     <div class="content"> 
-        <x-table :columns="['Data de criação', 'Aluno', 'Número USP', 'Disciplina Requirida', 'id']">
+        <x-table :columns="['Data de criação', 'Aluno', 'Número USP', 'Disciplina Requirida', 'Id']">
             @foreach ($reqs as $req)
                 <tr>
-                    <td>{{ \Illuminate\Support\Carbon::parse($req->created_at->toDateString())->format('d/m/Y') }}</td>
+                    <td>{{ \Illuminate\Support\Carbon::parse($req->created_at)->format('d/m/Y') }}</td>
                     <td>{{ $req->student_name }}</td>
                     <td>{{ $req->nusp }}</td>
                     <td>{{ $req->requested_disc}}</td>
                     <td>{{ $req->id }}</td>
-                    <td></td> 
                 </tr>
             @endforeach
         </x-table>
     </div>
 @endsection
-
-<!--  -->
