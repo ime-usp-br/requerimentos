@@ -7,7 +7,7 @@
         @else
             <label class="select" >
                 Nome
-                <select name="course">
+                <select name="course" required>
                     <option value="">Selecione o seu curso atual</option>
                     <option 
                         value="Bacharelado em Ciência da Computação"

@@ -82,7 +82,6 @@ window.onload = function () {
     filePickerButtons = document.querySelectorAll(".document input");
 
     filePickerButtons.forEach((button) => {
-
         button.onchange = (event) => {
             const selectedFile = document.querySelector(`.${button.id}`);
             let filename = button.value.slice(12);
@@ -102,7 +101,6 @@ window.onload = function () {
         };
     });
 
-
     const form = document.querySelector("#form");
     form.addEventListener("submit", (event) => {
         event.preventDefault();
@@ -114,14 +112,21 @@ window.onload = function () {
             const maxFileSize = 5 * 1024 * 1024;
             const file = fileInput.files[0];
 
-            if (file && file.size > maxFileSize) {
+            if (!file) {
+                alert(
+                    "Pelo menos um dos arquivos necessários não foi adicionado"
+                );
+                return;
+            }
+
+            if (file.size > maxFileSize) {
                 alert(
                     "Um ou mais arquivos escolhidos excedem o limite de 5mb de tamanho"
                 );
                 return;
             }
         }
-        
+
         form.submit();
     });
 
