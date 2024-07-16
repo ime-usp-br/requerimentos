@@ -53,7 +53,7 @@
             <a href="{{ route('reviewer.list') }}" class="button">Voltar</a>
         </nav>
 
-        <form method="POST" action="{{ route('reviewer.update', ['requisitionId' => $req->id])}}" id="form" >
+        <form method="POST" action="{{ route('reviewer.saveOrSubmit', ['requisitionId' => $req->id])}}" id="form" >
             @csrf
 
             <x-form.personal :withRecordButton="true" :req="$req"/>
@@ -78,14 +78,12 @@
 
             <x-form.review :req="$req" :review="$review" />
 
-            <!-- <input type="hidden" name="req-id" value="{{ $req->id }}"> -->
         </form>
-        <input type="hidden" name="button" id="btnType">
 
         <div class="nav"> 
             <a href="{{ route('reviewer.list') }}" class="button">Voltar</a>
-            <button type="submit" form="form" class="button" id="save-btn">Enviar parecer</button>
-            <!-- <button type="submit" form="form" class="button" id="send-btn">Encaminhar para um Secretaria</button> -->
+            <button type="submit" form="form" class="button" name="action" value="save">Salvar</button>
+            <button type="submit" form="form" class="button" name="action" value="submit">Enviar parecer</button>
         </div>
         
     </div>

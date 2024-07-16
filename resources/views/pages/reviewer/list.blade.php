@@ -19,6 +19,24 @@
 @endsection
 
 @section('content')
+    <x-overlay>
+        <x-slot name="title">
+            @if (session()->has('success'))
+                {{ session('success')['title message'] }}
+            @endif
+        </x-slot>
+        
+        @if (session()->has('success'))
+            <style>
+                .overlay-container {
+                    display: block;
+                }
+            </style>
+            
+            <p> {{session('success')['body message']}}</p> 
+        @endif
+    </x-overlay>
+
     <header>
         <h1>Requerimentos</h1>
         <!-- <div class="header-buttons"> -->
