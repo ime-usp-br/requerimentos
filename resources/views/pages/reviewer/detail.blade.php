@@ -27,10 +27,14 @@
                     display: block;
                 }
             </style>
-            <p>{{ session('success')['body message'] }}</p>
-            <div class="overlay-nav">
-                <a href="{{ route('reviewer.list') }}" class="button">Voltar para a página inicial</a>
-            </div>
+            
+            {{-- "{!! !!}" para rederizar as quebras de linha --}}
+            <p> {!! session('success')['body message'] !!} </p> 
+            @if (session('success')['return button'])
+                <div class="overlay-nav">
+                    <a href="{{ route('reviewer.list') }}" class="button">Voltar para a página inicial</a>
+                </div>
+            @endif
         @elseif($errors->any())
             <style>
                 .overlay-container {
@@ -49,7 +53,7 @@
             <a href="{{ route('reviewer.list') }}" class="button">Voltar</a>
         </nav>
 
-        <form method="POST" action="{{ route('reviewer.update', ['requisitionId' => $req->id])}}" id="form" >
+        <form method="POST" action="{{ route('reviewer.saveOrSubmit', ['requisitionId' => $req->id])}}" id="form" >
             @csrf
 
             <x-form.personal :withRecordButton="true" :req="$req"/>
@@ -74,14 +78,12 @@
 
             <x-form.review :req="$req" :review="$review" />
 
-            <!-- <input type="hidden" name="req-id" value="{{ $req->id }}"> -->
-            <input type="hidden" name="button" id="btnType">
         </form>
 
         <div class="nav"> 
             <a href="{{ route('reviewer.list') }}" class="button">Voltar</a>
-           <button type="submit" form="form" class="button" id="save-btn">Salvar mudanças</button>
-            <!-- <button type="submit" form="form" class="button" id="send-btn">Encaminhar para um Secretaria</button> -->
+            <button type="submit" form="form" class="button" name="action" value="save">Salvar</button>
+            <button type="submit" form="form" class="button" name="action" value="submit">Enviar parecer</button>
         </div>
         
     </div>

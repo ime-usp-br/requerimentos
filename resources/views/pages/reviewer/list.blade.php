@@ -19,6 +19,24 @@
 @endsection
 
 @section('content')
+    <x-overlay>
+        <x-slot name="title">
+            @if (session()->has('success'))
+                {{ session('success')['title message'] }}
+            @endif
+        </x-slot>
+        
+        @if (session()->has('success'))
+            <style>
+                .overlay-container {
+                    display: block;
+                }
+            </style>
+            
+            <p> {{session('success')['body message']}}</p> 
+        @endif
+    </x-overlay>
+
     <header>
         <h1>Requerimentos</h1>
         <!-- <div class="header-buttons"> -->
@@ -49,13 +67,14 @@
     </header>
     
     <div class="content"> 
-        <x-table :columns="['Data de criação', 'Aluno', 'Número USP', 'Disciplina Requirida', 'Id']">
+        <x-table :columns="['Data de criação', 'Número USP', 'Disciplina Requirida', 'Decisão', 'Última atualização', 'Id']">
             @foreach ($reqs as $req)
                 <tr>
                     <td>{{ \Illuminate\Support\Carbon::parse($req->created_at)->format('d/m/Y') }}</td>
-                    <td>{{ $req->student_name }}</td>
                     <td>{{ $req->nusp }}</td>
                     <td>{{ $req->requested_disc}}</td>
+                    <td>{{ $req->reviewer_decision }}</td>
+                    <td>{{ $req->updated_at }}</td>
                     <td>{{ $req->id }}</td>
                 </tr>
             @endforeach

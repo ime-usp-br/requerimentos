@@ -43,16 +43,6 @@ input[type="radio"]:checked + span .fake-radiobutton:after {
     border-radius: 50%;
 }
 
-.justification-title {
-    font-size: 1.1rem;
-    font-weight: 700;
-}
-
-.justification {
-    display: flex;
-    flex-direction: column;
-}
-
 @media screen and (min-width: 760px) {
     .label-visible {
         margin-left: 1.9rem;

@@ -11,7 +11,9 @@ window.onload = function () {
         scrollX: true,
 
         // número de linhas em cada página da tabela
-        pageLength: 10
+        pageLength: 10,
+
+        columnDefs: [{ visible: false, targets: 6}]
     });
 
     const text = (document.querySelector(

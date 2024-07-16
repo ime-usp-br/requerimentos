@@ -67,7 +67,7 @@
 
             <hr>
 
-            <x-form.disciplines.read :takenDiscs="$takenDiscs" :req="$req" :withRecordButton="true" :readOnly="False" />
+            <x-form.disciplines.read :takenDiscs="$takenDiscs" :req="$req" :withRecordButton="false" :readOnly="False" />
             
             <hr>
 

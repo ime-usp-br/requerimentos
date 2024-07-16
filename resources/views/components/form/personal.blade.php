@@ -54,8 +54,8 @@
             </style>
             <!-- <p class="error-message">{{ $message }}</p> -->
         @enderror
-        @if ($withRecordButton)
+        {{-- @if ($withRecordButton)
           <a href="#" class="button">Histórico do aluno</a>  
-        @endif
+        @endif --}}
     </div>
 </fieldset>

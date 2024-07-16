@@ -39,7 +39,7 @@
                     <td>{{ $reviewer->name ?? 'Desconhecido (usuário nunca logou no site)' }}</td>
                     <td>{{ $reviewer->codpes }}</td>
                     <td>
-                        <form action="{{ route('sg.sendToReviewer', ['requisitionId' => $requisitionId ]) }}" method="POST" class="button-form">
+                        <form action="{{ route('reviewer.sendToReviewer', ['requisitionId' => $requisitionId ]) }}" method="POST" class="button-form">
                             @csrf
                             <input type="hidden" name="nusp" value="{{ $reviewer->codpes }}">
                             <input type="hidden" name="name" value="{{ $reviewer->name }}">

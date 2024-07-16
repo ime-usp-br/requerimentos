@@ -1,5 +1,13 @@
 window.onload = function () {
-
+    // faz o overlay desaparecer quando o usuário aperta o botão de fechar
+    const closeButton = document.querySelector(".close-button");
+    
+    closeButton.onclick = (event) => {
+        const overlayContainer =
+            document.querySelector(".overlay-container");
+        overlayContainer.style.display = "none";
+    };
+    
     // função usada para ordenar as linhas da tabela pela data
     $.fn.dataTable.moment("D/M/YYYY");
 
@@ -13,7 +21,7 @@ window.onload = function () {
         // buttons: ["csv", "excel"],
 
         // ordenando as linhas pela primeira coluna, em ordem decrescente
-        order: [[0, "desc"]],
+        order: [[4, "desc"], [0, "desc"]],
 
         // permitindo um scroll horizontal quando a tabela não cabe na tela
         scrollX: true,
@@ -22,7 +30,7 @@ window.onload = function () {
         pageLength: 10,
 
         // a tabela tem uma coluna de IDs dos requerimentos que não é visível na página
-        columnDefs: [{ visible: false, targets: 4 }],
+        columnDefs: [{ visible: false, targets: 5 }],
     });
     
     const text = (document.querySelector(
@@ -32,7 +40,7 @@ window.onload = function () {
     // fazendo cada linha da tabela ser um link para a página de análise do requerimento
     const table = $("#table").DataTable();
     $("#table tbody").on("click", "tr", function () {
-        window.location.href = "detalhe/" + table.row(this).data()[4];
+        window.location.href = "detalhe/" + table.row(this).data()[5];
     });
 
     

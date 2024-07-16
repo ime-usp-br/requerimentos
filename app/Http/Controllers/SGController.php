@@ -57,7 +57,6 @@ class SGController extends Controller
                     break;
             }
         }
-
         return view('pages.sg.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines, 'takenDiscsRecords' => $takenDiscsRecords, 'currentCourseRecords' => $currentCourseRecords, 'takenDiscSyllabi' => $takenDiscSyllabi, 'requestedDiscSyllabi' => $requestedDiscSyllabi]);
     }
 
@@ -302,22 +301,6 @@ class SGController extends Controller
 
         $usersWithRoles = User::whereHas('roles')->select($selectedColumns)->get();
         return view('pages.sg.users', ['users' => $usersWithRoles]);
-    }
-
-    public function discHistory($subjectId) {
-        $history = Requisition::select('taken_disciplines.code',
-                                        'taken_disciplines.institution',
-                                        'requisitions.requested_disc_code', 
-                                        'requisitions.result',
-                                        DB::raw('YEAR(requisitions.updated_at) AS result_year'),
-                                        'taken_disciplines.year AS taken_year',
-                                        DB::raw('count(*) as repeticoes'))
-                                ->where('requested_disc_code', $subjectId)
-                                ->join('taken_disciplines', 'requisitions.id', '=', 'taken_disciplines.requisition_id') //inner join
-                                ->groupBy('requested_disc_code', 'institution', 'code', 'result', 'result_year', 'taken_year')
-                                ->get();
-
-        return view('pages.sg.discHistory', ['history' => $history]);
     }
 
 }

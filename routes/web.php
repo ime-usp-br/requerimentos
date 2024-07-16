@@ -9,6 +9,8 @@ use App\Http\Controllers\RecordController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\PreviousReviews;
+
 
 Route::get('/', function () {
     return view('pages.home');
@@ -32,8 +34,8 @@ Route::post('/trocar-papel', [RoleController::class, 'switchRole'])->name('role.
 
 Route::middleware('auth')->group(function() {
     
-    Route::prefix('aluno')->middleware('role:' . RoleName::STUDENT)->group(function () {
-    // Route::prefix('aluno')->group(function () {
+    // Route::prefix('aluno')->middleware('role:' . RoleName::STUDENT)->group(function () {
+    Route::prefix('aluno')->group(function () {
         Route::get('/lista', [StudentController::class, 'list'])->name('student.list');
 
         Route::view('/novo-requerimento', 'pages.student.newRequisition')->name('student.newRequisition');
@@ -48,14 +50,12 @@ Route::middleware('auth')->group(function() {
     });
 
     Route::prefix('secretaria')->middleware('role:' . RoleName::SG)->group(function () {
-
+    // Route::prefix('secretaria')->group(function () {
         Route::get('/lista', [SGController::class, 'list'])->name('sg.list');
 
         Route::view('/novo-requerimento', 'pages.sg.newRequisition')->name('sg.newRequisition');
 
         Route::get('/detalhe/{requisitionId}', [SGController::class, 'show'])->name('sg.show');
-        
-        Route::get('/historico-disciplina/{subjectID}', [SGController::class, 'discHistory'])->name('sg.discHistory');
 
         Route::post('/novo-requerimento', [SGController::class, 'create'])->name('sg.create');
 
@@ -80,7 +80,11 @@ Route::middleware('auth')->group(function() {
 
         Route::get('/detalhe/{requisitionId}', [ReviewController::class, 'show'])->name('reviewer.show');
         
-        Route::post('/atualizar/{requisitionId}', [ReviewController::class, 'update'])->name('reviewer.update');
+        Route::post('/salvar-ou-enviar/{requisitionId}', [ReviewController::class, 'saveOrSubmit'])->name('reviewer.saveOrSubmit');
+
+        Route::get('/detalhe/{requisitionId}/pareceres-anteriores/{requestedDiscCode}', [ReviewController::class, 'previousReviews'])->name('geral.previousReviews');
+
+        Route::post('/copiar/{requisitionId}', [ReviewController::class, 'copy'])->name('reviewer.copy');
     });
     // });
 
