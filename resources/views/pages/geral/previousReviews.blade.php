@@ -26,42 +26,47 @@
     <header>
         <h1>Histórico da disciplina</h1>
         <nav>
-            <a href="../detalhe/{{request()->input('detail')}}" class="button">Voltar</a>
+            <a href="../../" class="button">Voltar</a>
         </nav>
-
-        {{-- {{dd($role)}} --}}
-        
     </header>
     
     <div class="content">
-        <x-table :columns="['Cursada', 'Data cursada', 'Resultado', 'Data resultado', 'Parecer', 'Copiar parecer']">
-            @foreach ($requisitions as $req_groups)
+        <x-table :columns="['Cursada', 'Data cursada', 'Parecer', 'Data parecer', 'Justificativa', 'Copiar parecer', 'ID']">
+            @foreach ($previousRequisitions as $req_groups)
                 <tr>
-                    <td class="{{Str::camel(Str::ascii($req_groups[0]->result)) . "Other"}}">
+                    <td class="{{Str::camel(Str::ascii($req_groups[0]->reviewer_decision)) . "Other"}}">
                         <ul>
                             @foreach ($req_groups as $req)
-                                <li>{{$req->taken_codes}} </li>
+                            <li>{{$req->taken_codes}} </li>
                             @endforeach
                         </ul>    
                     </td>
-                    <td class="{{Str::camel(Str::ascii($req_groups[0]->result)) . "Other"}}">
+                    <td class="{{Str::camel(Str::ascii($req_groups[0]->reviewer_decision)) . "Other"}}">
                         <ul>
                             @foreach ($req_groups as $req)
-                                <li>{{$req->year_taken}} {{$req->semester_taken}}</li>
+                            <li>{{$req->year_taken}}.{{ ($req->semester_taken == "Primeiro") ? "1" : "2"}}</li>
                             @endforeach
                         </ul>  
                     </td>
-                    <td class="{{Str::camel(Str::ascii($req_groups[0]->result)) . "Main"}}">
-                        {{ $req_groups[0]->result}}
+                    <td class="{{Str::camel(Str::ascii($req_groups[0]->reviewer_decision)) . "Main"}}">
+                        {{ $req_groups[0]->reviewer_decision}}
                     </td>
-                    <td class="{{Str::camel(Str::ascii($req_groups[0]->result)) . "Other"}}">
-                        {{ $req_groups[0]->result_date}}
+                    <td class="{{Str::camel(Str::ascii($req_groups[0]->reviewer_decision)) . "Other"}}">
+                        {{ $req_groups[0]->review_date}}
                     </td>
-                    <td class="{{Str::camel(Str::ascii($req_groups[0]->result)) . "Other"}}">
-                        {{ $req_groups[0]->result_text}}
+                    <td class="{{Str::camel(Str::ascii($req_groups[0]->reviewer_decision)) . "Other"}}">
+                        {{ $req_groups[0]->reviewer_justification}}
                     </td>
-                    <td class="{{Str::camel(Str::ascii($req_groups[0]->result)) . "Other"}}">
-                        botão cópia
+                    <td class="{{Str::camel(Str::ascii($req_groups[0]->reviewer_decision)) . "Other"}}">
+                        <form method="POST" action="{{ route('reviewer.copy', ['requisitionId' => $requisitionId])}}" >
+                            @csrf
+                            <input type="hidden" name="decision" value="{{$req_groups[0]->reviewer_decision}}">
+                            <input type="hidden" name="justification" value="{{$req_groups[0]->reviewer_justification}}">
+                            <button type="submit" class="button">Copiar parecer</button>
+                        </form>
+                    </td>
+                    <td>
+                        {{ $req_groups[0]->id }}
                     </td>
                 </tr>
             @endforeach

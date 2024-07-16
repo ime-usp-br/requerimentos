@@ -73,9 +73,9 @@
                             </label>
                         @endif
                         
-                        @if ($withRecordButton)
+                        {{-- @if ($withRecordButton)
                             <a href="#" class="button record-button">Requerimentos anteriores</a>
-                        @endif
+                        @endif --}}
                     </div>
                     <input type="hidden" name="{{ 'disc' . $loop->iteration . '-id'}}" value="{{$disc->id}}" >
                 </div>
@@ -211,7 +211,7 @@
                     </label>
                     
                     @if ($withRecordButton)
-                        <a href="../pareceres-anteriores/{{ $req->requested_disc_code }}?detail={{ $req->id }}&institution={{ $req->takenDisciplines[0]->institution}}" class="button record-button">Pareceres anteriores</a>
+                        <a href={{url()->current() . '/pareceres-anteriores/' . $req->requested_disc_code . "?institution=". $req->takenDisciplines[0]->institution}} class="button record-button">Pareceres anteriores</a>
                     @endif
                     
                 </div>

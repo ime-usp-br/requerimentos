@@ -9,6 +9,8 @@ use App\Http\Controllers\RecordController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\PreviousReviews;
+
 
 Route::get('/', function () {
     return view('pages.home');
@@ -30,10 +32,6 @@ Route::get('/documento/{documentId}', [GlobalController::class, 'documentHandler
 Route::post('/trocar-papel', [RoleController::class, 'switchRole'])->name('role.switch');
 
 
-
-//adicionar middleware de autenticação
-Route::get('/{role}/pareceres-anteriores/{subjectID}', [PreviousReviews::class, 'previousReviews'])->name('geral.previousReviews');
-
 Route::middleware('auth')->group(function() {
     
     Route::prefix('aluno')->middleware('role:' . RoleName::STUDENT)->group(function () {
@@ -51,7 +49,8 @@ Route::middleware('auth')->group(function() {
         Route::post('/atualizar/{requisitionId}', [StudentController::class, 'update'])->name('student.update');
     });
 
-    Route::prefix('secretaria')->middleware('role:' . RoleName::SG)->group(function () {
+    // Route::prefix('secretaria')->middleware('role:' . RoleName::SG)->group(function () {
+    Route::prefix('secretaria')->group(function () {
 
         Route::get('/lista', [SGController::class, 'list'])->name('sg.list');
 
@@ -83,6 +82,10 @@ Route::middleware('auth')->group(function() {
         Route::get('/detalhe/{requisitionId}', [ReviewController::class, 'show'])->name('reviewer.show');
         
         Route::post('/atualizar/{requisitionId}', [ReviewController::class, 'update'])->name('reviewer.update');
+
+        Route::get('/detalhe/{requisitionId}/pareceres-anteriores/{requestedDiscCode}', [ReviewController::class, 'previousReviews'])->name('geral.previousReviews');
+
+        Route::post('/copiar/{requisitionId}', [ReviewController::class, 'copy'])->name('reviewer.copy');
     });
     // });
 

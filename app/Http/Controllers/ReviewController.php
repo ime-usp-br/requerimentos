@@ -19,7 +19,7 @@ class ReviewController extends Controller
 
         $user = Auth::user();
 
-        $selectedColumns = ['requisitions.created_at', 'student_name', 'nusp','requested_disc','requisitions.id'];
+        $selectedColumns = ['requisitions.created_at', 'nusp','requested_disc', 'reviewer_decision', 'reviews.updated_at', 'requisitions.id'];
 
         $reqs = DB::table('reviews')->join('requisitions', 'reviews.requisition_id', '=', 'requisitions.id')->where('reviewer_nusp', $user->codpes)->select($selectedColumns)->get();
 
@@ -131,7 +131,58 @@ class ReviewController extends Controller
         $bodyMsg = 'As informações do parecer foram salvas';
         $titleMsg = 'Parecer salvo';  
 
-        return redirect()->route('reviewer.show', ['requisitionId' => $requisitionId])->with('success', ['title message' => $titleMsg, 'body message' => $bodyMsg]);
+        return redirect()->route('reviewer.show', ['requisitionId' => $requisitionId])->with('success', ['title message' => $titleMsg, 'body message' => $bodyMsg, 'return button' => true]);
+    }
+
+    public function previousReviews($requisitionId, $requestedDiscCode) {
+
+        // O retorno da Query é um grupo, j́a que um mesmo requisito pode ter mais 
+        // de uma matéria realizada. 
+        $previousReviews = Requisition::where('requisitions.requested_disc_code', $requestedDiscCode)
+                                ->select(
+                                    'requisitions.id',
+                                    'taken_disciplines.code AS taken_codes',
+                                    'taken_disciplines.year AS year_taken',
+                                    'taken_disciplines.semester AS semester_taken',
+                                    'reviews.reviewer_decision', 
+                                    'reviews.updated_at AS review_date',
+                                    'reviews.justification AS reviewer_justification',
+                                    'taken_disciplines.institution'
+                                )
+                                ->join('taken_disciplines', 'requisitions.id', '=', 'taken_disciplines.requisition_id') //inner join
+                                ->join('reviews', 'requisitions.id', '=', 'reviews.requisition_id') //inner join
+                                ->where('requisitions.id', '!=', $requisitionId) // Não queremos ver o parecer do requerimento atual
+                                ->get()
+                                ->groupBy('id');
+
+        // Dentre todas as disciplinas que foram utilizadas para pedir cada aproveitamento,
+        // verifica se alguma delas é da mesma instituição que o pedido atual.
+        // Se não definimos nenhuma instituição na pesquisa, então exibimos todas.
+        $previousReviewsFiltered = $previousReviews->filter(function ($group){
+            return $group->contains(function ($object){
+                return ($object->institution === request()->institution) or !(isset(request()->institution));
+            });
+        });
+
+        return view('pages.geral.previousReviews', ['requisitionId' => $requisitionId, 'previousRequisitions' => $previousReviewsFiltered]);
+    }
+
+    public function copy($requisitionId, Request $request) {
+        $user = Auth::user();
+
+        $reviewToBeUpdated = Review::where('requisition_id', $requisitionId)->where('reviewer_nusp', $user->codpes)->first();
+
+        $reviewToBeUpdated->reviewer_decision = $request->decision;
+        $reviewToBeUpdated->justification = $request->justification;
+        
+        $reviewToBeUpdated->save();
+
+        $bodyMsg = "O parecer foi copiado para o requerimento atual. Lembre de salvar as mudanças.<br/><br/> ID do requerimento: $requisitionId";
+        $titleMsg = 'Parecer copiado';  
+
+        return redirect()->route('reviewer.show', ['requisitionId' => $requisitionId])
+                         ->with('success', ['title message' => $titleMsg, 'body message' => $bodyMsg, 'return button' => false])
+                         ->withFragment('decision'); #withFragment redireciona para o conteúdo com ID=decision
     }
 
     public function reviewerPick($requisitionId) {

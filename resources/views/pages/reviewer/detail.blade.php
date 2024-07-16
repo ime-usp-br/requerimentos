@@ -27,10 +27,14 @@
                     display: block;
                 }
             </style>
-            <p>{{ session('success')['body message'] }}</p>
-            <div class="overlay-nav">
-                <a href="{{ route('reviewer.list') }}" class="button">Voltar para a página inicial</a>
-            </div>
+            
+            {{-- "{!! !!}" para rederizar as quebras de linha --}}
+            <p> {!! session('success')['body message'] !!} </p> 
+            @if (session('success')['return button'])
+                <div class="overlay-nav">
+                    <a href="{{ route('reviewer.list') }}" class="button">Voltar para a página inicial</a>
+                </div>
+            @endif
         @elseif($errors->any())
             <style>
                 .overlay-container {
@@ -80,7 +84,7 @@
 
         <div class="nav"> 
             <a href="{{ route('reviewer.list') }}" class="button">Voltar</a>
-           <button type="submit" form="form" class="button" id="save-btn">Salvar mudanças</button>
+            <button type="submit" form="form" class="button" id="save-btn">Salvar mudanças</button>
             <!-- <button type="submit" form="form" class="button" id="send-btn">Encaminhar para um Secretaria</button> -->
         </div>
         

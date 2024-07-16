@@ -49,13 +49,14 @@
     </header>
     
     <div class="content"> 
-        <x-table :columns="['Data de criação', 'Aluno', 'Número USP', 'Disciplina Requirida', 'Id']">
+        <x-table :columns="['Data de criação', 'Número USP', 'Disciplina Requirida', 'Decisão', 'Última atualização', 'Id']">
             @foreach ($reqs as $req)
                 <tr>
                     <td>{{ \Illuminate\Support\Carbon::parse($req->created_at)->format('d/m/Y') }}</td>
-                    <td>{{ $req->student_name }}</td>
                     <td>{{ $req->nusp }}</td>
                     <td>{{ $req->requested_disc}}</td>
+                    <td>{{ $req->reviewer_decision }}</td>
+                    <td>{{ $req->updated_at }}</td>
                     <td>{{ $req->id }}</td>
                 </tr>
             @endforeach
