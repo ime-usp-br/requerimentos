@@ -26,7 +26,7 @@
     <header>
         <h1>Histórico da disciplina</h1>
         <nav>
-            <a href="../../" class="button">Voltar</a>
+            <a href="../" class="button">Voltar</a>
         </nav>
     </header>
     

@@ -21,7 +21,11 @@ class ReviewController extends Controller
 
         $selectedColumns = ['requisitions.created_at', 'nusp','requested_disc', 'reviewer_decision', 'reviews.updated_at', 'requisitions.id'];
 
-        $reqs = DB::table('reviews')->join('requisitions', 'reviews.requisition_id', '=', 'requisitions.id')->where('reviewer_nusp', $user->codpes)->select($selectedColumns)->get();
+        $reqs = DB::table('reviews')
+                ->join('requisitions', 'reviews.requisition_id', '=', 'requisitions.id')
+                ->where('reviewer_nusp', $user->codpes)
+                ->where('requisitions.situation', '=', 'Enviado para análise dos pareceristas')
+                ->select($selectedColumns)->get();
 
         return view('pages.reviewer.list', ['reqs' => $reqs]);
     }
@@ -32,7 +36,9 @@ class ReviewController extends Controller
 
         $req = Requisition::with('takenDisciplines', 'documents')->find($requisitionId);
 
-        $review = Review::where('reviewer_nusp', $user->codpes)->where('requisition_id', $requisitionId)->first();
+        $review = Review::where('reviewer_nusp', $user->codpes)
+                        ->where('requisition_id', $requisitionId)
+                        ->first();
         
         $documents = $req->documents->sortByDesc('created_at');
 
