@@ -42,7 +42,6 @@
         <!-- <div class="header-buttons"> -->
           
         <nav> 
-            
             @if (Auth::user()->roles()->count() > 1)
                 <form action="{{ route('role.switch') }}" method="POST" class="role-switch">
                     @csrf
@@ -59,9 +58,13 @@
                         </select>
                     </label>
                 </form>
-                <a href="/" class="button">Sair</a>                
             @endif 
+            <form action="{{ '/' . $logout_url }}" method="POST" id="form">
+                @csrf
+                <a href="/" class="button">Sair</a>
+            </form> 
         </nav>
+           
             
         <!-- </div> -->
     </header>
