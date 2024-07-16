@@ -37,48 +37,6 @@ window.onload = function () {
         // }
     };
 
-    // const requestedAddButton = document.querySelector(".requested .add-disc");
-    // let requestedDiscsCount = 0;
-
-    // requestedAddButton.onclick = (event) => {
-    //     if (requestedDiscsCount === 0) {
-    //         message = document.querySelector(".requested .empty-list-message");
-    //         message.remove();
-    //         emptyRequestedDiscList = false;
-    //     }
-
-    //     const requestedDiscs = document.querySelector(".requested .disc-list");
-    //     requestedDiscsCount++;
-
-    //     requestedDiscs.insertAdjacentHTML(
-    //         "beforeend",
-    //         `<div class="disc"><label>Nome: <input type="text" id="disc-name" name="requested-disc-name"></label><label>Tipo:<select name="requested-disc-type" id="disc-type"><option value="">Selecione o tipo</option><option value="Extracurricular">Extracurricular</option><option value="Obrigatória">Obrigatória</option><option value="Optativa Eletiva">Optativa Eletiva</option><option value="Optativa Livre">Optativa Livre</option></select></label><div class="disc-last-row"><label class="disc-code">Sigla<input type="text" name="requested-disc-code" id="disc-code"></label><!-- <a href="#" class="button record-button">Histórico</a> --></div></div>`
-    //     );
-    // };
-
-    // const requestedRemoveButton = document.querySelector(
-    //     ".requested .remove-disc"
-    // );
-
-    // requestedRemoveButton.onclick = (event) => {
-    //     if (requestedDiscsCount === 0) {
-    //         return;
-    //     }
-
-    //     const requestedDiscs = document.querySelector(".requested .disc-list");
-    //     const discToRemove = requestedDiscs.lastChild;
-    //     discToRemove.remove();
-
-    //     requestedDiscsCount--;
-    //     if (requestedDiscsCount === 0) {
-    //         const takenDiscs = document.querySelector(".requested .disc-list");
-    //         takenDiscs.insertAdjacentHTML(
-    //             "beforeend",
-    //             `<p class="empty-list-message">Adicione aqui as disciplinas que serão requeridas.</p>`
-    //         );
-    //     }
-    // };
-
     filePickerButtons = document.querySelectorAll(".document input");
 
     filePickerButtons.forEach((button) => {
@@ -104,13 +62,6 @@ window.onload = function () {
     });
     
 
-    const fileInputs = document.querySelectorAll(".file-picker");
-
-    for (let fileInput of fileInputs) {
-        const files = fileInput.files;
-        console.log(files);
-    }
-
     const form = document.querySelector("#form");
     form.addEventListener("submit", (event) => {
         event.preventDefault();
@@ -123,7 +74,12 @@ window.onload = function () {
             const maxFileSize = 5 * 1024 * 1024;
             const file = fileInput.files[0];
 
-            if (file && file.size > maxFileSize) {
+            if (!file) {
+                alert('Pelo menos um dos arquivos necessários não foi adicionado');
+                return;
+            }
+
+            if (file.size > maxFileSize) {
                 alert('Um ou mais arquivos escolhidos excedem o limite de 5mb de tamanho');
                 return;
             }

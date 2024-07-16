@@ -7,7 +7,7 @@
         <div class="disc-list">
             <div class="disc">
                 <label class="disc-name">
-                    Nome: 
+                    Nome
                     <input type="text" name="disc1-name" id="disc-name" value="{{ old('disc1-name') }}" required>
                 </label>
                 @error('disc1-name')
@@ -21,7 +21,7 @@
                     </style>
                 @enderror
                 <label class="disc-institution">
-                    Instituição em que foi cursada:
+                    Instituição em que foi cursada
                     <input type="text" name="disc1-institution" id="disc-institution" value="{{ old('disc1-institution') }}" required>
                 </label>
                 @error('disc1-institution')
@@ -50,7 +50,7 @@
                         </style>
                     @enderror
                     <label class="disc-year">
-                        Ano: 
+                        Ano
                         <input type="text" name="disc1-year" id="disc-year" value="{{ old('disc1-year') }}" required>
                     </label>
                     @error('disc1-year')
@@ -64,7 +64,7 @@
                         </style>
                     @enderror
                     <label class="disc-grade">
-                        Nota: 
+                        Nota 
                         <input type="text" name="disc1-grade" id="disc-grade" value="{{ old('disc1-grade') }}" required>
                     </label>
                     @error('disc1-grade')
@@ -80,7 +80,7 @@
                 </div>
                 <div class="disc-last-row">
                     <label class="disc-semester">
-                        Semestre:
+                        Semestre
                         <select name="disc1-semester" id="disc-semester" required>
                             <option value="">Selecione o semestre</option>
                             <option value="Primeiro"
@@ -130,7 +130,7 @@
         </div> -->
         <div class="disc">
             <label class="requested-disc-name">
-                Nome: 
+                Nome
                 <input type="text" id="disc-name" name="requested-disc-name" value="{{ old('requested-disc-name') }}" required>
             </label>
             @error('requested-disc-name')
@@ -146,7 +146,7 @@
 
             <div class="disc-middle-row">
                 <label class="requested-disc-type">
-                    Tipo:
+                    Tipo
                     <select name="requested-disc-type" id="disc-type" required>
                         <option value="">
                             Selecione o tipo
@@ -208,7 +208,7 @@
             </div>
 
             <label class="disc-department">
-                Departamento:
+                Departamento
                 <select name="disc-department" required>
                     <option value="">Selecione o departamento</option>
                     <option value="MAC"
