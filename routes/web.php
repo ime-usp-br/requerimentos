@@ -34,8 +34,8 @@ Route::post('/trocar-papel', [RoleController::class, 'switchRole'])->name('role.
 
 Route::middleware('auth')->group(function() {
     
-    Route::prefix('aluno')->middleware('role:' . RoleName::STUDENT)->group(function () {
-    // Route::prefix('aluno')->group(function () {
+    // Route::prefix('aluno')->middleware('role:' . RoleName::STUDENT)->group(function () {
+    Route::prefix('aluno')->group(function () {
         Route::get('/lista', [StudentController::class, 'list'])->name('student.list');
 
         Route::view('/novo-requerimento', 'pages.student.newRequisition')->name('student.newRequisition');
@@ -49,9 +49,8 @@ Route::middleware('auth')->group(function() {
         Route::post('/atualizar/{requisitionId}', [StudentController::class, 'update'])->name('student.update');
     });
 
-    // Route::prefix('secretaria')->middleware('role:' . RoleName::SG)->group(function () {
-    Route::prefix('secretaria')->group(function () {
-
+    Route::prefix('secretaria')->middleware('role:' . RoleName::SG)->group(function () {
+    // Route::prefix('secretaria')->group(function () {
         Route::get('/lista', [SGController::class, 'list'])->name('sg.list');
 
         Route::view('/novo-requerimento', 'pages.sg.newRequisition')->name('sg.newRequisition');
