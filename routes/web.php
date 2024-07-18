@@ -9,8 +9,6 @@ use App\Http\Controllers\RecordController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\PreviousReviews;
-
 
 Route::get('/', function () {
     return view('pages.home');
@@ -49,8 +47,8 @@ Route::middleware('auth')->group(function() {
         Route::post('/atualizar/{requisitionId}', [StudentController::class, 'update'])->name('student.update');
     });
 
-    Route::prefix('secretaria')->middleware('role:' . RoleName::SG)->group(function () {
-    // Route::prefix('secretaria')->group(function () {
+    // Route::prefix('secretaria')->middleware('role:' . RoleName::SG)->group(function () {
+    Route::prefix('secretaria')->group(function () {
         Route::get('/lista', [SGController::class, 'list'])->name('sg.list');
 
         Route::view('/novo-requerimento', 'pages.sg.newRequisition')->name('sg.newRequisition');
