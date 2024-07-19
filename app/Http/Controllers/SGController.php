@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\TakenDisciplinesVersion;
 use App\Http\Requests\RequisitionUpdateRequest;
 use App\Http\Requests\RequisitionCreationRequest;
+use App\Notifications\RequisitionResultNotification;
 
 // use Illuminate\Support\Facades\Auth;
 // use Illuminate\Support\Facades\Route;
@@ -214,12 +215,17 @@ class SGController extends Controller
 
             if ($reqToBeUpdated->result !== $requisitionData['result']) {
 
+                $studentUser = User::where('codpes', $reqToBeUpdated->nusp)->first();
+
                 if ($requisitionData['result'] === 'Inconsistência nas informações') {
                     $type = EventType::BACK_TO_STUDENT;
+                    $studentUser->notify(new RequisitionResultNotification($studentUser));
                 } elseif ($requisitionData['result'] === 'Deferido') {
                     $type = EventType::ACCEPTED;
+                    $studentUser->notify(new RequisitionResultNotification($studentUser));
                 } elseif ($requisitionData['result'] === 'Indeferido') {
                     $type = EventType::REJECTED;
+                    $studentUser->notify(new RequisitionResultNotification($studentUser));
                 } elseif ($requisitionData['result'] === 'Sem resultado') {
                     $type = EventType::IN_REVALUATION;
                 }
