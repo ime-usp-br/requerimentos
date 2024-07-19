@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\User;
 use App\Enums\RoleName;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SGController;
 use App\Http\Controllers\RoleController;
@@ -9,9 +11,22 @@ use App\Http\Controllers\RecordController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\DepartmentController;
+use App\Notifications\RequisitionResultNotification;
 
 Route::get('/', function () {
     return view('pages.home');
+});
+
+Route::get('/notification', function () {
+    // $loggedUser = Auth::user();
+    // return view('pages.accessDenied');
+    // dd('ola');
+    $studentUser = User::where('codpes', 10758748)->first();
+
+    $studentUser->notify(new RequisitionResultNotification($studentUser));
+
+    // dump('ola');
+    return 'Email enviado';
 });
 
 // rota usada para achar informações sobre a configuração de php da máquina
