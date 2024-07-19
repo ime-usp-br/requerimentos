@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Event;
 use App\Models\Review;
 use App\Enums\RoleName;
 use App\Enums\EventType;
 use App\Enums\DocumentType;
 use App\Models\Requisition;
+use App\Notifications\ReviewerNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
@@ -102,6 +104,13 @@ class ReviewController extends Controller
 
             $req->save();
             $event->save();
+
+            $reviewerUser = User::where('codpes', $request->nusp)->first();
+
+            // se o parecerista nunca logou no sistema, o email dele é desconhecido 
+            if ($reviewerUser->email) {
+                $reviewerUser->notify(new ReviewerNotification($reviewerUser));
+            }
         });
 
         return response()->noContent();
