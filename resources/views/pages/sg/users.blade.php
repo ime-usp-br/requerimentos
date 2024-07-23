@@ -16,7 +16,6 @@
 
     <!-- nosso javascript -->
     <script src="{{ asset('js/sg/users.js')}}" defer></script>
-    <!-- <link rel="stylesheet" type="text/css" href="{{ asset('css/users.css') }}"> -->
     <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/sg/users.css') }}">  
     <title>Administração de usuários</title>    
 @endsection
@@ -70,14 +69,6 @@
                             Secretaria de Departamento
                         </span>
                     </label>
-<!-- 
-                    <label class="radio-button">
-                        <input type="radio" id="dept-secretary" name="type" value="dept-secretary" />
-                        <span class="label-visible">
-                            <span class="fake-radiobutton"></span>
-                            Secretaria de Departamento
-                        </span>
-                    </label> -->
                 </div>
 
                 <div class="department-title">Departamento</div>
