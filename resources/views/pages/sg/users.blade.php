@@ -25,7 +25,7 @@
     <header>
         <h1>Administração de papéis</h1>
         <nav>
-            <button class="button">Adicionar um papel</button>
+            <a class="button">Adicionar um papel</a>
             <a href="{{ route('sg.list') }}" class="button">Voltar</a>
         </nav>
     </header>
