@@ -195,18 +195,9 @@ input[type="radio"] {
         width: auto;
     } 
 
-    /* nav {
-        margin-bottom: 2rem;
-        justify-content: space-between;
-    } */
-
     .large-field {
         width: 24.8rem;
     }
-
-    /* h1 {
-        margin: 2rem 0;
-    } */
 
     textarea {
         width: 28rem;
@@ -214,6 +205,7 @@ input[type="radio"] {
 
     .nav {
         justify-content: space-around;
+        flex-direction: row;
     }
 
     .nav .button {
