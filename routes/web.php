@@ -64,6 +64,8 @@ Route::middleware('auth')->group(function() {
 
     // Route::prefix('secretaria')->middleware('role:' . RoleName::SG)->group(function () {
     Route::prefix('secretaria')->group(function () {
+        Route::get('/exporta-csv', [RequisitionController::class, 'exportCSV'])->name('export.csv');
+
         Route::get('/lista', [SGController::class, 'list'])->name('sg.list');
 
         Route::view('/novo-requerimento', 'pages.sg.newRequisition')->name('sg.newRequisition');
