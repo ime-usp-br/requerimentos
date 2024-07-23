@@ -43,7 +43,7 @@
                     </div>
                 @else
                     <div class="field-wrapper">
-                        O requerimento passou por análise interna e foi indeferido. Para saber mais informações entre em contato com a secretaria de graduação.
+                        O requerimento passou por análise interna e foi indeferido. Para saber mais informações, entre em contato com a secretaria de graduação.
                     </div> 
                 @endif
             </section>
@@ -57,7 +57,7 @@
                     </div>
                 @else
                     <div class="field-wrapper">
-                        O requerimento passou por análise interna e foi deferido. Para saber mais informações entre em contato com a secretaria de graduação.
+                        O requerimento passou por análise interna e foi deferido. Para saber mais informações, entre em contato com a secretaria de graduação.
                     </div> 
                 @endif
             </section>
