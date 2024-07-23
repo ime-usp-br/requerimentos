@@ -34,14 +34,6 @@ h1 {
     margin-top: var(--body-gaps);
 }
 
-/* nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: space-evenly;
-    margin-bottom: 1.2rem;
-} */
-
 form {
     display: flex;
     flex-direction: column;
@@ -166,14 +158,14 @@ input[type="radio"] {
 
 .nav {
     display: flex;
-    justify-content: space-between;
-    /* margin-bottom: 1.5rem; */
-    /* margin-top: 2.8rem; */
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: 0.8rem;
 }
 
 .nav .button {
-    width: 6.2rem;
-    font-size: 0.8rem;
+    width: 100%;
+    font-size: 1.1rem;
 }
 
 @media screen and (min-width: 410px) {
