@@ -51,6 +51,10 @@ header {
     justify-content: space-between;
 }
 
+nav *, nav .button {
+    width: 100%;
+}
+
 h1 {
     padding-left: var(--page-margin);
     margin-top: var(--body-gaps);
@@ -81,7 +85,7 @@ tbody tr {
     width: 6.5rem;
     height: 2.5rem;
     font-weight: 700;
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     padding: 0.5rem;
     display: flex;
     justify-content: center;
@@ -103,11 +107,6 @@ tbody tr {
     /* min-height: 67.5rem; */
 }
 
-@media screen and (max-width: 599px) {
-    h1 {
-        font-size: 1.6rem;
-    }
-}
 
 @media screen and (min-width: 370px) {
     .button {
