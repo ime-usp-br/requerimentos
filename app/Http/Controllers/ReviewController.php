@@ -108,7 +108,7 @@ class ReviewController extends Controller
             $reviewerUser = User::where('codpes', $request->nusp)->first();
 
             // se o parecerista nunca logou no sistema, o email dele é desconhecido 
-            if ($reviewerUser->email) {
+            if ($reviewerUser->email && env('APP_ENV') === 'production') {
                 $reviewerUser->notify(new ReviewerNotification($reviewerUser));
             }
         });
