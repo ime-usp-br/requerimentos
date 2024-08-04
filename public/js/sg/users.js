@@ -63,7 +63,7 @@ window.onload = function () {
     // });
 
     // faz o overlay aparecer quando o botão de adicionar é clickado
-    const popupButton = document.querySelector("nav button");
+    const popupButton = document.querySelector("nav a");
     popupButton.onclick = (event) => {
         const overlayContainer = document.querySelector(".overlay-container");
         overlayContainer.classList.add("overlay-show");
