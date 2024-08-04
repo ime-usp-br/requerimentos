@@ -141,13 +141,13 @@ class ReviewController extends Controller
     {
         $user = Auth::user();
 
-        $reviewToBeSave = Review::where('requisition_id', $requisitionId)
+        $reviewToBeSaved = Review::where('requisition_id', $requisitionId)
             ->where('reviewer_nusp', $user->codpes)
             ->first();
 
-        $reviewToBeSave->reviewer_decision = $request->decision;
-        $reviewToBeSave->justification = $request->justification;
-        $reviewToBeSave->save();
+        $reviewToBeSaved->reviewer_decision = $request->decision;
+        $reviewToBeSaved->justification = $request->justification;
+        $reviewToBeSaved->save();
     }
 
     private function submit($requisitionId, Request $request)
