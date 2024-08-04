@@ -22,7 +22,7 @@ class ReviewController extends Controller
 
         $user = Auth::user();
 
-        $selectedColumns = ['requisitions.created_at', 'nusp', 'requested_disc', 'reviewer_decision', 'reviews.updated_at', 'requisitions.id'];
+        $selectedColumns = ['requisitions.created_at', 'student_name', 'requested_disc', 'reviewer_decision', 'reviews.updated_at', 'requisitions.id'];
 
         $reqs = DB::table('reviews')
             ->join('requisitions', 'reviews.requisition_id', '=', 'requisitions.id')
