@@ -11,6 +11,7 @@ use App\Http\Controllers\RecordController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\RequisitionController;
 use App\Notifications\RequisitionResultNotification;
 
 Route::get('/', function () {
