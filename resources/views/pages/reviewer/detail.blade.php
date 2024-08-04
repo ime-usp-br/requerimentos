@@ -82,7 +82,7 @@
 
         <div class="nav"> 
             <a href="{{ route('reviewer.list') }}" class="button">Voltar</a>
-            <button type="submit" form="form" class="button" name="action" value="save">Salvar</button>
+            <button type="submit" form="form" class="button" name="action" value="save">Salvar alterações</button>
             <button type="submit" form="form" class="button" name="action" value="submit">Enviar parecer</button>
         </div>
         
