@@ -103,7 +103,7 @@ class ReviewTest extends TestCase
 
     }
 
-    public function test_review_was_successfully_updated_by_reviewer()
+    public function test_review_was_successfully_saved_by_reviewer()
     {
 
         $initialReview = Review::factory()->create([
@@ -118,10 +118,45 @@ class ReviewTest extends TestCase
 
         $postData = [
             'decision' => $this->faker->randomElement(['Sem decisão', 'Deferido', 'Indeferido']),
-            'justification' => $this->faker->sentence(40)
+            'justification' => $this->faker->sentence(40),
+            'action' => 'save'
         ];
 
-        $response = $this->followingRedirects()->actingAs($reviewer)->post(route('reviewer.update', $this->req->id), $postData);
+        $response = $this->followingRedirects()->actingAs($reviewer)->post(route('reviewer.saveOrSubmit', $this->req->id), $postData);
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('reviews', [
+            'reviewer_nusp' => $reviewer->codpes,
+            'requisition_id' => $this->req->id,
+            'reviewer_decision' => $postData['decision'],
+            'justification' => $postData['justification'],
+            'reviewer_name' => $reviewer->name
+        ]);
+        
+        $response->assertSee(['Parecer salvo', 'As informações do parecer foram salvas']);
+    }
+
+    public function test_review_was_successfully_submitted_by_reviewer()
+    {
+
+        $initialReview = Review::factory()->create([
+            'requisition_id' => $this->req->id
+        ]);
+        
+        $reviewer = User::factory()->create([
+            'current_role_id' => RoleId::REVIEWER,
+            'name' => $initialReview->reviewer_name,
+            'codpes' => $initialReview->reviewer_nusp,
+        ]);
+
+        $postData = [
+            'decision' => $this->faker->randomElement(['Sem decisão', 'Deferido', 'Indeferido']),
+            'justification' => $this->faker->sentence(40),
+            'action' => 'submit'
+        ];
+
+        $response = $this->followingRedirects()->actingAs($reviewer)->post(route('reviewer.saveOrSubmit', $this->req->id), $postData);
 
         $response->assertStatus(200);
 
@@ -148,6 +183,6 @@ class ReviewTest extends TestCase
             'reviewer_name' => $reviewer->name
         ]);
         
-        $response->assertSee(['Parecer salvo', 'As informações do parecer foram salvas']);
+        $response->assertSee(['Parecer enviado', 'As informações do parecer foram enviadas para a secretaria']);
     }
 }
