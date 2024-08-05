@@ -11,7 +11,6 @@ use App\Enums\EventType;
 use App\Enums\DocumentType;
 use App\Models\Requisition;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
