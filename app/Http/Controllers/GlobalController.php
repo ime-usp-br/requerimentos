@@ -76,7 +76,7 @@ class GlobalController extends Controller
             return response()->file($filePath, ['Content-Disposition' => 'inline; filename="Documento"']);
         }
 
-        if ($user->codpes !== $document->requisition->nusp) {
+        if ($user->codpes !== $document->requisition->student_nusp) {
             abort(404);
         }
 

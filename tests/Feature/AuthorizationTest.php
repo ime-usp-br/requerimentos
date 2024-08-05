@@ -35,7 +35,7 @@ class AuthorizationTest extends TestCase
 
         $fakeRequisition = Requisition::factory()->create([
             'id' => $requisitionId,
-            'nusp' => $this->faker->unique()->numberBetween(10000000, 99999999),
+            'student_nusp' => $this->faker->unique()->numberBetween(10000000, 99999999),
         ]);
 
         $documentId = $this->faker()->numberBetween(1, 99999999);
@@ -53,7 +53,7 @@ class AuthorizationTest extends TestCase
 
         $response = $this->actingAs($userThatShouldNotAccessDocument)->get(route('document.show', ['documentId' => $documentId]));
 
-        $this->assertNotEquals($fakeRequisition->nusp, $userThatShouldNotAccessDocument->codpes);
+        $this->assertNotEquals($fakeRequisition->student_nusp, $userThatShouldNotAccessDocument->codpes);
         $this->assertEquals($fakeRequisition->id , $fakeDocument->requisition_id);
         $response->assertStatus(404);
     }
@@ -94,7 +94,7 @@ class AuthorizationTest extends TestCase
         Requisition::factory()->create([
             'result' => 'Sem resultado',
             'id' => $requisitionId,
-            'nusp' => $studentUserNUSP,
+            'student_nusp' => $studentUserNUSP,
         ]);
 
         $response = $this->actingAs($studentUser)->get(route('student.edit', ['requisitionId' => $requisitionId]));
@@ -113,7 +113,7 @@ class AuthorizationTest extends TestCase
         $requisitionId = $this->faker->unique()->numberBetween(1, 99999999);
 
         Requisition::factory()->create([
-            'nusp' => $this->faker->unique()->numberBetween(10000000, 99999999),
+            'student_nusp' => $this->faker->unique()->numberBetween(10000000, 99999999),
             'id' => $requisitionId
         ]);
 

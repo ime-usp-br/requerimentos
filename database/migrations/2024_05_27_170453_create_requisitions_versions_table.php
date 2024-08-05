@@ -21,7 +21,7 @@ class CreateRequisitionsVersionsTable extends Migration
             $table->timestamps();
             $table->enum('department', ['MAC', 'MAE', 'MAT', 'MAP', 'Disciplina de fora do IME']);
             
-            $table->unsignedInteger('nusp');
+            $table->unsignedInteger('student_nusp');
 
             // chave primária (id do requerimento na tabela requisitions + 
             // número dessa versão)

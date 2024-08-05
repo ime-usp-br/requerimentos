@@ -76,7 +76,7 @@ class ReviewController extends Controller
 
         DB::transaction(function () use ($request, $requisitionId) {
 
-            Review::firstOrCreate(['reviewer_nusp' => $request->nusp, 'requisition_id' => $requisitionId], ['reviewer_decision' => 'Sem decisão', 'requisition_id' => $requisitionId, 'justification' => null, 'reviewer_nusp' => $request->nusp, 'reviewer_name' => $request->name]);
+            Review::firstOrCreate(['reviewer_nusp' => $request->student_nusp, 'requisition_id' => $requisitionId], ['reviewer_decision' => 'Sem decisão', 'requisition_id' => $requisitionId, 'justification' => null, 'reviewer_nusp' => $request->nusp, 'reviewer_name' => $request->name]);
 
             $user = Auth::user();
 

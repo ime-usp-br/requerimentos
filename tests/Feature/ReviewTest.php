@@ -51,7 +51,6 @@ class ReviewTest extends TestCase
     
     public function test_review_was_successfully_created_on_reviewer_pick_page()
     {
-
         $requisitionId = $this->req->id;
 
         $currentRoleId = $this->faker->randomElement([RoleId::SG, RoleId::MAC_SECRETARY, RoleId::MAE_SECRETARY, RoleId::MAP_SECRETARY, RoleId::MAT_SECRETARY]);
