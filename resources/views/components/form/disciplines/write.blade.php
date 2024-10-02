@@ -113,7 +113,7 @@
             </div>
         </div>
         <div class="disc-management"> 
-            <button type="button" class="button add-disc">Adicionar<br> disciplina</button>
+            <button type="button" class="button add-disc">Adicionar outra<br> disciplina</button>
             <button type="button" class="button remove-disc">Remover<br> disciplina</button>
         </div>
     </div>
