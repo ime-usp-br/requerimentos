@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Event;
 use App\Models\Review;
+use App\Models\ReviewsVersion;
 use App\Enums\RoleName;
 use App\Enums\EventType;
 use App\Enums\DocumentType;
@@ -29,6 +30,8 @@ class ReviewController extends Controller
             ->where('reviewer_nusp', $user->codpes)
             ->where('requisitions.situation', '=', 'Enviado para análise dos pareceristas')
             ->select($selectedColumns)->get();
+
+        // dd($reqs);
 
         return view('pages.reviewer.list', ['reqs' => $reqs]);
     }
@@ -76,7 +79,75 @@ class ReviewController extends Controller
 
         DB::transaction(function () use ($request, $requisitionId) {
 
-            Review::firstOrCreate(['reviewer_nusp' => $request->student_nusp, 'requisition_id' => $requisitionId], ['reviewer_decision' => 'Sem decisão', 'requisition_id' => $requisitionId, 'justification' => null, 'reviewer_nusp' => $request->nusp, 'reviewer_name' => $request->name]);
+            // $rev = Review::firstOrNew(['reviewer_nusp' => $request->student_nusp, 'requisition_id' => $requisitionId], ['reviewer_decision' => 'Sem decisão', 'requisition_id' => $requisitionId, 'justification' => null, 'reviewer_nusp' => $request->nusp, 'reviewer_name' => $request->name]);
+            $rev = Review::where('requisition_id', $requisitionId)->latest()->first();
+
+            // dd($rev);
+
+            if (is_null($rev)) {
+                // Se a Review não existia, cria uma nova
+                $rev = new Review;
+                $rev->reviewer_name = $request->name;
+                $rev->reviewer_nusp = $request->nusp;
+                $rev->requisition_id = $requisitionId;
+                $rev->reviewer_decision = 'Sem decisão';
+                $rev->justification = null;
+                $rev->latest_version = 1;
+
+                $rev->save();
+                // dd($rev->id, $rev->getKey(), $rev);
+
+                $new_hist = new ReviewsVersion;
+                $new_hist->review_id = $rev->id;
+                $new_hist->reviewer_name = $rev->name;
+                $new_hist->reviewer_nusp = $rev->reviewer_nusp;
+                $new_hist->requisition_id = $requisitionId;
+                $new_hist->reviewer_decision = 'Sem decisão';
+                $new_hist->justification = null;
+                $new_hist->version = $rev->latest_version;
+
+                $new_hist->save();
+
+                // dd($rev, $new_hist, $request->nusp, $request->all());
+            }
+
+            else {
+                // Se a review já existia, cria uma nova para salvar os valores recebidos
+
+                // $new_rev = new Review;
+                // $new_rev->reviewer_name = $rev->name;
+                // $new_rev->reviewer_nusp = $rev->reviewer_nusp;
+                // $new_rev->requisition_id = $requisitionId;
+                // $new_rev->reviewer_decision = 'Sem decisão';
+                // $new_rev->justification = null;
+                // $new_rev->latest_version = ($rev->latest_version + 1);
+
+                // NÃO CRIAR UMA REVIEW NOVA, ATUALIZA A EXISTENTE
+                $rev->reviewer_name = $request->name;
+                $rev->reviewer_nusp = $request->nusp;
+                // $rev->requisition_id = $requisitionId;
+                $rev->reviewer_decision = 'Sem decisão';
+                $rev->justification = null;
+                $rev->latest_version = ($rev->latest_version + 1);
+
+                // dd($rev, $new_rev, $request);
+                // Agora, salva os dados antigos no histórico
+                $new_hist = new ReviewsVersion;
+                $new_hist->review_id = $rev->id;
+                $new_hist->reviewer_name = $request->name;
+                $new_hist->reviewer_nusp = $request->nusp;
+                $new_hist->requisition_id = $rev->requisition_id;
+                $new_hist->reviewer_decision = $rev->reviewer_decision;
+                $new_hist->justification = $rev->justification;
+                $new_hist->version = $rev->latest_version;
+                
+                // dd($rev, $new_hist);
+
+                $rev->save();
+                $new_hist->save();
+            }
+
+            // dd($request->all());
 
             $user = Auth::user();
 
