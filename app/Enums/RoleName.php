@@ -5,7 +5,7 @@ namespace App\Enums;
 class RoleName 
 {
     const STUDENT = 'Aluno';
-    const SG = 'Secretaria de Graduação';
+    const SG = 'Serviço de Graduação';
     const REVIEWER = 'Parecerista';
     const MAC_SECRETARY = 'Secretaria do MAC';
     const MAT_SECRETARY = 'Secretaria do MAT';

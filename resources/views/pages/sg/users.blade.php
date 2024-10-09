@@ -55,10 +55,10 @@
                     </label>
                     
                     <label class="radio-button">
-                        <input type="radio" id="grad-secretary" name="role" value="Secretaria de Graduação" />
+                        <input type="radio" id="grad-secretary" name="role" value="Serviço de Graduação" />
                         <span class="label-visible">
                             <span class="fake-radiobutton"></span>
-                            Secretaria de Graduação
+                            Serviço de Graduação
                         </span>
                     </label>
 

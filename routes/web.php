@@ -104,7 +104,7 @@ Route::middleware('auth')->group(function() {
     });
     // });
 
-    // Route::group(['middleware' => 'role:Secretaria de Graduação,Secretaria do MAC,Secretaria do MAT,Secretaria do MAE,Secretaria do MAP,Parecerista'], function () {
+    // Route::group(['middleware' => 'role:Serviço de Graduação,Secretaria do MAC,Secretaria do MAT,Secretaria do MAE,Secretaria do MAP,Parecerista'], function () {
         
         Route::post('/dar-papel', [RoleController::class, 'addRole'])->name('role.add');
 
