@@ -19,7 +19,7 @@ class RequisitionController extends Controller
             foreach ($requisitions as $requisition) {
                 fputcsv($handle, [                    
                     $requisition->student_name,
-                    $requisition->nusp,
+                    $requisition->student_nusp,
                     $requisition->requested_disc_code,
                     $requisition->requested_disc_type,
                     $requisition->internal_status,

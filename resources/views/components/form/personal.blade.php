@@ -40,7 +40,7 @@
     <div class="nusp-email-wrapper">
         <label class="nusp">
             Número USP
-            <input type="text" name="nusp" value='{{ $req->nusp ?? null}}' required {{ $readOnly ? 'readonly' : '' }}>
+            <input type="text" name="nusp" value='{{ $req->student_nusp ?? null}}' required {{ $readOnly ? 'readonly' : '' }}>
             
         </label>
         @error('nusp')

@@ -36,7 +36,7 @@ class RequisitionReadTest extends TestCase
         
         Requisition::factory()->count($this->tablePageSize)->create([
             'student_name' =>  $studentUser->name,
-            'nusp' => $studentUser->codpes
+            'student_nusp' => $studentUser->codpes
         ]);
 
         $requisitions = Requisition::all();
@@ -77,7 +77,7 @@ class RequisitionReadTest extends TestCase
         $requisitions = Requisition::all();
         foreach ($requisitions as $requisition) {
             $response->assertSee($requisition->student_name); 
-            $response->assertSee($requisition->nusp);
+            $response->assertSee($requisition->student_nusp);
             $response->assertSee($requisition->internal_status);
             $response->assertSee($requisition->department);
         }
@@ -108,7 +108,7 @@ class RequisitionReadTest extends TestCase
         $requisitions = Requisition::all();
         foreach ($requisitions as $requisition) {
             $response->assertSee($requisition->student_name); 
-            $response->assertSee($requisition->nusp);
+            $response->assertSee($requisition->student_nusp);
             $response->assertSee($requisition->internal_status);
         }
     }

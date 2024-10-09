@@ -30,9 +30,9 @@ class RequisitionUpdateRequest extends FormRequest
             $user = Auth::user();
 
             // o cast para int foi adicionado porque o banco sqlite3 retorna 
-            // $req->nusp como uma string no server de produção. Sem esse cast,
+            // $req->student_nusp como uma string no server de produção. Sem esse cast,
             // os testes falham dentro do server
-            if ((int) $reqToBeUpdated->nusp !== $user->codpes) {
+            if ((int) $reqToBeUpdated->student_nusp !== $user->codpes) {
                 abort(404);
             }
 
@@ -111,7 +111,7 @@ class RequisitionUpdateRequest extends FormRequest
                 'requested_disc_code' => $validatedData['requested-disc-code'],
                 'student_name' => $validatedData['name'],
                 'email' => $validatedData['email'],
-                'nusp' => (int) $validatedData['nusp'],
+                'student_nusp' => (int) $validatedData['nusp'],
                 'course' => $validatedData['course'],
                 'result' => $this->input('result'),
                 'observations' => $this->input('observations'),

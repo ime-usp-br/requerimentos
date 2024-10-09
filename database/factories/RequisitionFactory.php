@@ -24,7 +24,7 @@ class RequisitionFactory extends Factory
             'requested_disc_code' => $this->faker->word(),
             'student_name' => $this->faker->name(),
             'email' => $this->faker->safeEmail(),
-            'nusp' => $this->faker->numberBetween(10000000, 99999999),
+            'student_nusp' => $this->faker->numberBetween(10000000, 99999999),
             'course' => $this->faker->randomElement([Course::BCC, Course::MAT_APPLIED, Course::MAT_COMP_APPLIED, Course::MAT_LIC, Course::MAT_PURE, Course::STATISTICS]),
             'result' => 'Sem resultado',
             'observations' => $this->faker->sentence(30),

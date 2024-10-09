@@ -23,7 +23,7 @@ class StudentController extends Controller
 
         $user = Auth::user();
 
-        $reqs = Requisition::with('takenDisciplines')->select('created_at', 'requested_disc', 'nusp', 'situation', 'id')->where('nusp', $user->codpes)->get();
+        $reqs = Requisition::with('takenDisciplines')->select('created_at', 'requested_disc', 'student_nusp', 'situation', 'id')->where('student_nusp', $user->codpes)->get();
 
         return view('pages.student.list', ['reqs' => $reqs]);
     }
@@ -34,9 +34,9 @@ class StudentController extends Controller
         $user = Auth::user();
 
         // o cast para int foi adicionado porque o banco sqlite3 retorna 
-        // $req->nusp como uma string no server de produção. Sem esse cast,
+        // $req->student_nusp como uma string no server de produção. Sem esse cast,
         // os testes falham dentro do server
-        if (!$req || (int) $req->nusp !== $user->codpes) {
+        if (!$req || (int) $req->student_nusp !== $user->codpes) {
             abort(404);
         }
 
@@ -84,7 +84,7 @@ class StudentController extends Controller
 
             $req = new Requisition;
             $req->department = $data['disc-department'];
-            $req->nusp = $user->codpes;
+            $req->student_nusp = $user->codpes;
             $req->student_name = $user->name;
             $req->email = $user->email;
             $req->course = $data['course'];
@@ -167,7 +167,6 @@ class StudentController extends Controller
                                         $request, 
                                         $reqToBeUpdated, 
                                         $requisitionId) {
-            
             // salvando os documentos
             $takenDiscsRecord = new Document;
             $takenDiscsRecord->path = $request->file('taken-disc-record')->store('test');
@@ -247,6 +246,7 @@ class StudentController extends Controller
             $newReqVersion->fill($fields);
             $newReqVersion->requisition_id = $reqToBeUpdated->id;
             $newReqVersion->version = $reqToBeUpdated->latest_version;
+            
             $newReqVersion->save();        
 
             // dd($requisitionData);
