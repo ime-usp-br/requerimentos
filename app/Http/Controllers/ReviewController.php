@@ -83,6 +83,7 @@ class ReviewController extends Controller
             $rev = Review::where('requisition_id', $requisitionId)->latest()->first();
 
             // dd($rev);
+            // dd($request->all());
 
             if (is_null($rev)) {
                 // Se a Review não existia, cria uma nova
@@ -123,11 +124,12 @@ class ReviewController extends Controller
                 // $new_rev->latest_version = ($rev->latest_version + 1);
 
                 // NÃO CRIAR UMA REVIEW NOVA, ATUALIZA A EXISTENTE
+                // dd($request->justification);
                 $rev->reviewer_name = $request->name;
                 $rev->reviewer_nusp = $request->nusp;
                 // $rev->requisition_id = $requisitionId;
-                $rev->reviewer_decision = 'Sem decisão';
-                $rev->justification = null;
+                // $rev->reviewer_decision = 'Sem decisão';
+                // $rev->justification = $request->justification;
                 $rev->latest_version = ($rev->latest_version + 1);
 
                 // dd($rev, $new_rev, $request);
