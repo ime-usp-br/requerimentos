@@ -23,12 +23,12 @@ extension=pdo_dblib;
 extension=pdo_mysql;
 ```
 
-Pode ser necessário baixar essas biblioteas.
+Pode ser necessário baixar essas bibliotecas.
 
 ### Instalando o Sistema
 Clone o arquivo para sua máquina:
 `git clone https://github.com/ime-usp-br/requerimentos.git`
-
+    
 Copie o .env.example e crie um .env para configurar variáveis do seu sistema:
 `cp .env.example .env`
 
