@@ -1,6 +1,6 @@
 <fieldset class="documents">
     <legend>Documentos</legend>
-    <div class="doc-text" >Adicione o histórico escolar com todas as disciplinas cursadas</div>
+    <div class="doc-text" >Adicione o histórico escolar com todas as disciplinas cursadas (máx. 10MB)</div>
     <div class="document">
         <img src="{{ asset('img/newRequisition/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
         <div>
@@ -14,7 +14,7 @@
             <div class="taken-disc-record">Nenhum arquivo pdf anexado</div>
         </div>
     </div>
-    <div class="doc-text">Adicione o histórico escolar do curso atual</div>
+    <div class="doc-text">Adicione o histórico escolar do curso atual (máx. 5MB)</div>
     <div class="document">
         <img src="{{ asset('img/newRequisition/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
         <div>
@@ -29,7 +29,7 @@
             
         </div>
     </div>
-    <div class="doc-text">Adicione as ementas de todas as disciplinas cursadas</div>
+    <div class="doc-text">Adicione as ementas de todas as disciplinas cursadas (máx. 5MB)</div>
     <div class="document">
         <img src="{{ asset('img/newRequisition/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
         <div>
@@ -43,7 +43,7 @@
             <div class="taken-disc-syllabus">Nenhum arquivo pdf anexado</div>
         </div>
     </div>
-    <div class="doc-text">Adicione as ementas de todas as disciplinas requeridas</div>
+    <div class="doc-text">Adicione as ementas de todas as disciplinas requeridas (máx. 5MB)</div>
     <div class="document">
         <img src="{{ asset('img/newRequisition/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
         <div>
