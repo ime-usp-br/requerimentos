@@ -151,13 +151,6 @@
                         <option value="">
                             Selecione o tipo
                         </option>
-                        <option value="Extracurricular"
-                            @if(old('requested-disc-type') === 'Extracurricular') 
-                                selected 
-                            @endif
-                        >
-                            Extracurricular
-                        </option>
                         <option value="Obrigatória"
                             @if(old('requested-disc-type') === 'Obrigatória') 
                                 selected 
@@ -178,6 +171,13 @@
                             @endif
                         >
                             Optativa Livre
+                        </option>
+                        <option value="Extracurricular"
+                            @if(old('requested-disc-type') === 'Extracurricular') 
+                                selected 
+                            @endif
+                        >
+                            Extracurricular
                         </option>
                     </select>
                 </label>

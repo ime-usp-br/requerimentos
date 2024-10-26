@@ -1,6 +1,6 @@
 <fieldset class="documents">
     <legend>Documentos</legend>
-    <div class="doc-text" >Adicione o histórico escolar com todas as disciplinas cursadas</div>
+    <div class="doc-text" >Adicione o histórico escolar da instituição de origem</div>
     <div class="document">
         <img src="{{ asset('img/newRequisition/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
         <div>
@@ -9,9 +9,9 @@
                 <input type="file" class="file-input" name="taken-disc-record" id="taken-disc-record" accept=".pdf">
             </label>
             @error('taken-disc-record')
-                <p class="error-message">Adicione um arquivo pdf com tamanho máximo de 5mb</p>
+                <p class="error-message">Adicione um arquivo PDF com tamanho máximo de 5mb</p>
             @enderror
-            <div class="taken-disc-record">Nenhum arquivo pdf anexado</div>
+            <div class="taken-disc-record">Nenhum arquivo PDF anexado</div>
         </div>
     </div>
     <div class="doc-text">Adicione o histórico escolar do curso atual</div>
@@ -23,13 +23,13 @@
                 <input type="file" class="file-input" name="course-record" id="course-record" accept=".pdf">
             </label>
             @error('course-record')
-                <p class="error-message">Adicione um arquivo pdf com tamanho máximo de 5mb</p>
+                <p class="error-message">Adicione um arquivo PDF com tamanho máximo de 5mb</p>
             @enderror
-            <div class="course-record">Nenhum arquivo pdf anexado</div>
+            <div class="course-record">Nenhum arquivo PDF anexado</div>
             
         </div>
     </div>
-    <div class="doc-text">Adicione as ementas de todas as disciplinas cursadas</div>
+    <div class="doc-text">Adicione as ementas de todas as disciplinas cursadas (referentes a este pedido)</div>
     <div class="document">
         <img src="{{ asset('img/newRequisition/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
         <div>
@@ -43,7 +43,7 @@
             <div class="taken-disc-syllabus">Nenhum arquivo pdf anexado</div>
         </div>
     </div>
-    <div class="doc-text">Adicione as ementas de todas as disciplinas requeridas</div>
+    <div class="doc-text">Adicione a ementa da disciplina requerida</div>
     <div class="document">
         <img src="{{ asset('img/newRequisition/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
         <div>
