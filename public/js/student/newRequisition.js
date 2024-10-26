@@ -68,23 +68,36 @@ window.onload = function () {
         const takenDiscInput = document.querySelector("#taken-disc-count");
         takenDiscInput.value = takenDiscCount;
 
-
+        const maxFileSize = 5 * 1024 * 1024;
         const fileInputs = document.querySelectorAll('.file-input');
-        for (let fileInput of fileInputs) {
-            const maxFileSize = 5 * 1024 * 1024;
-            const file = fileInput.files[0];
 
-            if (!file) {
-                alert('Pelo menos um dos arquivos necessários não foi adicionado');
-                return;
-            }
+        const studiedHist = fileInputs[0].files[0];
+        const currentHist = fileInputs[1].files[0];
+        const studiedSyl = fileInputs[2].files[0];
+        const reqSyl = fileInputs[3].files[0];
 
-            if (file.size > maxFileSize) {
-                alert('Um ou mais arquivos escolhidos excedem o limite de 5mb de tamanho');
-                return;
-            }
-
+        if (!studiedHist || !currentHist || !studiedSyl || !reqSyl) {
+            alert('Pelo menos um dos arquivos necessários não foi adicionado');
+            return;
         }
+
+        if (studiedHist.size > maxFileSize*2) {
+            alert('O histórico das disciplinas concluídas excede o limite de 10MB de tamanho');
+            return;
+        }
+        if (currentHist.size > maxFileSize) {
+            alert('O histórico das disciplinas atuais excede o limite de 5MB de tamanho');
+            return;
+        }
+        if (studiedSyl.size > maxFileSize) {
+            alert('A ementa das disciplinas concluídas excede o limite de 5MB de tamanho');
+            return;
+        }
+        if (reqSyl.size > maxFileSize) {
+            alert('A ementa das disciplinas requeridas excede o limite de 5MB de tamanho');
+            return;
+        }
+
         form.submit();
     });
 
