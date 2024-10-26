@@ -17,7 +17,7 @@ class RoleAndPermissionSeeder extends Seeder
     public function run()
     {   
 
-        // $roles = ['Aluno', 'Secretaria de Graduação', 'Parecerista', 'Coordenador do MAC', 'Coordenador do MAE', 'Coordenador do MAP', 'Coordenador do MAT'];
+        // $roles = ['Aluno', 'Serviço de Graduação', 'Parecerista', 'Coordenador do MAC', 'Coordenador do MAE', 'Coordenador do MAP', 'Coordenador do MAT'];
 
         $roleNames = [RoleName::STUDENT, RoleName::SG, RoleName::REVIEWER, RoleName::MAC_SECRETARY, RoleName::MAE_SECRETARY, RoleName::MAP_SECRETARY, RoleName::MAT_SECRETARY];
 
