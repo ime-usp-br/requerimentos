@@ -130,7 +130,7 @@ class ReviewController extends Controller
         } else if ($action === "submit") {
             $this->submit($requisitionId, $request);
 
-            $bodyMsg = 'As informações do parecer foram enviadas para o serviço de graduação';
+            $bodyMsg = 'As informações do parecer foram enviadas';
             $titleMsg = 'Parecer enviado';
 
             return redirect()->route('reviewer.list', ['requisitionId' => $requisitionId])->with('success', ['title message' => $titleMsg, 'body message' => $bodyMsg]);
