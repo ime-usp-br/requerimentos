@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Event;
 use App\Models\Review;
+use App\Models\ReviewsVersion;
 use App\Enums\RoleName;
 use App\Enums\EventType;
 use App\Enums\DocumentType;
@@ -75,8 +76,21 @@ class ReviewController extends Controller
     {
 
         DB::transaction(function () use ($request, $requisitionId) {
+            $rev = Review::where('requisition_id', $requisitionId)
+                ->where('reviewer_nusp', $request->codpes)
+                ->first();
 
-            Review::firstOrCreate(['reviewer_nusp' => $request->student_nusp, 'requisition_id' => $requisitionId], ['reviewer_decision' => 'Sem decisão', 'requisition_id' => $requisitionId, 'justification' => null, 'reviewer_nusp' => $request->nusp, 'reviewer_name' => $request->name]);
+            if (is_null($rev)) {
+                // Se a Review não existia, cria uma nova
+                $rev = new Review;
+                $rev->reviewer_name = $request->name;
+                $rev->reviewer_nusp = $request->codpes;
+                $rev->requisition_id = $requisitionId;
+                $rev->reviewer_decision = 'Sem decisão';
+                $rev->justification = null;
+                $rev->latest_version = 0;
+                $rev->save();
+            }
 
             $user = Auth::user();
 
@@ -105,7 +119,7 @@ class ReviewController extends Controller
             $req->save();
             $event->save();
 
-            $reviewerUser = User::where('codpes', $request->nusp)->first();
+            $reviewerUser = User::where('codpes', $request->codpes)->first();
 
             // se o parecerista nunca logou no sistema, o email dele é desconhecido 
             if ($reviewerUser->email && env('APP_ENV') === 'production') {
@@ -156,11 +170,27 @@ class ReviewController extends Controller
 
             $user = Auth::user();
 
-            $reviewToBeSubmitted = Review::where('requisition_id', $requisitionId)->where('reviewer_nusp', $user->codpes)->first();
+            $review = Review::where('requisition_id', $requisitionId)->where('reviewer_nusp', $user->codpes)->first();
+            
+            // Não tem devemos salvar a versão 0, já que ela
+            // não tem informação dada pelo parecerista.
+            if($review->latest_version > 0){
+                $new_hist = new ReviewsVersion;
+                $new_hist->review_id = $review->id;
+                $new_hist->reviewer_name = $user->name;
+                $new_hist->reviewer_nusp = $user->codpes;
+                $new_hist->requisition_id = $review->requisition_id;
+                $new_hist->reviewer_decision = $review->reviewer_decision;
+                $new_hist->justification = $review->justification;
+                $new_hist->version = $review->latest_version;
+                $new_hist->save();
+            }
 
-            $reviewToBeSubmitted->reviewer_decision = $request->decision;
-            $reviewToBeSubmitted->justification = $request->justification;
-            $reviewToBeSubmitted->save();
+            $review->reviewer_decision = $request->decision;
+            $review->justification = $request->justification;
+            $review->latest_version = ($review->latest_version + 1);
+            $review->save();
+
 
             $req = Requisition::find($requisitionId);
             $req->situation = EventType::RETURNED_BY_REVIEWER;
