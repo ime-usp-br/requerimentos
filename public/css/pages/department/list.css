@@ -24,12 +24,18 @@ body {
     flex-direction: column;
     font-weight: 500;
     font-size: 0.9rem;
+    width: 7.5rem;
+    width: 100%;
+    /* width: min-content; */
+    /* position: absolute; */
+    right: var(--page-margin);
+    bottom: calc(100% + var(--body-gaps))
 }
 
 nav {
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
+    flex-direction: column;
     gap: 0.8rem;
     padding: 0 var(--page-margin);
     width: 100%;
@@ -134,7 +140,7 @@ tbody tr {
     }
 
     nav {
-        flex-direction: row-reverse;
+        flex-direction: row;
         align-items: flex-end;
     }
 

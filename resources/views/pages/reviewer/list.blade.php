@@ -39,8 +39,6 @@
 
     <header>
         <h1>Requerimentos</h1>
-        <!-- <div class="header-buttons"> -->
-          
         <nav> 
             @if (Auth::user()->roles()->count() > 1)
                 <form action="{{ route('role.switch') }}" method="POST" class="role-switch">
@@ -64,9 +62,6 @@
             </form> 
             <button type="submit" form="form" class="button">Sair</button>
         </nav>
-           
-            
-        <!-- </div> -->
     </header>
     
     <div class="content"> 
