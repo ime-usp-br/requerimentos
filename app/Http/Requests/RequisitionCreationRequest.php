@@ -30,10 +30,11 @@ class RequisitionCreationRequest extends FormRequest
             'requested-disc-code' => 'required|max:255',
             // essas regras de validação dos arquivos tem que ser colocadas nessa ordem
             // (com o mimes:pdf no final), senão da ruim 
-            'taken-disc-record' => 'required|file|max:2048|mimes:pdf',
-            'course-record' => 'required|file|max:2048|mimes:pdf',
-            'taken-disc-syllabus' => 'required|file|max:2048|mimes:pdf',
-            'requested-disc-syllabus' => 'required|file|max:2048|mimes:pdf',
+            // limite de tamanho imposto pelo servidor do IME
+            'taken-disc-record' => 'required|file|max:150|mimes:pdf',
+            'course-record' => 'required|file|max:150|mimes:pdf',
+            'taken-disc-syllabus' => 'required|file|max:150|mimes:pdf',
+            'requested-disc-syllabus' => 'required|file|max:150|mimes:pdf',
             'disc-department' => 'required'
         ];
         
