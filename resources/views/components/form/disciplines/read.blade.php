@@ -168,36 +168,36 @@
                         <select id="disc-type" name="requested-disc-type">
                             <option value="">Selecione o tipo</option>
                             <option 
+                            value="Obrigatória"
+                            @if($req->requested_disc_type == 'Obrigatória') 
+                            selected 
+                            @endif
+                            >
+                            Obrigatória
+                        </option>
+                        <option 
+                        value="Optativa Eletiva" 
+                        @if($req->requested_disc_type == 'Optativa Eletiva') 
+                        selected 
+                                @endif
+                                >
+                                Optativa Eletiva
+                            </option>
+                            <option 
+                            value="Optativa Livre" 
+                            @if($req->requested_disc_type == 'Optativa Livre') 
+                            selected 
+                                @endif
+                                >
+                                Optativa Livre
+                            </option>
+                            <option 
                                 value="Extracurricular" 
                                 @if($req->requested_disc_type == 'Extracurricular') 
                                     selected 
                                 @endif
                                 >
                                 Extracurricular
-                            </option>
-                            <option 
-                                value="Obrigatória"
-                                @if($req->requested_disc_type == 'Obrigatória') 
-                                    selected 
-                                @endif
-                                >
-                                Obrigatória
-                            </option>
-                            <option 
-                                value="Optativa Eletiva" 
-                                @if($req->requested_disc_type == 'Optativa Eletiva') 
-                                    selected 
-                                @endif
-                                >
-                                Optativa Eletiva
-                            </option>
-                            <option 
-                                value="Optativa Livre" 
-                                @if($req->requested_disc_type == 'Optativa Livre') 
-                                    selected 
-                                @endif
-                                >
-                                Optativa Livre
                             </option>
                         </select>
                     </label>                    
