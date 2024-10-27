@@ -1,6 +1,6 @@
 <fieldset class="documents">
     <legend>Documentos</legend>
-    <div class="doc-text" >Adicione o histórico escolar com todas as disciplinas cursadas (máx. 2MB)</div>
+    <div class="doc-text" >Adicione o histórico escolar da instituição de origem (máx. 2MB)</div>
     <div class="document">
         <img src="{{ asset('img/newRequisition/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
         <div>
@@ -11,7 +11,7 @@
             @error('taken-disc-record')
                 <p class="error-message">Adicione um arquivo pdf com tamanho máximo de 2MB</p>
             @enderror
-            <div class="taken-disc-record">Nenhum arquivo pdf anexado</div>
+            <div class="taken-disc-record">Nenhum arquivo PDF anexado</div>
         </div>
     </div>
     <div class="doc-text">Adicione o histórico escolar do curso atual (máx. 2MB)</div>
@@ -25,11 +25,11 @@
             @error('course-record')
                 <p class="error-message">Adicione um arquivo pdf com tamanho máximo de 2MB</p>
             @enderror
-            <div class="course-record">Nenhum arquivo pdf anexado</div>
+            <div class="course-record">Nenhum arquivo PDF anexado</div>
             
         </div>
     </div>
-    <div class="doc-text">Adicione as ementas de todas as disciplinas cursadas (máx. 2MB)</div>
+    <div class="doc-text">Adicione as ementas de todas as disciplinas cursadas referentes a esse pedido (máx. 2MB)</div>
     <div class="document">
         <img src="{{ asset('img/newRequisition/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
         <div>
@@ -43,7 +43,7 @@
             <div class="taken-disc-syllabus">Nenhum arquivo pdf anexado</div>
         </div>
     </div>
-    <div class="doc-text">Adicione as ementas de todas as disciplinas requeridas (máx. 2MB)</div>
+    <div class="doc-text">Adicione a ementa da disciplina requerida (máx. 2MB)</div>
     <div class="document">
         <img src="{{ asset('img/newRequisition/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
         <div>
