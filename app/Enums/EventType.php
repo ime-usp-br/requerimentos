@@ -4,7 +4,7 @@ namespace App\Enums;
 
 class EventType 
 {
-    const SENT_TO_SG = 'Encaminhado para a secretaria pelo aluno';
+    const SENT_TO_SG = 'Encaminhado para a SG pelo aluno';
     const SENT_TO_REVIEWERS = 'Enviado para análise dos pareceristas';
     const BACK_TO_STUDENT = 'Retornado para o aluno devido a inconsistência nos dados';
     const ACCEPTED = 'Requerimento deferido';

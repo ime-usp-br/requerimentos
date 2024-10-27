@@ -31,8 +31,6 @@ class ReviewController extends Controller
             ->where('requisitions.situation', '=', 'Enviado para análise dos pareceristas')
             ->select($selectedColumns)->get();
 
-        // dd($reqs);
-
         return view('pages.reviewer.list', ['reqs' => $reqs]);
     }
 
@@ -78,78 +76,21 @@ class ReviewController extends Controller
     {
 
         DB::transaction(function () use ($request, $requisitionId) {
-
-            // $rev = Review::firstOrNew(['reviewer_nusp' => $request->student_nusp, 'requisition_id' => $requisitionId], ['reviewer_decision' => 'Sem decisão', 'requisition_id' => $requisitionId, 'justification' => null, 'reviewer_nusp' => $request->nusp, 'reviewer_name' => $request->name]);
-            $rev = Review::where('requisition_id', $requisitionId)->latest()->first();
-
-            // dd($rev);
-            // dd($request->all());
+            $rev = Review::where('requisition_id', $requisitionId)
+                ->where('reviewer_nusp', $request->codpes)
+                ->first();
 
             if (is_null($rev)) {
                 // Se a Review não existia, cria uma nova
                 $rev = new Review;
                 $rev->reviewer_name = $request->name;
-                $rev->reviewer_nusp = $request->nusp;
+                $rev->reviewer_nusp = $request->codpes;
                 $rev->requisition_id = $requisitionId;
                 $rev->reviewer_decision = 'Sem decisão';
                 $rev->justification = null;
-                $rev->latest_version = 1;
-
+                $rev->latest_version = 0;
                 $rev->save();
-                // dd($rev->id, $rev->getKey(), $rev);
-
-                $new_hist = new ReviewsVersion;
-                $new_hist->review_id = $rev->id;
-                $new_hist->reviewer_name = $rev->name;
-                $new_hist->reviewer_nusp = $rev->reviewer_nusp;
-                $new_hist->requisition_id = $requisitionId;
-                $new_hist->reviewer_decision = 'Sem decisão';
-                $new_hist->justification = null;
-                $new_hist->version = $rev->latest_version;
-
-                $new_hist->save();
-
-                // dd($rev, $new_hist, $request->nusp, $request->all());
             }
-
-            else {
-                // Se a review já existia, cria uma nova para salvar os valores recebidos
-
-                // $new_rev = new Review;
-                // $new_rev->reviewer_name = $rev->name;
-                // $new_rev->reviewer_nusp = $rev->reviewer_nusp;
-                // $new_rev->requisition_id = $requisitionId;
-                // $new_rev->reviewer_decision = 'Sem decisão';
-                // $new_rev->justification = null;
-                // $new_rev->latest_version = ($rev->latest_version + 1);
-
-                // NÃO CRIAR UMA REVIEW NOVA, ATUALIZA A EXISTENTE
-                // dd($request->justification);
-                $rev->reviewer_name = $request->name;
-                $rev->reviewer_nusp = $request->nusp;
-                // $rev->requisition_id = $requisitionId;
-                // $rev->reviewer_decision = 'Sem decisão';
-                // $rev->justification = $request->justification;
-                $rev->latest_version = ($rev->latest_version + 1);
-
-                // dd($rev, $new_rev, $request);
-                // Agora, salva os dados antigos no histórico
-                $new_hist = new ReviewsVersion;
-                $new_hist->review_id = $rev->id;
-                $new_hist->reviewer_name = $request->name;
-                $new_hist->reviewer_nusp = $request->nusp;
-                $new_hist->requisition_id = $rev->requisition_id;
-                $new_hist->reviewer_decision = $rev->reviewer_decision;
-                $new_hist->justification = $rev->justification;
-                $new_hist->version = $rev->latest_version;
-                
-                // dd($rev, $new_hist);
-
-                $rev->save();
-                $new_hist->save();
-            }
-
-            // dd($request->all());
 
             $user = Auth::user();
 
@@ -178,7 +119,7 @@ class ReviewController extends Controller
             $req->save();
             $event->save();
 
-            $reviewerUser = User::where('codpes', $request->nusp)->first();
+            $reviewerUser = User::where('codpes', $request->codpes)->first();
 
             // se o parecerista nunca logou no sistema, o email dele é desconhecido 
             if ($reviewerUser->email && env('APP_ENV') === 'production') {
@@ -203,7 +144,7 @@ class ReviewController extends Controller
         } else if ($action === "submit") {
             $this->submit($requisitionId, $request);
 
-            $bodyMsg = 'As informações do parecer foram enviadas para a secretaria';
+            $bodyMsg = 'As informações do parecer foram enviadas';
             $titleMsg = 'Parecer enviado';
 
             return redirect()->route('reviewer.list', ['requisitionId' => $requisitionId])->with('success', ['title message' => $titleMsg, 'body message' => $bodyMsg]);
@@ -229,11 +170,27 @@ class ReviewController extends Controller
 
             $user = Auth::user();
 
-            $reviewToBeSubmitted = Review::where('requisition_id', $requisitionId)->where('reviewer_nusp', $user->codpes)->first();
+            $review = Review::where('requisition_id', $requisitionId)->where('reviewer_nusp', $user->codpes)->first();
+            
+            // Não tem devemos salvar a versão 0, já que ela
+            // não tem informação dada pelo parecerista.
+            if($review->latest_version > 0){
+                $new_hist = new ReviewsVersion;
+                $new_hist->review_id = $review->id;
+                $new_hist->reviewer_name = $user->name;
+                $new_hist->reviewer_nusp = $user->codpes;
+                $new_hist->requisition_id = $review->requisition_id;
+                $new_hist->reviewer_decision = $review->reviewer_decision;
+                $new_hist->justification = $review->justification;
+                $new_hist->version = $review->latest_version;
+                $new_hist->save();
+            }
 
-            $reviewToBeSubmitted->reviewer_decision = $request->decision;
-            $reviewToBeSubmitted->justification = $request->justification;
-            $reviewToBeSubmitted->save();
+            $review->reviewer_decision = $request->decision;
+            $review->justification = $request->justification;
+            $review->latest_version = ($review->latest_version + 1);
+            $review->save();
+
 
             $req = Requisition::find($requisitionId);
             $req->situation = EventType::RETURNED_BY_REVIEWER;

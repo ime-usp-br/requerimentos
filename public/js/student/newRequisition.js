@@ -68,33 +68,33 @@ window.onload = function () {
         const takenDiscInput = document.querySelector("#taken-disc-count");
         takenDiscInput.value = takenDiscCount;
 
-        const maxFileSize = 5 * 1024 * 1024;
-        const fileInputs = document.querySelectorAll('.file-input');
-
-        const studiedHist = fileInputs[0].files[0];
+        const fileInputs = document.querySelectorAll(".file-input");
+        const completedHist = fileInputs[0].files[0];
         const currentHist = fileInputs[1].files[0];
-        const studiedSyl = fileInputs[2].files[0];
+        const completedSyl = fileInputs[2].files[0];
         const reqSyl = fileInputs[3].files[0];
 
-        if (!studiedHist || !currentHist || !studiedSyl || !reqSyl) {
-            alert('Pelo menos um dos arquivos necessários não foi adicionado');
+        const maxFileSize = 2 * 1024 * 1024; // Esse limite é também um limite padrão do PHP
+
+        if (!completedHist || !currentHist || !completedSyl || !reqSyl) {
+            alert("Pelo menos um dos arquivos necessários não foi adicionado");
             return;
         }
 
-        if (studiedHist.size > maxFileSize*2) {
-            alert('O histórico das disciplinas concluídas excede o limite de 10MB de tamanho');
+        if (completedHist.size > maxFileSize) {
+            alert("O histórico da instituição de origem excede o limite de 2MB de tamanho");
             return;
         }
         if (currentHist.size > maxFileSize) {
-            alert('O histórico das disciplinas atuais excede o limite de 5MB de tamanho');
+            alert("O histórico do curso atual excede o limite de 2MB de tamanho");
             return;
         }
-        if (studiedSyl.size > maxFileSize) {
-            alert('A ementa das disciplinas concluídas excede o limite de 5MB de tamanho');
+        if (completedSyl.size > maxFileSize) {
+            alert("As ementas das disciplinas cursadas excede o limite de 2MB de tamanho");
             return;
         }
         if (reqSyl.size > maxFileSize) {
-            alert('A ementa das disciplinas requeridas excede o limite de 5MB de tamanho');
+            alert("A ementa da disciplina requerida excede o limite de 2MB de tamanho");
             return;
         }
 
