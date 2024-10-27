@@ -18,17 +18,17 @@ Route::get('/', function () {
     return view('pages.home');
 });
 
-Route::get('/notification', function () {
-    // $loggedUser = Auth::user();
-    // return view('pages.accessDenied');
-    // dd('ola');
-    $studentUser = User::where('codpes', 10758748)->first();
+// Route::get('/notification', function () {
+//     // $loggedUser = Auth::user();
+//     // return view('pages.accessDenied');
+//     // dd('ola');
+//     $studentUser = User::where('codpes', 10758748)->first();
 
-    $studentUser->notify(new RequisitionResultNotification($studentUser));
+//     $studentUser->notify(new RequisitionResultNotification($studentUser));
 
-    // dump('ola');
-    return 'Email enviado';
-});
+//     // dump('ola');
+//     return 'Email enviado';
+// });
 
 // rota usada para achar informações sobre a configuração de php da máquina
 Route::get('/phpinfo', function () {
@@ -43,13 +43,10 @@ Route::get('/callback', [GlobalController::class, 'callbackHandler']);
 
 Route::get('/documento/{documentId}', [GlobalController::class, 'documentHandler'])->name('document.show');
 
-Route::post('/trocar-papel', [RoleController::class, 'switchRole'])->name('role.switch');
-
-
 Route::middleware('auth')->group(function() {
     
-    // Route::prefix('aluno')->middleware('role:' . RoleName::STUDENT)->group(function () {
-    Route::prefix('aluno')->group(function () {
+    Route::prefix('aluno')->middleware('role:' . RoleName::STUDENT)->group(function () {
+    // Route::prefix('aluno')->group(function () {
         Route::get('/lista', [StudentController::class, 'list'])->name('student.list');
 
         Route::view('/novo-requerimento', 'pages.student.newRequisition')->name('student.newRequisition');
@@ -63,8 +60,8 @@ Route::middleware('auth')->group(function() {
         Route::post('/atualizar/{requisitionId}', [StudentController::class, 'update'])->name('student.update');
     });
 
-    // Route::prefix('sg')->middleware('role:' . RoleName::SG)->group(function () {
-    Route::prefix('sg')->group(function () {
+    Route::prefix('sg')->middleware('role:' . RoleName::SG)->group(function () {
+    // Route::prefix('sg')->group(function () {
         Route::get('/exporta-csv', [RequisitionController::class, 'exportCSV'])->name('export.csv');
 
         Route::get('/lista', [SGController::class, 'list'])->name('sg.list');
@@ -82,7 +79,11 @@ Route::middleware('auth')->group(function() {
 
     });
 
-    Route::prefix('departamento')->group(function () {
+    Route::prefix('departamento')->middleware("role:" . RoleName::MAC_SECRETARY . 
+                                                  ',' . RoleName::MAT_SECRETARY . 
+                                                  ',' . RoleName::MAE_SECRETARY . 
+                                                  ',' . RoleName::MAP_SECRETARY)->group(function () {
+    // Route::prefix('departamento')->group(function () {
         Route::get('/{departmentName}/lista', [DepartmentController::class, 'list'])->name('department.list');
 
         Route::get('/{departmentName}/detalhe/{requisitionId}', [DepartmentController::class, 'show'])->name('department.show');
@@ -103,11 +104,21 @@ Route::middleware('auth')->group(function() {
         Route::post('/copiar/{requisitionId}', [ReviewController::class, 'copy'])->name('reviewer.copy');
     });
     // });
-
-    // Route::group(['middleware' => 'role:Serviço de Graduação,Secretaria do MAC,Secretaria do MAT,Secretaria do MAE,Secretaria do MAP,Parecerista'], function () {
+    
+    
+    Route::group(['middleware' => "role:" . RoleName::SG . 
+    ',' . RoleName::REVIEWER .
+    ',' . RoleName::MAC_SECRETARY . 
+    ',' . RoleName::MAT_SECRETARY . 
+    ',' . RoleName::MAE_SECRETARY . 
+    ',' . RoleName::MAP_SECRETARY], function () {
+        // Cuidado!! Da forma como isso está construído, qualquer pessoa dentre essas roles, 
+        // se agir de maneira maliciosa consegue assumir qualquer outro papel.
+        // É necessário fazer ajustes de segurança em RoleController->switchRole
+        Route::post('/trocar-papel', [RoleController::class, 'switchRole'])->name('role.switch');
         
         Route::post('/dar-papel', [RoleController::class, 'addRole'])->name('role.add');
-
+        
         Route::post('/remover-papel', [RoleController::class, 'removeRole'])->name('role.remove');
 
         Route::get('/escolher-parecerista/{requisitionId}', [ReviewController::class, 'reviewerPick'])->name('reviewer.reviewerPick');
@@ -121,5 +132,5 @@ Route::middleware('auth')->group(function() {
         Route::get('/historico/versao/{eventId}', [RecordController::class, 'requisitionVersion'])->name('record.requisitionVersion');
 
 
-    // });
+    });
 });
