@@ -61,8 +61,8 @@
             @endif 
             <form action="{{ '/' . $logout_url }}" method="POST" id="form">
                 @csrf
-                <a href="/" class="button">Sair</a>
             </form> 
+            <button type="submit" form="form" class="button">Sair</button>
         </nav>
            
             

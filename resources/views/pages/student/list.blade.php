@@ -27,7 +27,7 @@
             <form action="{{ '/' . $logout_url }}" method="POST" id="form">
                 @csrf
             </form>
-            <a type="submit" form="form" class="button">Sair</a>
+            <button type="submit" form="form" class="button">Sair</button>
         </nav>
     </header>
     <div class="content">

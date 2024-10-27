@@ -41,7 +41,10 @@
                     </form>                
                 @endif
                 <a href="{{ route('department.users', ['departmentName' => $departmentName]) }}" class="button">Administrar papéis</a>
-                <a href="/" class="button">Sair</a>
+                <form action="{{ '/' . $logout_url }}" method="POST" id="form">
+                    @csrf
+                </form>
+                <button type="submit" form="form" class="button">Sair</button>
             </nav>
         <!-- </div> -->
     </header>
