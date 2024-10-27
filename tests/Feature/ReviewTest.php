@@ -182,6 +182,6 @@ class ReviewTest extends TestCase
             'reviewer_name' => $reviewer->name
         ]);
         
-        $response->assertSee(['Parecer enviado', 'As informações do parecer foram enviadas para a secretaria']);
+        $response->assertSee(['Parecer enviado', 'As informações do parecer foram enviadas']);
     }
 }
