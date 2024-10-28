@@ -43,9 +43,9 @@ class SGNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject('Encaminhamento de um requerimento de aproveitamento de estudos')
+                    ->subject('Novo/atualização de um requerimento de aproveitamento de estudos')
                     ->greeting('Prezado(a) ' . $this->sgUser->name . ',')
-                    ->line('Um requerimento de aproveitamento de estudos foi encaminhado para a sua análise. Para saber mais informações, acesse o site de requerimentos através do link abaixo.')
+                    ->line('Um requerimento de aproveitamento de estudos foi criado/atualizado. Para saber mais informações, acesse o site de requerimentos através do link abaixo.')
                     ->action('Requerimentos', url('/'))
                     ->salutation('Atenciosamente, Serviço de Graduação do IME-USP.');
     }
