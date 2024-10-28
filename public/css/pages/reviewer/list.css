@@ -29,7 +29,8 @@ body {
     font-weight: 500;
     font-size: 0.9rem;
     width: 7.5rem;
-    width: min-content;
+    width: 100%;
+    /* width: min-content; */
     /* position: absolute; */
     right: var(--page-margin);
     bottom: calc(100% + var(--body-gaps));
@@ -38,8 +39,8 @@ body {
 nav {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    align-items: flex-end;
+    flex-direction: column;
+    gap: 0.8rem;
     padding: 0 var(--page-margin);
     width: 100%;
 }
@@ -49,6 +50,10 @@ header {
     flex-direction: column;
     gap: 0.8rem;
     justify-content: space-between;
+}
+
+nav .button {
+    width: 100%;
 }
 
 h1 {
@@ -81,7 +86,7 @@ tbody tr {
     width: 6.5rem;
     height: 2.5rem;
     font-weight: 700;
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     padding: 0.5rem;
     display: flex;
     justify-content: center;
@@ -103,11 +108,6 @@ tbody tr {
     /* min-height: 67.5rem; */
 }
 
-@media screen and (max-width: 599px) {
-    h1 {
-        font-size: 1.6rem;
-    }
-}
 
 @media screen and (min-width: 370px) {
     .button {
@@ -141,9 +141,15 @@ tbody tr {
     .content {
         min-height: 61.5rem;
     }
+
+    nav {
+        flex-direction: row;
+        align-items: flex-end;
+    }
     
-    .button {
+    nav .button {
         width: 8.5rem;
+        font-size: 0.9rem;
     }
 }
 
@@ -178,8 +184,16 @@ tbody tr {
 
     nav {
         justify-content: flex-end;
-        gap: 1rem;
+        /* gap: 1rem; */
         padding: 0;
+    }
+
+    nav .button {
+        width: 9.5rem;
+    }
+
+    .role {
+        width: 7.5rem;
     }
 
     header {
@@ -199,18 +213,6 @@ tbody tr {
         --page-margin: 3rem;
         /* --body-gaps: 3rem; */
     }
-
-
-
-    /* .header-buttons {
-        display: flex;
-        flex-direction: row;
-        gap: 1rem;
-    } */
-
-    /* .role {
-        position: static;
-    } */
 
     h1 {
         padding: 0;

@@ -21,7 +21,6 @@
 @section('content')
     <header>
         <h1>Requerimentos</h1>
-        <!-- <div class="header-buttons"> -->
             <nav>
                 @if (Auth::user()->roles()->count() > 1)
                     <form action="{{ route('role.switch') }}" method="POST" class="role-switch">
@@ -41,9 +40,11 @@
                     </form>                
                 @endif
                 <a href="{{ route('department.users', ['departmentName' => $departmentName]) }}" class="button">Administrar papéis</a>
-                <a href="/" class="button">Sair</a>
+                <form action="{{ '/' . $logout_url }}" method="POST" id="form">
+                    @csrf
+                </form>
+                <button type="submit" form="form" class="button">Sair</button>
             </nav>
-        <!-- </div> -->
     </header>
     
     <div class="content">
@@ -52,7 +53,7 @@
                 <tr data-department="{{ $departmentName }}">
                     <td>{{ \Illuminate\Support\Carbon::parse($req->created_at->toDateString())->format('d/m/Y') }}</td>
                     <td>{{ $req->student_name }}</td>
-                    <td>{{ $req->nusp }}</td>
+                    <td>{{ $req->student_nusp }}</td>
                     <td>{{ $req->internal_status }}</td>
                     <td>{{ $req->id }}</td>
                 </tr>

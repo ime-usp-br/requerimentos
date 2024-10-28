@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateReviewsTable extends Migration
+class CreateReviewsVersionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateReviewsTable extends Migration
      */
     public function up()
     {
-        Schema::create('reviews', function (Blueprint $table) {
+        Schema::create('reviews_versions', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->enum('reviewer_decision', ['Sem decisão', 'Deferido', 'Indeferido']);
@@ -22,8 +22,9 @@ class CreateReviewsTable extends Migration
             $table->unsignedInteger('reviewer_nusp')->nullable();
             $table->string('reviewer_name')->nullable();
 
-            // Registrar a versão atual
-            $table->unsignedBigInteger('latest_version');
+            // Informações para controle de versão
+            $table->foreignId('review_id')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('version');
         });
     }
 
@@ -34,6 +35,6 @@ class CreateReviewsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('reviews');
+        Schema::dropIfExists('reviews_versions');
     }
 }

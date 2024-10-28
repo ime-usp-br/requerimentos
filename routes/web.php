@@ -11,6 +11,7 @@ use App\Http\Controllers\RecordController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\RequisitionController;
 use App\Notifications\RequisitionResultNotification;
 
 Route::get('/', function () {
@@ -62,8 +63,8 @@ Route::middleware('auth')->group(function() {
         Route::post('/atualizar/{requisitionId}', [StudentController::class, 'update'])->name('student.update');
     });
 
-    // Route::prefix('secretaria')->middleware('role:' . RoleName::SG)->group(function () {
-    Route::prefix('secretaria')->group(function () {
+    // Route::prefix('sg')->middleware('role:' . RoleName::SG)->group(function () {
+    Route::prefix('sg')->group(function () {
         Route::get('/exporta-csv', [RequisitionController::class, 'exportCSV'])->name('export.csv');
 
         Route::get('/lista', [SGController::class, 'list'])->name('sg.list');
@@ -109,7 +110,7 @@ Route::middleware('auth')->group(function() {
     });
     // });
 
-    // Route::group(['middleware' => 'role:Secretaria de Graduação,Secretaria do MAC,Secretaria do MAT,Secretaria do MAE,Secretaria do MAP,Parecerista'], function () {
+    // Route::group(['middleware' => 'role:Serviço de Graduação,Secretaria do MAC,Secretaria do MAT,Secretaria do MAE,Secretaria do MAP,Parecerista'], function () {
         
         Route::post('/dar-papel', [RoleController::class, 'addRole'])->name('role.add');
 

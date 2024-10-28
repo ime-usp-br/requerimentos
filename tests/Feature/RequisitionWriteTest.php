@@ -11,7 +11,6 @@ use App\Enums\EventType;
 use App\Enums\DocumentType;
 use App\Models\Requisition;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -82,7 +81,7 @@ class RequisitionWriteTest extends TestCase
             'requested_disc_code' => $postData['requested-disc-code'],
             'student_name' => $postData['name'],
             'email' => $postData['email'],
-            'nusp' => $postData['nusp'],
+            'student_nusp' => $postData['nusp'],
             'course' => $postData['course'],
             'result' => 'Sem resultado',
             'observations' => $postData['observations'],
@@ -190,7 +189,7 @@ class RequisitionWriteTest extends TestCase
             'requested_disc_code' => $postData['requested-disc-code'],
             'student_name' => $studentUser->name,
             'email' => $studentUser->email,
-            'nusp' => $studentUser->codpes,
+            'student_nusp' => $studentUser->codpes,
             'course' => $postData['course'],
             'result' => 'Sem resultado',
             'observations' => $postData['observations'],
@@ -256,7 +255,7 @@ class RequisitionWriteTest extends TestCase
         $req = Requisition::factory()->create([
             'id' => $requisitionId,
             'result' => 'Inconsistência nas informações',
-            'nusp' => $userNUSP,
+            'student_nusp' => $userNUSP,
         ]);
 
         $firstDiscId = $this->faker->numberBetween(1, 99999999);
@@ -400,7 +399,7 @@ class RequisitionWriteTest extends TestCase
         $req = Requisition::factory()->create([
             'id' => $requisitionId,
             'result' => 'Inconsistência nas informações',
-            'nusp' => $userNUSP,
+            'student_nusp' => $userNUSP,
         ]);
 
         $firstDiscId = $this->faker->numberBetween(1, 99999999);
@@ -508,7 +507,7 @@ class RequisitionWriteTest extends TestCase
                 'requested_disc_code' => $postData['requested-disc-code'],
                 'student_name' => $postData['name'],
                 'email' => $postData['email'],
-                'nusp' => $postData['nusp'],
+                'student_nusp' => $postData['nusp'],
                 'course' => $postData['course'],
                 'result' => $postData['result'],
                 'observations' => $postData['observations'],
@@ -526,7 +525,7 @@ class RequisitionWriteTest extends TestCase
                 'requested_disc_code' => $postData['requested-disc-code'],
                 'student_name' => $postData['name'],
                 'email' => $postData['email'],
-                'nusp' => $postData['nusp'],
+                'student_nusp' => $postData['nusp'],
                 'course' => $postData['course'],
                 'result' => $postData['result'],
                 'observations' => $postData['observations'],

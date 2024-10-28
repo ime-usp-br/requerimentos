@@ -12,20 +12,11 @@
 :root {
     --page-margin: 1rem;
     --body-gaps: 1.6rem;
-    /* width: max-content;
-    max-width: 100vw; */
-    /* height: 100%;
-    overflow: hidden; */
 }
 
 body {
     display: flex;
     flex-direction: column;
-    /* max-width: 100vw; */
-    /* height: 100%;
-    overflow-x: hidden; */
-    /* overflow-x: hidden; */
-    /* width: min-content; */
 }
 
 .content {
@@ -37,26 +28,20 @@ body {
 
 header {
     display: flex;
-    align-items: flex-end;
+    flex-direction: column;
+    gap: 0.8rem;
     justify-content: space-between;
 }
 
 header .button {
-    width: 6rem;
-    height: 2.2rem;
+    width: 100%;
+    font-size: 1.1rem;
 }
 
 h1 {
     font-size: 1.3rem;
     margin-top: var(--body-gaps);
-}
-
-nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: space-evenly;
-    margin-bottom: 1.2rem;
+    font-size: 2rem;
 }
 
 form {
@@ -155,32 +140,15 @@ input[type="radio"] {
 
 .bottom-nav {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
+    gap: 0.8rem;
 }
 
 .bottom-nav .button {
     min-width: 7.7rem;
-}
-
-@media screen and (min-width: 410px) {
-    .bottom-nav button {
-        width: 9rem;
-    }
-
-    h1 {
-        font-size: 1.4rem;
-    }
-
-    header .button {
-        width: 6.5rem;
-        height: 2.5rem;
-    }
-}
-
-@media screen and (min-width: 425px) {
-    .bottom-nav button {
-        width: 9rem;
-    }
+    width: 100%;
+    font-size: 1.1rem;
 }
 
 @media screen and (min-width: 600px) {
@@ -193,6 +161,16 @@ input[type="radio"] {
         width: 28rem;
     }
 
+    header {
+        flex-direction: row;
+        align-items: flex-end;
+    }
+
+    header .button {
+        width: 8.5rem;
+        font-size: 0.9rem;
+    }
+
     nav {
         margin-bottom: 2rem;
         justify-content: space-between;
@@ -200,11 +178,13 @@ input[type="radio"] {
 
     .bottom-nav {
         justify-content: space-around;
+        flex-direction: row;
     }
 
     .bottom-nav .button {
         width: 10rem;
         height: 2.8rem;
+        font-size: 0.9rem;
     }
 }
 

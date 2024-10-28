@@ -12,7 +12,6 @@ use App\Models\TakenDisciplines;
 use Illuminate\Support\Facades\DB;
 // use Illuminate\Http\Request;
 use App\Models\RequisitionsVersion;
-
 use Illuminate\Support\Facades\Auth;
 use App\Models\TakenDisciplinesVersion;
 use App\Http\Requests\RequisitionUpdateRequest;
@@ -25,7 +24,7 @@ use App\Notifications\RequisitionResultNotification;
 class SGController extends Controller
 {
     public function list() {
-        $selectedColumns = ['created_at', 'student_name', 'nusp', 'internal_status', 'department', 'id'];
+        $selectedColumns = ['created_at', 'student_name', 'student_nusp', 'internal_status', 'department', 'id'];
 
         $reqs = Requisition::select($selectedColumns)->get();
 
@@ -69,7 +68,7 @@ class SGController extends Controller
 
             $req = new Requisition;
             $req->department = $data['disc-department'];
-            $req->nusp = $data['nusp'];
+            $req->student_nusp = $data['nusp'];
             $req->student_name = $data['name'];
             $req->email = $data['email'];
             $req->course = $data['course'];
@@ -141,7 +140,9 @@ class SGController extends Controller
         $data = $request->validated();
 
         $requisitionData = $request->getRequisitionData();
+        // dd($requisitionData);
         $takenDisciplinesData = $request->getDisciplinesData();
+
 
         DB::transaction(function() use ($requisitionData, 
                                         $takenDisciplinesData, 
@@ -207,6 +208,9 @@ class SGController extends Controller
             $newReqVersion->fill($fields);
             $newReqVersion->requisition_id = $reqToBeUpdated->id;
             $newReqVersion->version = $reqToBeUpdated->latest_version;
+            
+            // dd($newReqVersion, $requisitionData);
+            
             $newReqVersion->save(); 
 
 
@@ -215,17 +219,26 @@ class SGController extends Controller
 
             if ($reqToBeUpdated->result !== $requisitionData['result']) {
 
-                $studentUser = User::where('codpes', $reqToBeUpdated->nusp)->first();
+                if (env('APP_ENV') === 'production') {
+                    $studentUser = User::where('codpes', $reqToBeUpdated->student_nusp)->first();
+                }
 
                 if ($requisitionData['result'] === 'Inconsistência nas informações') {
                     $type = EventType::BACK_TO_STUDENT;
-                    $studentUser->notify(new RequisitionResultNotification($studentUser));
+                    if (env('APP_ENV') === 'production') {
+                        $studentUser->notify(new RequisitionResultNotification($studentUser));
+                    }
+                    
                 } elseif ($requisitionData['result'] === 'Deferido') {
                     $type = EventType::ACCEPTED;
-                    $studentUser->notify(new RequisitionResultNotification($studentUser));
+                    if (env('APP_ENV') === 'production') {
+                        $studentUser->notify(new RequisitionResultNotification($studentUser));
+                    }
                 } elseif ($requisitionData['result'] === 'Indeferido') {
                     $type = EventType::REJECTED;
-                    $studentUser->notify(new RequisitionResultNotification($studentUser));
+                    if (env('APP_ENV') === 'production') {
+                        $studentUser->notify(new RequisitionResultNotification($studentUser));
+                    }
                 } elseif ($requisitionData['result'] === 'Sem resultado') {
                     $type = EventType::IN_REVALUATION;
                 }

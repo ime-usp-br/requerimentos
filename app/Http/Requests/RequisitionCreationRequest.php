@@ -24,27 +24,27 @@ class RequisitionCreationRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'course' => 'required | max:255',
-            'requested-disc-name' => 'required | max:255',
+            'course' => 'required|max:255',
+            'requested-disc-name' => 'required|max:255',
             'requested-disc-type' => 'required',
-            'requested-disc-code' => 'required | max:255',
+            'requested-disc-code' => 'required|max:255',
             // essas regras de validação dos arquivos tem que ser colocadas nessa ordem
             // (com o mimes:pdf no final), senão da ruim 
-            'taken-disc-record' => 'required | file | max:2048 | mimes:pdf',
-            'course-record' => 'required | file | max:2048 | mimes:pdf',
-            'taken-disc-syllabus' => 'required | file | max:2048 | mimes:pdf',
-            'requested-disc-syllabus' => 'required | file | max:2048 | mimes:pdf',
+            'taken-disc-record' => 'required|file|max:2048|mimes:pdf',
+            'course-record' => 'required|file|max:2048|mimes:pdf',
+            'taken-disc-syllabus' => 'required|file|max:2048|mimes:pdf',
+            'requested-disc-syllabus' => 'required|file|max:2048|mimes:pdf',
             'disc-department' => 'required'
         ];
-
+        
         $routeName = $this->route()->getName();
 
         if ($routeName === 'sg.create') {
 
             $sgSpecificRules = [
-                'name' => 'required | max:255',
-                'email' => 'required | max:255 | email ',
-                'nusp' => 'required | numeric | integer'
+                'name' => 'required|max:255',
+                'email' => 'required|max:255|email ',
+                'nusp' => 'required|numeric|integer'
             ];
 
             $rules = $rules + $sgSpecificRules;
@@ -53,12 +53,12 @@ class RequisitionCreationRequest extends FormRequest
         $takenDiscCount = $this->input('takenDiscCount');
 
         for ($i = 1; $i <= $takenDiscCount; $i++) {
-            $rules["disc$i-name"] = 'required | max:255';
+            $rules["disc$i-name"] = 'required|max:255';
             $rules["disc$i-code"] = 'max:255';
-            $rules["disc$i-year"] = 'required | numeric | integer | digits: 4';
-            $rules["disc$i-grade"] = 'required | numeric | between:0,10';
+            $rules["disc$i-year"] = 'required|numeric|integer|digits: 4';
+            $rules["disc$i-grade"] = 'required|numeric';
             $rules["disc$i-semester"] = 'required';
-            $rules["disc$i-institution"] = 'required | max:255';
+            $rules["disc$i-institution"] = 'required|max:255';
         }  
 
         return $rules;

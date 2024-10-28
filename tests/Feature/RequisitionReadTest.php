@@ -36,7 +36,7 @@ class RequisitionReadTest extends TestCase
         
         Requisition::factory()->count($this->tablePageSize)->create([
             'student_name' =>  $studentUser->name,
-            'nusp' => $studentUser->codpes
+            'student_nusp' => $studentUser->codpes
         ]);
 
         $requisitions = Requisition::all();
@@ -77,7 +77,7 @@ class RequisitionReadTest extends TestCase
         $requisitions = Requisition::all();
         foreach ($requisitions as $requisition) {
             $response->assertSee($requisition->student_name); 
-            $response->assertSee($requisition->nusp);
+            $response->assertSee($requisition->student_nusp);
             $response->assertSee($requisition->internal_status);
             $response->assertSee($requisition->department);
         }
@@ -108,7 +108,7 @@ class RequisitionReadTest extends TestCase
         $requisitions = Requisition::all();
         foreach ($requisitions as $requisition) {
             $response->assertSee($requisition->student_name); 
-            $response->assertSee($requisition->nusp);
+            $response->assertSee($requisition->student_nusp);
             $response->assertSee($requisition->internal_status);
         }
     }
@@ -116,13 +116,17 @@ class RequisitionReadTest extends TestCase
     public function test_new_requisitions_are_being_shown_on_reviewer_list_page()
     {
 
-        Requisition::factory()->count($this->tablePageSize)->create();
+        Requisition::factory()->count($this->tablePageSize)->create([
+            'situation' => 'Enviado para análise dos pareceristas'
+        ]);
 
         $reviewer = User::factory()->create([
             'current_role_id' => RoleId::REVIEWER,
         ]);
 
         $requisitions = Requisition::all();
+
+        // dd($requisitions[0]);
 
         Review::factory()->count($this->tablePageSize)->create([
             'requisition_id' => $this->faker->randomElement($requisitions)->id,
@@ -140,7 +144,7 @@ class RequisitionReadTest extends TestCase
             $requisition = Requisition::where('id', $review->requisition_id)->first();
 
             $response->assertSee($requisition->student_name); 
-            $response->assertSee($requisition->nusp);
+            $response->assertSee($requisition->reviewer_decision);
             $response->assertSee($requisition->requested_disc);
         }
     }

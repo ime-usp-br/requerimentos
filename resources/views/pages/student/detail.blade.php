@@ -26,6 +26,10 @@
                         Por favor, atualize as seguintes informações do seu requerimento
                         <div class="field result-text large-field">{{ $req->result_text }}</div>
                     </div>
+                @else
+                    <div class="field-wrapper">
+                        Por favor, atualize as informações do seu requerimento através do link abaixo
+                    </div>                    
                 @endif
                 <a href="{{ route('student.edit', ['requisitionId' => $req->id]) }}" class="button" target="_blank">Editar o requerimento</a>            
             </section>
@@ -37,6 +41,10 @@
                         Justificativa
                         <div class="field result-text large-field">{{ $req->result_text }}</div>
                     </div>
+                @else
+                    <div class="field-wrapper">
+                        O requerimento passou por análise interna e foi indeferido. Para saber mais informações, entre em contato com o serviço de graduação.
+                    </div> 
                 @endif
             </section>
         @elseif ($req->result === 'Deferido')
@@ -47,6 +55,10 @@
                         Justificativa
                         <div class="field result-text large-field">{{ $req->result_text }}</div>
                     </div>
+                @else
+                    <div class="field-wrapper">
+                        O requerimento passou por análise interna e foi deferido. Para saber mais informações, entre em contato com o serviço de graduação.
+                    </div> 
                 @endif
             </section>
         @endif

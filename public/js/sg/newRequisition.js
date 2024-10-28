@@ -108,23 +108,33 @@ window.onload = function () {
         takenDiscInput.value = takenDiscCount;
 
         const fileInputs = document.querySelectorAll(".file-input");
-        for (let fileInput of fileInputs) {
-            const maxFileSize = 5 * 1024 * 1024;
-            const file = fileInput.files[0];
+        const completedHist = fileInputs[0].files[0];
+        const currentHist = fileInputs[1].files[0];
+        const completedSyl = fileInputs[2].files[0];
+        const reqSyl = fileInputs[3].files[0];
 
-            if (!file) {
-                alert(
-                    "Pelo menos um dos arquivos necessários não foi adicionado"
-                );
-                return;
-            }
+        const maxFileSize = 2 * 1024 * 1024; // Esse limite é também um limite padrão do PHP
 
-            if (file.size > maxFileSize) {
-                alert(
-                    "Um ou mais arquivos escolhidos excedem o limite de 5mb de tamanho"
-                );
-                return;
-            }
+        if (!completedHist || !currentHist || !completedSyl || !reqSyl) {
+            alert("Pelo menos um dos arquivos necessários não foi adicionado");
+            return;
+        }
+
+        if (completedHist.size > maxFileSize) {
+            alert("O histórico da instituição de origem excede o limite de 2MB de tamanho");
+            return;
+        }
+        if (currentHist.size > maxFileSize) {
+            alert("O histórico do curso atual excede o limite de 2MB de tamanho");
+            return;
+        }
+        if (completedSyl.size > maxFileSize) {
+            alert("As ementas das disciplinas cursadas excede o limite de 2MB de tamanho");
+            return;
+        }
+        if (reqSyl.size > maxFileSize) {
+            alert("A ementa da disciplina requerida excede o limite de 2MB de tamanho");
+            return;
         }
 
         form.submit();

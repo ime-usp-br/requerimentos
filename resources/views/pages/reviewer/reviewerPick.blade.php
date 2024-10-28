@@ -41,7 +41,7 @@
                     <td>
                         <form action="{{ route('reviewer.sendToReviewer', ['requisitionId' => $requisitionId ]) }}" method="POST" class="button-form">
                             @csrf
-                            <input type="hidden" name="nusp" value="{{ $reviewer->codpes }}">
+                            <input type="hidden" name="codpes" value="{{ $reviewer->codpes }}">
                             <input type="hidden" name="name" value="{{ $reviewer->name }}">
                             <button class="button" type="button">Enviar</button>
                         </form>

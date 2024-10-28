@@ -19,7 +19,7 @@ class CreateRequisitionsTable extends Migration
             $table->timestamps();
             $table->enum('department', ['MAC', 'MAE', 'MAT', 'MAP', 'Disciplina de fora do IME']);
             
-            $table->unsignedInteger('nusp');
+            $table->unsignedInteger('student_nusp');
             $table->unsignedInteger('latest_version');
             $table->string('student_name');
             $table->string('email');

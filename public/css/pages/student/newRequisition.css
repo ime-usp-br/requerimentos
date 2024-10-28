@@ -12,20 +12,12 @@
 :root {
     --page-margin: 1rem;
     --body-gaps: 1.6rem;
-    /* width: max-content;
-    max-width: 100vw; */
-    /* height: 100%;
-    overflow: hidden; */
+
 }
 
 body {
     display: flex;
     flex-direction: column;
-    /* max-width: 100vw; */
-    /* height: 100%;
-    overflow-x: hidden; */
-    /* overflow-x: hidden; */
-    /* width: min-content; */
 }
 
 .content {
@@ -37,13 +29,15 @@ body {
 
 header {
     display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
+    flex-direction: column;
+    /* justify-content: space-between; */
+    gap: 0.8rem;
 }
 
 header .button {
-    width: 6rem;
-    height: 2.2rem;
+    width: 100%;
+    /* height: 2.2rem; */
+    font-size: 1.1rem;
 }
 
 h1 {
@@ -68,7 +62,7 @@ form {
 
 .button {
     width: 8.5rem;
-    height: 2.5rem;
+    height: 3rem;
     font-weight: 600;
     font-size: 0.9rem;
     display: flex;
@@ -155,26 +149,14 @@ input[type="radio"] {
 
 .bottom-nav {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 0.8rem;
+    /* justify-content: space-between; */
 }
 
 .bottom-nav .button {
-    min-width: 7.7rem;
-}
-
-@media screen and (min-width: 410px) {
-    .bottom-nav button {
-        width: 9rem;
-    }
-
-    /* h1 {
-        font-size: 1.4rem;
-    } */
-
-    header .button {
-        width: 6.5rem;
-        height: 2.5rem;
-    }
+    width: 100%;
+    font-size: 1.1rem;
 }
 
 @media screen and (min-width: 425px) {
@@ -198,13 +180,23 @@ input[type="radio"] {
         justify-content: space-between;
     }
 
+    header {
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: space-between;
+    }
+
+    header .button {
+        width: 9rem;
+    }
+
     .bottom-nav {
+        flex-direction: row;
         justify-content: space-around;
     }
 
     .bottom-nav .button {
         width: 10rem;
-        height: 2.8rem;
     }
 }
 

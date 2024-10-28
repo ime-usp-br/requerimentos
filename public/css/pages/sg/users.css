@@ -158,7 +158,13 @@ h1 {
 
 nav {
     display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
     justify-content: space-between;
+    width: 100%;
+}
+
+nav .button {
     width: 100%;
 }
 
@@ -176,13 +182,9 @@ header {
     gap: var(--body-gaps);
 }
 
-nav .button {
-    height: 3rem;
-}
-
 .button {
     width: 9.5rem;
-    height: 2.5rem;
+    height: 3rem;
     font-weight: 700;
     padding: 0.5rem;
     display: flex;
@@ -244,7 +246,17 @@ nav .button {
     }
     
     nav .button {
-        width: 13rem;
+        width: 10.5rem;
+    }
+
+    header {
+        flex-direction: row;
+        align-items: flex-end;
+    }
+
+    nav {
+        flex-direction: row;
+        justify-content: space-evenly;
     }
 }
 

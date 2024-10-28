@@ -39,8 +39,6 @@
 
     <header>
         <h1>Requerimentos</h1>
-        <!-- <div class="header-buttons"> -->
-          
         <nav> 
             @if (Auth::user()->roles()->count() > 1)
                 <form action="{{ route('role.switch') }}" method="POST" class="role-switch">
@@ -61,20 +59,17 @@
             @endif 
             <form action="{{ '/' . $logout_url }}" method="POST" id="form">
                 @csrf
-                <a href="/" class="button">Sair</a>
             </form> 
+            <button type="submit" form="form" class="button">Sair</button>
         </nav>
-           
-            
-        <!-- </div> -->
     </header>
     
     <div class="content"> 
-        <x-table :columns="['Data de criação', 'Número USP', 'Disciplina Requirida', 'Decisão', 'Última atualização', 'Id']">
+        <x-table :columns="['Data de criação', 'Nome do aluno', 'Disciplina Requirida', 'Decisão', 'Última atualização', 'Id']">
             @foreach ($reqs as $req)
                 <tr>
                     <td>{{ \Illuminate\Support\Carbon::parse($req->created_at)->format('d/m/Y') }}</td>
-                    <td>{{ $req->nusp }}</td>
+                    <td>{{ $req->student_name }} </td>
                     <td>{{ $req->requested_disc}}</td>
                     <td>{{ $req->reviewer_decision }}</td>
                     <td>{{ $req->updated_at }}</td>

@@ -41,8 +41,13 @@
             <nav>
                 <a href="{{ route('sg.users') }}" class="button">Administrar papéis</a>
                 <a href="{{ route('sg.newRequisition') }}" class="button">Criar requerimento</a>
+
                 <a href="{{ route('pages.requisitions.filters') }}" class="button">Filtros</a>
-                <a href="/" class="button">Sair</a>
+                <form action="{{ '/' . $logout_url }}" method="POST" id="form">
+                    @csrf
+                </form>
+                <button type="submit" form="form" class="button">Sair</button>
+                
             </nav>
     </header>
     
@@ -52,7 +57,7 @@
                 <tr>
                     <td>{{ \Illuminate\Support\Carbon::parse($req->created_at->toDateString())->format('d/m/Y') }}</td>
                     <td>{{ $req->student_name }}</td>
-                    <td>{{ $req->nusp }}</td>
+                    <td>{{ $req->student_nusp }}</td>
                     <td>{{ $req->internal_status }}</td>
                     <td>{{ $req->department }}</td>
                     <td>{{ $req->id }}</td>
