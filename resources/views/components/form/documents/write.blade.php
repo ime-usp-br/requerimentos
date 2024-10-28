@@ -37,7 +37,7 @@
                 Anexar arquivo
                 <input type="file" class="file-input" name="taken-disc-syllabus" id="taken-disc-syllabus" accept=".pdf">
             </label>
-            @error('course-record')
+            @error('taken-disc-syllabus')
                 <p class="error-message">Adicione um arquivo pdf com tamanho máximo de 1,25MB</p>
             @enderror
             <div class="taken-disc-syllabus">Nenhum arquivo pdf anexado</div>
@@ -51,7 +51,7 @@
                 Anexar arquivo
                 <input type="file" class="file-input" name="requested-disc-syllabus" id="requested-disc-syllabus" accept=".pdf">
             </label>
-            @error('course-record')
+            @error('requested-disc-syllabus')
                 <p class="error-message">Adicione um arquivo pdf com tamanho máximo de 1,25MB</p>
             @enderror
             <div class="requested-disc-syllabus">Nenhum arquivo pdf anexado</div>

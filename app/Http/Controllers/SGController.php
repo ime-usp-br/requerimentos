@@ -7,6 +7,8 @@ use App\Models\Event;
 use App\Enums\EventType;
 use App\Models\Document;
 use App\Enums\DocumentType;
+use Spatie\Permission\Models\Role;
+use App\Enums\RoleName;
 use App\Models\Requisition;
 use App\Models\TakenDisciplines;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +19,7 @@ use App\Models\TakenDisciplinesVersion;
 use App\Http\Requests\RequisitionUpdateRequest;
 use App\Http\Requests\RequisitionCreationRequest;
 use App\Notifications\RequisitionResultNotification;
+use App\Notifications\SGNotification;
 
 // use Illuminate\Support\Facades\Auth;
 // use Illuminate\Support\Facades\Route;
@@ -132,11 +135,21 @@ class SGController extends Controller
             $event->save();
         });
 
+        // Avisando os membros da SG que um requerimento foi atualizado
+        // Quando resgata o role e pega os usuários, é uma lista de User
+        $sgRole = Role::where('name', RoleName::SG)->first();
+        $sgUsers = $sgRole->users;
+
+        foreach ($sgUsers as $sgUser) {
+            if ($sgUser->email && env('APP_ENV') === 'production') {
+                $sgUser->notify(new SGNotification($sgUser));
+            }
+        }
+
         return redirect()->route('sg.newRequisition')->with('success', ['title message' => 'Requerimento criado', 'body message' => 'O requerimento foi criado com sucesso. Acompanhe o andamento pela página inicial.']);
     }
 
     public function update(RequisitionUpdateRequest $request, $requisitionId) {
-        
         $data = $request->validated();
 
         $requisitionData = $request->getRequisitionData();
@@ -311,6 +324,21 @@ class SGController extends Controller
             $bodyMsg = 'As informações do requerimento foram salvas';
             $titleMsg = 'Requerimento salvo';     
         }
+
+        // Avisando os membros da SG que um requerimento foi atualizado
+        // Quando resgata o role e pega os usuários, é uma lista de User
+        $sgRole = Role::where('name', RoleName::SG)->first();
+        $sgUsers = $sgRole->users;
+
+        foreach ($sgUsers as $sgUser) {
+            if ($sgUser->email && env('APP_ENV') === 'production') {
+                $sgUser->notify(new SGNotification($sgUser));
+            }
+        }
+
+        // if ($reviewerUser->email && env('APP_ENV') === 'production') {
+        //     $reviewerUser->notify(new ReviewerNotification($reviewerUser));
+        // }
         
         return redirect()->route('sg.show', ['requisitionId' => $requisitionId])->with('success', ['title message' => $titleMsg, 'body message' => $bodyMsg]);
     }
