@@ -34,7 +34,7 @@ class RequisitionController extends Controller
         }
 
         if ($request->internal_status !== 'Todos') {
-            $query->where('internal_status', $request->internal_status);
+            $query->where('result', $request->internal_status);
         }
 
         if ($request->requested_disc_type !== 'Todos') {
