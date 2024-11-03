@@ -48,20 +48,22 @@ Route::middleware('auth')->group(function() {
     Route::prefix('aluno')->middleware('role:' . RoleName::STUDENT)->group(function () {
     // Route::prefix('aluno')->group(function () {
         Route::get('/lista', [StudentController::class, 'list'])->name('student.list');
-
-        Route::view('/novo-requerimento', 'pages.student.newRequisition')->name('student.newRequisition');
-
+        
+        Route::view('/novo-requerimento', 'pages.student.newRequisition')->name('student.newRequisition')
+            ->middleware('requisitions.period');
+        
+        Route::post('/novo-requerimento', [StudentController::class, 'create'])->name('student.create')
+            ->middleware('requisitions.period');
+        
         Route::get('/detalhe/{requisitionId}', [StudentController::class, 'show'])->name('student.show');
-
-        Route::post('/novo-requerimento', [StudentController::class, 'create'])->name('student.create');
 
         Route::get('/atualizar/{requisitionId}', [StudentController::class, 'show'])->name('student.edit');
 
         Route::post('/atualizar/{requisitionId}', [StudentController::class, 'update'])->name('student.update');
     });
 
-    Route::prefix('sg')->middleware('role:' . RoleName::SG)->group(function () {
-    // Route::prefix('sg')->group(function () {
+    // Route::prefix('sg')->middleware('role:' . RoleName::SG)->group(function () {
+    Route::prefix('sg')->group(function () {
         Route::get('/exporta-csv', [RequisitionController::class, 'exportCSV'])->name('export.csv');
 
         Route::get('/lista', [SGController::class, 'list'])->name('sg.list');
@@ -74,8 +76,9 @@ Route::middleware('auth')->group(function() {
 
         Route::post('/atualizar/{requisitionId}', [SGController::class, 'update'])->name('sg.update');
 
-        Route::get('/usuarios', [SGController::class, 'users'])->name('sg.users');
+        Route::get('/admin', [SGController::class, 'admin'])->name('sg.admin');
         
+        Route::post('/periodo-requerimento', [SGController::class, 'requisition_period_toggle'])->name('sg.requisition_period_toggle');
 
     });
 

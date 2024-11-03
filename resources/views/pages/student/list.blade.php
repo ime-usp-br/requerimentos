@@ -23,7 +23,10 @@
     <header>
         <h1>Requerimentos</h1>
         <nav>
-            <a href="{{ route('student.newRequisition') }}" class="button">Criar requerimento</a>
+            @if($requisition_period_status)
+                <a href="{{ route('student.newRequisition') }}" class="button">Criar requerimento</a>
+            @endif
+            
             <form action="{{ '/' . $logout_url }}" method="POST" id="form">
                 @csrf
             </form>
