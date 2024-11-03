@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Requisition;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Illuminate\Support\Facades\URL;
 
 class RequisitionController extends Controller
 {
@@ -50,6 +51,9 @@ class RequisitionController extends Controller
         }
 
         $requisitions = $query->get();
+        if ($requisitions->isEmpty()) {
+            return redirect()->back();
+        }
 
         $exportData = $requisitions->map(function($requisition) use ($request) {
             $data = [
