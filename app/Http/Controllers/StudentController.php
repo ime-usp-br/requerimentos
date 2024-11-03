@@ -13,6 +13,7 @@ use App\Models\RequisitionsVersion;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Models\TakenDisciplinesVersion;
+use App\Models\RequisitionsPeriod;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\RequisitionUpdateRequest;
 use App\Http\Requests\RequisitionCreationRequest;
@@ -25,7 +26,10 @@ class StudentController extends Controller
 
         $reqs = Requisition::with('takenDisciplines')->select('created_at', 'requested_disc', 'student_nusp', 'situation', 'id')->where('student_nusp', $user->codpes)->get();
 
-        return view('pages.student.list', ['reqs' => $reqs]);
+        $currentStatus = RequisitionsPeriod::latest('id')->first();
+        $requisition_period_status = $currentStatus->is_enabled;
+
+        return view('pages.student.list', ['reqs' => $reqs, 'requisition_period_status' => $requisition_period_status]);
     }
 
     public function show($requisitionId) {

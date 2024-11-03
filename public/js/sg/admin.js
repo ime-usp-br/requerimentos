@@ -35,35 +35,8 @@ window.onload = function () {
         table.row($(this).parents("tr")).remove().draw();
     });
 
-    // const forms = document.querySelectorAll(".button-form");
-
-    // forms.forEach(form => {
-    //     form.addEventListener('submit', function(event) {
-    //         event.preventDefault();
-    //     });
-    // });
-
-
-    // form.addEventListener("submit", (event) => {
-        
-
-        // if (event.submitter) {
-        //     const clickedButton = event.submitter;
-        //     const btnType = document.querySelector("#btnType");
-        //     if (
-        //         clickedButton.textContent ===
-        //         "Encaminhar para o departamento"
-        //     ) {
-        //         btnType.value = "validate";
-        //     } else if (clickedButton.textContent === "Salvar mudanças") {
-        //         btnType.value = "save";
-        //     }
-        // }
-        // form.submit();
-    // });
-
     // faz o overlay aparecer quando o botão de adicionar é clickado
-    const popupButton = document.querySelector("nav a");
+    const popupButton = document.getElementById("addRoleButton");
     popupButton.onclick = (event) => {
         const overlayContainer = document.querySelector(".overlay-container");
         overlayContainer.classList.add("overlay-show");

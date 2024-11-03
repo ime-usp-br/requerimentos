@@ -15,20 +15,20 @@
     <script src="https://cdn.datatables.net/plug-ins/1.13.7/sorting/datetime-moment.js" defer></script>
 
     <!-- nosso javascript -->
-    <script src="{{ asset('js/sg/users.js')}}" defer></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/sg/users.css') }}">  
-    <title>Administração de usuários</title>    
+    <script src="{{ asset('js/sg/admin.js')}}" defer></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/sg/admin.css') }}">  
+    <title>Administração do Sistema</title>    
 @endsection
 
 @section('content')
     <header>
-        <h1>Administração de papéis</h1>
+        <h1>Administração do sistema</h1>
         <nav>
-            <a class="button">Adicionar um papel</a>
             <a href="{{ route('sg.list') }}" class="button">Voltar</a>
         </nav>
     </header>
     
+    {{-- Overlay da adição de usuários --}}
     <div class="overlay-container">
         <div class="overlay-content">
             <div class="overlay-header">
@@ -112,26 +112,48 @@
         </div>
     </div>
 
+
     <div class="content">
-        <x-table :columns="['Nome', 'Número USP', 'Papel', '', 'Id']">
-            @foreach ($users as $user)
-                @foreach ($user->roles as $role)
-                    <tr>
-                        <td>{{ $user->name ?? 'Desconhecido (usuário nunca logou no site)' }}</td>
-                        <td>{{ $user->codpes }}</td>
-                        <td>{{ $role->name }}</td>
-                        <td>
-                            <form action="{{ route('role.remove') }}" method="POST" class="button-form">
-                                @csrf
-                                <input type="hidden" name="nusp" value="{{ $user->codpes }}">
-                                <input type="hidden" name="role" value="{{ $role->name }}">
-                                <button class="button" type="button" >Remover papel</button>
-                            </form>
-                        </td>
-                        <td>{{ $user->id }}</td>
-                    </tr>                
+        @if(session()->has("success"))
+            <p id="requisition-period-alert-message"> O período de requerimentos foi {{ session('success.info') ? "aberto" : "fechado"  }}.</p>
+        @endif
+        <div class="actions">
+            <form action="{{ route('sg.requisition_period_toggle') }}" method="POST">
+                @csrf
+                @if($requisition_period_status)
+                    <button type="submit" class="button" style="background-color:#8f3636">  
+                        Desativar período de requerimentos
+                    </button>
+                @else
+                    <button type="submit" class="button">  
+                        Ativar período de requerimentos 
+                    </button>
+                @endif
+            </form>
+            <a class="button" id="addRoleButton">Adicionar um papel</a>
+        </div>
+        <div class="users-table">
+            <h2> Usuários cadastrados </h2> 
+            <x-table :columns="['Nome', 'Número USP', 'Papel', '', 'Id']">
+                @foreach ($users as $user)
+                    @foreach ($user->roles as $role)
+                        <tr>
+                            <td>{{ $user->name ?? 'Desconhecido (usuário nunca logou no site)' }}</td>
+                            <td>{{ $user->codpes }}</td>
+                            <td>{{ $role->name }}</td>
+                            <td>
+                                <form action="{{ route('role.remove') }}" method="POST" class="button-form">
+                                    @csrf
+                                    <input type="hidden" name="nusp" value="{{ $user->codpes }}">
+                                    <input type="hidden" name="role" value="{{ $role->name }}">
+                                    <button class="button" type="button" >Remover papel</button>
+                                </form>
+                            </td>
+                            <td>{{ $user->id }}</td>
+                        </tr>                
+                    @endforeach
                 @endforeach
-            @endforeach
-        </x-table>
+            </x-table>
+        </div>
     </div>
 @endsection
