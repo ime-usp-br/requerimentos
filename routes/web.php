@@ -126,6 +126,7 @@ Route::middleware('auth')->group(function() {
 
         Route::get('/historico/versao/{eventId}', [RecordController::class, 'requisitionVersion'])->name('record.requisitionVersion');
 
+        Route::post('/cadastrado/{requisitionId}', [DepartmentController::class, 'registered'])->name('department.registered');
 
     // });
 });

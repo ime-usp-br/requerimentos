@@ -48,7 +48,7 @@
     </header>
     
     <div class="content">
-        <x-table :columns="['Data de criação', 'Aluno', 'Número USP', 'Situação', 'Id']">
+        <x-table :columns="['Data de criação', 'Aluno', 'Número USP', 'Situação', 'Id', '']">
             @foreach ($reqs as $req)
                 <tr data-department="{{ $departmentName }}">
                     <td>{{ \Illuminate\Support\Carbon::parse($req->created_at->toDateString())->format('d/m/Y') }}</td>
@@ -56,6 +56,12 @@
                     <td>{{ $req->student_nusp }}</td>
                     <td>{{ $req->internal_status }}</td>
                     <td>{{ $req->id }}</td>
+                    <td>
+                        <form action="{{ route('department.registered', ['requisitionId' => $req->id]) }}" method="POST" class="button-form">
+                            @csrf
+                            <button class="button" type="button" >Registrado?</button>
+                        </form>
+                    </td>
                 </tr>
             @endforeach
         </x-table>

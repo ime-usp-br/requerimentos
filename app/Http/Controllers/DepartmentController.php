@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Enums\DocumentType;
 use App\Models\User;
 use App\Models\Requisition;
+use App\Models\Event;
+use App\Enums\EventType;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class DepartmentController extends Controller
 {
@@ -12,7 +16,7 @@ class DepartmentController extends Controller
 
         $selectedColumns = ['created_at', 'student_name', 'student_nusp', 'internal_status', 'id'];
 
-        $reqs = Requisition::select($selectedColumns)->where('department', strtoupper($departmentName))->where('validated', true)->get();
+        $reqs = Requisition::select($selectedColumns)->where('department', strtoupper($departmentName))->where('registered', 'Não')->where('validated', true)->get();
 
         return view('pages.department.list', ['reqs' => $reqs, 'departmentName' => $departmentName]);
     }
@@ -53,6 +57,33 @@ class DepartmentController extends Controller
         $usersWithRoles = User::whereHas('roles')->select($selectedColumns)->get();
 
         return view('pages.department.users', ['users' => $usersWithRoles, 'departmentName' => $departmentName]);
+    }
+
+    public function registered($requisitionId) {
+        DB::transaction(function () use ($requisitionId) {
+
+            $user = Auth::user();
+
+            $req = Requisition::find($requisitionId);
+            $req->situation = EventType::REGISTERED;
+            $req->registered = 'Sim';
+
+            $event = new Event;
+            $event->type = EventType::REGISTERED;
+            // dd($event);
+            $event->requisition_id = $requisitionId;
+            $event->author_name = $user->name;
+            $event->author_nusp = $user->codpes;
+            $event->version = $req->latest_version;
+
+            $event->message = "Registrado por " . $user->name;
+            $req->internal_status = "Registrado por " . $user->name;
+
+            $event->save();
+            $req->save();
+        });
+
+        return response()->noContent();
     }
 
 }
