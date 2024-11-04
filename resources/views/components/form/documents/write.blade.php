@@ -29,7 +29,7 @@
             
         </div>
     </div>
-    <div class="doc-text">Adicione as ementas de todas as disciplinas cursadas referentes a esse pedido (máx. 150KB)</div>
+    <div class="doc-text">Adicione as ementas das disciplinas cursadas (máx. 150KB)</div>
     <div class="document">
         <img src="{{ asset('img/newRequisition/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
         <div>
@@ -43,7 +43,7 @@
             <div class="taken-disc-syllabus">Nenhum arquivo pdf anexado</div>
         </div>
     </div>
-    <div class="doc-text">Adicione a ementa da disciplina requerida (máx. 150KB)</div>
+    <div class="doc-text">Adicione a ementa da disciplina a ser dispensada (máx. 150KB)</div>
     <div class="document">
         <img src="{{ asset('img/newRequisition/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
         <div>
