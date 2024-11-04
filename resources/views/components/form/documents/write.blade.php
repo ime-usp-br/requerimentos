@@ -29,7 +29,7 @@
             
         </div>
     </div>
-    <div class="doc-text">Adicione as ementas das disciplinas cursadas (máx. 150KB)</div>
+    <div class="doc-text">Adicione as ementas das disciplinas cursadas referentes a este pedido (máx. 150KB)</div>
     <div class="document">
         <img src="{{ asset('img/newRequisition/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
         <div>

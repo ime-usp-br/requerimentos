@@ -68,6 +68,33 @@
                 <h2>Informações do requerimento</h2>
             @endif
             <article class="disciplines">
+            <div class="required">
+                    <h3>Disciplina a ser dispensada</h3>
+                    <div class="disc-list">
+                        <div class="disc">
+                            <div class="field-wrapper">
+                                Nome 
+                                <div class="field large-field">{{ $req->requested_disc }}</div>
+                            </div>
+
+                            <div class="disc-middle-row">
+                                <div class="field-wrapper ">
+                                    Departamento 
+                                    <div class="field department">{{ $req->department }}</div>
+                                </div>
+                                <div class="field-wrapper ">
+                                    Sigla 
+                                    <div class="field" id="disc-code">{{ $req->requested_disc_code }}</div>
+                                </div>                                
+                            </div>
+                            <div class="field-wrapper ">
+                                Tipo
+                                <div class="field" id="disc-type">{{ $req->requested_disc_type }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="taken">
                     @if ($takenDiscs->count() > 1)
                         <h3>Disciplinas cursadas</h3>
@@ -120,38 +147,12 @@
                     </div>
                 </div>
 
-                <div class="required">
-                    <h3>Disciplina requerida</h3>
-                    <div class="disc-list">
-                        <div class="disc">
-                            <div class="field-wrapper">
-                                Nome 
-                                <div class="field large-field">{{ $req->requested_disc }}</div>
-                            </div>
-
-                            <div class="disc-middle-row">
-                                <div class="field-wrapper ">
-                                    Departamento 
-                                    <div class="field department">{{ $req->department }}</div>
-                                </div>
-                                <div class="field-wrapper ">
-                                    Sigla 
-                                    <div class="field" id="disc-code">{{ $req->requested_disc_code }}</div>
-                                </div>                                
-                            </div>
-                            <div class="field-wrapper ">
-                                Tipo
-                                <div class="field" id="disc-type">{{ $req->requested_disc_type }}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 
             </article>
             
             <article class="documents">
                 <h3>Documentos</h3>
-                <div class="doc-text" >Histórico com as disciplinas cursadas e aprovadas</div>
+                <div class="doc-text" >Histórico escolar da instituição de origem</div>
                 <div class="document">
                     <img src="{{ asset('img/student/detail/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
                     @if (count($takenDiscsRecords) > 1)
@@ -174,7 +175,7 @@
 
                     {{--<a href="{{ Storage::disk('public')->url($req->taken_discs_record)}}" id="taken" target="_blank" >Histórico escolar</a>--}}
                 </div>
-                <div class="doc-text">Histórico do curso atual</div>
+                <div class="doc-text">Histórico escolar do curso atual</div>
                 <div class="document">
                     <img src="{{ asset('img/student/detail/PDF_file_icon.svg') }}" alt="PDF file icon" class="pdf-icon">
                     @if (count($currentCourseRecords) > 1)
