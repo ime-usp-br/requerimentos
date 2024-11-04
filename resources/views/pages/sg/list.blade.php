@@ -39,7 +39,7 @@
                 </form>                
             @endif
             <nav>
-                <a href="{{ route('sg.users') }}" class="button">Administrar papéis</a>
+                <a href="{{ route('sg.admin') }}" class="button">Administrar sistema</a>
                 <a href="{{ route('sg.newRequisition') }}" class="button">Criar requerimento</a>
 
                 <a href="{{ route('pages.requisitions.filters') }}" class="button">Filtros</a>

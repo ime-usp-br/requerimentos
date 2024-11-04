@@ -74,7 +74,7 @@ window.onload = function () {
         const completedSyl = fileInputs[2].files[0];
         const reqSyl = fileInputs[3].files[0];
 
-        const maxFileSize = 2 * 1024 * 1024; // Esse limite é também um limite padrão do PHP
+        const maxFileSize = 150 * 1024; // Limite imposto pelo servidor do IME
 
         if (!completedHist || !currentHist || !completedSyl || !reqSyl) {
             alert("Pelo menos um dos arquivos necessários não foi adicionado");
@@ -82,19 +82,19 @@ window.onload = function () {
         }
 
         if (completedHist.size > maxFileSize) {
-            alert("O histórico da instituição de origem excede o limite de 2MB de tamanho");
+            alert("O histórico da instituição de origem excede o limite de 150KB de tamanho");
             return;
         }
         if (currentHist.size > maxFileSize) {
-            alert("O histórico do curso atual excede o limite de 2MB de tamanho");
+            alert("O histórico do curso atual excede o limite de 150KB de tamanho");
             return;
         }
         if (completedSyl.size > maxFileSize) {
-            alert("As ementas das disciplinas cursadas excede o limite de 2MB de tamanho");
+            alert("As ementas das disciplinas cursadas excede o limite de 150KB de tamanho");
             return;
         }
         if (reqSyl.size > maxFileSize) {
-            alert("A ementa da disciplina requerida excede o limite de 2MB de tamanho");
+            alert("A ementa da disciplina requerida excede o limite de 150KB de tamanho");
             return;
         }
 

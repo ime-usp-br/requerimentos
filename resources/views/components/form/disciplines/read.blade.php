@@ -1,90 +1,9 @@
 <fieldset class="disciplines">
     <legend>Disciplinas</legend>
-    <div class="taken">
-        <div class="disc-title" >Disciplinas cursadas</div>
-        <div class="disc-list">
-            @foreach($takenDiscs as $disc)
-                <div class="disc">
-                    <label>
-                        <!-- Nome <input type="text" name="{{ 'disc' . $loop->iteration . '-name'}}" value="{{ $disc->name }}" id="disc-name" required {{ $readOnly ? 'readonly' : '' }}> -->
-                        Nome <input type="text" name="{{ 'disc' . $loop->iteration . '-name'}}" value="{{ $disc->name }}" class="large-field" required {{ $readOnly ? 'readonly' : '' }}>
-                    </label>
-                    <label class="disc-institution">
-                        Instituição em que foi cursada
-                        <!-- <input type="text" name="{{ 'disc' . $loop->iteration . '-institution' }}" id="disc-institution" value="{{ $disc->institution }}" required {{ $readOnly ? 'readonly' : '' }}> -->
-                        <input type="text" name="{{ 'disc' . $loop->iteration . '-institution' }}" class="large-field" value="{{ $disc->institution }}" required {{ $readOnly ? 'readonly' : '' }}>
-                    </label>
-                    @error('disc-institution')
-                        <style>
-                            .disc-institution input {
-                                outline: 1.6px solid red;
-                            }
-                            .disc-institution {
-                                color: red;
-                            }
-                        </style>
-                    @enderror
-                    <div class="disc-middle-row">
-                        <label class="disc-code">
-                            Sigla
-                            <input type="text" name="{{ 'disc' . $loop->iteration . '-code' }}" value="{{ $disc->code }}" id="disc-code" {{ $readOnly ? 'readonly' : '' }}>
-                        </label>
-                        <label>
-                            Ano 
-                            <input type="text" name="{{ 'disc' . $loop->iteration . '-year'}}" value="{{ $disc->year }}" id="disc-year" required {{ $readOnly ? 'readonly' : '' }}>
-                        </label>
-                        <label>
-                            Nota <input type="text" name="{{ 'disc' . $loop->iteration . '-grade'}}" value="{{ $disc->grade }}" id="disc-grade" required {{ $readOnly ? 'readonly' : '' }}>
-                        </label>
-                    </div>
 
-                    <div class="disc-last-row">
-                        @if ($readOnly)
-                            <label>
-                                Semestre
-                                <input type="text" class="small-field" value="{{ $disc->semester ?? '' }}" readonly>
-                            </label>
-                        @else
-                            <label>
-                                Semestre 
-                                <select name="{{ 'disc' . $loop->iteration .'-semester' }}" id="disc-semester">
-                                    <option 
-                                        value=""
-                                        >
-                                        Selecione o semestre
-                                    </option>
-                                    <option 
-                                        value="Primeiro"
-                                        @if($disc->semester == 'Primeiro') 
-                                            selected 
-                                        @endif
-                                        >
-                                        Primeiro
-                                    </option>
-                                    <option 
-                                        value="Segundo"
-                                        @if($disc->semester == 'Segundo') 
-                                            selected 
-                                        @endif
-                                        >
-                                        Segundo
-                                    </option>
-                                </select>
-                            </label>
-                        @endif
-                        
-                        {{-- @if ($withRecordButton)
-                            <a href="#" class="button record-button">Requerimentos anteriores</a>
-                        @endif --}}
-                    </div>
-                    <input type="hidden" name="{{ 'disc' . $loop->iteration . '-id'}}" value="{{$disc->id}}" >
-                </div>
-            @endforeach
-        </div>
-    </div>
 
     <div class="required">
-        <div class="disc-title" >Disciplina requerida</div>
+        <div class="disc-title" >Disciplina a ser dispensada</div>
         <div class="disc-list">
             <div class="disc">
                 <label>
@@ -219,6 +138,91 @@
             
         </div>
     </div>
+
+
+    <div class="taken">
+        <div class="disc-title" >Disciplinas cursadas</div>
+        <div class="disc-list">
+            @foreach($takenDiscs as $disc)
+                <div class="disc">
+                    <label>
+                        <!-- Nome <input type="text" name="{{ 'disc' . $loop->iteration . '-name'}}" value="{{ $disc->name }}" id="disc-name" required {{ $readOnly ? 'readonly' : '' }}> -->
+                        Nome <input type="text" name="{{ 'disc' . $loop->iteration . '-name'}}" value="{{ $disc->name }}" class="large-field" required {{ $readOnly ? 'readonly' : '' }}>
+                    </label>
+                    <label class="disc-institution">
+                        Instituição em que foi cursada
+                        <!-- <input type="text" name="{{ 'disc' . $loop->iteration . '-institution' }}" id="disc-institution" value="{{ $disc->institution }}" required {{ $readOnly ? 'readonly' : '' }}> -->
+                        <input type="text" name="{{ 'disc' . $loop->iteration . '-institution' }}" class="large-field" value="{{ $disc->institution }}" required {{ $readOnly ? 'readonly' : '' }}>
+                    </label>
+                    @error('disc-institution')
+                        <style>
+                            .disc-institution input {
+                                outline: 1.6px solid red;
+                            }
+                            .disc-institution {
+                                color: red;
+                            }
+                        </style>
+                    @enderror
+                    <div class="disc-middle-row">
+                        <label class="disc-code">
+                            Sigla
+                            <input type="text" name="{{ 'disc' . $loop->iteration . '-code' }}" value="{{ $disc->code }}" id="disc-code" {{ $readOnly ? 'readonly' : '' }}>
+                        </label>
+                        <label>
+                            Ano 
+                            <input type="text" name="{{ 'disc' . $loop->iteration . '-year'}}" value="{{ $disc->year }}" id="disc-year" required {{ $readOnly ? 'readonly' : '' }}>
+                        </label>
+                        <label>
+                            Nota <input type="text" name="{{ 'disc' . $loop->iteration . '-grade'}}" value="{{ $disc->grade }}" id="disc-grade" required {{ $readOnly ? 'readonly' : '' }}>
+                        </label>
+                    </div>
+
+                    <div class="disc-last-row">
+                        @if ($readOnly)
+                            <label>
+                                Semestre
+                                <input type="text" class="small-field" value="{{ $disc->semester ?? '' }}" readonly>
+                            </label>
+                        @else
+                            <label>
+                                Semestre 
+                                <select name="{{ 'disc' . $loop->iteration .'-semester' }}" id="disc-semester">
+                                    <option 
+                                        value=""
+                                        >
+                                        Selecione o semestre
+                                    </option>
+                                    <option 
+                                        value="Primeiro"
+                                        @if($disc->semester == 'Primeiro') 
+                                            selected 
+                                        @endif
+                                        >
+                                        Primeiro
+                                    </option>
+                                    <option 
+                                        value="Segundo"
+                                        @if($disc->semester == 'Segundo') 
+                                            selected 
+                                        @endif
+                                        >
+                                        Segundo
+                                    </option>
+                                </select>
+                            </label>
+                        @endif
+                        
+                        {{-- @if ($withRecordButton)
+                            <a href="#" class="button record-button">Requerimentos anteriores</a>
+                        @endif --}}
+                    </div>
+                    <input type="hidden" name="{{ 'disc' . $loop->iteration . '-id'}}" value="{{$disc->id}}" >
+                </div>
+            @endforeach
+        </div>
+    </div>
+
 
     <input type="hidden" name="takenDiscCount" id="taken-disc-count" value="{{ $takenDiscs->count() }}" >
 </fieldset>

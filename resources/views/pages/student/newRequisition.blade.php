@@ -46,7 +46,7 @@
             <h1>Novo requerimento</h1>
             <a href="{{ route('student.list')}}" class="button">Voltar</a>
         </header>
-        <p class="instruction">Preencha o seguinte formulário para criar o requerimento</p>
+        <p class="instruction">Preencha o seguinte formulário para criar o requerimento: <br> (Crie um formulário para cada matéria a ser dispensada) </p>
 
         <form method="POST" action="{{ route('student.create')}}" id="form" enctype="multipart/form-data">
             @csrf

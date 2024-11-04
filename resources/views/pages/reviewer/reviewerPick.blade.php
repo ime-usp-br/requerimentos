@@ -26,7 +26,8 @@
     <header>
         <h1>Envio do requerimento</h1>
         <nav>
-            <a href="{{ route('sg.show', ['requisitionId' => $requisitionId]) }}" class="button">Voltar</a>
+            {{-- <a href="{{ route('sg.show', ['requisitionId' => $requisitionId]) }}" class="button">Voltar</a> --}}
+            <a href="javascript:void(0);" onclick="history.back();" class="button">Voltar</a>
         </nav>
     </header>
 

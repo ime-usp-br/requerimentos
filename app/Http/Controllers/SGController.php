@@ -9,11 +9,12 @@ use App\Models\Document;
 use App\Enums\DocumentType;
 use App\Models\Requisition;
 use App\Models\TakenDisciplines;
+use App\Models\RequisitionsVersion;
+use App\Models\TakenDisciplinesVersion;
+use App\Models\RequisitionsPeriod;
 use Illuminate\Support\Facades\DB;
 // use Illuminate\Http\Request;
-use App\Models\RequisitionsVersion;
 use Illuminate\Support\Facades\Auth;
-use App\Models\TakenDisciplinesVersion;
 use App\Http\Requests\RequisitionUpdateRequest;
 use App\Http\Requests\RequisitionCreationRequest;
 use App\Notifications\RequisitionResultNotification;
@@ -315,11 +316,23 @@ class SGController extends Controller
         return redirect()->route('sg.show', ['requisitionId' => $requisitionId])->with('success', ['title message' => $titleMsg, 'body message' => $bodyMsg]);
     }
 
-    public function users() {
+    public function admin() {
         $selectedColumns = ['name', 'codpes', 'id'];
-
         $usersWithRoles = User::whereHas('roles')->select($selectedColumns)->get();
-        return view('pages.sg.users', ['users' => $usersWithRoles]);
+
+        $requisition_period_status = RequisitionsPeriod::latest('id')->first();
+
+        return view('pages.sg.admin', ['users' => $usersWithRoles, 'requisition_period_status' => $requisition_period_status->is_enabled]);
+    }
+
+    public function requisition_period_toggle() {
+        $currentStatus = RequisitionsPeriod::latest('id')->first();
+        
+        $newStatus = new RequisitionsPeriod;
+        $newStatus->is_enabled = !$currentStatus->is_enabled;
+        $newStatus->save();
+        
+        return redirect()->back()->with('success', ['info' => $newStatus->is_enabled]);
     }
 
 }
