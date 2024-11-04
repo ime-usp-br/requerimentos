@@ -31,7 +31,13 @@ window.onload = function () {
     
     // fazendo cada linha da tabela ser um link para a página de análise do requerimento
     const table = $("#table").DataTable();
-    $("#table tbody").on("click", "tr", function () {
+    $("#table tbody").on("click", ".button", function () {
+        const parentForm = $(this).parent();
+        parentForm.submit();
+
+        table.row($(this).parents("tr")).remove().draw();
+    }); 
+    $("#table tbody").on("click", "td", function () {
         // console.log(window.location.href);
         // console.log(this.dataset.department);
         window.location.href = `/departamento/${

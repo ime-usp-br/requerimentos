@@ -13,4 +13,5 @@ class EventType
     const IN_REVALUATION = 'Requerimento em reavaliação';
     const RESEND_BY_STUDENT = 'Reenviado pelo aluno depois de atualização';
     const SENT_TO_DEPARTMENT = 'Enviado para análise do departamento';
+    const REGISTERED = 'Cadastrado no sistema Jupiterweb';
 }
