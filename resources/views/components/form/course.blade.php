@@ -60,7 +60,16 @@
                         >
                         Bacharelado em Matemática Aplicada e Computacional
                     </option>
-                    <option value="Licenciatura em Matemática">Licenciatura em Matemática</option>
+                    <option 
+                        value="Licenciatura em Matemática"
+                        @if(isset($req) && $req->course === 'Licenciatura em Matemática') 
+                            selected 
+                        @elseif (old('course') === 'Licenciatura em Matemática')
+                            selected 
+                        @endif
+                        >
+                        Licenciatura em Matemática
+                    </option>
                 </select>
             </label>
         @endif
