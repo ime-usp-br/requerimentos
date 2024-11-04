@@ -77,6 +77,12 @@ Route::middleware('auth')->group(function() {
         Route::post('/atualizar/{requisitionId}', [SGController::class, 'update'])->name('sg.update');
 
         Route::get('/admin', [SGController::class, 'admin'])->name('sg.admin');
+
+        Route::post('/remover-papel', [RoleController::class, 'removeRole'])->name('role.remove');
+
+        Route::get('/filters', [RequisitionController::class, 'showFilters'])->name('pages.requisitions.filters');
+        
+        Route::get('/export', [RequisitionController::class, 'filterAndExport'])->name('pages.requisitions.filterAndExport');
         
         Route::post('/periodo-requerimento', [SGController::class, 'requisition_period_toggle'])->name('sg.requisition_period_toggle');
 
