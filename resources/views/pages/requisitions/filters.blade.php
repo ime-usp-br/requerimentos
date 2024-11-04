@@ -59,8 +59,8 @@
             </div>
 
             <div class="export-buttons">
-                <button type="submit" name="export_type" value="sg_meeting" class="button">Reunião da CG</button>
-                <button type="submit" name="export_type" value="robosinho" class="button">Robozinho</button>
+                <!-- <button type="submit" name="export_type" value="sg_meeting" class="button">Reunião da CG</button> -->
+                <button type="submit" name="export_type" value="robosinho" class="button">Exportar</button>
             </div>
         </form>
     </div>
