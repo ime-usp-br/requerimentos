@@ -76,8 +76,8 @@ class DepartmentController extends Controller
             $event->author_nusp = $user->codpes;
             $event->version = $req->latest_version;
 
-            $event->message = "Registrado por " . $user->name;
-            $req->internal_status = "Registrado por " . $user->name;
+            $event->message = "Registrado no Jupiter por " . $user->name;
+            $req->internal_status = "Registrado no Jupiter por " . $user->name;
 
             $event->save();
             $req->save();

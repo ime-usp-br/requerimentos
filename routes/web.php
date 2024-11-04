@@ -62,8 +62,8 @@ Route::middleware('auth')->group(function() {
         Route::post('/atualizar/{requisitionId}', [StudentController::class, 'update'])->name('student.update');
     });
 
-    // Route::prefix('sg')->middleware('role:' . RoleName::SG)->group(function () {
-    Route::prefix('sg')->group(function () {
+    Route::prefix('sg')->middleware('role:' . RoleName::SG)->group(function () {
+    // Route::prefix('sg')->group(function () {
         Route::get('/exporta-csv', [RequisitionController::class, 'exportCSV'])->name('export.csv');
 
         Route::get('/lista', [SGController::class, 'list'])->name('sg.list');
