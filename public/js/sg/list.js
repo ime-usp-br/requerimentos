@@ -20,9 +20,6 @@ window.onload = function () {
 
         // número de linhas em cada página da tabela
         pageLength: 10,
-
-        // a tabela tem uma coluna de IDs dos requerimentos que não é visível na página
-        columnDefs: [{ visible: false, targets: 5 }],
     });
     
     const text = (document.querySelector(
