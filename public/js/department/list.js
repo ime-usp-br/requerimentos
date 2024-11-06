@@ -41,7 +41,7 @@ window.onload = function () {
         // console.log(window.location.href);
         // console.log(this.dataset.department);
         window.location.href = `/departamento/${
-            this.dataset.department
+            this.parentNode.dataset.department
         }/detalhe/${table.row(this).data()[4]}`;
         // window.location.href = "/departamento/detalhe/" + table.row(this).data()[4];
     }); 
