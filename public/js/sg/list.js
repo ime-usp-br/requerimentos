@@ -29,7 +29,7 @@ window.onload = function () {
     // fazendo cada linha da tabela ser um link para a página de análise do requerimento
     const table = $("#table").DataTable();
     $("#table tbody").on("click", "tr", function () {
-        window.location.href = "detalhe/" + table.row(this).data()[5];
+        window.location.href = "detalhe/" + table.row(this).data()[1];
     });
 
     
