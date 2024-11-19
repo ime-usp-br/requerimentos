@@ -19,6 +19,8 @@ use App\Http\Requests\RequisitionUpdateRequest;
 use App\Http\Requests\RequisitionCreationRequest;
 use App\Notifications\RequisitionResultNotification;
 
+use App\Notifications\DepartmentNotification;
+
 // use Illuminate\Support\Facades\Auth;
 // use Illuminate\Support\Facades\Route;
 
@@ -302,6 +304,24 @@ class SGController extends Controller
             }
             
         });
+
+        // Para manter a pouca consistência que existe na estrutura deste programa,
+        // a estrutura para mandar notificações vai ser em um if separado
+        if (env('APP_ENV') === 'production' && $request->button === 'department') {
+            $departmentIds = [
+                'MAC' => 4,
+                'MAE' => 5,
+                'MAP' => 6,
+                'MAT' => 7
+            ];
+            $departmentUsers = User::role($departmentIds[$requisitionData['department']])->with('roles')->get();
+            
+            // Segue uma estratégia não sustentável para notificar todos os usuários
+            foreach ($departmentUsers as $departmentUser) {
+                if ($departmentUser->email)
+                    $departmentUser->notify(new DepartmentNotification($departmentUser, $requisitionData['department']));
+            }
+        }
 
         if ($request->button === 'reviewer') {
             return redirect()->route('reviewer.reviewerPick', ['requisitionId' => $requisitionId]);
