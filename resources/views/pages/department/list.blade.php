@@ -59,7 +59,7 @@
                     <td>
                         <form action="{{ route('department.registered', ['requisitionId' => $req->id]) }}" method="POST" class="button-form">
                             @csrf
-                            <button class="button" type="button" > Registrado no Jupiter </button>
+                            <button class="button" type="button" style="background-color: #B5013D;" > Registrado no Jupiter </button>
                         </form>
                     </td>
                 </tr>
