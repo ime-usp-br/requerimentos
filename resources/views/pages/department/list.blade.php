@@ -48,14 +48,14 @@
     </header>
     
     <div class="content">
-        <x-table :columns="['Data de criação', 'Aluno', 'Número USP', 'Situação', 'Id', '']">
+        <x-table :columns="['ID', 'Data de criação', 'Aluno', 'Número USP', 'Situação', '']">
             @foreach ($reqs as $req)
-                <tr data-department="{{ $departmentName }}">
-                    <td>{{ \Illuminate\Support\Carbon::parse($req->created_at->toDateString())->format('d/m/Y') }}</td>
+            <tr data-department="{{ $departmentName }}">
+                    <td>{{ $req->id }}</td>
+                    <td>{{ \Illuminate\Support\Carbon::parse($req->created_at)->format('d/m/Y H:i:s') }}</td>
                     <td>{{ $req->student_name }}</td>
                     <td>{{ $req->student_nusp }}</td>
                     <td>{{ $req->internal_status }}</td>
-                    <td>{{ $req->id }}</td>
                     <td>
                         <form action="{{ route('department.registered', ['requisitionId' => $req->id]) }}" method="POST" class="button-form">
                             @csrf

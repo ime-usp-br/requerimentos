@@ -20,9 +20,6 @@ window.onload = function () {
 
         // número de linhas em cada página da tabela
         pageLength: 10,
-
-        // a tabela tem uma coluna de IDs dos requerimentos que não é visível na página
-        columnDefs: [{ visible: false, targets: 4 }],
     });
     
     const text = (document.querySelector(
@@ -37,22 +34,12 @@ window.onload = function () {
 
         table.row($(this).parents("tr")).remove().draw();
     }); 
+
     $("#table tbody").on("click", "td", function () {
-        // console.log(window.location.href);
-        // console.log(this.dataset.department);
         window.location.href = `/departamento/${
             this.parentNode.dataset.department
         }/detalhe/${table.row(this).data()[4]}`;
-        // window.location.href = "/departamento/detalhe/" + table.row(this).data()[4];
     }); 
-
-    
-    // form.addEventListener("submit", (event) => {
-    //     event.preventDefault();
-    //     const takenDiscInput = document.querySelector("#taken-disc-count");
-    //     takenDiscInput.value = takenDiscCount;
-    //     form.submit();
-    // });
     
     const role = document.querySelector('.role select');
     if (role) {
