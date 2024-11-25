@@ -38,7 +38,7 @@ window.onload = function () {
     $("#table tbody").on("click", "td", function () {
         window.location.href = `/departamento/${
             this.parentNode.dataset.department
-        }/detalhe/${table.row(this).data()[4]}`;
+        }/detalhe/${table.row(this).data()[0]}`;
     }); 
     
     const role = document.querySelector('.role select');
