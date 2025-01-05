@@ -79,6 +79,12 @@
         <div class="nav"> 
             <a href="{{ route('department.list', ['departmentName' => $departmentName]) }}" class="button">Voltar</a>
             <button type="submit" form="form" class="button" id="send-btn">Encaminhar para um parecerista</button>
+
+            <form action="{{ route('department.registered', ['departmentName' => $departmentName, 'requisitionId' => $req->id]) }}" method="POST" style="all: unset;">
+                @csrf
+                <button class="button" type="button" id="registered-btn" style="background-color: #B5013D;" > Registrado no Jupiter </button>
+            </form>
+
         </div>
         
     </div>

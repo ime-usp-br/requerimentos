@@ -48,7 +48,7 @@
     </header>
     
     <div class="content">
-        <x-table :columns="['ID', 'Data de criação', 'Aluno', 'Número USP', 'Situação', '']">
+        <x-table :columns="['ID', 'Data de criação', 'Aluno', 'Número USP', 'Situação']">
             @foreach ($reqs as $req)
             <tr data-department="{{ $departmentName }}">
                     <td>{{ $req->id }}</td>
@@ -56,12 +56,6 @@
                     <td>{{ $req->student_name }}</td>
                     <td>{{ $req->student_nusp }}</td>
                     <td>{{ $req->internal_status }}</td>
-                    <td>
-                        <form action="{{ route('department.registered', ['requisitionId' => $req->id]) }}" method="POST" class="button-form">
-                            @csrf
-                            <button class="button" type="button" style="background-color: #B5013D;" > Registrado no Jupiter </button>
-                        </form>
-                    </td>
                 </tr>
             @endforeach
         </x-table>

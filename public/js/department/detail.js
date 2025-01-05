@@ -43,4 +43,15 @@ window.onload = function() {
             linkButton.href = `/documento/${docSelect.value}`;
         });
     });
+
+    // Adiciona o botão para marcar o requerimento como "registrado no Jupiter"
+    const registeredButton = document.querySelector("#registered-btn");
+    console.log(registeredButton);
+    registeredButton.onclick = (event) => {
+        const parentForm = registeredButton.parentNode;
+        parentForm.submit();
+
+        const overlayContainer = document.querySelector(".overlay-container");
+        overlayContainer.style.display = "contents";
+    };
 }

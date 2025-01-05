@@ -59,7 +59,7 @@ class DepartmentController extends Controller
         return view('pages.department.users', ['users' => $usersWithRoles, 'departmentName' => $departmentName]);
     }
 
-    public function registered($requisitionId) {
+    public function registered($departmentName, $requisitionId) {
         DB::transaction(function () use ($requisitionId) {
 
             $user = Auth::user();
@@ -83,7 +83,9 @@ class DepartmentController extends Controller
             $req->save();
         });
 
-        return response()->noContent();
+        $bodyMsg = 'O requerimento foi marcado como "registrado no Jupiter"';
+        $titleMsg = 'Requerimento marcado';
+        return redirect()->route('department.show', ['departmentName' => $departmentName, 'requisitionId' => $requisitionId])->with('success', ['title message' => $titleMsg, 'body message' => $bodyMsg]);
     }
 
 }
