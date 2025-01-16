@@ -48,11 +48,12 @@
     </header>
     
     <div class="content">
-        <x-table :columns="['ID', 'Data de criação', 'Aluno', 'Número USP', 'Situação', '']">
+        <x-table :columns="['ID', 'Data de criação', 'Última modificação', 'Aluno', 'Número USP', 'Situação', '']">
             @foreach ($reqs as $req)
             <tr data-department="{{ $departmentName }}">
                     <td>{{ $req->id }}</td>
                     <td>{{ \Illuminate\Support\Carbon::parse($req->created_at)->format('d/m/Y H:i:s') }}</td>
+                    <td>{{ \Illuminate\Support\Carbon::parse($req->updated_at)->format('d/m/Y H:i:s') }}</td>
                     <td>{{ $req->student_name }}</td>
                     <td>{{ $req->student_nusp }}</td>
                     <td>{{ $req->internal_status }}</td>
