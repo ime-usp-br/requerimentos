@@ -313,7 +313,8 @@ class SGController extends Controller
                 'MAC' => 4,
                 'MAE' => 5,
                 'MAP' => 6,
-                'MAT' => 7
+                'MAT' => 7,
+                'Virtual' => 8
             ];
             $departmentUsers = User::role($departmentIds[$requisitionData['department']])->with('roles')->get();
             

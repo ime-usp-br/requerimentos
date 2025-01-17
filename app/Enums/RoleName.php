@@ -11,4 +11,5 @@ class RoleName
     const MAT_SECRETARY = 'Secretaria do MAT';
     const MAE_SECRETARY = 'Secretaria do MAE';
     const MAP_SECRETARY = 'Secretaria do MAP';
+    const VRT_SECRETARY = 'Secretaria Virtual';
 }

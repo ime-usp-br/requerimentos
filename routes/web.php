@@ -91,7 +91,8 @@ Route::middleware('auth')->group(function() {
     Route::prefix('departamento')->middleware("role:" . RoleName::MAC_SECRETARY . 
                                                   ',' . RoleName::MAT_SECRETARY . 
                                                   ',' . RoleName::MAE_SECRETARY . 
-                                                  ',' . RoleName::MAP_SECRETARY)->group(function () {
+                                                  ',' . RoleName::MAP_SECRETARY .
+                                                  ',' . RoleName::VRT_SECRETARY)->group(function () {
     // Route::prefix('departamento')->group(function () {
         Route::get('/{departmentName}/lista', [DepartmentController::class, 'list'])->name('department.list');
 
@@ -116,11 +117,12 @@ Route::middleware('auth')->group(function() {
     
     
     Route::group(['middleware' => "role:" . RoleName::SG . 
-    ',' . RoleName::REVIEWER .
-    ',' . RoleName::MAC_SECRETARY . 
-    ',' . RoleName::MAT_SECRETARY . 
-    ',' . RoleName::MAE_SECRETARY . 
-    ',' . RoleName::MAP_SECRETARY], function () {
+                                      ',' . RoleName::REVIEWER .
+                                      ',' . RoleName::MAC_SECRETARY . 
+                                      ',' . RoleName::MAT_SECRETARY . 
+                                      ',' . RoleName::MAE_SECRETARY . 
+                                      ',' . RoleName::MAP_SECRETARY .
+                                      ',' . RoleName::VRT_SECRETARY], function () {
         // Cuidado!! Da forma como isso está construído, qualquer pessoa dentre essas roles, 
         // se agir de maneira maliciosa consegue assumir qualquer outro papel.
         // É necessário fazer ajustes de segurança em RoleController->switchRole

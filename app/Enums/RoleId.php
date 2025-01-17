@@ -11,4 +11,5 @@ class RoleId
     const MAE_SECRETARY = 5;
     const MAP_SECRETARY = 6;
     const MAT_SECRETARY = 7;
+    const VRT_SECRETARY = 8;
 }
