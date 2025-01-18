@@ -117,7 +117,7 @@ class SGController extends Controller
                 $takenDisc->name = $data["disc$i-name"];
                 $takenDisc->code = $data["disc$i-code"] ?? "";
                 $takenDisc->year = $data["disc$i-year"];
-                $takenDisc->grade = number_format((float) $data["disc$i-grade"], 2, '.', '');
+                $takenDisc->grade = $data["disc$i-grade"];
                 $takenDisc->semester = $data["disc$i-semester"];
                 $takenDisc->institution = $data["disc$i-institution"];
                 $takenDisc->requisition_id = $req->id;
