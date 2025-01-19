@@ -15,9 +15,6 @@ window.onload = function () {
 
         // número de linhas em cada página da tabela
         pageLength: 10,
-
-        // a tabela tem uma coluna de IDs dos requerimentos que não é visível na página
-        columnDefs: [{ visible: false, targets: 4 }],
     });
 
     const text = (document.querySelector(
@@ -27,6 +24,6 @@ window.onload = function () {
     // fazendo cada linha da tabela ser um link para a página de análise do requerimento
     const table = $("#table").DataTable();
     $("#table tbody").on("click", "tr", function () {
-        window.location.href = "detalhe/" + table.row(this).data()[4];
+        window.location.href = "detalhe/" + table.row(this).data()[0];
     });
 };
