@@ -34,9 +34,10 @@
         </nav>
     </header>
     <div class="content">
-        <x-table :columns="['Data de criação', 'Disciplinas cursadas', 'Disciplina requerida', 'Situação', 'Id']">
+        <x-table :columns="['Id', 'Data criação', 'Disciplinas cursadas', 'Disciplina requerida', 'Situação']">
             @foreach ($reqs as $req)
                 <tr>
+                    <td>{{ $req->id }}</td>
                     <td>{{ \Illuminate\Support\Carbon::parse($req->created_at->toDateString())->format('d/m/Y') }}</td>
                     <td>
                         <ul>
@@ -47,7 +48,6 @@
                     </td>
                     <td>{{ $req->requested_disc }}</td>
                     <td>{{ $req->situation }}</td>
-                    <td>{{ $req->id }}</td>
                 </tr>
             @endforeach
         </x-table>
