@@ -45,8 +45,8 @@ Route::get('/documento/{documentId}', [GlobalController::class, 'documentHandler
 
 Route::middleware('auth')->group(function() {
     
-    Route::prefix('aluno')->middleware('role:' . RoleName::STUDENT)->group(function () {
-    // Route::prefix('aluno')->group(function () {
+    // Route::prefix('aluno')->middleware('role:' . RoleName::STUDENT)->group(function () {
+    Route::prefix('aluno')->group(function () {
         Route::get('/lista', [StudentController::class, 'list'])->name('student.list');
         
         Route::view('/novo-requerimento', 'pages.student.newRequisition')->name('student.newRequisition')
