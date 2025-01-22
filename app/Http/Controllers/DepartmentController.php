@@ -14,7 +14,7 @@ class DepartmentController extends Controller
 {
     public function list($departmentName) {
 
-        $selectedColumns = ['created_at', 'student_name', 'student_nusp', 'internal_status', 'id'];
+        $selectedColumns = ['created_at', 'updated_at', 'student_name', 'student_nusp', 'internal_status', 'id'];
 
         $reqs = Requisition::select($selectedColumns)->where('department', strtoupper($departmentName))->where('registered', 'Não')->where('validated', true)->get();
 
