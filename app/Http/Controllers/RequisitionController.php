@@ -52,13 +52,15 @@ class RequisitionController extends Controller
         $requisitions = $query->get();
 
         $exportData = $requisitions->map(function($requisition) {
-            $department_date = $requisition->getRelation('events')->filter(function($item) {
+            $sentToDepReqs = $requisition->getRelation('events')->filter(function($item) {
                 return $item->type == 'Enviado para análise do departamento';
             })->last();
 
-            $registered_date = $requisition->getRelation('events')->filter(function($item) {
+            $registeredReqs = $requisition->getRelation('events')->filter(function($item) {
                 return $item->type == 'Aguardando avaliação da CG';
             })->last();
+
+            $reviewIsEmpty = $requisition->getRelation('reviews')->isEmpty();
 
             $data = [
                 'Nome' => $requisition->student_name,
@@ -67,11 +69,11 @@ class RequisitionController extends Controller
                 'Data de abertura do Requerimento' => $requisition->created_at->format('d-m-Y'),
                 'Disciplina a ser dispensada' => $requisition->requested_disc_code,
                 'Departamento responsável' => $requisition->department,
-                'Data de encaminhamento ao departamento/unidade' => $department_date != null ? $department_date->created_at->format('d-m-Y') : null,
-                'Parecer' => $requisition->getRelation('reviews')[0]->reviewer_decision,
-                'Parecerista' => $requisition->getRelation('reviews')[0]->reviewer_name,
-                'Data do parecer' => $requisition->getRelation('reviews')[0]->updated_at->format('d-m-Y'),
-                'Data do registro no Júpiter pelo Departamento' => $registered_date != null ? $registered_date->created_at->format('d-m-Y') : null
+                'Data de encaminhamento ao departamento/unidade' => $sentToDepReqs != null ? $sentToDepReqs->created_at->format('d-m-Y') : null,
+                'Parecer' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->reviewer_decision,
+                'Parecerista' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->reviewer_name,
+                'Data do parecer' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->updated_at->format('d-m-Y'),
+                'Data do registro no Júpiter pelo Departamento' => $registeredReqs != null ? $registeredReqs->created_at->format('d-m-Y') : null
             ];
 
             return $data;
