@@ -51,7 +51,7 @@ class RequisitionController extends Controller
 
         $requisitions = $query->get();
 
-        $exportData = $requisitions->map(function($requisition) use ($request) {
+        $exportData = $requisitions->map(function($requisition) {
             $department_date = $requisition->getRelation('events')->filter(function($item) {
                 return $item->type == 'Enviado para análise do departamento';
             })->last();
