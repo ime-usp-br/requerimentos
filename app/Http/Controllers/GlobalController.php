@@ -43,6 +43,7 @@ class GlobalController extends Controller
                       [RoleName::MAC_SECRETARY, RoleId::MAC_SECRETARY, 'department.list', 'mac'],
                       [RoleName::MAT_SECRETARY, RoleId::MAT_SECRETARY, 'department.list', 'mat'],
                       [RoleName::MAE_SECRETARY, RoleId::MAE_SECRETARY, 'department.list', 'mae'],
+                      [RoleName::VRT_SECRETARY, RoleId::VRT_SECRETARY, 'department.list', 'virtual'],
                       [RoleName::SG, RoleId::SG, 'sg.list']];
 
         foreach ($rolesInfo as $roleInfo) {

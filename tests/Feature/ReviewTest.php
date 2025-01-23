@@ -53,7 +53,7 @@ class ReviewTest extends TestCase
     {
         $requisitionId = $this->req->id;
 
-        $currentRoleId = $this->faker->randomElement([RoleId::SG, RoleId::MAC_SECRETARY, RoleId::MAE_SECRETARY, RoleId::MAP_SECRETARY, RoleId::MAT_SECRETARY]);
+        $currentRoleId = $this->faker->randomElement([RoleId::SG, RoleId::MAC_SECRETARY, RoleId::MAE_SECRETARY, RoleId::MAP_SECRETARY, RoleId::MAT_SECRETARY, RoleId::VRT_SECRETARY]);
         $senderUser = User::factory()->create([
             'current_role_id' => $currentRoleId,
             'codpes' => $this->faker->numberBetween(10000000, 99999999),

@@ -88,7 +88,8 @@ class RequisitionReadTest extends TestCase
         $departments = [['name' => Department::MAC, 'roleId' => RoleId::MAC_SECRETARY],
                         ['name' => Department::MAT, 'roleId' => RoleId::MAT_SECRETARY],
                         ['name' => Department::MAE, 'roleId' => RoleId::MAE_SECRETARY],
-                        ['name' => Department::MAP, 'roleId' => RoleId::MAP_SECRETARY]];
+                        ['name' => Department::MAP, 'roleId' => RoleId::MAP_SECRETARY],
+                        ['name' => Department::EXTERNAL, 'roleId' => RoleId::VRT_SECRETARY]];
         
         $chosenDepartment = $this->faker->randomElement($departments);
 

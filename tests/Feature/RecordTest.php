@@ -34,7 +34,7 @@ class RecordTest extends TestCase
         ]);
 
         $notStudentUser = User::factory()->create([
-            'current_role_id' => $this->faker->randomElement([RoleId::SG, RoleId::MAC_SECRETARY, RoleId::MAE_SECRETARY, RoleId::MAP_SECRETARY, RoleId::MAT_SECRETARY, RoleId::REVIEWER]),
+            'current_role_id' => $this->faker->randomElement([RoleId::SG, RoleId::MAC_SECRETARY, RoleId::MAE_SECRETARY, RoleId::MAP_SECRETARY, RoleId::MAT_SECRETARY, RoleId::VRT_SECRETARY, RoleId::REVIEWER]),
         ]);
 
         $response = $this->actingAs($notStudentUser)->get(route('record.requisition', $requisition->id)); 
