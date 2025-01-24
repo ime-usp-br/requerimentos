@@ -62,8 +62,8 @@ Route::middleware('auth')->group(function() {
         Route::post('/atualizar/{requisitionId}', [StudentController::class, 'update'])->name('student.update');
     });
 
-    Route::prefix('sg')->middleware('role:' . RoleName::SG)->group(function () {
-    // Route::prefix('sg')->group(function () {
+    // Route::prefix('sg')->middleware('role:' . RoleName::SG)->group(function () {
+    Route::prefix('sg')->group(function () {
         Route::get('/exporta-csv', [RequisitionController::class, 'exportCSV'])->name('export.csv');
 
         Route::get('/lista', [SGController::class, 'list'])->name('sg.list');
@@ -114,6 +114,7 @@ Route::middleware('auth')->group(function() {
     });
     // });
     
+    Route::post('/dar-papel', [RoleController::class, 'addRole'])->name('role.add');
     
     Route::group(['middleware' => "role:" . RoleName::SG . 
     ',' . RoleName::REVIEWER .
@@ -126,7 +127,6 @@ Route::middleware('auth')->group(function() {
         // É necessário fazer ajustes de segurança em RoleController->switchRole
         Route::post('/trocar-papel', [RoleController::class, 'switchRole'])->name('role.switch');
         
-        Route::post('/dar-papel', [RoleController::class, 'addRole'])->name('role.add');
         
         Route::post('/remover-papel', [RoleController::class, 'removeRole'])->name('role.remove');
 

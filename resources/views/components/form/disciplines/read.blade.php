@@ -209,6 +209,14 @@
                                         >
                                         Segundo
                                     </option>
+                                    <option 
+                                        value="Anual"
+                                        @if($disc->semester == 'Anual') 
+                                            selected 
+                                        @endif
+                                        >
+                                        Anual
+                                    </option>
                                 </select>
                             </label>
                         @endif
