@@ -19,6 +19,10 @@ class Requisition extends Model
         return $this->hasMany(Review::class);
     }
 
+    public function requisitionsVersions() {
+        return $this->hasMany(RequisitionsVersion::class);
+    }
+
     public function events() {
         return $this->hasMany(Event::class);
     }

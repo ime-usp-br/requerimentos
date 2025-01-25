@@ -13,9 +13,7 @@
     <header class="filters-header">
         <h1>Filtros de Requerimentos</h1>
         <div class="header-buttons">
-        <a href="{{ route('sg.list') }}" class="button">Início</a>
-            <a href="{{ route('sg.users') }}" class="button">Administrar usuários</a>
-            <a href="{{ route('sg.newRequisition') }}" class="button">Criar requerimento</a>
+        <a href="{{ route('sg.list') }}" class="button">Voltar</a>
         </div>
     </header>
     
@@ -59,8 +57,7 @@
             </div>
 
             <div class="export-buttons">
-                <button type="submit" name="export_type" value="sg_meeting" class="button">Reunião da CG</button>
-                <button type="submit" name="export_type" value="robosinho" class="button">Robozinho</button>
+                <button type="submit" name="export_type" value="sg_meeting" class="button">Exportar</button>
             </div>
         </form>
     </div>
