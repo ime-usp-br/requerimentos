@@ -28,12 +28,14 @@ class RoleController extends Controller
             
             if ($department === 'MAC') {
                 $user->assignRole(RoleName::MAC_SECRETARY);
-            } elseif($department === 'MAT') {
+            } elseif ($department === 'MAT') {
                 $user->assignRole(RoleName::MAT_SECRETARY);
-            } elseif($department === 'MAE') {
+            } elseif ($department === 'MAE') {
                 $user->assignRole(RoleName::MAE_SECRETARY);
-            } elseif($department === 'MAP') {
+            } elseif ($department === 'MAP') {
                 $user->assignRole(RoleName::MAP_SECRETARY);
+            } else {
+                $user->assignRole(RoleName::VRT_SECRETARY);
             }
         } else {
             $user->assignRole($data['role']);
@@ -61,7 +63,8 @@ class RoleController extends Controller
                            [RoleId::MAC_SECRETARY, 'department.list', 'mac'],
                            [RoleId::MAT_SECRETARY, 'department.list', 'mat'],
                            [RoleId::MAE_SECRETARY, 'department.list', 'mae'],
-                           [RoleId::MAP_SECRETARY, 'department.list', 'map']];
+                           [RoleId::MAP_SECRETARY, 'department.list', 'map'],
+                           [RoleId::VRT_SECRETARY, 'department.list', 'virtual']];
         
         foreach ($rolesRedirects as $roleRedirect) {
             if ($user->current_role_id === $roleRedirect[0]) {

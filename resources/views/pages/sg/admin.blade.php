@@ -105,6 +105,14 @@
                                 MAE
                             </span>
                         </label>
+
+                        <label class="radio-button">
+                            <input type="radio" id="VRT" name="department" value="VRT" />
+                            <span class="label-visible">
+                                <span class="fake-radiobutton"></span>
+                                Virtual
+                            </span>
+                        </label>
                     </div>
                 </div>
                 <button type="submit" class="button">Adicionar</button>

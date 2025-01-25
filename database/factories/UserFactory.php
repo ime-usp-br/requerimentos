@@ -20,7 +20,7 @@ class UserFactory extends Factory
             'email' => $this->faker->unique()->safeEmail(),
             'codpes' => $this->faker->numberBetween(10000000, 99999999),
             'email_verified_at' => now(),
-            'current_role_id' => $this->faker->randomElement([RoleId::MAC_SECRETARY, RoleId::MAE_SECRETARY, RoleId::MAP_SECRETARY, RoleId::MAT_SECRETARY, RoleId::REVIEWER, RoleId::SG, RoleId::STUDENT]),
+            'current_role_id' => $this->faker->randomElement([RoleId::MAC_SECRETARY, RoleId::MAE_SECRETARY, RoleId::MAP_SECRETARY, RoleId::MAT_SECRETARY, RoleId::VRT_SECRETARY, RoleId::REVIEWER, RoleId::SG, RoleId::STUDENT]),
             // 'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
         ];

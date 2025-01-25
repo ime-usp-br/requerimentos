@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\DocumentType;
+use App\Enums\Department;
 use App\Models\User;
 use App\Models\Requisition;
 use App\Models\Event;
@@ -16,7 +17,14 @@ class DepartmentController extends Controller
 
         $selectedColumns = ['created_at', 'updated_at', 'student_name', 'student_nusp', 'internal_status', 'id'];
 
-        $reqs = Requisition::select($selectedColumns)->where('department', strtoupper($departmentName))->where('registered', 'Não')->where('validated', true)->get();
+        $formattedDepName = $departmentName;
+        if ($formattedDepName == "virtual") {
+            $formattedDepName = Department::EXTERNAL;
+        }
+        else {
+            $formattedDepName = strtoupper($formattedDepName);
+        }
+        $reqs = Requisition::select($selectedColumns)->where('department', $formattedDepName)->where('registered', 'Não')->where('validated', true)->get();
 
         return view('pages.department.list', ['reqs' => $reqs, 'departmentName' => $departmentName]);
     }

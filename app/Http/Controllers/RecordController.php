@@ -35,7 +35,8 @@ class RecordController extends Controller
           RoleId::MAC_SECRETARY => route('department.show', ['departmentName' => 'mac', 'requisitionId' => $requisitionId]),
           RoleId::MAE_SECRETARY => route('department.show', ['departmentName' => 'mae', 'requisitionId' => $requisitionId]),
           RoleId::MAT_SECRETARY => route('department.show', ['departmentName' => 'mat', 'requisitionId' => $requisitionId]),
-          RoleId::MAP_SECRETARY => route('department.show', ['departmentName' => 'mac', 'requisitionId' => $requisitionId])
+          RoleId::MAP_SECRETARY => route('department.show', ['departmentName' => 'mac', 'requisitionId' => $requisitionId]),
+          RoleId::VRT_SECRETARY => route('department.show', ['departmentName' => 'virtual', 'requisitionId' => $requisitionId]),
         ];
 
         $previousRoute = $roleToPreviousRouteMappings[Auth::user()->current_role_id];

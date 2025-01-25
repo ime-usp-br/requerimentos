@@ -59,7 +59,11 @@
                         <input type="radio" id="coordination" name="role" value="Department">
                         <span class="label-visible">
                             <span class="fake-radiobutton"></span>
-                            Secretaria do {{ strtoupper($departmentName) }}
+                            @if($departmentName == "virtual")
+                                Secretaria Virtual
+                            @else
+                                Secretaria do {{ strtoupper($departmentName) }}
+                            @endif
                         </span>
                     </label>
                 </div>
