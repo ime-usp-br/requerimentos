@@ -246,6 +246,13 @@
                             >
                                 Segundo
                             </option>
+                            <option value="Anual"
+                                @if(old('disc1-semester') === 'Anual') 
+                                    selected 
+                                @endif
+                            >
+                                Anual
+                            </option>
                         </select>
                     </label>
                     @error('disc1-semester')
