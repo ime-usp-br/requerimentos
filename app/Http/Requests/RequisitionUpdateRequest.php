@@ -90,7 +90,7 @@ class RequisitionUpdateRequest extends FormRequest
             $rules["disc$i-name"] = 'required|max:255';
             $rules["disc$i-code"] = 'max:255';
             $rules["disc$i-year"] = 'required|numeric|integer';
-            $rules["disc$i-grade"] = 'required|numeric';
+            $rules["disc$i-grade"] = 'required|max:15';
             $rules["disc$i-semester"] = 'required';
             $rules["disc$i-institution"] = 'required|max:255';
         }  
@@ -136,7 +136,7 @@ class RequisitionUpdateRequest extends FormRequest
             $this->disciplinesData["disc$i-name"] = $validatedData["disc$i-name"];
             $this->disciplinesData["disc$i-code"] = $validatedData["disc$i-code"];
             $this->disciplinesData["disc$i-year"] = (int) $validatedData["disc$i-year"];
-            $this->disciplinesData["disc$i-grade"] = number_format((float) $validatedData["disc$i-grade"], 2, '.', '');  
+            $this->disciplinesData["disc$i-grade"] = $validatedData["disc$i-grade"];  
             $this->disciplinesData["disc$i-semester"] = $validatedData["disc$i-semester"];
             $this->disciplinesData["disc$i-institution"] = $validatedData["disc$i-institution"]; 
         }  

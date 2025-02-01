@@ -57,7 +57,7 @@ class RequisitionCreationRequest extends FormRequest
             $rules["disc$i-name"] = 'required|max:255';
             $rules["disc$i-code"] = 'max:255';
             $rules["disc$i-year"] = 'required|numeric|integer|digits: 4';
-            $rules["disc$i-grade"] = 'required|numeric';
+            $rules["disc$i-grade"] = 'required|max:15';
             $rules["disc$i-semester"] = 'required';
             $rules["disc$i-institution"] = 'required|max:255';
         }  
