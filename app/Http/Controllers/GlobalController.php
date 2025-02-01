@@ -56,4 +56,28 @@ class GlobalController extends Controller
         Auth::login($user, true);
         return redirect()->route('student.list');
     }
+
+    // public function documentHandler($documentId) {
+
+    //     $user = Auth::user();
+
+    //     $document = Document::with('requisition')->find($documentId);
+
+    //     if (!$document) {
+    //         abort(404);
+    //     } 
+
+    //     if ($user->current_role_id !== RoleId::STUDENT) {
+    //         $filePath = Storage::disk('local')->path($document->path);
+    //         return response()->file($filePath, ['Content-Disposition' => 'inline; filename="Documento"']);
+    //     }
+
+    //     if ($user->codpes !== $document->requisition->student_nusp) {
+    //         abort(404);
+    //     }
+
+    //     $filePath = Storage::disk('local')->path($document->path);
+    //     return response()->file($filePath, ['Content-Disposition' => 'inline; filename="Documento"']);
+    // }
+    
 }
