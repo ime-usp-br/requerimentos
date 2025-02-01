@@ -1,0 +1,165 @@
+.disciplines {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    gap: 2rem;
+}
+
+.small-field {
+    width: 5.45rem;
+}
+
+.type-input {
+    width: 9rem;
+}
+
+.taken {
+    display: flex;
+    flex-direction: column;
+    gap: 0.58rem;
+    width: 100%;
+}
+
+.disc-title {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.disc-list {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.8rem;
+    gap: 2.3rem;
+}
+
+.disc {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.disc label {
+    display: flex;
+    flex-direction: column;
+}
+
+.disc-middle-row {
+    display: flex;
+    gap: 0.6rem;
+}
+
+.disc-department {
+    width: 14rem;
+}
+
+#disc-code {
+    width: 5.45rem;
+}
+
+#disc-year {
+    width: 3.27rem;
+}
+
+#disc-grade {
+    width: 2.5rem;
+}
+
+.disc-last-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    /* gap: 0.5rem; */
+}
+
+.record-button {
+    width: 6.2rem;
+    height: 2.18rem;
+}
+
+.required {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.36rem;
+}
+
+#disc-name, #disc-institution {
+    width: 17.3rem;
+    /* width: 100%; */
+}
+
+/* .large-field {
+    width: 17.3rem;
+} */
+
+#disc-type {
+    width: 9rem;
+}
+
+@media screen and (min-width: 600px) {
+    .disc-last-row .button {
+        position: relative;
+        top: -11rem;
+    }
+
+    /* .required .button {
+        top: -7.2rem;
+    } */
+
+    #disc-name, #disc-institution {
+        width: 24.8rem;
+    }
+
+    .large-field {
+        width: 24.8rem;
+    }
+}
+
+@media screen and (min-width: 830px) {
+
+    #disc-name, #disc-institution {
+        width: 25.8rem;
+    }
+
+    .large-field {
+        width: 25.8rem;
+    }
+}
+
+
+@media screen and (min-width: 1020px) {
+
+    :root {
+        --page-margin: 5rem;
+        font-size: 1.3rem;
+    }
+
+    #disc-name, #disc-institution {
+        width: 27.8rem;
+    }
+
+    .large-field {
+        width: 27.8rem;
+    }
+}
+
+/* @media screen and (min-width: 1280px) {
+
+    #disc-name, #disc-institution {
+        width: 27.8rem;
+    }
+
+} */
+
+@media screen and (min-width: 1920px) {
+ 
+    #disc-name, #disc-institution {
+        width: 29.8rem;
+    }
+
+    .large-field {
+        width: 29.8rem;
+    }
+}

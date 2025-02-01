@@ -1,0 +1,58 @@
+.documents {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.doc-text {
+    font-weight: 500;
+}
+
+.document {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pdf-icon {
+    width: 3.2rem;
+    /* height: 6rem; */
+    width: 4rem;
+}
+
+.docs-select {
+    padding: 0 0.5rem;
+    width: 100%;
+    /* width: fit-content; */
+    /* font-size: 0.7rem; */
+    
+}
+
+.files {
+    display: flex;
+    flex-direction: column;
+}
+
+.button.file-link {
+    height: 2.18rem;
+}
+
+.files-wrapper {
+    display: flex;
+    flex-direction: column;
+    /* align-items: flex-end; */
+    gap: 0.4rem;
+}
+
+.external-link {
+    width: 2.5rem;
+    padding: 0;
+}
+
+@media screen and (min-width: 768px) {
+    .files-wrapper {
+        flex-direction: row;
+        align-items: flex-end;
+        gap: 0.7rem;
+    } 
+}

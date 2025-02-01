@@ -1,0 +1,106 @@
+@import 'public/css/global.css';
+@import "/css/components/table.css";
+
+
+:root {
+    --page-margin: 0.6rem;
+    --page-margin: 0.7rem;
+    --body-gaps: 2.5rem;
+    height: 100%;
+    --blue: #142c68;
+    --waiting-appraisal: #9B66F2;
+    --white: #fff;
+    --gray: #b4b4b8;
+    --light-blue: #f0f3f4;
+}
+
+body {
+    /* min-height: 100vh; */
+    height: 100%;
+    /* height: min(100%, 100vh); */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--body-gaps);
+}
+
+
+.filters-header {
+    background-color: var(--white);
+    padding: 20px;
+    border-bottom: 2px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.filters-header h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #343a40;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.header-buttons .button {
+    background-color: var(--blue);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.header-buttons .button:hover {
+    background-color: #001b39;
+}
+
+.button:hover {
+    box-shadow: 0 0 8px rgba(0,0,0,0.6);
+}
+
+.export-buttons .button {
+    background-color: var(--blue);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.export-buttons .button:hover {
+    background-color: #001b39;
+}
+
+.filters-content {
+    padding: 20px;
+    background-color: #ffffff;
+}
+
+.filters-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.form-group label {
+    font-weight: bold;
+    color: #495057;
+}
+
+.form-control {
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+}
+
+
