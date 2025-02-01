@@ -1,0 +1,71 @@
+.decision {
+    display: flex;
+    flex-direction: column;
+    gap: 1.81rem;
+}
+
+.decision-radio {
+    height: 1.6rem;
+}
+
+textarea {
+    width: 100%;
+}
+
+.radio-button {
+    position: relative;
+}
+
+.label-visible {
+    margin-left: 2rem;
+}
+
+input[type="radio"]:checked + span .fake-radiobutton:after {
+    display: block;
+}
+
+.fake-radiobutton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 3px;
+    outline: 1px solid var(--gray);
+    background-color: var(--white);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.fake-radiobutton:after {
+    content: "";
+    display: none;
+    background: var(--blue);
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+}
+
+@media screen and (min-width: 760px) {
+    .label-visible {
+        margin-left: 1.9rem;
+    }
+}
+
+@media screen and (min-width: 1020px) {
+    .label-visible {
+        margin-left: 1.5rem;
+    }
+}
+
+@media screen and (min-width: 1280px) {
+    .decision-radio {
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    .label-visible {
+        margin-left: 1.5rem;
+    }
+}

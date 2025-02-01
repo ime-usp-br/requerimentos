@@ -1,0 +1,232 @@
+@import "/css/components/table.css";
+
+:root {
+    --page-margin: 0.6rem;
+    --body-gaps: 1.8rem;
+}
+
+body {
+    /* min-height: 100vh; */
+    height: min-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--body-gaps);
+}
+
+h1 {
+    padding: 0 var(--page-margin);
+    margin-top: var(--body-gaps);
+}
+
+nav {
+    /* margin-top: 4rem;
+    margin-bottom: 2rem; */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    gap: 0.8rem;
+    padding: 0 var(--page-margin);
+    /* width: 22.5rem; */
+    width: 100%;
+}
+
+nav .button {
+    width: 100%;
+}
+
+header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--body-gaps);
+    justify-content: space-between;
+}
+
+/* css do componente table específico dessa página  */
+#table_filter input {
+    width: 19.8rem;
+}
+
+.button {
+    width: 9.5rem;
+    height: 3rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    background: var(--blue);
+    color: var(--white);
+    border-radius: 4.64px;
+    cursor: pointer;
+}
+
+.button:hover {
+    box-shadow: 0 0 8px rgba(0,0,0,0.6);
+}
+
+#form {
+    display: none;
+}
+
+.content {
+    flex: 1 0 auto;
+    min-height: 67.5rem;
+}
+
+tbody tr {
+    cursor: pointer;
+}
+
+ul {
+    list-style-type: none;
+}
+
+@media screen and (min-width: 410px) {
+    :root {
+        --body-gaps: 2rem;
+    }
+
+    .button {
+        /* width: 7.3rem; */
+        width: 10.5rem;
+    }
+}
+
+@media screen and (min-width: 600px) {
+    :root {
+        --page-margin: 1.3rem;
+        --body-gaps: 2rem;
+    }
+
+    .content {
+        min-height: 61.5rem;
+    }
+    
+    .button {
+        width: 11rem;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    :root {
+        --page-margin: 2rem;
+        --body-gaps: 2.5rem;
+        font-size: 1.1rem;
+    }
+
+    header {
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: space-between;
+        padding: 0 var(--page-margin);
+        /* gap: 7rem; */
+    }
+
+    nav {
+        gap: 1rem;
+        flex-direction: row;
+        padding: 0;
+        justify-content: flex-end;
+        /* width: min-content; */
+    }
+
+    h1 {
+        padding: 0;
+    }
+
+    /* .content {
+        min-height: 45rem;
+    } */
+    
+    nav .button {
+        width: 8.5rem;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    :root {
+        font-size: 1.3rem;
+    }
+
+    nav .button {
+        width: 10.5rem;
+    }
+
+    .content {
+        min-height: 33.95rem;
+    }
+}
+
+@media screen and (min-width: 1280px) {
+
+    :root {
+        --page-margin: 3rem;
+        --body-gaps: 3rem;
+    }
+
+    .content {
+        padding: 0 var(--page-margin);
+        display: flex;
+        justify-content: center;
+    }
+}
+
+@media screen and (min-width: 1440px) {
+    :root {
+        --page-margin: 3.8rem;
+        --body-gaps: 3rem;
+    }
+
+    header {
+        gap: 13rem;
+    }
+
+    .content {
+        padding: 0 var(--page-margin);
+        display: flex;
+        justify-content: center;
+    }
+}
+
+@media screen and (min-width: 1536px) {
+    :root {
+        --page-margin: 4.2rem;
+    }
+
+    header {
+        gap: 19rem;
+    }
+
+    .content {
+        min-height: 33rem;
+    }
+}
+
+@media screen and (min-width: 1600px) {
+    :root {
+        font-size: 1.4rem;
+        --page-margin: 4.5rem;
+    }
+}
+
+@media screen and (min-width: 1920px) {
+    :root {
+        font-size: 1.5rem;
+        --page-margin: 6rem;
+    }
+
+    .content {
+        min-height: 31rem;
+    }
+}
+
+@media screen and (min-width: 2500px) {
+    header {
+        gap: 32rem;
+    }
+}

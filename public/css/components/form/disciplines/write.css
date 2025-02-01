@@ -1,0 +1,137 @@
+.disciplines {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    /* max-width: 1rem; */
+    /* width: 10rem; */
+    gap: 1rem;
+    gap: 2rem;
+}
+
+.taken {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    /* max-width: 100%; */
+    /* width: min-content; */
+    /* width: fit-content; */
+}
+
+.disc-title {
+    font-weight: 600;
+}
+
+.disc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem;
+}
+
+.disc-management {
+    display: flex;
+    gap: 1rem;
+}
+
+.disc-department {
+    width: 14rem;
+}
+
+.requested {
+    display: flex;
+    flex-direction: column;
+    gap: 0.36rem;
+    gap: 1rem;
+    /* width: 100%; */
+}
+
+.disc-middle-row {
+    display: flex;
+    gap: 0.6rem;
+}
+
+.disc-last-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 0.6rem;
+}
+
+.disc {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.disc label {
+    display: flex;
+    flex-direction: column;
+}
+
+#disc-code {
+    width: 5.45rem;
+}
+
+#disc-name, #disc-institution {
+    width: 17.8rem;
+    /* width: 100%; */
+}
+
+/* .disc-year {
+    width: 4rem;
+} */
+
+#disc-year {
+    width: 3.27rem;
+}
+
+/* .disc-semester {
+    width: 12.73rem;
+} */
+
+#disc-semester {
+    width: 12rem;
+}
+
+#disc-grade {
+    width: 2.5rem;
+}
+
+#disc-type {
+    width: 9.3rem;
+}
+
+@media screen and (min-width: 600px) {
+    .disc-last-row .button {
+        position: relative;
+        top: -6.9rem;
+    }
+
+    #disc-name, #disc-institution {
+        width: 24.8rem;
+    }
+}
+
+@media screen and (min-width: 830px) {
+    #disc-name, #disc-institution {
+        width: 25.8rem;
+    }
+}
+
+@media screen and (min-width: 1020px) {
+    #disc-name, #disc-institution {
+        width: 27.8rem;
+    }
+}
+
+@media screen and (min-width: 1280px) {
+    #disc-name, #disc-institution {
+        width: 27.8rem;
+    }
+}
+
+@media screen and (min-width: 1920px) {
+    #disc-name, #disc-institution {
+        width: 29.8rem;
+    }
+}
