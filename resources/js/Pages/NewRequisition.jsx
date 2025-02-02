@@ -1,6 +1,7 @@
-// import '/public/css/pages/sg/newRequisition.css';
+import '/public/css/pages/sg/newRequisition.css';
 import React, { useEffect } from 'react';
 import { useForm } from '@inertiajs/react';
+import { useRoute } from 'ziggy-js';
 
 const NewRequisition = () => {
 	useEffect(() => {
@@ -27,7 +28,7 @@ const NewRequisition = () => {
 	function submit(e) {
 		console.log("submitted");
 		e.preventDefault();
-		post('/teste-form');
+		post(route('teste.form'));
 	}
 
 	return (

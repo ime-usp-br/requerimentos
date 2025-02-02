@@ -24,7 +24,7 @@ Route::get('/teste-form', function () {
 
 Route::post('/teste-form', function (\Illuminate\Http\Request $request) {
     dd($request->all());
-});
+})->name('teste.form');
 
 
 // Login é uma rota criada automaticamente pela biblioteca de login da USP.
