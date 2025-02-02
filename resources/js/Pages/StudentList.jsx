@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stack, Typography, Button, Link } from '@mui/material';
+import { Stack, Typography, Button, Box } from '@mui/material';
 import { route } from 'ziggy-js';
 
 import List from '../Components/RequisitionList/List';
@@ -18,21 +18,66 @@ import List from '../Components/RequisitionList/List';
 
 export default function StudentList({ requisitions, selectedColumns, requisition_period_status }) {
     return (
-        <div className='student-body'>
-            <Stack direction="row"
+        <Stack 
+            direction='column'
+            sx={{
+                justifyContent: 'space-around',
+                alignItems: 'center',
+                width: '100%'
+            }}
+        >
+            <Stack 
+                direction={{ sm: 'column', md: 'row' }}
                 sx={{
-                    justifyContent: "space-around",
+                    justifyContent: "space-between",
                     alignItems: "center",
+                    height: 200,
+                    width: 1500
                 }}
                 >
                 <Typography variant="h4" content="h1">Requerimentos</Typography>
-                <Button variant="contained" size="medium" color="primary" href={'/'}>
-                    Voltar
-                </Button>
+                <Stack 
+                    direction={{ sm: 'column', md: 'row' }}
+                    sx={{
+                        justifyContent: "space-around",
+                        alignItems: "center",
+                    }}
+                    spacing={2}
+                    >
+                    <Button 
+                        variant="contained" 
+                        size="medium" 
+                        color="primary" 
+                        href={'/'}
+                        sx={{
+                            textAlign: 'center',
+                            width: 220,
+                            height: 70
+                        }}  
+                    >
+                        Criar Requerimento
+                    </Button>
+                    <Button 
+                        variant="contained" 
+                        size="medium" 
+                        color="primary" 
+                        href={'/'}
+                        sx={{
+                            width: 220,
+                            height: 70
+                        }}
+                    >
+                        Sair
+                    </Button>
+                </Stack>
             </Stack>
-            <div className='student-content'>
+            <Box
+                sx={{
+                    width: 1500
+                }}
+            >
                 <List requisitions={requisitions} selectedColumns={selectedColumns} />
-            </div>
-        </div>
+            </Box>
+        </Stack>
     );
 };

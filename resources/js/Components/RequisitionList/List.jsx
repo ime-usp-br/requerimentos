@@ -164,13 +164,5 @@ export default function List({ requisitions, selectedColumns }) {
         initialState: { density: 'compact' },
     });
 
-    return (
-        <Box
-            sx={{
-                width: 1400
-            }}
-        >
-            <MaterialReactTable table={table} />
-        </Box>
-    );
+    return <MaterialReactTable table={table} />;
 };
