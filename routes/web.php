@@ -18,6 +18,15 @@ Route::get('/', function () {
     return Inertia::render('Home');
 });
 
+Route::get('/teste-form', function () {
+    return Inertia::render('NewRequisition');
+});
+
+Route::post('/teste-form', function (\Illuminate\Http\Request $request) {
+    dd($request->all());
+});
+
+
 // Login é uma rota criada automaticamente pela biblioteca de login da USP.
 
 Route::get('/callback', [GlobalController::class, 'callbackHandler']);
