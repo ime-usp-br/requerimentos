@@ -1,8 +1,8 @@
 import React from 'react';
 
-import '../../../public/css/global.css';
-import '../../../public/css/pages/home.css';
-import '../../../public/css/components/footer.css';
+// import '../../../public/css/global.css';
+// import '../../../public/css/pages/home.css';
+// import '../../../public/css/components/footer.css';
 // import '../../../public/css/components/overlay.css';
 // import '../../../public/css/components/table.css';
 
