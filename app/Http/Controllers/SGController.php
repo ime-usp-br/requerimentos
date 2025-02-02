@@ -20,6 +20,7 @@ use App\Http\Requests\RequisitionCreationRequest;
 use App\Notifications\RequisitionResultNotification;
 
 use App\Notifications\DepartmentNotification;
+use Inertia\Inertia;
 
 // use Illuminate\Support\Facades\Auth;
 // use Illuminate\Support\Facades\Route;
@@ -27,11 +28,12 @@ use App\Notifications\DepartmentNotification;
 class SGController extends Controller
 {
     public function list() {
-        $selectedColumns = ['created_at', 'student_name', 'student_nusp', 'internal_status', 'department', 'id'];
+        $selectedColumns = ['created_at', 'id', 'student_name', 'student_nusp', 'internal_status', 'department'];
 
         $reqs = Requisition::select($selectedColumns)->get();
 
-        return view('pages.sg.list', ['reqs' => $reqs]);
+        // Temporariamente, apenas para testes
+        return Inertia::render('StudentList', ['requisitions' => $reqs, 'selectedColumns' => $selectedColumns]);
     }
 
     public function show($requisitionId) {

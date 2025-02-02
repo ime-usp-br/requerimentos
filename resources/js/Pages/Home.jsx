@@ -1,4 +1,5 @@
 import React from 'react';
+import LoginIcon from '@mui/icons-material/Login';
 
 import '../../../public/css/global.css';
 import '../../../public/css/pages/home.css';
@@ -11,7 +12,7 @@ export default function Home() {
         <div className='home-body'>
             <header className='home-header'>
                 <img className='archimedes' src="https://requerimentos.ime.usp.br/img/home/ime-logo-title.svg" />
-                <a href="login" class="home-button">⎆ Acessar</a>
+                <a href="login" class="home-button"><LoginIcon /> Acessar</a>
             </header>
 
             <footer className='home-footer'>

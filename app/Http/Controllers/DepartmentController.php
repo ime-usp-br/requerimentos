@@ -10,12 +10,13 @@ use App\Models\Event;
 use App\Enums\EventType;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class DepartmentController extends Controller
 {
     public function list($departmentName) {
 
-        $selectedColumns = ['created_at', 'updated_at', 'student_name', 'student_nusp', 'internal_status', 'id'];
+        $selectedColumns = ['id', 'created_at', 'updated_at', 'student_name', 'student_nusp', 'internal_status'];
 
         $formattedDepName = $departmentName;
         if ($formattedDepName == "virtual") {
@@ -26,7 +27,8 @@ class DepartmentController extends Controller
         }
         $reqs = Requisition::select($selectedColumns)->where('department', $formattedDepName)->where('registered', 'Não')->where('validated', true)->get();
 
-        return view('pages.department.list', ['reqs' => $reqs, 'departmentName' => $departmentName]);
+        // Temporariamente, apenas para testes
+        return Inertia::render('StudentList', ['requisitions' => $reqs, 'selectedColumns' => $selectedColumns, 'departmentName' => $departmentName]);
     }
 
     public function show($departmentName, $requisitionId) {

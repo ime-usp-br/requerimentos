@@ -23,15 +23,18 @@ class StudentController extends Controller
 {
     public function list() {
         $user = Auth::user();
-        $requisitions = Requisition::with('takenDisciplines')->select('created_at', 'requested_disc', 'student_nusp', 'situation', 'id')->where('student_nusp', $user->codpes)->get();
+
+        $selectedColumns = ['id', 'created_at', 'requested_disc','situation'];
+        $requisitions = Requisition::with('takenDisciplines')->select($selectedColumns)->where('student_nusp', $user->codpes)->get();
 
         $currentStatus = RequisitionsPeriod::latest('id')->first();
         $requisition_period_status = $currentStatus->is_enabled;
 
-        return Inertia::render('StudentMain', ['requisitions' => $requisitions, 'requisition_period_status' => $requisition_period_status]);
+        return Inertia::render('StudentList', ['requisitions' => $requisitions, 'selectedColumns' => $selectedColumns, 'requisition_period_status' => $requisition_period_status]);
     }
 
     public function show($requisitionId) {
+        return Inertia::render('RequisitionDetails');
         
         $req = Requisition::with('takenDisciplines', 'documents')->find($requisitionId);
         $user = Auth::user();
