@@ -33,52 +33,52 @@ class StudentController extends Controller
         return Inertia::render('StudentList', ['requisitions' => $requisitions, 'selectedColumns' => $selectedColumns, 'requisition_period_status' => $requisition_period_status]);
     }
 
-    public function show($requisitionId) {
-        return Inertia::render('RequisitionDetails');
-        
+    public function show($requisitionId) {        
         $req = Requisition::with('takenDisciplines', 'documents')->find($requisitionId);
-        $user = Auth::user();
+        // $user = Auth::user();
 
         // o cast para int foi adicionado porque o banco sqlite3 retorna 
         // $req->student_nusp como uma string no server de produção. Sem esse cast,
         // os testes falham dentro do server
-        if (!$req || (int) $req->student_nusp !== $user->codpes) {
-            abort(404);
-        }
+        // if (!$req || (int) $req->student_nusp !== $user->codpes) {
+        //     abort(404);
+        // }
 
-        $routeName = Route::currentRouteName();
+        // $routeName = Route::currentRouteName();
 
-        if ($routeName === 'student.show') {
-            $documents = $req->documents->sortByDesc('created_at');
+        // if ($routeName === 'student.show') {
+        $documents = $req->documents->sortByDesc('created_at');
 
-            $takenDiscsRecords = [];
-            $currentCourseRecords = [];
-            $takenDiscSyllabi = [];
-            $requestedDiscSyllabi = [];
+        $takenDiscsRecords = [];
+        $currentCourseRecords = [];
+        $takenDiscSyllabi = [];
+        $requestedDiscSyllabi = [];
 
-            foreach ($documents as $document) {
-                switch ($document->type) {
-                    case DocumentType::TAKEN_DISCS_RECORD:
-                        array_push($takenDiscsRecords, $document);
-                        break;
-                    case DocumentType::CURRENT_COURSE_RECORD:
-                        array_push($currentCourseRecords, $document);
-                        break;
-                    case DocumentType::TAKEN_DISCS_SYLLABUS:
-                        array_push($takenDiscSyllabi, $document);
-                        break;
-                    case DocumentType::REQUESTED_DISC_SYLLABUS:
-                        array_push($requestedDiscSyllabi, $document);
-                        break;
-                }
+        foreach ($documents as $document) {
+            switch ($document->type) {
+                case DocumentType::TAKEN_DISCS_RECORD:
+                    array_push($takenDiscsRecords, $document);
+                    break;
+                case DocumentType::CURRENT_COURSE_RECORD:
+                    array_push($currentCourseRecords, $document);
+                    break;
+                case DocumentType::TAKEN_DISCS_SYLLABUS:
+                    array_push($takenDiscSyllabi, $document);
+                    break;
+                case DocumentType::REQUESTED_DISC_SYLLABUS:
+                    array_push($requestedDiscSyllabi, $document);
+                    break;
             }
-
-            return view('pages.student.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines, 'takenDiscsRecords' => $takenDiscsRecords, 'currentCourseRecords' => $currentCourseRecords, 'takenDiscSyllabi' => $takenDiscSyllabi, 'requestedDiscSyllabi' => $requestedDiscSyllabi]);
-        } elseif ($routeName === 'student.edit' && $req->result === 'Inconsistência nas informações' || Session::has('success')) {
-            return view('pages.student.editRequisition', ['req' => $req, 'takenDiscs' => $req->takenDisciplines]);
-        } else {
-            abort(403);
         }
+
+        // dd($takenDiscsRecords);
+
+        return Inertia::render('RequisitionDetail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines, 'takenDiscsRecords' => $takenDiscsRecords, 'currentCourseRecords' => $currentCourseRecords, 'takenDiscSyllabi' => $takenDiscSyllabi, 'requestedDiscSyllabi' => $requestedDiscSyllabi]);
+        // } elseif ($routeName === 'student.edit' && $req->result === 'Inconsistência nas informações' || Session::has('success')) {
+        //     return view('pages.student.editRequisition', ['req' => $req, 'takenDiscs' => $req->takenDisciplines]);
+        // } else {
+        //     abort(403);
+        // }
     }
 
     public function create(RequisitionCreationRequest $request) {
