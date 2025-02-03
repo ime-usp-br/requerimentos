@@ -1,8 +1,9 @@
 import React from 'react';
-import { Stack, Typography, Button, Box } from '@mui/material';
+import { Stack, Box } from '@mui/material';
 import { route } from 'ziggy-js';
 
 import List from '../Components/RequisitionList/List';
+import Header from '../Components/RequisitionList/Header';
 
 // import '../../../public/css/global.css';
 // import '../../../public/css/pages/home.css';
@@ -16,64 +17,23 @@ import List from '../Components/RequisitionList/List';
     Aluno: id, criação, requerida, situação
 */
 
-export default function StudentList({ requisitions, selectedColumns, requisition_period_status }) {
+export default function StudentList({ requisitions, selectedColumns, roleId, requisitionPeriodStatus }) {
+    console.log(requisitionPeriodStatus)
     return (
         <Stack 
             direction='column'
+            spacing={2}
             sx={{
                 justifyContent: 'space-around',
                 alignItems: 'center',
                 width: '100%'
             }}
         >
-            <Stack 
-                direction={{ sm: 'column', md: 'row' }}
-                sx={{
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    height: 200,
-                    width: 1500
-                }}
-                >
-                <Typography variant="h4" content="h1">Requerimentos</Typography>
-                <Stack 
-                    direction={{ sm: 'column', md: 'row' }}
-                    sx={{
-                        justifyContent: "space-around",
-                        alignItems: "center",
-                    }}
-                    spacing={2}
-                    >
-                    <Button 
-                        variant="contained" 
-                        size="medium" 
-                        color="primary" 
-                        href={'/'}
-                        sx={{
-                            textAlign: 'center',
-                            width: 220,
-                            height: 70
-                        }}  
-                    >
-                        Criar Requerimento
-                    </Button>
-                    <Button 
-                        variant="contained" 
-                        size="medium" 
-                        color="primary" 
-                        href={'/'}
-                        sx={{
-                            width: 220,
-                            height: 70
-                        }}
-                    >
-                        Sair
-                    </Button>
-                </Stack>
-            </Stack>
+            <Header roleId={roleId} requisitionPeriodStatus={requisitionPeriodStatus} />
             <Box
                 sx={{
-                    width: 1500
+                    width: '90%',
+                    mx: 100
                 }}
             >
                 <List requisitions={requisitions} selectedColumns={selectedColumns} />
