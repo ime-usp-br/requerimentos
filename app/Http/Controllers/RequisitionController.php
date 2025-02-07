@@ -69,6 +69,7 @@ class RequisitionController extends Controller
                 'Data de abertura do Requerimento' => $requisition->created_at->format('d-m-Y'),
                 'Disciplina a ser dispensada' => $requisition->requested_disc_code,
                 'Departamento responsável' => $requisition->department,
+                'Situação' => $requisition->internal_status,
                 'Data de encaminhamento ao departamento/unidade' => $sentToDepReqs != null ? $sentToDepReqs->created_at->format('d-m-Y') : null,
                 'Parecer' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->reviewer_decision,
                 'Parecerista' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->reviewer_name,
