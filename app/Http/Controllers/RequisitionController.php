@@ -4,25 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Models\Requisition;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Inertia\Inertia;
 
 class RequisitionController extends Controller
 {
     public function showFilters()
     {
+        $user = Auth::user();
+        $roleId = $user->current_role_id;
+
         $courses = Requisition::select('course')->distinct()->get();
         $statuses = Requisition::select('internal_status')->distinct()->get();
         
         // Lista de departamentos
-        $departments = ['Todos', 'MAC', 'MAE', 'MAT', 'MAP'];
-
+        $departments = ['Todos', 'MAC', 'MAE', 'MAT', 'MAP', 'Disciplina de fora do IME'];
         // Lista de tipos de disciplina
         $discTypes = ['Todos', 'Obrigatória', 'Optativa Eletiva', 'Optativa Livre', 'Extracurricular'];
-
         // Lista de situações corretas
         $internal_statusOptions = ['Todos', 'Deferido', 'Indeferido', 'Encaminhado para a Secretaria'];
 
-        return view('pages.requisitions.filters', compact('courses', 'statuses', 'departments', 'discTypes', 'internal_statusOptions'));
+        $options = compact('courses', 'statuses', 'departments', 'discTypes', 'internal_statusOptions');
+        return Inertia::render('ExportRequisitions', ['roleId' => $roleId, 'userRoles' => $user->roles, 'options' => $options]);
     }
 
     public function filterAndExport(Request $request)
@@ -69,6 +73,7 @@ class RequisitionController extends Controller
                 'Data de abertura do Requerimento' => $requisition->created_at->format('d-m-Y'),
                 'Disciplina a ser dispensada' => $requisition->requested_disc_code,
                 'Departamento responsável' => $requisition->department,
+                'Situação' => $requisition->internal_status,
                 'Data de encaminhamento ao departamento/unidade' => $sentToDepReqs != null ? $sentToDepReqs->created_at->format('d-m-Y') : null,
                 'Parecer' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->reviewer_decision,
                 'Parecerista' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->reviewer_name,
