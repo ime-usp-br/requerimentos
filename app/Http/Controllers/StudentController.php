@@ -31,10 +31,11 @@ class StudentController extends Controller
         $currentStatus = RequisitionsPeriod::latest('id')->first();
         $requisition_period_status = $currentStatus->is_enabled;
 
-        return Inertia::render('StudentList', ['requisitions' => $requisitions, 
-                                               'selectedColumns' => $selectedColumns,
-                                               'roleId' => $roleId, 
-                                               'requisitionPeriodStatus' => $requisition_period_status]);
+        return Inertia::render('RequisitionList', ['requisitions' => $requisitions, 
+                                                   'selectedColumns' => $selectedColumns,
+                                                   'roleId' => $roleId, 
+                                                   'userRoles' => $user->roles,
+                                                   'requisitionPeriodStatus' => $requisition_period_status]);
     }
 
     public function show($requisitionId) {        

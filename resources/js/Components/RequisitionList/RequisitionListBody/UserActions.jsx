@@ -1,24 +1,19 @@
 import React from 'react'
 import { Stack, Button, Tooltip } from '@mui/material';
 
-export default function HeaderBottom({ roleId, requisitionPeriodStatus }) {
-    const buttonStyle = {
-        height: 56,
-        px: 4
-    }
-
+export default function UserActions({ roleId, requisitionPeriodStatus }) {
     return (
         <Stack 
-            direction={{ sm: 'column', md: 'row' }}
-            spacing={2}
-            >
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={{ xs: 1, sm: 2 }}
+            sx={{ width: '100%' }}
+        >
             { (roleId != 1) && (roleId != 3) &&
                 <Button 
                     variant="contained" 
-                    size="medium" 
+                    size="large"
                     color="primary" 
                     href={'/'}
-                    sx={buttonStyle}
                 >
                     Administrar Sistema
                 </Button>
@@ -33,10 +28,10 @@ export default function HeaderBottom({ roleId, requisitionPeriodStatus }) {
                         <Button 
                             variant="contained"
                             disabled={!requisitionPeriodStatus && roleId != 2}
-                            size="medium" 
+                            size="large"
                             color="primary" 
                             href={'/'}
-                            sx={buttonStyle}
+                            sx={{ width: '100%' }}
                         >
                             Criar Requerimento
                         </Button>
@@ -47,12 +42,11 @@ export default function HeaderBottom({ roleId, requisitionPeriodStatus }) {
             { roleId == 2 &&
                 <Button 
                     variant="contained" 
-                    size="medium" 
+                    size="large"
                     color="primary" 
-                    href={'/'}
-                    sx={buttonStyle}
+                    href={route('pages.requisitions.filters')}
                 >
-                    Filtros
+                    Exportar
                 </Button>
             }
         </Stack>

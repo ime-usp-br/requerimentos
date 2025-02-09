@@ -28,7 +28,7 @@ class DepartmentController extends Controller
         $reqs = Requisition::select($selectedColumns)->where('department', $formattedDepName)->where('registered', 'Não')->where('validated', true)->get();
 
         // Temporariamente, apenas para testes
-        return Inertia::render('StudentList', ['requisitions' => $reqs, 'selectedColumns' => $selectedColumns, 'departmentName' => $departmentName]);
+        return Inertia::render('RequisitionList', ['requisitions' => $reqs, 'selectedColumns' => $selectedColumns, 'departmentName' => $departmentName]);
     }
 
     public function show($departmentName, $requisitionId) {

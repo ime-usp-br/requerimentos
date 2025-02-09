@@ -4,14 +4,14 @@ columnTypes.id = {
     header: 'ID',
     accessorKey: 'id',
     enableHiding: false,
-    size: 40
+    size: 0
 };
 
 columnTypes.created_at = {
     header: 'Data de criação',
     accessorFn: (row) => row.created_at.slice(0, 10),
     enableHiding: false,
-    size: 180
+    size: 0
 };
 
 columnTypes.updated_at = {
@@ -19,14 +19,14 @@ columnTypes.updated_at = {
     accessorFn: (row) => row.updated_at.slice(0, 10),
     enableHiding: false,
     enableColumnActions: false,
-    size: 100
+    size: 0
 };
 
 columnTypes.requested_disc = {
     header: 'Disciplina requerida',
     accessorKey: 'requested_disc',
     enableHiding: false,
-    size: 360
+    size: 260
 };
 
 columnTypes.situation = {
@@ -41,7 +41,7 @@ columnTypes.internal_status = {
     header: 'Situação',
     accessorKey: 'internal_status',
     enableHiding: false,
-    size: 600
+    size: 400
 };
 
 columnTypes.student_name = {
@@ -55,14 +55,14 @@ columnTypes.student_nusp = {
     header: 'Número USP',
     accessorKey: 'student_nusp',
     enableHiding: false,
-    size: 60
+    size: 0
 };
 
 columnTypes.department = {
     header: 'Departamento',
     accessorKey: 'department',
     enableHiding: false,
-    size: 260
+    size: 160
 };
 
 export default columnTypes;
