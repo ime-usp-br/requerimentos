@@ -15,6 +15,8 @@ use Inertia\Inertia;
 class DepartmentController extends Controller
 {
     public function list($departmentName) {
+        $user = Auth::user();
+        $roleId = $user->current_role_id;
 
         $selectedColumns = ['id', 'created_at', 'updated_at', 'student_name', 'student_nusp', 'internal_status'];
 
@@ -25,10 +27,14 @@ class DepartmentController extends Controller
         else {
             $formattedDepName = strtoupper($formattedDepName);
         }
-        $reqs = Requisition::select($selectedColumns)->where('department', $formattedDepName)->where('registered', 'Não')->where('validated', true)->get();
+        $requisitions = Requisition::select($selectedColumns)->where('department', $formattedDepName)->where('registered', 'Não')->where('validated', true)->get();
 
         // Temporariamente, apenas para testes
-        return Inertia::render('StudentList', ['requisitions' => $reqs, 'selectedColumns' => $selectedColumns, 'departmentName' => $departmentName]);
+        return Inertia::render('RequisitionList', ['requisitions' => $requisitions, 
+                                                   'selectedColumns' => $selectedColumns,
+                                                   'roleId' => $roleId, 
+                                                   'userRoles' => $user->roles, 
+                                                   'departmentName' => $departmentName]);
     }
 
     public function show($departmentName, $requisitionId) {

@@ -28,12 +28,22 @@ use Inertia\Inertia;
 class SGController extends Controller
 {
     public function list() {
+        $user = Auth::user();
+        $roleId = $user->current_role_id;
+
         $selectedColumns = ['created_at', 'id', 'student_name', 'student_nusp', 'internal_status', 'department'];
 
-        $reqs = Requisition::select($selectedColumns)->get();
+        $requisitions = Requisition::select($selectedColumns)->get();
+
+        $currentStatus = RequisitionsPeriod::latest('id')->first();
+        $requisition_period_status = $currentStatus->is_enabled;
 
         // Temporariamente, apenas para testes
-        return Inertia::render('StudentList', ['requisitions' => $reqs, 'selectedColumns' => $selectedColumns]);
+        return Inertia::render('RequisitionList', ['requisitions' => $requisitions, 
+                                                   'selectedColumns' => $selectedColumns,
+                                                   'roleId' => $roleId, 
+                                                   'userRoles' => $user->roles,
+                                                   'requisitionPeriodStatus' => $requisition_period_status]);
     }
 
     public function show($requisitionId) {
