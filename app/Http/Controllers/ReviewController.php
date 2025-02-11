@@ -15,23 +15,28 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class ReviewController extends Controller
 {
     public function list()
     {
-
         $user = Auth::user();
+        $roleId = $user->current_role_id;
 
-        $selectedColumns = ['requisitions.created_at', 'student_name', 'requested_disc', 'reviewer_decision', 'reviews.updated_at', 'requisitions.id'];
+        $selectedReviewColumns = ['requisitions.created_at', 'student_name', 'requested_disc', 'reviewer_decision', 'reviews.updated_at', 'requisitions.id'];
 
-        $reqs = DB::table('reviews')
+        $requisitions = DB::table('reviews')
             ->join('requisitions', 'reviews.requisition_id', '=', 'requisitions.id')
             ->where('reviewer_nusp', $user->codpes)
             ->where('requisitions.situation', '=', 'Enviado para análise dos pareceristas')
-            ->select($selectedColumns)->get();
+            ->select($selectedReviewColumns)->get();
 
-        return view('pages.reviewer.list', ['reqs' => $reqs]);
+        $selectedColumns = ['created_at', 'student_name', 'requested_disc', 'reviewer_decision', 'updated_at', 'id'];
+        return Inertia::render('RequisitionList', ['requisitions' => $requisitions, 
+                                                   'selectedColumns' => $selectedColumns,
+                                                   'roleId' => $roleId, 
+                                                   'userRoles' => $user->roles]);
     }
 
     public function show($requisitionId)

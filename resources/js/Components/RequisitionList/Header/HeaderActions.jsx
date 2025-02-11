@@ -1,6 +1,6 @@
 import React from 'react';
 import { Stack, Button, Box } from '@mui/material';
-import ComboBox from '../../ComboBox';
+import ComboBox from '../../Atoms/ComboBox';
 
 export default function HeaderActions({ roleId, userRoles }) {
     const handleComboBoxChange = (value) => {

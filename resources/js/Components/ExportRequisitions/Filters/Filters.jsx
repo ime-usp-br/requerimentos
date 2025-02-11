@@ -3,7 +3,7 @@ import { Stack } from '@mui/material';
 import { DateField, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
-import ComboBox from '../../ComboBox';
+import ComboBox from '../../Atoms/ComboBox';
 
 export default function Filters({ options, filterRef }) {
     const comboStyle = {

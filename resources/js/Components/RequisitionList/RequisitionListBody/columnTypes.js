@@ -65,4 +65,11 @@ columnTypes.department = {
     size: 160
 };
 
+columnTypes.reviewer_decision = {
+    header: 'Decisão',
+    accessorKey: 'reviewer_decision',
+    enableHiding: false,
+    size: 160
+};
+
 export default columnTypes;
