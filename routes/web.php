@@ -26,6 +26,14 @@ Route::post('/teste-form', function (\Illuminate\Http\Request $request) {
     dd($request->all());
 })->name('teste.form');
 
+Route::get('/teste-admin', function () {
+    return Inertia::render('AdminPage');
+});
+
+Route::post('/teste-deleteRole', function (\Illuminate\Http\Request $request) {
+    dd($request->all());
+})->name('teste.deleteRole');
+
 
 // Login é uma rota criada automaticamente pela biblioteca de login da USP.
 
