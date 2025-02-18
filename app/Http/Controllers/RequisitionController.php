@@ -73,6 +73,7 @@ class RequisitionController extends Controller
                 'Data de encaminhamento ao departamento/unidade' => $sentToDepReqs != null ? $sentToDepReqs->created_at->format('d-m-Y') : null,
                 'Parecer' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->reviewer_decision,
                 'Parecerista' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->reviewer_name,
+                'Justificativa do Parecer' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->justification,
                 'Data do parecer' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->updated_at->format('d-m-Y'),
                 'Data do registro no Júpiter pelo Departamento' => $registeredReqs != null ? $registeredReqs->created_at->format('d-m-Y') : null
             ];
