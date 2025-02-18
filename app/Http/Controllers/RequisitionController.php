@@ -81,17 +81,35 @@ class RequisitionController extends Controller
         });
 
         return new StreamedResponse(function() use ($exportData) {
-            $handle = fopen('php://output', 'w');
-            fputcsv($handle, array_keys($exportData->first()));
+            $xml = '<?xml version="1.0" encoding="UTF-8"?>';
+            $xml .= '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">';
+            $xml .= '<Worksheet ss:Name="Sheet1">';
+            $xml .= '<Table>';
 
+            // Add header row
+            $xml .= '<Row>';
+            foreach (array_keys($exportData->first()) as $header) {
+                $xml .= '<Cell><Data ss:Type="String">' . htmlspecialchars($header) . '</Data></Cell>';
+            }
+            $xml .= '</Row>';
+
+            // Add data rows
             foreach ($exportData as $row) {
-                fputcsv($handle, $row);
+                $xml .= '<Row>';
+                foreach ($row as $cell) {
+                    $xml .= '<Cell><Data ss:Type="String">' . htmlspecialchars($cell) . '</Data></Cell>';
+                }
+                $xml .= '</Row>';
             }
 
-            fclose($handle);
+            $xml .= '</Table>';
+            $xml .= '</Worksheet>';
+            $xml .= '</Workbook>';
+
+            echo $xml;
         }, 200, [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="requisitions_export.csv"',
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="requisitions_export.xlsx"',
         ]);
     }
 }
