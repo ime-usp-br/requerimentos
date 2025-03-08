@@ -1,12 +1,6 @@
 import React from 'react';
 import LoginIcon from '@mui/icons-material/Login';
 
-// import '../../../public/css/global.css';
-// import '../../../public/css/pages/home.css';
-// import '../../../public/css/components/footer.css';
-// import '../../../public/css/components/overlay.css';
-// import '../../../public/css/components/table.css';
-
 export default function Home() {
     return (
         <div className='home-body'>

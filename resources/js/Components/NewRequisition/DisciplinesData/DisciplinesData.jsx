@@ -1,5 +1,5 @@
 import React from "react";
-import RequiredDisciplines from "./RequiredDisciplines";
+import RequiredDiscipline from "./RequiredDiscipline";
 import TakenDisciplines from "./TakenDisciplines";
 
 import {
@@ -13,7 +13,7 @@ const DisciplinesData = ({ data, setData, addDiscipline, removeDiscipline }) => 
             <Typography variant={"h6"} component={"legend"}>
                 Disciplinas
             </Typography>
-            <RequiredDisciplines data={data} setData={setData} />
+            <RequiredDiscipline data={data} setData={setData} />
             <TakenDisciplines data={data} setData={setData} />
         </Stack>
     );

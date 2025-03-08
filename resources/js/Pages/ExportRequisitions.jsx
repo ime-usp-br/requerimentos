@@ -1,7 +1,7 @@
 import React from 'react';
-import { Stack, Typography } from '@mui/material';
+import { Stack } from '@mui/material';
 
-import Header from '../Components/RequisitionList/Header';
+import Header from '../Components/Atoms/Header/Header';
 import ExportBody from '../Components/ExportRequisitions/ExportBody';
 
 export default function ExportRequisitions({ roleId, userRoles, options }) {

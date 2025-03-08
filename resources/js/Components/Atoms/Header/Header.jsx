@@ -1,7 +1,7 @@
 import React from 'react'
 import { Stack,Typography } from '@mui/material';
 
-import HeaderActions from './Header/HeaderActions';
+import HeaderActions from './HeaderActions';
 
 export default function Header({ roleId, useRoles, userRoles }) {
     return (

@@ -10,7 +10,7 @@ import DisciplinesData from "../Components/NewRequisition/DisciplinesData/Discip
 import DocumentsUpload from "../Components/NewRequisition/DocumentsUpload";
 import AdditionalInformation from "../Components/NewRequisition/AdditionalInformation";
 
-const NewRequisition = ({user}) => {
+const NewRequisition = ({role}) => {
     useEffect(() => {
         document.title = "Novo requerimento";
     }, []);
@@ -46,44 +46,50 @@ const NewRequisition = ({user}) => {
     };
 
     function submit(e) {
-        console.log("submitted");
         e.preventDefault();
-        post(route("teste.form"));
+        post(route("newRequisition.post"), {
+            onSuccess: () => {
+                console.log("Post was successful");
+            },
+            onError: (errors) => {
+                console.log("Post failed", errors);
+            }
+        });
     }
 
-	return (
-		<Container spacing={2} maxWidth="lg">
-			<Paper elevation={getElevation()} sx={{ margin: {lg: 2}, padding: { lg: 2 } }}>
-				<Header />
+    return (
+        <Container spacing={2} maxWidth="lg">
+            <Paper elevation={getElevation()} sx={{ margin: {lg: 2}, padding: { lg: 2 } }}>
+                <Header />
 
-				<Alert severity="info">
-					Crie um formulário para cada matéria a ser dispensada
-				</Alert>
+                <Alert severity="info">
+                    Crie um formulário para cada matéria a ser dispensada
+                </Alert>
 
-				<form onSubmit={submit} id="requisition-form">
-					<Stack
-						spacing={2}
-						divider={<Divider orientation="horizontal" flexItem />}
-					>
-						{(user == "Aluno") && (<PersonalData data={data} setData={setData} />)}
-						<CourseData data={data} setData={setData} />
-						<DisciplinesData data={data} setData={setData} />
-						<DocumentsUpload data={data} setData={setData} />
-						<AdditionalInformation data={data} setData={setData} />
-					</Stack>
-				</form>
+                <form onSubmit={submit} id="requisition-form">
+                    <Stack
+                        spacing={2}
+                        divider={<Divider orientation="horizontal" flexItem />}
+                    >
+                        {(role != 1) && (<PersonalData data={data} setData={setData} />)}
+                        <CourseData data={data} setData={setData} />
+                        <DisciplinesData data={data} setData={setData} />
+                        <DocumentsUpload data={data} setData={setData} />
+                        <AdditionalInformation data={data} setData={setData} />
+                    </Stack>
+                </form>
 
-				<Stack direction="row" spacing={2} justifyContent="space-between" sx={{ marginTop: 2 }}>
-					<Button variant="contained" color="primary" href="{{ route('sg.list') }}">
-						Voltar
-					</Button>
-					<Button variant="contained" color="primary" type="submit" form="requisition-form">
-						Encaminhar para análise
-					</Button>
-				</Stack>
-			</Paper>
-		</Container>
-	);
+                <Stack direction="row" spacing={2} justifyContent="space-between" sx={{ marginTop: 2 }}>
+                    <Button variant="contained" color="primary" onClick={() => window.history.back()}>
+                        Voltar
+                    </Button>
+                    <Button variant="contained" color="primary" type="submit" form="requisition-form" onClick={submit}>
+                        Encaminhar para análise
+                    </Button>
+                </Stack>
+            </Paper>
+        </Container>
+    );
 };
 
 export default NewRequisition;

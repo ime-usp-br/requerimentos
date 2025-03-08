@@ -153,23 +153,23 @@ const TakenDisciplines = ({ data, setData}) => {
                     return disciplineFields;
                 })()}
             </Stack>
-            <Stack direction="row" spacing={1.5}>
+            <Stack direction="row" spacing={1.5} justifyContent="flex-start">
                 {data.takenDiscNumber > 1 && (
                     <Button
-                        fullWidth
                         size="small"
                         color="error"
                         variant="contained"
                         onClick={handleRemoveDiscipline}
+                        sx={{ maxWidth: 200 }}
                     >
                         Remover disciplina
                     </Button>
                 )}
                 <Button
-                    fullWidth
                     size="small"
                     variant="contained"
                     onClick={handleAddDiscipline}
+                    sx={{ maxWidth: 200 }}
                 >
                     Adicionar disciplina
                 </Button>

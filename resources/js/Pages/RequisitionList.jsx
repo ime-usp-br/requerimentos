@@ -1,7 +1,7 @@
 import React from 'react';
 import { Stack } from '@mui/material';
 
-import Header from '../Components/RequisitionList/Header';
+import Header from '../Components/Atoms/Header/Header';
 import RequisitionListBody from '../Components/RequisitionList/RequisitionListBody';
 
 export default function RequisitionList({ requisitions, 
