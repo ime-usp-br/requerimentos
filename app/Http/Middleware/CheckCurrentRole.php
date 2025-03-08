@@ -26,6 +26,6 @@ class CheckCurrentRole
             }
         }
         
-        abort(404);
+        abort(403);
     }
 }

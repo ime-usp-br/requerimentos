@@ -2,74 +2,80 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\RoleName;
 use App\Enums\RoleId;
-use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Department;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
     public function addRole(Request $request) {
-
-        $inputArray = [
+        $validationRules = [
             'nusp' => 'required | numeric | integer',
             'role' => 'required',
-            'department' => 'required'
-        ];
-
-        $data = $request->validate($inputArray);
-
-        $user = User::firstOrCreate(['codpes' => $data['nusp']], ['codpes' => $data['nusp'], 'current_role_id' => 1]);
+            'department' => 'required_if:role,department'
+        ];        
+        $data = $request->validate($validationRules);
         
-        if ($data['role'] === 'Department') {
-            $department = $data['department'];
-            
-            if ($department === 'MAC') {
-                $user->assignRole(RoleName::MAC_SECRETARY);
-            } elseif ($department === 'MAT') {
-                $user->assignRole(RoleName::MAT_SECRETARY);
-            } elseif ($department === 'MAE') {
-                $user->assignRole(RoleName::MAE_SECRETARY);
-            } elseif ($department === 'MAP') {
-                $user->assignRole(RoleName::MAP_SECRETARY);
-            } else {
-                $user->assignRole(RoleName::VRT_SECRETARY);
-            }
-        } else {
-            $user->assignRole($data['role']);
+        if ($data['role'] === 'Serviço de Graduação' && !(Auth::user()->current_role_id === RoleId::SG)) {
+            return response()->json(['error' => 'Unauthorized'], 403);
         }
-
+        
+        $targetUser = User::firstOrCreate(['codpes' => $data['nusp']], ['codpes' => $data['nusp'], 'current_role_id' => 1]);
+        $targetUser->assignRole($data['role']);
+        
+        if ($data['role'] === 'Secretaria') {
+            $department = Department::where('code', $data['department'])->first();
+            if ($department) {
+                $targetUser->departments()->syncWithoutDetaching([$department->id]);
+            }
+        }
         return back();
     }
 
     public function removeRole(Request $request) {
-        $nusp = request('nusp');
-        $role = request('role');
-        $user = User::where('codpes', $nusp)->first();
-        $user->removeRole($role);
+        $validationRules = [
+            'nusp' => 'required | numeric | integer',
+            'role' => 'required',
+            'department' => 'required_if:role,department'
+        ];        
+        $data = $request->validate($validationRules);
+
+        if ($data['role'] === 'Serviço de Graduação' && !(Auth::user()->current_role_id === RoleId::SG)) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        
+        $user = User::where('codpes', $data['nusp'])->first();
+        $user->removeRole($data['role']);
+        
+        if ($data['role'] === 'Secretaria') {
+            $departmentCode = $data['department'];
+            $department = Department::where('code', $departmentCode)->first();
+            if ($department) {
+                $user->departments()->detach($department->id);
+            }
+        }
 
         return response()->noContent();
     }
 
     public function switchRole(Request $request) {
+        $validationRules = [
+            'role-switch' => 'required|exists:roles,id'
+        ];        
+        $data = $request->validate($validationRules);
+
         $user = Auth::user();
-        $user->current_role_id = (int) $request['role-switch'];
+        $newRoleId = (int) $data['role-switch'];
+
+        if (!$user->roles->contains('id', $newRoleId)) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $user->current_role_id = $newRoleId;
         $user->save();
         
-        $rolesRedirects = [[RoleId::REVIEWER, 'reviewer.list'],
-                           [RoleId::SG, 'sg.list'],
-                           [RoleId::MAC_SECRETARY, 'department.list', 'mac'],
-                           [RoleId::MAT_SECRETARY, 'department.list', 'mat'],
-                           [RoleId::MAE_SECRETARY, 'department.list', 'mae'],
-                           [RoleId::MAP_SECRETARY, 'department.list', 'map'],
-                           [RoleId::VRT_SECRETARY, 'department.list', 'virtual']];
-        
-        foreach ($rolesRedirects as $roleRedirect) {
-            if ($user->current_role_id === $roleRedirect[0]) {
-                return redirect()->route($roleRedirect[1], ['departmentName' => $roleRedirect[2] ?? NULL]);
-            }
-        }
+        return redirect()->back();
     }
 }

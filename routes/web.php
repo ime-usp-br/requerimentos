@@ -95,11 +95,7 @@ Route::middleware('auth')->group(function() {
 
     });
 
-    Route::prefix('departamento')->middleware(CheckCurrentRole::class . ":" . RoleName::MAC_SECRETARY . 
-                                                  ',' . RoleName::MAT_SECRETARY . 
-                                                  ',' . RoleName::MAE_SECRETARY . 
-                                                  ',' . RoleName::MAP_SECRETARY .
-                                                  ',' . RoleName::VRT_SECRETARY)->group(function () {
+    Route::prefix('departamento')->middleware(CheckCurrentRole::class . ":" .RoleName::SECRETARY)->group(function () {
     // Route::prefix('departamento')->group(function () {
         Route::get('/{departmentName}/lista', [DepartmentController::class, 'list'])->name('department.list');
 
@@ -121,23 +117,21 @@ Route::middleware('auth')->group(function() {
         Route::post('/copiar/{requisitionId}', [ReviewController::class, 'copy'])->name('reviewer.copy');
     });
     // });
+
+    Route::group(['middleware' => CheckCurrentRole::class . ":" . RoleName::SG . 
+    ',' . RoleName::SECRETARY], function () {
+        Route::post('/dar-papel', [RoleController::class, 'addRole'])->name('role.add');
+        Route::post('/remover-papel', [RoleController::class, 'removeRole'])->name('role.remove');
+    });
     
-    Route::post('/dar-papel', [RoleController::class, 'addRole'])->name('role.add');
+    Route::post('/trocar-papel', [RoleController::class, 'switchRole'])->name('role.switch');
     
     Route::group(['middleware' => CheckCurrentRole::class . ":" . RoleName::SG . 
-                                      ',' . RoleName::REVIEWER .
-                                      ',' . RoleName::MAC_SECRETARY . 
-                                      ',' . RoleName::MAT_SECRETARY . 
-                                      ',' . RoleName::MAE_SECRETARY . 
-                                      ',' . RoleName::MAP_SECRETARY .
-                                      ',' . RoleName::VRT_SECRETARY], function () {
+    ',' . RoleName::REVIEWER .
+    ',' . RoleName::SECRETARY], function () {
         // Cuidado!! Da forma como isso está construído, qualquer pessoa dentre essas roles, 
         // se agir de maneira maliciosa consegue assumir qualquer outro papel.
         // É necessário fazer ajustes de segurança em RoleController->switchRole
-        Route::post('/trocar-papel', [RoleController::class, 'switchRole'])->name('role.switch');
-        
-        
-        Route::post('/remover-papel', [RoleController::class, 'removeRole'])->name('role.remove');
 
         Route::get('/escolher-parecerista/{requisitionId}', [ReviewController::class, 'reviewerPick'])->name('reviewer.reviewerPick');
         

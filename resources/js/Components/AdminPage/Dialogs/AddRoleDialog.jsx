@@ -70,11 +70,11 @@ const AddRoleDialog = ({ open, handleClose }) => {
 							>
 								<FormControlLabel value="Parecerista" control={<Radio />} label="Parecerista" />
 								<FormControlLabel value="Serviço de Graduação" control={<Radio />} label="Serviço de Graduação" />
-								<FormControlLabel value="Department" control={<Radio />} label="Secretaria de Departamento" />
+								<FormControlLabel value="Secretaria" control={<Radio />} label="Secretaria de Departamento" />
 							</RadioGroup>
 						</FormControl>
-						<Collapse in={data.role === 'Department'}>
-							<FormControl component="fieldset" margin="dense" required={data.role === 'Department'}>
+						<Collapse in={data.role === 'Secretaria'}>
+							<FormControl component="fieldset" margin="dense" required={data.role === 'department'}>
 								<FormLabel component="legend">Departamento</FormLabel>
 								<RadioGroup
 									aria-label="department"

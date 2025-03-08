@@ -21,11 +21,7 @@ class RoleAndPermissionSeeder extends Seeder
             RoleId::STUDENT => RoleName::STUDENT,
             RoleId::SG => RoleName::SG,
             RoleId::REVIEWER => RoleName::REVIEWER,
-            RoleId::MAC_SECRETARY => RoleName::MAC_SECRETARY,
-            RoleId::MAE_SECRETARY => RoleName::MAE_SECRETARY,
-            RoleId::MAP_SECRETARY => RoleName::MAP_SECRETARY,
-            RoleId::MAT_SECRETARY => RoleName::MAT_SECRETARY,
-            RoleId::VRT_SECRETARY => RoleName::VRT_SECRETARY,
+            RoleId::SECRETARY => RoleName::SECRETARY,
         ];
 
         foreach ($roles as $roleId => $roleName) {
