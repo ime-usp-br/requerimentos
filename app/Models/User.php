@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Models\Role;
+use App\Models\Department;
+use App\Enums\RoleId;
 
 class User extends Authenticatable
 {
@@ -52,5 +54,16 @@ class User extends Authenticatable
 
     public function currentRole() {
         return $this->belongsTo(Role::class, 'current_role_id');
+    }
+
+    public function departments()
+    {
+        return $this->belongsToMany(Department::class, 'user_departments');
+    }
+
+    public function isSecretaryOf($departmentCode)
+    {
+        return $this->role_id === RoleId::SECRETARY && 
+               $this->departments()->where('code', $departmentCode)->exists();
     }
 }
