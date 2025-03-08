@@ -2,22 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Event;
+use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Enums\EventType;
-use App\Models\Document;
 use App\Enums\DocumentType;
+use App\Models\Event;
+use App\Models\Document;
 use App\Models\Requisition;
 use App\Models\TakenDisciplines;
-use Illuminate\Support\Facades\DB;
 use App\Models\RequisitionsVersion;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
 use App\Models\TakenDisciplinesVersion;
 use App\Models\RequisitionsPeriod;
-use Illuminate\Support\Facades\Session;
 use App\Http\Requests\RequisitionUpdateRequest;
 use App\Http\Requests\RequisitionCreationRequest;
-use Inertia\Inertia;
 
 class StudentController extends Controller
 {
@@ -157,7 +155,6 @@ class StudentController extends Controller
             $event->save();
         });
         
-
         return redirect()
                ->route('student.newRequisition')
                ->with('success', 
