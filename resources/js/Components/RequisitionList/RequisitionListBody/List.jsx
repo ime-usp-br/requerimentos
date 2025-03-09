@@ -36,7 +36,7 @@ export default function List({ requisitions, selectedColumns }) {
             },
         },
         renderRowActions: ({ row }) => (
-            <Link href={route('student.show', { requisitionId: row.original.id })} underline='never' color='textDisabled'>
+            <Link href={route('showRequisition', { requisitionId: row.original.id })} underline='never' color='textDisabled'>
                 <VisibilityIcon />
             </Link>
         ),

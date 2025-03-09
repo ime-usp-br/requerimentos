@@ -10,7 +10,7 @@ import DisciplinesData from "../Components/NewRequisition/DisciplinesData/Discip
 import DocumentsUpload from "../Components/NewRequisition/DocumentsUpload";
 import AdditionalInformation from "../Components/NewRequisition/AdditionalInformation";
 
-const NewRequisition = ({role}) => {
+const NewRequisition = ({ isStudent }) => {
     useEffect(() => {
         document.title = "Novo requerimento";
     }, []);
@@ -30,11 +30,12 @@ const NewRequisition = ({role}) => {
         takenDiscYears: [""],
         takenDiscGrades: [""],
         takenDiscSemesters: [""],
-        takenDiscNumber: 1,
+        takenDiscCount: 1,
         takenDiscRecord: "",
         courseRecord: "",
         takenDiscSyllabus: "",
         requestedDiscSyllabus: "",
+        observations: "",
     });
 
     const theme = useTheme();
@@ -53,6 +54,7 @@ const NewRequisition = ({role}) => {
             },
             onError: (errors) => {
                 console.log("Post failed", errors);
+                console.log("data:\n", data);
             }
         });
     }
@@ -71,7 +73,7 @@ const NewRequisition = ({role}) => {
                         spacing={2}
                         divider={<Divider orientation="horizontal" flexItem />}
                     >
-                        {(role != 1) && (<PersonalData data={data} setData={setData} />)}
+                        {(!isStudent) && (<PersonalData data={data} setData={setData} />)}
                         <CourseData data={data} setData={setData} />
                         <DisciplinesData data={data} setData={setData} />
                         <DocumentsUpload data={data} setData={setData} />

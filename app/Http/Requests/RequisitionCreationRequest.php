@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
+use App\Enums\RoleId;
 
 class RequisitionCreationRequest extends FormRequest
 {
@@ -25,42 +27,35 @@ class RequisitionCreationRequest extends FormRequest
     {
         $rules = [
             'course' => 'required|max:255',
-            'requested-disc-name' => 'required|max:255',
-            'requested-disc-type' => 'required',
-            'requested-disc-code' => 'required|max:255',
-            // essas regras de validação dos arquivos tem que ser colocadas nessa ordem
-            // (com o mimes:pdf no final), senão da ruim 
-            // limite de tamanho imposto pelo servidor do IME
-            'taken-disc-record' => 'required|file|max:150|mimes:pdf',
-            'course-record' => 'required|file|max:150|mimes:pdf',
-            'taken-disc-syllabus' => 'required|file|max:150|mimes:pdf',
-            'requested-disc-syllabus' => 'required|file|max:150|mimes:pdf',
-            'disc-department' => 'required'
+            'requestedDiscName' => 'required|max:255',
+            'requestedDiscType' => 'required',
+            'requestedDiscCode' => 'required|max:255',
+            'requestedDiscDepartment' => 'required|max:255',
+            'takenDiscRecord' => 'required|file|max:512|mimes:pdf',
+            'courseRecord' => 'required|file|max:512|mimes:pdf',
+            'takenDiscSyllabus' => 'required|file|max:512|mimes:pdf',
+            'requestedDiscSyllabus' => 'required|file|max:512|mimes:pdf',
+            'takenDiscCount' => 'required|numeric|integer',
+            'observations' => 'nullable',
         ];
         
-        $routeName = $this->route()->getName();
+        if (Auth::user()->current_role_id != RoleId::STUDENT) {
 
-        if ($routeName === 'sg.create') {
-
-            $sgSpecificRules = [
-                'name' => 'required|max:255',
-                'email' => 'required|max:255|email ',
-                'nusp' => 'required|numeric|integer'
-            ];
-
-            $rules = $rules + $sgSpecificRules;
+            $rules['name'] = 'required|max:255';
+            $rules['email'] = 'required|max:255|email ';
+            $rules['nusp'] = 'required|numeric|integer';
         }
 
         $takenDiscCount = $this->input('takenDiscCount');
 
-        for ($i = 1; $i <= $takenDiscCount; $i++) {
-            $rules["disc$i-name"] = 'required|max:255';
-            $rules["disc$i-code"] = 'max:255';
-            $rules["disc$i-year"] = 'required|numeric|integer|digits: 4';
-            $rules["disc$i-grade"] = 'required|numeric';
-            $rules["disc$i-semester"] = 'required';
-            $rules["disc$i-institution"] = 'required|max:255';
-        }  
+        for($i = 0; $i < $takenDiscCount; $i++) {
+            $rules["takenDiscNames.$i"] = 'required|max:255';
+            $rules["takenDiscCodes.$i"] = 'max:255';
+            $rules["takenDiscYears.$i"] = 'required|numeric|integer|digits:4';
+            $rules["takenDiscGrades.$i"] = 'required';
+            $rules["takenDiscSemesters.$i"] = 'required';
+            $rules["takenDiscInstitutions.$i"] = 'required|max:255';
+        }
 
         return $rules;
     }

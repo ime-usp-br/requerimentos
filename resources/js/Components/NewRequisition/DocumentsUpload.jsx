@@ -24,7 +24,7 @@ const DocumentsUpload = ({data, setData}) => {
             </Alert>
 
             <Box>
-                <Typography variant={"subtitle1"}> Histórico escolar da instituição de origem (PDF, max 150KB)</Typography>
+                <Typography variant={"subtitle1"}> Histórico escolar da instituição de origem (PDF, max 512KB)</Typography>
                 <Stack direction={{ sm: "row"}} spacing={{ sm: 2}} sx={{alignItems: "center"}}>
                     <Button
                         component="label"
@@ -46,7 +46,7 @@ const DocumentsUpload = ({data, setData}) => {
             </Box>
 
             <Box>
-                <Typography variant={"subtitle1"}> Histórico escolar do curso atual (máx. 150KB)</Typography>
+                <Typography variant={"subtitle1"}> Histórico escolar do curso atual (máx. 512KB)</Typography>
                 <Stack direction={{ sm: "row"}} spacing={{ sm: 2}} sx={{alignItems: "center"}}>
                     <Button
                         component="label"
@@ -68,7 +68,7 @@ const DocumentsUpload = ({data, setData}) => {
             </Box>
 
             <Box>
-                <Typography variant={"subtitle1"}> Ementas das disciplinas cursadas (máx. 150KB)</Typography>
+                <Typography variant={"subtitle1"}> Ementas das disciplinas cursadas (máx. 512KB)</Typography>
                 <Stack direction={{ sm: "row"}} spacing={{ sm: 2}} sx={{alignItems: "center"}}>
                     <Button
                         component="label"
@@ -90,7 +90,7 @@ const DocumentsUpload = ({data, setData}) => {
             </Box>
 
             <Box>
-                <Typography variant={"subtitle1"}> Ementa da disciplina a ser dispensada (máx. 150KB)</Typography>
+                <Typography variant={"subtitle1"}> Ementa da disciplina a ser dispensada (máx. 512KB)</Typography>
                 <Stack direction={{ sm: "row"}} spacing={{ sm: 2}} sx={{alignItems: "center"}}>
                     <Button
                         component="label"

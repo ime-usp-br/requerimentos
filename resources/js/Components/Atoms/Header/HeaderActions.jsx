@@ -45,7 +45,7 @@ export default function HeaderActions({ roleId, userRoles }) {
                 variant="contained" 
                 size="large"
                 color="primary" 
-                href={'/'}
+                href={route('logout')}
             >
                 Sair
             </Button>

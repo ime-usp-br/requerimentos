@@ -13,6 +13,7 @@ const AdditionalInformation = ({ data, setData }) => {
                 variant="outlined"
                 fullWidth
                 value={data.observations}
+                onChange={(e) => setData("observations", e.target.value)}
                 label="Adicione aqui informações adicionais necessárias."
             />
         </Stack>

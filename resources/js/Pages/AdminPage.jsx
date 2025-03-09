@@ -39,7 +39,7 @@ const AdminPage = ({ users = fakeUsers, requisition_period_status = false }) => 
         <Stack spacing={2} sx={{alignItems: "center"}}>
             <header>
                 <Typography component="h1" variant="h4">Administração do sistema</Typography>
-                <Button variant="contained" href={route('sg.list')}>Voltar</Button>
+                <Button variant="contained" href={route('list')}>Voltar</Button>
             </header>
             <AddRoleDialog open={addRoleOpen} handleClose={handleCloseAddRole}/>
             <RequisitionsPeriodDialog requisitionSubmissionIsOpen={false} requisitionEditionIsOpen={true} open={requisitionPeriodOpen} handleClose={handleCloseRequisitionPeriod}/>
