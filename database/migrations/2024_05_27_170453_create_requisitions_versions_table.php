@@ -32,6 +32,11 @@ class CreateRequisitionsVersionsTable extends Migration
             $table->enum('result', ['Sem resultado', 'Inconsistência nas informações', 'Deferido', 'Indeferido']);
             $table->text('result_text')->nullable();
             $table->unsignedBigInteger('version');
+            $table->unsignedBigInteger('taken_disciplines_version');
+            $table->unsignedBigInteger('taken_disc_record_version');
+            $table->unsignedBigInteger('course_record_version');
+            $table->unsignedBigInteger('taken_disc_syllabus_version');
+            $table->unsignedBigInteger('requested_disc_syllabus_version');
         });
     }
 

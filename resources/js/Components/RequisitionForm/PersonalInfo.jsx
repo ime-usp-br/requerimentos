@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
-import { styled } from "styled-components";
 import { Stack, TextField, Typography } from "@mui/material";
 
-const PersonalData = ({ data, setData }) => {
+const PersonalData = ({ data, setData, isUpdate }) => {
     return (
         <Stack spacing={1.5}>
             <Typography variant={"h6"} component={"legend"}>Dados pessoais</Typography>
@@ -10,8 +9,9 @@ const PersonalData = ({ data, setData }) => {
                 size="small"
                 label="Nome"
                 required
-                value={data.name}
-                onChange={(e) => setData("name", e.target.value)}
+                value={data.student_name}
+                onChange={(e) => setData("student_name", e.target.value)}
+                disabled={isUpdate}
             >
                 Nome completo
             </TextField>
@@ -22,6 +22,7 @@ const PersonalData = ({ data, setData }) => {
                 required
                 value={data.email}
                 onChange={(e) => setData("email", e.target.value)}
+                disabled={isUpdate}
             >
                 Email
             </TextField>
@@ -30,8 +31,9 @@ const PersonalData = ({ data, setData }) => {
                 size="small"
                 label="Número USP"
                 required
-                value={data.nusp}
-                onChange={(e) => setData("nusp", e.target.value)}
+                value={data.student_nusp}
+                onChange={(e) => setData("student_nusp", e.target.value)}
+                disabled={isUpdate}
             >
                 Número USP
             </TextField>

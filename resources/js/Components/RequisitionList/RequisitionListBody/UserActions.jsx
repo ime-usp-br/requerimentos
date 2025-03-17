@@ -44,7 +44,7 @@ export default function UserActions({ roleId, requisitionPeriodStatus }) {
                     variant="contained" 
                     size="large"
                     color="primary" 
-                    href={route('pages.requisitions.filters')}
+                    href="#" //{route('pages.requisitions.filters')}
                 >
                     Exportar
                 </Button>

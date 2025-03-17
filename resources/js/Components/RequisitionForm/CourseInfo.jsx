@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { Stack } from "@mui/system";
 
-const CourseData = ({ data, setData }) => {
+const CourseData = ({ data, setData, isUpdate }) => {
     const courses = [
         "Bacharelado em Ciência da Computação",
         "Bacharelado em Estatística",
@@ -31,11 +31,13 @@ const CourseData = ({ data, setData }) => {
                     value={data.course}
                     required
                     onChange={(event, newValue) => setData("course", newValue)}
+                    disabled={isUpdate}
                     renderInput={(params) => (
                         <TextField
                             {...params}
                             label="Curso Atual"
                             variant="outlined"
+                            disabled={isUpdate}
                         />
                     )}
                 />

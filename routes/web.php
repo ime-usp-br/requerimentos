@@ -16,6 +16,7 @@ use App\Http\Controllers\RoleController;
 // use App\Http\Controllers\StudentController;
 // use App\Http\Controllers\DepartmentController;
 use App\Http\Middleware\CheckCurrentRole;
+
 // use App\Http\Middleware\CheckRequisitionsPeriod;
 
 Route::get('/', function () {
@@ -36,11 +37,14 @@ Route::get('/phpinfo', function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/lista', [ListController::class, 'list'])->name('list');
+    
     Route::get('/novo-requerimento', [RequisitionController::class, 'newRequisitionGet'])->name('newRequisition.get');
     Route::post('/novo-requerimento', [RequisitionController::class, 'newRequisitionPost'])->name('newRequisition.post');
+    Route::get('/atualizar-requerimento/{requisitionId}', [RequisitionController::class, 'updateRequisitionGet'])->name('updateRequisition.get');
+    Route::post('/atualizar-requerimento', [RequisitionController::class, 'updateRequisitionPost'])->name('updateRequisition.post');
+
     Route::get('/detalhe/{requisitionId}', [RequisitionController::class, 'showRequisition'])->name('showRequisition');
 
-        
     Route::post('/trocar-papel', [RoleController::class, 'switchRole'])->name('role.switch');
     
     Route::group(['middleware' => CheckCurrentRole::class . ":" . RoleName::SG .

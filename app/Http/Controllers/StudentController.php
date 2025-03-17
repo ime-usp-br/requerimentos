@@ -202,7 +202,7 @@ class StudentController extends Controller
             
     //         // logando o evento do retorno do estudante
     //         $event = new Event;
-    //         $event->type = EventType::RESEND_BY_STUDENT;
+    //         $event->type = EventType::RESENT_BY_STUDENT;
     //         $event->requisition_id = $requisitionId;
     //         $event->author_name = Auth::user()->name; 
     //         $event->author_nusp = Auth::user()->codpes;
@@ -231,8 +231,8 @@ class StudentController extends Controller
 
     //         if (!$someFieldWasChanged) {
 
-    //             $reqToBeUpdated->situation = EventType::RESEND_BY_STUDENT;
-    //             $reqToBeUpdated->internal_status = EventType::RESEND_BY_STUDENT;
+    //             $reqToBeUpdated->situation = EventType::RESENT_BY_STUDENT;
+    //             $reqToBeUpdated->internal_status = EventType::RESENT_BY_STUDENT;
     //             $reqToBeUpdated->save();
 
     //             $event->version = $reqToBeUpdated->latest_version;
@@ -262,8 +262,8 @@ class StudentController extends Controller
     //         $reqToBeUpdated->fill($requisitionData);
 
     //         $reqToBeUpdated->observations = request('observations');
-    //         $reqToBeUpdated->situation = EventType::RESEND_BY_STUDENT;
-    //         $reqToBeUpdated->internal_status = EventType::RESEND_BY_STUDENT;
+    //         $reqToBeUpdated->situation = EventType::RESENT_BY_STUDENT;
+    //         $reqToBeUpdated->internal_status = EventType::RESENT_BY_STUDENT;
     //         $reqToBeUpdated->result = 'Sem resultado';
     //         $reqToBeUpdated->latest_version = $reqToBeUpdated->latest_version + 1;
     //         $reqToBeUpdated->save();

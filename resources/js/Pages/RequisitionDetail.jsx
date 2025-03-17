@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Paper, Typography, Stack, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useTheme, useMediaQuery  } from '@mui/material';
 
-const RequisitionDetail = ({ req, takenDiscs, takenDiscsRecords, currentCourseRecords, takenDiscSyllabi, requestedDiscSyllabi }) => {
+const RequisitionDetail = ({ requisition, takenDiscs, takenDiscsRecords, currentCourseRecords, takenDiscSyllabi, requestedDiscSyllabi }) => {
     // Está duplicado
     const theme = useTheme();
     const isLg = useMediaQuery(theme.breakpoints.up('lg'));
@@ -20,22 +20,22 @@ const RequisitionDetail = ({ req, takenDiscs, takenDiscsRecords, currentCourseRe
                 <Stack spacing={3} divider={<Divider orientation="horizontal" flexItem />}>
                     <Stack spacing={1}>
                         <Typography variant="h6" sx={{ fontWeight: 600 }}>Dados Pessoais</Typography>
-                        <Typography variant="body2"><strong>Nome:</strong> {req.student_name}</Typography>
-                        <Typography variant="body2"><strong>Email:</strong> {req.email}</Typography>
-                        <Typography variant="body2"><strong>Número USP:</strong> {req.student_nusp}</Typography>
+                        <Typography variant="body2"><strong>Nome:</strong> {requisition.student_name}</Typography>
+                        <Typography variant="body2"><strong>Email:</strong> {requisition.email}</Typography>
+                        <Typography variant="body2"><strong>Número USP:</strong> {requisition.student_nusp}</Typography>
                     </Stack>
 
                     <Stack spacing={1}>
                         <Typography variant="h6" sx={{ fontWeight: 600 }}>Curso Atual</Typography>
-                        <Typography variant="body2">{req.course}</Typography>
+                        <Typography variant="body2">{requisition.course}</Typography>
                     </Stack>
 
                     <Stack spacing={1}>
                         <Typography variant="h6" sx={{ fontWeight: 600 }}>Disciplina Requerida</Typography>
-                        <Typography variant="body2"><strong>Código:</strong> {req.requested_disc_code}</Typography>
-                        <Typography variant="body2"><strong>Nome:</strong> {req.requested_disc}</Typography>
-                        <Typography variant="body2"><strong>Tipo:</strong> {req.requested_disc_type}</Typography>
-                        <Typography variant="body2"><strong>Departamento:</strong> {req.department}</Typography>
+                        <Typography variant="body2"><strong>Código:</strong> {requisition.requested_disc_code}</Typography>
+                        <Typography variant="body2"><strong>Nome:</strong> {requisition.requested_disc}</Typography>
+                        <Typography variant="body2"><strong>Tipo:</strong> {requisition.requested_disc_type}</Typography>
+                        <Typography variant="body2"><strong>Departamento:</strong> {requisition.department}</Typography>
                     </Stack>
 
                     <Stack spacing={1}>
@@ -78,7 +78,7 @@ const RequisitionDetail = ({ req, takenDiscs, takenDiscsRecords, currentCourseRe
 
                     <Stack spacing={1}>
                         <Typography variant="h6" sx={{ fontWeight: 600 }}>Observações</Typography>
-                        <Typography variant="body2">{req.observations}</Typography>
+                        <Typography variant="body2">{requisition.observations}</Typography>
                     </Stack>
                 </Stack>
             </Paper>

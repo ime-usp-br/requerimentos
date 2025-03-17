@@ -36,14 +36,13 @@ class RequisitionCreationRequest extends FormRequest
             'takenDiscSyllabus' => 'required|file|max:512|mimes:pdf',
             'requestedDiscSyllabus' => 'required|file|max:512|mimes:pdf',
             'takenDiscCount' => 'required|numeric|integer',
-            'observations' => 'nullable',
+            'observations' => 'string',
         ];
         
         if (Auth::user()->current_role_id != RoleId::STUDENT) {
-
-            $rules['name'] = 'required|max:255';
+            $rules['student_name'] = 'required|max:255';
             $rules['email'] = 'required|max:255|email ';
-            $rules['nusp'] = 'required|numeric|integer';
+            $rules['student_nusp'] = 'required|numeric|integer';
         }
 
         $takenDiscCount = $this->input('takenDiscCount');
@@ -58,5 +57,15 @@ class RequisitionCreationRequest extends FormRequest
         }
 
         return $rules;
+    }
+
+    /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'observations' => $this->observations ?? '',
+        ]);
     }
 }
