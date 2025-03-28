@@ -78,7 +78,7 @@ buttonComponentList.export = () => (
         sx={buttonSx} 
         size="large"
         color="primary" 
-        href={route('pages.requisitions.filters')}
+        href={route('exportRequisitionsGet')}
         startIcon={<FileDownloadIcon />}
     >
         Exportar

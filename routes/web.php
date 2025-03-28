@@ -55,7 +55,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/remover-papel', [RoleController::class, 'removeRole'])->name('role.remove');
         Route::get('/escolher-parecerista/{requisitionId}', [ReviewController::class, 'reviewerPick'])->name('reviewer.reviewerPick');
         Route::post('/cadastrado/{requisitionId}', [RequisitionController::class, 'registered'])->name('registered');
-        Route::get('/filters', [RequisitionController::class, 'showFilters'])->name('pages.requisitions.filters');
+        Route::get('/exportar-requerimentos', [RequisitionController::class, 'exportRequisitionsGet'])->name('exportRequisitionsGet');
+        Route::post('/exportar-requerimentos', [RequisitionController::class, 'exportRequisitionsPost'])->name('exportRequisitionsPost');
     });
     
     Route::group(['middleware' => CheckCurrentRole::class . ":" . RoleName::SG .

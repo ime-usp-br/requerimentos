@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Stack } from '@mui/material';
 import { DateField, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
-import ComboBox from '../../Atoms/ComboBox';
+import ComboBox from '../Atoms/ComboBox';
 
-export default function Filters({ options, filterRef }) {
+export default function Filters({ options, setData }) {
+
     const comboStyle = {
         width: '100%'
-    }
+    };
 
     return (
         <Stack
@@ -26,7 +27,7 @@ export default function Filters({ options, filterRef }) {
                 defaultValue={options.internal_statusOptions[0]}
                 sx={comboStyle}
                 name='Situação'
-                onChange={(value) => filterRef.current.internal_status = value}
+                onChange={(value) => setData('internal_status', value)}
             />
             <ComboBox
                 options={options.departments}
@@ -34,7 +35,7 @@ export default function Filters({ options, filterRef }) {
                 defaultValue={options.departments[0]}
                 sx={comboStyle}
                 name='Departamento'
-                onChange={(value) => filterRef.current.department = value}
+                onChange={(value) => setData('department', value)}
             />
             <ComboBox
                 options={options.discTypes}
@@ -42,14 +43,14 @@ export default function Filters({ options, filterRef }) {
                 defaultValue={options.discTypes[0]}
                 sx={comboStyle}
                 name='Tipo de Disciplina'
-                onChange={(value) => filterRef.current.requested_disc_type = value}
+                onChange={(value) => setData('requested_disc_type', value)}
             />
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DateField 
                     label="Data Inicial" 
                     size='small' 
                     sx={comboStyle} 
-                    onChange={(value) => filterRef.current.start_date = value['$d'].toISOString().slice(0, 10)}
+                    onChange={(value) => setData('start_date', value['$d'].toISOString().slice(0, 10))}
                     format="DD/MM/YYYY"
                 />
             </LocalizationProvider>
@@ -58,7 +59,7 @@ export default function Filters({ options, filterRef }) {
                     label="Data Final" 
                     size='small'
                     sx={comboStyle} 
-                    onChange={(value) => filterRef.current.end_date = value['$d'].toISOString().slice(0, 10)}
+                    onChange={(value) => setData('end_date', value['$d'].toISOString().slice(0, 10))}
                     format="DD/MM/YYYY"
                 />
             </LocalizationProvider>

@@ -20,6 +20,7 @@ use App\Models\RequisitionsPeriod;
 use App\Models\RequisitionsVersion;
 use App\Http\Requests\RequisitionCreationRequest;
 use App\Http\Requests\RequisitionUpdateRequest;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class RequisitionController extends Controller
 {
@@ -562,6 +563,94 @@ class RequisitionController extends Controller
         });
 
         return response('', 200)->header('Content-Type', 'text/plain');
+    }
+
+    public function exportRequisitionsGet()
+    {
+        $user = Auth::user();
+        $roleId = $user->current_role_id;
+
+        $courses = Requisition::select('course')->distinct()->get();
+        $statuses = Requisition::select('internal_status')->distinct()->get();
+
+        $departments = ['Todos', 'MAC', 'MAE', 'MAT', 'MAP', 'Disciplina de fora do IME'];
+        $discTypes = ['Todos', 'Obrigatória', 'Optativa Eletiva', 'Optativa Livre', 'Extracurricular'];
+        $internal_statusOptions = ['Todos', 'Deferido', 'Indeferido', 'Encaminhado para a Secretaria'];
+
+        $options = compact('courses', 'statuses', 'departments', 'discTypes', 'internal_statusOptions');
+        return Inertia::render('ExportRequisitions', ['label' => "Exportação de requerimentos", 'roleId' => $roleId, 'userRoles' => $user->roles, 'options' => $options]);
+    }
+
+    public function exportRequisitionsPost(Request $request)
+    {
+        $query = Requisition::with(['reviews', 'requisitionsVersions', 'events']);
+
+        if ($request->department !== 'Todos') {
+            $query->where('department', $request->department);
+        }
+
+        if ($request->internal_status !== 'Todos') {
+            $query->where('result', $request->internal_status);
+        }
+
+        if ($request->requested_disc_type !== 'Todos') {
+            $query->where('requested_disc_type', $request->requested_disc_type);
+        }
+
+        if ($request->start_date) {
+            $query->where('created_at', '>=', $request->start_date);
+        }
+
+        if ($request->end_date) {
+            $query->where('created_at', '<=', $request->end_date);
+        }
+
+        $requisitions = $query->get();
+
+        $exportData = $requisitions->map(function ($requisition) {
+            $setToDepartment = $requisition->getRelation('events')->filter(function ($item) {
+                return $item->type == 'Enviado para análise do departamento';
+            })->last();
+
+            $registeredAtJupiter = $requisition->getRelation('events')->filter(function ($item) {
+                return $item->type == 'Aguardando avaliação da CG';
+            })->last();
+
+            $reviewIsEmpty = $requisition->getRelation('reviews')->isEmpty();
+
+            $data = [
+                'Nome' => $requisition->student_name,
+                'Número USP' => $requisition->student_nusp,
+                'Curso' => $requisition->course,
+                'Data de abertura do Requerimento' => $requisition->created_at->format('d-m-Y'),
+                'Disciplina a ser dispensada' => $requisition->requested_disc_code,
+                'Departamento responsável' => $requisition->department,
+                'Situação' => $requisition->internal_status,
+                'Data de encaminhamento ao departamento/unidade' => $setToDepartment != null ? $setToDepartment->created_at->format('d-m-Y') : null,
+                'Parecer' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->reviewer_decision,
+                'Parecerista' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->reviewer_name,
+                'Data do parecer' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->updated_at->format('d-m-Y'),
+                'Data do registro no Júpiter pelo Departamento' => $registeredAtJupiter != null ? $registeredAtJupiter->created_at->format('d-m-Y') : null
+            ];
+
+            return $data;
+        });
+
+        // dd($exportData);
+
+        return new StreamedResponse(function () use ($exportData) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, array_keys($exportData->first()));
+
+            foreach ($exportData as $row) {
+                fputcsv($handle, $row);
+            }
+
+            fclose($handle);
+        }, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="requisitions_export.csv"',
+        ]);
     }
 
 
