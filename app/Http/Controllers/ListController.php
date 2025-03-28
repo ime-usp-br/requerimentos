@@ -47,7 +47,7 @@ class ListController extends Controller
     private function studentList($user) { 
         $selectedColumns = ['id', 'created_at', 'requested_disc', 'situation'];
         $requisitions = Requisition::with('takenDisciplines')->select($selectedColumns)->where('student_nusp', $user->codpes)->get();
-        $selectedActions = [['new_requisition'], ['exit']];
+        $selectedActions = [['new_requisition']];
         return [$requisitions, $selectedColumns, $selectedActions];
     }
 
@@ -61,7 +61,7 @@ class ListController extends Controller
     private function secretaryList($user) { 
         $selectedColumns = ['id', 'created_at', 'requested_disc', 'situation'];
         $requisitions = Requisition::with('takenDisciplines')->select($selectedColumns)->where('student_nusp', $user->codpes)->get();
-        $selectedActions = [['admin'], ['exit']];
+        $selectedActions = [['admin']];
         return [$requisitions, $selectedColumns, $selectedActions];
     }
 
