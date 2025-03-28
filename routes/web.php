@@ -51,6 +51,9 @@ Route::middleware('auth')->group(function () {
     
     Route::group(['middleware' => CheckCurrentRole::class . ":" . RoleName::SG .
                                                             ',' . RoleName::SECRETARY], function () {
+        Route::get('/admin', function () {
+            return Inertia::render('AdminPage');
+        })->name('admin');
         Route::post('/dar-papel', [RoleController::class, 'addRole'])->name('role.add');
         Route::post('/remover-papel', [RoleController::class, 'removeRole'])->name('role.remove');
         Route::get('/escolher-parecerista/{requisitionId}', [ReviewController::class, 'reviewerPick'])->name('reviewer.reviewerPick');

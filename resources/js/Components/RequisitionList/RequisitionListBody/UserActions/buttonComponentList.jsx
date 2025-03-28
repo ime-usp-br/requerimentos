@@ -42,7 +42,7 @@ buttonComponentList.admin = () => (
         sx={buttonSx} 
         size="large"
         color="primary" 
-        href={'/'}
+        href={route('admin')}
         startIcon={<AdminPanelSettingsIcon />}
     >
         Administrar Sistema
