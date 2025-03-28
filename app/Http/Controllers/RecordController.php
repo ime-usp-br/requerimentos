@@ -13,36 +13,47 @@ use Illuminate\Support\Facades\DB;
 use App\Models\RequisitionsVersion;
 use Illuminate\Support\Facades\Auth;
 use App\Models\TakenDisciplinesVersion;
+use Inertia\Inertia;
 
 class RecordController extends Controller
 {
-    // public function requisitionRecord($requisitionId) {
+    public function requisitionRecord($requisitionId) {
+        $user = Auth::user();
+        $roleId = $user->current_role_id;
 
-    //     $selectedColumns = ['created_at', 
-    //                         'type', 
-    //                         'author_name', 
-    //                         'author_nusp', 
-    //                         'id',
-    //                         'message'];
+        $selectedEventColumns = ['created_at', 
+                                 'type', 
+                                 'author_name', 
+                                 'author_nusp', 
+                                 'id',
+                                 'message'];
 
-    //     $events = Event::where('requisition_id', $requisitionId)
-    //                     ->select($selectedColumns)
-    //                     ->get();
+        $events = Event::where('requisition_id', $requisitionId)
+                        ->select($selectedEventColumns)
+                        ->get();
 
-    //     $roleToPreviousRouteMappings = 
-    //     [ RoleId::REVIEWER => route('reviewer.show', ['requisitionId' => $requisitionId]),
-    //       RoleId::SG => route('sg.show', ['requisitionId' => $requisitionId]),
-    //       RoleId::MAC_SECRETARY => route('department.show', ['departmentName' => 'mac', 'requisitionId' => $requisitionId]),
-    //       RoleId::MAE_SECRETARY => route('department.show', ['departmentName' => 'mae', 'requisitionId' => $requisitionId]),
-    //       RoleId::MAT_SECRETARY => route('department.show', ['departmentName' => 'mat', 'requisitionId' => $requisitionId]),
-    //       RoleId::MAP_SECRETARY => route('department.show', ['departmentName' => 'mac', 'requisitionId' => $requisitionId]),
-    //       RoleId::VRT_SECRETARY => route('department.show', ['departmentName' => 'virtual', 'requisitionId' => $requisitionId]),
-    //     ];
+        // $roleToPreviousRouteMappings = [ 
+        //     RoleId::REVIEWER => route('reviewer.show', ['requisitionId' => $requisitionId]),
+        //     RoleId::SG => route('sg.show', ['requisitionId' => $requisitionId]),
+        //     RoleId::MAC_SECRETARY => route('department.show', ['departmentName' => 'mac', 'requisitionId' => $requisitionId]),
+        //     RoleId::MAE_SECRETARY => route('department.show', ['departmentName' => 'mae', 'requisitionId' => $requisitionId]),
+        //     RoleId::MAT_SECRETARY => route('department.show', ['departmentName' => 'mat', 'requisitionId' => $requisitionId]),
+        //     RoleId::MAP_SECRETARY => route('department.show', ['departmentName' => 'mac', 'requisitionId' => $requisitionId]),
+        //     RoleId::VRT_SECRETARY => route('department.show', ['departmentName' => 'virtual', 'requisitionId' => $requisitionId]),
+        // ];
 
-    //     $previousRoute = $roleToPreviousRouteMappings[Auth::user()->current_role_id];
+        // $previousRoute = $roleToPreviousRouteMappings[Auth::user()->current_role_id];
 
-    //     return view('pages.records.requisitionRecord', ['events' => $events, 'previousRoute' => $previousRoute]);
-    // }
+        $selectedColumns = ['type', 'created_at', 'ocurrence_time', 'author_name', 'author_nusp'];
+
+        return Inertia::render('RequisitionList', ['label' => 'Histórico do Requerimento ' . $requisitionId,
+                                                   'requisitions' => $events, 
+                                                   'selectedColumns' => $selectedColumns,
+                                                   'selectedActions' => [],
+                                                   'roleId' => $roleId, 
+                                                   'userRoles' => $user->roles,
+                                                   'detailRouteName' => 'student.show']);
+    }
 
     // public function requisitionVersion($eventId) {
 
@@ -106,6 +117,4 @@ class RecordController extends Controller
     //                 'currentCourseRecords' => $currentCourseRecords, 
     //                 'takenDiscSyllabi' => $takenDiscSyllabi, 
     //                 'requestedDiscSyllabi' => $requestedDiscSyllabi]);
-        
-    // }
 }

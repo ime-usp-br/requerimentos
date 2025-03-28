@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -12,6 +13,7 @@ use App\Enums\DocumentType;
 use App\Models\Document;
 use App\Models\Event;
 use App\Models\Requisition;
+use App\Models\Review;
 use App\Models\TakenDisciplines;
 use App\Models\TakenDisciplinesVersion;
 use App\Models\RequisitionsPeriod;
@@ -57,7 +59,42 @@ class RequisitionController extends Controller
             }
         }
 
-        return Inertia::render('RequisitionDetail', ['requisition' => $requisition, 'takenDiscs' => $requisition->takenDisciplines, 'takenDiscsRecords' => $takenDiscsRecords, 'currentCourseRecords' => $currentCourseRecords, 'takenDiscSyllabi' => $takenDiscSyllabi, 'requestedDiscSyllabi' => $requestedDiscSyllabi]);
+        $roleId = $user->current_role_id;
+        switch ($roleId) {
+            case RoleId::STUDENT:
+                $selectedActions = [];
+                break;
+            case RoleId::SG:
+                $selectedActions = [['send_to_department'], 
+                                    ['send_to_reviewers', 
+                                     'reviews'], 
+                                    ['requisition_history'], 
+                                    ['registered',
+                                     'automatic_requisition']];
+                break;
+            case RoleId::SECRETARY:
+                $selectedActions =  [['send_to_reviewers', 
+                                       'reviews'], 
+                                     ['requisition_history'],
+                                     ['registered']];
+                break;
+            case RoleId::REVIEWER:
+                $selectedActions = [['submit_review']];
+                break;
+        }
+
+
+        return Inertia::render('RequisitionDetail', ['label' => 'Requerimentos', 
+                                                    'roleId' => $roleId,
+                                                    'useActions' => true,
+                                                    'userRoles' => $user->roles,
+                                                    'selectedActions' => $selectedActions,
+                                                    'requisition' => $requisition,
+                                                    'takenDiscs' => $requisition->takenDisciplines,
+                                                    'takenDiscsRecords' => $takenDiscsRecords,
+                                                    'currentCourseRecords' => $currentCourseRecords,
+                                                    'takenDiscSyllabi' => $takenDiscSyllabi,
+                                                    'requestedDiscSyllabi' => $requestedDiscSyllabi]);
     }
 
     public function newRequisitionGet()
@@ -163,21 +200,6 @@ class RequisitionController extends Controller
         }
     }
 
-    private function checkUserUpdatePermission($requisitionId){
-        $requisition = Requisition::find($requisitionId);
-
-        $user = Auth::user();
-
-        if (!$requisition) {
-            abort(404);
-        }
-        if ((!$requisition->editable && $user->current_role_id != RoleID::SG) ||
-            ($user->current_role_id == RoleId::STUDENT && $requisition->student_nusp != $user->codpes)
-        ) {
-            abort(403);
-        }
-    }
-
     public function updateRequisitionGet($requisitionId)
     {
         $this->checkUserUpdatePermission($requisitionId);
@@ -260,6 +282,21 @@ class RequisitionController extends Controller
         } 
         else {
             abort(400, 'No changes were submitted.');
+        }
+    }
+
+    private function checkUserUpdatePermission($requisitionId){
+        $requisition = Requisition::find($requisitionId);
+
+        $user = Auth::user();
+
+        if (!$requisition) {
+            abort(404);
+        }
+        if ((!$requisition->editable && $user->current_role_id != RoleID::SG) ||
+            ($user->current_role_id == RoleId::STUDENT && $requisition->student_nusp != $user->codpes)
+        ) {
+            abort(403);
         }
     }
 
@@ -451,4 +488,81 @@ class RequisitionController extends Controller
         $requisition->latest_version = $requisition->latest_version + 1;
         $requisition->save();
     }
+
+    public function sendToDepartment(Request $request) {
+        $requisition = Requisition::find($request['requisitionId']);
+
+        $event = new Event;
+        $event->type = EventType::SENT_TO_DEPARTMENT;
+        $event->requisition_id = $request['requisitionId'];
+        $event->author_name = Auth::user()->name; 
+        $event->author_nusp = Auth::user()->codpes;
+        $event->version = $requisition->latest_version;  
+        $event->save();
+
+        $requisition->situation = EventType::SENT_TO_DEPARTMENT;
+        $requisition->internal_status = EventType::SENT_TO_DEPARTMENT;
+        $requisition->registered = false;
+        $requisition->save();
+
+        return response('', 200)->header('Content-Type', 'text/plain');
+    }
+
+    public function automaticDeferral(Request $request) {
+        DB::transaction(function () use ($request) {
+            $user = Auth::user();
+            $requisition = Requisition::find($request['requisitionId']);
+            $requisitionId = $request['requisitionId'];
+            $requisition->situation = EventType::RETURNED_BY_REVIEWER;
+            $requisition->internal_status = EventType::RETURNED_BY_REVIEWER;
+            $requisition->registered = false;
+            $requisition->save();
+
+            // Cria um parecer "deferido" e salva
+            $review = new Review;
+            $review->reviewer_name = $user->name;
+            $review->reviewer_nusp = $user->codpes;
+            $review->requisition_id = $requisitionId;
+            $review->reviewer_decision = EventType::ACCEPTED;
+            $review->justification = 'Deferimento automático';
+            $review->latest_version = 0;
+            $review->save();
+
+            // Cria um novo evento para registrar o parecer
+            $event = new Event;
+            $event->type = EventType::RETURNED_BY_REVIEWER;
+            $event->requisition_id = $requisitionId;
+            $event->author_name = $user->name;
+            $event->author_nusp = $user->codpes;
+            $event->version = $requisition->latest_version;
+            $event->save();
+        });        
+
+        return response('', 200)->header('Content-Type', 'text/plain');
+    } 
+
+    public function registered($requisitionId) {
+        DB::transaction(function () use ($requisitionId) {
+            $user = Auth::user();
+
+            $requisition = Requisition::find($requisitionId);
+            $requisition->situation = EventType::REGISTERED;
+            $requisition->registered = true;
+            $requisition->internal_status = "Registrado no Jupiter por " . $user->name;
+            $requisition->save();
+
+            $event = new Event;
+            $event->type = EventType::REGISTERED;
+            $event->requisition_id = $requisitionId;
+            $event->author_name = $user->name;
+            $event->author_nusp = $user->codpes;
+            $event->version = $requisition->latest_version;
+            $event->message = "Registrado no Jupiter por " . $user->name;
+            $event->save();
+        });
+
+        return response('', 200)->header('Content-Type', 'text/plain');
+    }
+
+
 }

@@ -10,11 +10,10 @@ use App\Http\Controllers\LoginController;
 
 // use App\Http\Controllers\SGController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\RecordController;
 // use App\Http\Controllers\GlobalController;
-// use App\Http\Controllers\RecordController;
-// use App\Http\Controllers\ReviewController;
 // use App\Http\Controllers\StudentController;
-// use App\Http\Controllers\DepartmentController;
 use App\Http\Middleware\CheckCurrentRole;
 
 // use App\Http\Middleware\CheckRequisitionsPeriod;
@@ -39,7 +38,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/lista', [ListController::class, 'list'])->name('list');
     
     Route::get('/novo-requerimento', [RequisitionController::class, 'newRequisitionGet'])->name('newRequisition.get');
+        // ->middleware('requisitions.period');
     Route::post('/novo-requerimento', [RequisitionController::class, 'newRequisitionPost'])->name('newRequisition.post');
+        // ->middleware('requisitions.period');
+
     Route::get('/atualizar-requerimento/{requisitionId}', [RequisitionController::class, 'updateRequisitionGet'])->name('updateRequisition.get');
     Route::post('/atualizar-requerimento', [RequisitionController::class, 'updateRequisitionPost'])->name('updateRequisition.post');
 
@@ -48,36 +50,37 @@ Route::middleware('auth')->group(function () {
     Route::post('/trocar-papel', [RoleController::class, 'switchRole'])->name('role.switch');
     
     Route::group(['middleware' => CheckCurrentRole::class . ":" . RoleName::SG .
-        ',' . RoleName::SECRETARY], function () {
+                                                            ',' . RoleName::SECRETARY], function () {
         Route::post('/dar-papel', [RoleController::class, 'addRole'])->name('role.add');
         Route::post('/remover-papel', [RoleController::class, 'removeRole'])->name('role.remove');
+        Route::get('/escolher-parecerista/{requisitionId}', [ReviewController::class, 'reviewerPick'])->name('reviewer.reviewerPick');
+        Route::post('/cadastrado/{requisitionId}', [RequisitionController::class, 'registered'])->name('registered');
+        Route::get('/filters', [RequisitionController::class, 'showFilters'])->name('pages.requisitions.filters');
     });
-
-
-    // ->middleware('requisitions.period');
-
-    // // Route::prefix('aluno')->middleware(CheckCurrentRole::class . ":" . RoleName::STUDENT)->group(function () {
-    // Route::prefix('aluno')->group(function () {
-    //     Route::get('/atualizar/{requisitionId}', [StudentController::class, 'show'])->name('student.edit');
-
-    //     Route::post('/atualizar/{requisitionId}', [StudentController::class, 'update'])->name('student.update');
-    // });
-
+    
+    Route::group(['middleware' => CheckCurrentRole::class . ":" . RoleName::SG .
+    ',' . RoleName::SECRETARY .
+    ',' . RoleName::REVIEWER], function () {
+        Route::get('/pareceres/{requisitionId}', [ReviewController::class, 'reviews'])->name('reviewer.reviews');
+        
+        Route::post('/enviar-requerimento/{requisitionId}', [ReviewController::class, 'createReview'])->name('reviewer.sendToReviewer');
+        
+        Route::get('/historico/requerimento/{requisitionId}', [RecordController::class, 'requisitionRecord'])->name('record.requisition');
+    });
+});
     // // Route::prefix('sg')->middleware(CheckCurrentRole::class . ":" . RoleName::SG)->group(function () {
     // Route::prefix('sg')->group(function () {
-    //     Route::get('/exporta-csv', [RequisitionController::class, 'exportCSV'])->name('export.csv');
 
-    //     Route::post('/atualizar/{requisitionId}', [SGController::class, 'update'])->name('sg.update');
+        // Route::get('/exporta-csv', [RequisitionController::class, 'exportCSV'])->name('export.csv');
 
-    //     Route::post('/remover-papel', [RoleController::class, 'removeRole'])->name('role.remove');
+        // Route::post('/remover-papel', [RoleController::class, 'removeRole'])->name('role.remove');
 
-    //     Route::get('/filters', [RequisitionController::class, 'showFilters'])->name('pages.requisitions.filters');
 
-    //     Route::get('/export', [RequisitionController::class, 'filterAndExport'])->name('pages.requisitions.filterAndExport');
+        // Route::get('/export', [RequisitionController::class, 'filterAndExport'])->name('pages.requisitions.filterAndExport');
 
-    //     Route::get('/admin', [SGController::class, 'admin'])->name('sg.admin');
+        // Route::get('/admin', [SGController::class, 'admin'])->name('sg.admin');
 
-    //     Route::post('/periodo-requerimento', [SGController::class, 'requisition_period_toggle'])->name('sg.requisition_period_toggle');
+        // Route::post('/periodo-requerimento', [SGController::class, 'requisition_period_toggle'])->name('sg.requisition_period_toggle');
 
     // });
 
@@ -121,4 +124,3 @@ Route::middleware('auth')->group(function () {
     //     Route::post('/cadastrado/{requisitionId}', [DepartmentController::class, 'registered'])->name('department.registered');
 
     // });
-});

@@ -10,7 +10,11 @@ export default function ComboBox({ size, options, sx, name, optionGetter, defaul
             defaultValue={defaultValue}
             getOptionLabel={optionGetter}
             sx={sx}
-            renderInput={(params) => <TextField {...params} label={name} />}
+            renderInput={(params) => (
+                <TextField 
+                    {...params}
+                    label={name} 
+                />)}
             onChange={(_, value) => onChange(value)}
         />
     );

@@ -1,18 +1,17 @@
-import columnTypes from "./columnTypes";
-
 class Builder {
-    constructor(selectedColumns) {
+    constructor(reference) {
+        this.reference = reference;
+    }
+
+    build(selectedColumns) {
         this.structure = [];
         for (let attribute of selectedColumns) {
-            if (columnTypes[attribute] == null) {
+            if (this.reference[attribute] == null) {
                 this.structure = null;
                 break;
             }
-            this.structure.push(columnTypes[attribute]);
+            this.structure.push(this.reference[attribute]);
         }
-    }
-
-    getStructure() {
         return this.structure;
     }
 }

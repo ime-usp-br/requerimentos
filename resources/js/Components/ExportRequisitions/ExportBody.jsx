@@ -18,12 +18,12 @@ export default function ExportBody({ options }) {
             spacing={5}
             sx={{
                 alignItems: { xs: 'left', sm: 'baseline' },
-                width: '90%'
+                width: '86%'
             }}
         >
             <Filters options={options} filterRef={filterRef} />
             <Button
-                variant="contained"c
+                variant="contained"
                 size="large"
                 color="primary"
                 href={route('pages.requisitions.filterAndExport', filterRef.current)}

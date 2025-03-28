@@ -46,8 +46,9 @@ export default function Home() {
                     color="primary"
                     href="login"
                     style={{ textAlign: 'center' }}
+                    startIcon={<LoginIcon />}
                 >
-                    <LoginIcon /> Acessar
+                    Acessar
                 </Button>
             </Stack>
 

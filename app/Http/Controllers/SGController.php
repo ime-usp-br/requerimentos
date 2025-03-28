@@ -282,7 +282,7 @@ class SGController extends Controller
 
     //             $reqToBeUpdated->situation = EventType::SENT_TO_DEPARTMENT;
     //             $reqToBeUpdated->internal_status = EventType::SENT_TO_DEPARTMENT;
-    //             $reqToBeUpdated->registered = 'Não';
+    //             $reqToBeUpdated->registered = false;
     //             $reqToBeUpdated->validated = true;
     //         }
 

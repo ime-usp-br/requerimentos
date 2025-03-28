@@ -15,205 +15,143 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
+use App\Models\RequisitionsPeriod;
 use Inertia\Inertia;
 
 class ReviewController extends Controller
 {
-    // public function list()
-    // {
-    //     $user = Auth::user();
-    //     $roleId = $user->current_role_id;
+    public function reviewerPick()
+    {
+        $reviewRole = Role::where('name', RoleName::REVIEWER)->first();
+        $reviewers = $reviewRole->users;
 
-    //     $selectedReviewColumns = ['requisitions.created_at', 'student_name', 'requested_disc', 'reviewer_decision', 'reviews.updated_at', 'requisitions.id'];
+        return $reviewers;
+    }
 
-    //     $requisitions = DB::table('reviews')
-    //         ->join('requisitions', 'reviews.requisition_id', '=', 'requisitions.id')
-    //         ->where('reviewer_nusp', $user->codpes)
-    //         ->where('requisitions.situation', '=', 'Enviado para análise dos pareceristas')
-    //         ->select($selectedReviewColumns)->get();
+    public function createReview(Request $request)
+    {
+        $reviewer_nusps = array_keys($request['reviewer_nusps']);
+        $requisitionId = $request['requisitionId'];
+        DB::transaction(function () use ($reviewer_nusps, $requisitionId) {
+            foreach ($reviewer_nusps as $reviewer_nusp) {
+                // primeiro realiza a busca dos dados do parecerista
+                $reviewRole = Role::where('name', RoleName::REVIEWER)->first();
+                $reviewer = $reviewRole->users->filter(function ($user) use ($reviewer_nusp) {
+                    return $user->codpes == $reviewer_nusp;
+                })->first();
 
-    //     $selectedColumns = ['created_at', 'student_name', 'requested_disc', 'reviewer_decision', 'updated_at', 'id'];
-    //     return Inertia::render('RequisitionList', ['requisitions' => $requisitions, 
-    //                                                'selectedColumns' => $selectedColumns,
-    //                                                'roleId' => $roleId, 
-    //                                                'userRoles' => $user->roles]);
-    // }
+                $rev = Review::where('requisition_id', $requisitionId)
+                    ->where('reviewer_nusp', $reviewer->codpes)
+                    ->first();
 
-    // public function show($requisitionId)
-    // {
+                if (is_null($rev)) {
+                    // Se a Review não existia, cria uma nova
+                    $rev = new Review;
+                    $rev->reviewer_name = $reviewer->name;
+                    $rev->reviewer_nusp = $reviewer->codpes;
+                    $rev->requisition_id = $requisitionId;
+                    $rev->reviewer_decision = 'Sem decisão';
+                    $rev->justification = null;
+                    $rev->latest_version = 0;
+                    $rev->save();
+                }
 
-    //     $user = Auth::user();
+                $user = Auth::user();
 
-    //     $req = Requisition::with('takenDisciplines', 'documents')->find($requisitionId);
+                $req = Requisition::find($requisitionId);
 
-    //     $review = Review::where('reviewer_nusp', $user->codpes)
-    //         ->where('requisition_id', $requisitionId)
-    //         ->first();
+                // $req->situation é o que aparece na linha do requerimento na tabela 
+                // para o aluno (não contém o nome do parecerista)
+                $req->situation = EventType::SENT_TO_REVIEWERS;
+                $req->validated = true;
 
-    //     $documents = $req->documents->sortByDesc('created_at');
+                $event = new Event;
+                $event->type = EventType::SENT_TO_REVIEWERS;
+                $event->requisition_id = $requisitionId;
+                $event->author_name = $user->name;
+                $event->author_nusp = $user->codpes;
+                $event->version = $req->latest_version;
 
-    //     $takenDiscsRecords = [];
-    //     $currentCourseRecords = [];
-    //     $takenDiscSyllabi = [];
-    //     $requestedDiscSyllabi = [];
+                if ($reviewer->name) {
+                    // a $event->message/$req->internal_status contém o nome do  
+                    // parecerista, mas não aparece para o aluno, é usada apenas  
+                    // internamente
+                    $event->message = "Enviado para o parecerista " . $reviewer->name;
+                    $req->internal_status = $event->message;
+                }
 
-    //     foreach ($documents as $document) {
-    //         switch ($document->type) {
-    //             case DocumentType::TAKEN_DISCS_RECORD:
-    //                 array_push($takenDiscsRecords, $document);
-    //                 break;
-    //             case DocumentType::CURRENT_COURSE_RECORD:
-    //                 array_push($currentCourseRecords, $document);
-    //                 break;
-    //             case DocumentType::TAKEN_DISCS_SYLLABUS:
-    //                 array_push($takenDiscSyllabi, $document);
-    //                 break;
-    //             case DocumentType::REQUESTED_DISC_SYLLABUS:
-    //                 array_push($requestedDiscSyllabi, $document);
-    //                 break;
-    //         }
-    //     }
+                $req->save();
+                $event->save();
 
-    //     return view('pages.reviewer.detail', ['req' => $req, 'takenDiscs' => $req->takenDisciplines, 'takenDiscsRecords' => $takenDiscsRecords, 'currentCourseRecords' => $currentCourseRecords, 'takenDiscSyllabi' => $takenDiscSyllabi, 'requestedDiscSyllabi' => $requestedDiscSyllabi, 'review' => $review]);
-    // }
+                $reviewerUser = User::where('codpes', $reviewer->codpes)->first();
 
-    // public function createReview($requisitionId, Request $request)
-    // {
+                // se o parecerista nunca logou no sistema, o email dele é desconhecido 
+                if ($reviewerUser->email && env('APP_ENV') === 'production') {
+                    $reviewerUser->notify(new ReviewerNotification($reviewerUser));
+                }
+            }
+        });
 
-    //     DB::transaction(function () use ($request, $requisitionId) {
-    //         $rev = Review::where('requisition_id', $requisitionId)
-    //             ->where('reviewer_nusp', $request->codpes)
-    //             ->first();
+        return response('', 200)->header('Content-Type', 'text/plain');
+    }
 
-    //         if (is_null($rev)) {
-    //             // Se a Review não existia, cria uma nova
-    //             $rev = new Review;
-    //             $rev->reviewer_name = $request->name;
-    //             $rev->reviewer_nusp = $request->codpes;
-    //             $rev->requisition_id = $requisitionId;
-    //             $rev->reviewer_decision = 'Sem decisão';
-    //             $rev->justification = null;
-    //             $rev->latest_version = 0;
-    //             $rev->save();
-    //         }
+    public function reviews($requisitionId)
+    {
+        $user = Auth::user();
+        $roleId = $user->current_role_id;
+        $requisition = Requisition::with('reviews')->find($requisitionId);
 
-    //         $user = Auth::user();
+        return Inertia::render('AssignedReviews', [ 'label' => 'Requerimentos', 
+                                                    'roleId' => $roleId,
+                                                    'userRoles' => $user->roles,
+                                                    'selectedActions' => [],
+                                                    'reviews' => $requisition->reviews ]);
+    }
+    
+    public function submit(Request $request)
+    {
+        $requisitionId = $request["requisitionId"];
+        DB::transaction(function () use ($request, $requisitionId) {
+            $user = Auth::user();
 
-    //         $req = Requisition::find($requisitionId);
+            $review = Review::where('requisition_id', $requisitionId)->where('reviewer_nusp', $user->codpes)->first();
+            // Não tem devemos salvar a versão 0, já que ela
+            // não tem informação dada pelo parecerista.
+            if($review->latest_version > 0){
+                $new_hist = new ReviewsVersion;
+                $new_hist->review_id = $review->id;
+                $new_hist->reviewer_name = $user->name;
+                $new_hist->reviewer_nusp = $user->codpes;
+                $new_hist->requisition_id = $review->requisition_id;
+                $new_hist->reviewer_decision = $review->reviewer_decision;
+                $new_hist->justification = $review->justification;
+                $new_hist->version = $review->latest_version;
+                $new_hist->save();
+            }
 
-    //         // $req->situation é o que aparece na linha do requerimento na tabela 
-    //         // para o aluno (não contém o nome do parecerista)
-    //         $req->situation = EventType::SENT_TO_REVIEWERS;
-    //         $req->validated = true;
-
-    //         $event = new Event;
-    //         $event->type = EventType::SENT_TO_REVIEWERS;
-    //         $event->requisition_id = $requisitionId;
-    //         $event->author_name = $user->name;
-    //         $event->author_nusp = $user->codpes;
-    //         $event->version = $req->latest_version;
-
-    //         if ($request->name) {
-    //             // a $event->message/$req->internal_status contém o nome do  
-    //             // parecerista, mas não aparece para o aluno, é usada apenas  
-    //             // internamente
-    //             $event->message = "Enviado para o parecerista " . $request->name;
-    //             $req->internal_status = $event->message;
-    //         }
-
-    //         $req->save();
-    //         $event->save();
-
-    //         $reviewerUser = User::where('codpes', $request->codpes)->first();
-
-    //         // se o parecerista nunca logou no sistema, o email dele é desconhecido 
-    //         if ($reviewerUser->email && env('APP_ENV') === 'production') {
-    //             $reviewerUser->notify(new ReviewerNotification($reviewerUser));
-    //         }
-    //     });
-
-    //     return response()->noContent();
-    // }
-
-    // public function saveOrSubmit($requisitionId, Request $request)
-    // {
-    //     $action = $request->input('action');
-    //     if ($action === "save") {
-    //         $this->save($requisitionId, $request);
-
-    //         $bodyMsg = 'As informações do parecer foram salvas';
-    //         $titleMsg = 'Parecer salvo';
-    //         return redirect()->route('reviewer.show', ['requisitionId' => $requisitionId])
-    //             ->with('success', ['title message' => $titleMsg, 'body message' => $bodyMsg, 'return button' => false])
-    //             ->withFragment("decision");
-    //     } else if ($action === "submit") {
-    //         $this->submit($requisitionId, $request);
-
-    //         $bodyMsg = 'As informações do parecer foram enviadas';
-    //         $titleMsg = 'Parecer enviado';
-
-    //         return redirect()->route('reviewer.list', ['requisitionId' => $requisitionId])->with('success', ['title message' => $titleMsg, 'body message' => $bodyMsg]);
-    //     }
-    // }
-
-    // private function save($requisitionId, Request $request)
-    // {
-    //     $user = Auth::user();
-
-    //     $reviewToBeSaved = Review::where('requisition_id', $requisitionId)
-    //         ->where('reviewer_nusp', $user->codpes)
-    //         ->first();
-
-    //     $reviewToBeSaved->reviewer_decision = $request->decision;
-    //     $reviewToBeSaved->justification = $request->justification;
-    //     $reviewToBeSaved->save();
-    // }
-
-    // private function submit($requisitionId, Request $request)
-    // {
-    //     DB::transaction(function () use ($request, $requisitionId) {
-
-    //         $user = Auth::user();
-
-    //         $review = Review::where('requisition_id', $requisitionId)->where('reviewer_nusp', $user->codpes)->first();
-            
-    //         // Não tem devemos salvar a versão 0, já que ela
-    //         // não tem informação dada pelo parecerista.
-    //         if($review->latest_version > 0){
-    //             $new_hist = new ReviewsVersion;
-    //             $new_hist->review_id = $review->id;
-    //             $new_hist->reviewer_name = $user->name;
-    //             $new_hist->reviewer_nusp = $user->codpes;
-    //             $new_hist->requisition_id = $review->requisition_id;
-    //             $new_hist->reviewer_decision = $review->reviewer_decision;
-    //             $new_hist->justification = $review->justification;
-    //             $new_hist->version = $review->latest_version;
-    //             $new_hist->save();
-    //         }
-
-    //         $review->reviewer_decision = $request->decision;
-    //         $review->justification = $request->justification;
-    //         $review->latest_version = ($review->latest_version + 1);
-    //         $review->save();
+            $review->reviewer_decision = $request->decision;
+            $review->justification = $request->justification;
+            $review->latest_version = ($review->latest_version + 1);
+            $review->save();
 
 
-    //         $req = Requisition::find($requisitionId);
-    //         $req->situation = EventType::RETURNED_BY_REVIEWER;
+            $req = Requisition::find($requisitionId);
+            $req->situation = EventType::RETURNED_BY_REVIEWER;
 
-    //         $event = new Event;
-    //         $event->type = EventType::RETURNED_BY_REVIEWER;
-    //         $event->requisition_id = $requisitionId;
-    //         $event->author_name = $user->name;
-    //         $event->author_nusp = $user->codpes;
-    //         $event->version = $req->latest_version;
+            $event = new Event;
+            $event->type = EventType::RETURNED_BY_REVIEWER;
+            $event->requisition_id = $requisitionId;
+            $event->author_name = $user->name;
+            $event->author_nusp = $user->codpes;
+            $event->version = $req->latest_version;
 
-    //         $event->message = "Retornado pelo parecerista " . $user->name;
-    //         $req->internal_status = $event->message;
+            $event->message = "Retornado pelo parecerista " . $user->name;
+            $req->internal_status = $event->message;
 
-    //         $event->save();
-    //         $req->save();
-    //     });
-    // }
+            $event->save();
+            $req->save();
+        });
+    }
 
     // public function previousReviews($requisitionId, $requestedDiscCode)
     // {
@@ -268,19 +206,4 @@ class ReviewController extends Controller
     //         ->withFragment('decision'); #withFragment redireciona para o conteúdo com ID=decision
     // }
 
-    // public function reviewerPick($requisitionId)
-    // {
-    //     $reviewRole = Role::where('name', RoleName::REVIEWER)->first();
-
-    //     $reviewers = $reviewRole->users;
-
-    //     return view('pages.reviewer.reviewerPick', ['reviewers' => $reviewers, 'requisitionId' => $requisitionId]);
-    // }
-
-    // public function reviews($requisitionId)
-    // {
-    //     $req = Requisition::with('reviews')->find($requisitionId);
-
-    //     return view('pages.reviewer.reviews', ['requisitionId' => $requisitionId, 'reviews' => $req->reviews]);
-    // }
 }

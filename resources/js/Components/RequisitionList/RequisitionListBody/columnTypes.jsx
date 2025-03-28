@@ -1,0 +1,197 @@
+import React from "react";
+import { Typography } from "@mui/material";
+
+let columnTypes = {};
+
+columnTypes.id = {
+    header: <Typography 
+                variant="h7" 
+                align="center" 
+            >
+                <b>ID</b>
+            </Typography>,
+    accessorKey: 'id',
+    enableHiding: false,
+    enableSorting: false,
+    size: 0
+};
+
+columnTypes.created_at = {
+    header: <Typography 
+                variant="h7" 
+                align="center" 
+            >
+                <b>Data<br /> de criação</b>
+            </Typography>,
+    accessorKey: 'created_at',
+    accessorFn: (row) => row.created_at.slice(0, 16).replace('T', ' '),
+    enableHiding: false,
+    enableColumnActions: false,
+    size: 0
+};
+
+columnTypes.updated_at = {
+    header: <Typography 
+                variant="h7" 
+                align="center"
+            >
+                <b>Última <br /> modificação</b>
+            </Typography>,
+    accessorKey: 'updated_at',
+    accessorFn: (row) => row.updated_at.slice(0, 16).replace('T', ' '),
+    enableHiding: false,
+    enableColumnActions: false,
+    size: 0
+};
+
+columnTypes.requested_disc = {
+    header: <Typography 
+                variant="h7" 
+                align="center"
+            >
+                <b>Disciplina requerida</b>
+            </Typography>,
+    accessorKey: 'requested_disc',
+    enableHiding: false,
+    size: 260
+};
+
+columnTypes.situation = {
+    header: <Typography 
+                variant="h7" 
+                align="center"
+            >
+                <b>Situação</b>
+            </Typography>,
+    accessorKey: 'situation',
+    enableHiding: false,
+    accessorFn: (row) => (
+        <Typography 
+            variant="subtitle1" 
+            width={6}
+            style={{ wordBreak: 'break-word' }}
+        >
+            {row.situation}
+        </Typography>
+    )
+};
+
+columnTypes.internal_status = {
+    header: <Typography 
+                variant="h7" 
+                align="center"
+            >
+                <b>Situação</b>
+            </Typography>,
+    accessorKey: 'internal_status',
+    enableHiding: false,
+    accessorFn: (row) => (
+        <Typography 
+            variant="subtitle1"
+            width={250}
+            style={{ wordBreak: 'break-word', whiteSpace: "pre-line" }}
+        >
+            {row.internal_status}
+        </Typography>
+    )
+};
+
+columnTypes.student_name = {
+    header: <Typography 
+                variant="h7" 
+                align="center"
+            >
+                <b>Aluno</b>
+            </Typography>,
+    accessorKey: 'student_name',
+    enableHiding: false,
+    size: 120
+};
+
+columnTypes.student_nusp = {
+    header: <Typography 
+                variant="h7" 
+                align="center"
+            >
+                <b>Número USP</b>
+            </Typography>,
+    accessorKey: 'student_nusp',
+    enableHiding: false,
+    enableColumnActions: false,
+    size: 0
+};
+
+columnTypes.department = {
+    header: <Typography 
+                variant="h7" 
+                align="center"
+            >
+                <b>Departamento</b>
+            </Typography>,
+    accessorKey: 'department',
+    enableHiding: false,
+    size: 160
+};
+
+columnTypes.reviewer_decision = {
+    header: <Typography 
+                variant="h7" 
+                align="center"
+            >
+                <b>Decisão</b>
+            </Typography>,
+    accessorKey: 'reviewer_decision',
+    enableHiding: false,
+    size: 160
+};
+
+columnTypes.type = {
+    header: <Typography 
+                variant="h7" 
+                align="center"
+            >
+                <b>Tipo</b>
+            </Typography>,
+    accessorKey: 'type',
+    enableHiding: false,
+    size: 400
+};
+
+columnTypes.author_name = {
+    header: <Typography 
+                variant="h7" 
+                align="center"
+            >
+                <b>Autor</b>
+            </Typography>,
+    accessorKey: 'author_name',
+    enableHiding: false,
+    size: 120
+};
+
+columnTypes.author_nusp = {
+    header: <Typography 
+                variant="h7" 
+                align="center"
+            >
+                <b>Número USP</b>
+            </Typography>,
+    accessorKey: 'author_nusp',
+    enableHiding: false,
+    size: 0
+};
+
+columnTypes.ocurrence_time  = {
+    header: <Typography 
+                variant="h7" 
+                align="center"
+            >
+                <b>Horário de<br /> ocorrência</b>
+            </Typography>,
+    accessorFn: (row) => row.created_at.slice(11, 19),
+    enableHiding: false,
+    enableColumnActions: false,
+    size: 0
+};
+
+export default columnTypes;

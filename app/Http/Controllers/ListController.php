@@ -17,25 +17,28 @@ class ListController extends Controller
 
         switch ($roleId) {
             case RoleId::STUDENT:
-                [$requisitions, $selectedColumns] = $this->studentList($user);
+                [$requisitions, $selectedColumns, $selectedActions] = $this->studentList($user);
                 break;
             case RoleId::SG:
-                [$requisitions, $selectedColumns] = $this->sgList($user);
+                [$requisitions, $selectedColumns, $selectedActions] = $this->sgList($user);
                 break;
             case RoleId::SECRETARY:
-                [$requisitions, $selectedColumns] = $this->secretaryList($user);
+                [$requisitions, $selectedColumns, $selectedActions] = $this->secretaryList($user);
                 break;
             case RoleId::REVIEWER:
-                [$requisitions, $selectedColumns] = $this->reviewerList($user);
+                [$requisitions, $selectedColumns, $selectedActions] = $this->reviewerList($user);
                 break;
         }
         
         $requisition_period_status = RequisitionsPeriod::latest('id')->first()->is_enabled;
 
         return Inertia::render('RequisitionList', [
+            'label' => 'Requerimentos',
             'requisitions' => $requisitions, 
             'selectedColumns' => $selectedColumns,
+            'selectedActions' => $selectedActions,
             'roleId' => $roleId, 
+            'useActions' => true,
             'userRoles' => $user->roles,
             'requisitionPeriodStatus' => $requisition_period_status
         ]);
@@ -44,19 +47,22 @@ class ListController extends Controller
     private function studentList($user) { 
         $selectedColumns = ['id', 'created_at', 'requested_disc', 'situation'];
         $requisitions = Requisition::with('takenDisciplines')->select($selectedColumns)->where('student_nusp', $user->codpes)->get();
-        return [$requisitions, $selectedColumns];
+        $selectedActions = [['new_requisition'], ['exit']];
+        return [$requisitions, $selectedColumns, $selectedActions];
     }
 
     private function sgList($user) { 
-        $selectedColumns = ['created_at', 'id', 'student_name', 'student_nusp', 'internal_status', 'department'];
+        $selectedColumns = ['created_at', 'updated_at', 'id', 'student_name', 'student_nusp', 'internal_status', 'department'];
         $requisitions = Requisition::select($selectedColumns)->get();
-        return [$requisitions, $selectedColumns];
+        $selectedActions = [['admin', 'new_requisition', 'export']];
+        return [$requisitions, $selectedColumns, $selectedActions];
     }
 
     private function secretaryList($user) { 
         $selectedColumns = ['id', 'created_at', 'requested_disc', 'situation'];
         $requisitions = Requisition::with('takenDisciplines')->select($selectedColumns)->where('student_nusp', $user->codpes)->get();
-        return [$requisitions, $selectedColumns];
+        $selectedActions = [['admin'], ['exit']];
+        return [$requisitions, $selectedColumns, $selectedActions];
     }
 
     private function reviewerList($user) { 
@@ -68,6 +74,7 @@ class ListController extends Controller
 			->select($selectedReviewColumns)->get();
 
 		$selectedColumnsNames = ['created_at', 'student_name', 'requested_disc', 'reviewer_decision', 'updated_at', 'id'];
-        return [$requisitions, $selectedColumnsNames];
+        $selectedActions = [];
+        return [$requisitions, $selectedColumnsNames, $selectedActions];
     }
 }

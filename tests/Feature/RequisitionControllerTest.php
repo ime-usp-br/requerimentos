@@ -422,6 +422,7 @@ class RequisitionControllerTest extends TestCase
             'requested_disc_code' => 'TEST123',
             'department' => 'MAC',
             'observations' => 'Observações de teste',
+            'editable' => true,
         ]);
 
         $response = $this->get("/atualizar-requerimento/{$requisition->id}");
