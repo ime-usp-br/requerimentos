@@ -6,7 +6,7 @@ import {
     Autocomplete,
 } from "@mui/material";
 
-const RequiredDisciplines = ({ data, setData }) => {
+const RequiredDisciplines = ({ data, setData, isUpdate }) => {
     const discTypes = [
         "Obrigatória",
         "Optativa Eletiva",
@@ -35,16 +35,18 @@ const RequiredDisciplines = ({ data, setData }) => {
                 onChange={(e) =>
                     setData("requestedDiscName", e.target.value)
                 }
+                disabled={isUpdate}
             />
             <TextField
-                    size="small"
-                    label="Sigla da disciplina requerida"
-                    required
-                    value={data.requestedDiscCode}
-                    onChange={(e) =>
-                        setData("requestedDiscCode", e.target.value)
-                    }
-                />
+                size="small"
+                label="Sigla da disciplina requerida"
+                required
+                value={data.requestedDiscCode}
+                onChange={(e) =>
+                    setData("requestedDiscCode", e.target.value)
+                }
+                disabled={isUpdate}
+            />
             <Stack
                 direction="row"
                 spacing={1.5}
@@ -63,8 +65,10 @@ const RequiredDisciplines = ({ data, setData }) => {
                             label="Tipo da disciplina requerida"
                             variant="outlined"
                             required
+                            disabled={isUpdate}
                         />
                     )}
+                    disabled={isUpdate}
                 />
                 <Autocomplete
                     size="small"
@@ -80,8 +84,10 @@ const RequiredDisciplines = ({ data, setData }) => {
                             label="Departamento da disciplina requerida"
                             variant="outlined"
                             required
+                            disabled={isUpdate}
                         />
                     )}
+                    disabled={isUpdate}
                 />
             </Stack>
         </Stack>

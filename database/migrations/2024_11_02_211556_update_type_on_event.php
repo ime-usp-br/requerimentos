@@ -20,9 +20,11 @@ class UpdateTypeOnEvent extends Migration
                                                                         "'" . EventType::REJECTED . "', " . 
                                                                         "'" . EventType::RETURNED_BY_REVIEWER . "', " . 
                                                                         "'" . EventType::SENT_TO_REVIEWERS . "', " . 
+                                                                        "'" . EventType::UPDATED_BY_STUDENT . "'," . 
+                                                                        "'" . EventType::UPDATED_BY_SG . "'," . 
                                                                         "'" . EventType::SENT_TO_SG . "', " . 
                                                                         "'" . EventType::IN_REVALUATION . "', " . 
-                                                                        "'" . EventType::RESEND_BY_STUDENT . "', " . 
+                                                                        "'" . EventType::RESENT_BY_STUDENT . "', " . 
                                                                         "'" . EventType::SENT_TO_DEPARTMENT . "', " . 
                                                                         "'" . EventType::REGISTERED . "')");
     }

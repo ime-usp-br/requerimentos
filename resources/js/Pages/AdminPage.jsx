@@ -36,13 +36,15 @@ const AdminPage = ({ users = fakeUsers, requisition_period_status = false }) => 
     const handleCloseRequisitionPeriod = () => setRequisitionPeriodOpen(false);
 
     return (
-        <Stack spacing={2} sx={{alignItems: "center"}}>
-            <header>
+        <Stack spacing={2} padding={2} sx={{alignItems: "flex-start"}}>
+            <Stack spacing={2} width="95%" direction="row" justifyContent="space-between">
                 <Typography component="h1" variant="h4">Administração do sistema</Typography>
-                <Button variant="contained" href={route('sg.list')}>Voltar</Button>
-            </header>
-            <AddRoleDialog open={addRoleOpen} handleClose={handleCloseAddRole}/>
-            <RequisitionsPeriodDialog requisitionSubmissionIsOpen={false} requisitionEditionIsOpen={true} open={requisitionPeriodOpen} handleClose={handleCloseRequisitionPeriod}/>
+                <Button variant="contained" href={route('list')}>Voltar</Button>
+            </Stack>
+            <Stack spacing={2} width="95%" direction="row" justifyContent="space-between">
+                <AddRoleDialog open={addRoleOpen} handleClose={handleCloseAddRole}/>
+                <RequisitionsPeriodDialog requisitionSubmissionIsOpen={false} requisitionEditionIsOpen={true} open={requisitionPeriodOpen} handleClose={handleCloseRequisitionPeriod}/>
+            </Stack>
             <Stack spacing={2} direction="row">
                 <Button variant="contained" color="primary" onClick={handleOpenRequisitionPeriod}>Período de requerimentos</Button>
                 <Button variant="contained" color="primary" onClick={handleOpenAddRole}>Adicionar um papel</Button>

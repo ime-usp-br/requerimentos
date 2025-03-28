@@ -10,8 +10,8 @@ import {
 
 const TakenDisciplines = ({ data, setData}) => {
     const handleRemoveDiscipline = () => {
-        if (data.takenDiscNumber > 1) {
-            setData("takenDiscNumber", data.takenDiscNumber - 1);
+        if (data.takenDiscCount > 1) {
+            setData("takenDiscCount", data.takenDiscCount - 1);
             setData("takenDiscNames", data.takenDiscNames.slice(0, -1));
             setData("takenDiscInstitutions", data.takenDiscInstitutions.slice(0, -1));
             setData("takenDiscCodes", data.takenDiscCodes.slice(0, -1));
@@ -22,7 +22,7 @@ const TakenDisciplines = ({ data, setData}) => {
     };
 
     const handleAddDiscipline = () => {
-        setData("takenDiscNumber", data.takenDiscNumber + 1);
+        setData("takenDiscCount", data.takenDiscCount + 1);
         setData("takenDiscNames", [...data.takenDiscNames, ""]);
         setData("takenDiscInstitutions", [...data.takenDiscInstitutions, ""]);
         setData("takenDiscCodes", [...data.takenDiscCodes, ""]);
@@ -44,12 +44,12 @@ const TakenDisciplines = ({ data, setData}) => {
             >
                 {(() => {
                     const disciplineFields = [];
-                    for (let index = 0; index < data.takenDiscNumber; index++) {
+                    for (let index = 0; index < data.takenDiscCount; index++) {
                         disciplineFields.push(
                             <Stack spacing={1.5} key={`discipline-${index}`}>
                                 <TextField
                                     size="small"
-                                    label={"Nome da " + (data.takenDiscNumber > 1 ? (index + 1) + "ª " : "") + "disciplina cursada"}
+                                    label={"Nome da " + (data.takenDiscCount > 1 ? (index + 1) + "ª " : "") + "disciplina cursada"}
                                     required
                                     value={data.takenDiscNames[index]}
                                     onChange={(e) =>
@@ -154,7 +154,7 @@ const TakenDisciplines = ({ data, setData}) => {
                 })()}
             </Stack>
             <Stack direction="row" spacing={1.5} justifyContent="flex-start">
-                {data.takenDiscNumber > 1 && (
+                {data.takenDiscCount > 1 && (
                     <Button
                         size="small"
                         color="error"

@@ -21,7 +21,7 @@ class CreateTakenDisciplinesTable extends Migration
             $table->string("code");
             $table->unsignedInteger("year");
             $table->enum("semester", ["Primeiro", "Segundo"]);
-            $table->float("grade", 4, 2);
+            $table->string("grade");
             $table->string("institution");
             $table->unsignedInteger('latest_version');
         });

@@ -11,7 +11,7 @@ const Header = () => {
             }}
             >
             <Typography variant="h4" content="h1">Novo requerimento</Typography>
-            <Button variant="contained" size="medium" color="primary" href={route('sg.list')}>
+            <Button variant="contained" size="medium" color="primary" href={route('list')}>
                 Voltar
             </Button>
         </Stack>

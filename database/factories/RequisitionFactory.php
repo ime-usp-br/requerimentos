@@ -29,9 +29,9 @@ class RequisitionFactory extends Factory
             'result' => 'Sem resultado',
             'observations' => $this->faker->sentence(30),
             'result_text' => $this->faker->sentence(30),
-            'situation' => $this->faker->randomElement([EventType::ACCEPTED, EventType::BACK_TO_STUDENT, EventType::REJECTED, EventType::RETURNED_BY_REVIEWER, EventType::SENT_TO_REVIEWERS, EventType::SENT_TO_SG, EventType::IN_REVALUATION, EventType::RESEND_BY_STUDENT, EventType::SENT_TO_DEPARTMENT]),
-            'internal_status' => $this->faker->randomElement([EventType::ACCEPTED, EventType::BACK_TO_STUDENT, EventType::REJECTED, EventType::RETURNED_BY_REVIEWER, EventType::SENT_TO_REVIEWERS, EventType::SENT_TO_SG, EventType::IN_REVALUATION, EventType::RESEND_BY_STUDENT, EventType::SENT_TO_DEPARTMENT]),
-            'validated' => $this->faker->randomElement([True, False]),
+            'situation' => $this->faker->randomElement([EventType::ACCEPTED, EventType::BACK_TO_STUDENT, EventType::REJECTED, EventType::RETURNED_BY_REVIEWER, EventType::SENT_TO_REVIEWERS, EventType::SENT_TO_SG, EventType::IN_REVALUATION, EventType::RESENT_BY_STUDENT, EventType::SENT_TO_DEPARTMENT]),
+            'internal_status' => $this->faker->randomElement([EventType::ACCEPTED, EventType::BACK_TO_STUDENT, EventType::REJECTED, EventType::RETURNED_BY_REVIEWER, EventType::SENT_TO_REVIEWERS, EventType::SENT_TO_SG, EventType::IN_REVALUATION, EventType::RESENT_BY_STUDENT, EventType::SENT_TO_DEPARTMENT]),
+            'editable' => $this->faker->randomElement([True, False]),
             'latest_version' => $this->faker->numberBetween(1, 10),
         ];
     }

@@ -28,10 +28,10 @@ class CreateRequisitionsTable extends Migration
             $table->string('situation');
             $table->string('internal_status');
             $table->string('requested_disc_code');
-            $table->boolean('validated');
             $table->text('observations')->nullable();
             $table->enum('result', ['Sem resultado', 'Inconsistência nas informações', 'Deferido', 'Indeferido']);
             $table->text('result_text')->nullable();
+            $table->boolean('editable');
         });
     }
 

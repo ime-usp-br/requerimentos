@@ -4,21 +4,28 @@ import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Link, Box } from '@mui/material';
 
-import Builder from './columnBuilder';
-import { route } from 'ziggy-js';
+import Builder from './builder';
+import columnTypes from "./columnTypes";
 
 export default function List({ requisitions, selectedColumns }) {
-    let builder = new Builder(selectedColumns);
+    let textStyle = {
+        //simple styling with the `sx` prop, works just like a style prop in this example
+        sx: {
+            fontSize: 18,
+        },
+    };
+
+    let builder = new Builder(columnTypes);
     let columns = useMemo(
-        () => builder.getStructure(),
-        [],
+        () => builder.build(selectedColumns),
+        [selectedColumns],
     );
     let data = requisitions;
     const table = useMaterialReactTable({
         columns,
         data,
         rowCount: 20,
-        enableSorting: false,
+        enableSorting: true,
         enableDensityToggle: false,
         enableFullScreenToggle: false,
         enableHiding: false,
@@ -27,8 +34,10 @@ export default function List({ requisitions, selectedColumns }) {
         enableColumnFilters: true,
         enableTopToolbar: false,
         enableColumnOrdering: true,
-        enableGlobalFilter: false,
+        enableGlobalFilter: true,
         enableRowActions: true,
+        muiTableHeadCellProps: textStyle,
+        muiTableBodyCellProps: textStyle,
         displayColumnDefOptions: {
             'mrt-row-actions': {
                 header: null, //change header text
@@ -36,7 +45,7 @@ export default function List({ requisitions, selectedColumns }) {
             },
         },
         renderRowActions: ({ row }) => (
-            <Link href={route('student.show', { requisitionId: row.original.id })} underline='never' color='textDisabled'>
+            <Link href={route('showRequisition', { requisitionId: row.original.id })} underline='never' color='textDisabled'>
                 <VisibilityIcon />
             </Link>
         ),

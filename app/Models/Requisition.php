@@ -9,7 +9,7 @@ class Requisition extends Model
 {
     use HasFactory;
 
-    protected $guarded = ['created_at', 'updated_at', 'id', 'latest_version', 'situation', 'internal_status', 'validated'];
+    protected $guarded = ['created_at', 'updated_at', 'id', 'latest_version', 'situation', 'internal_status'];
     
     public function takenDisciplines() {
         return $this->hasMany(TakenDisciplines::class);

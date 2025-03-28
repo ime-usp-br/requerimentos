@@ -1,6 +1,8 @@
 import React from 'react';
 import LoginIcon from '@mui/icons-material/Login';
-import { Stack, Button, Container } from '@mui/material';
+import { Stack, Button, Container, Typography } from '@mui/material';
+import home from '../../img/home.jpg';
+
 
 export default function Home() {
     return (
@@ -8,100 +10,73 @@ export default function Home() {
             direction='column'
             sx={{
                 alignItems: 'center',
-                justifyContent: 'space-between',
-                backgroundImage: "url('https://requerimentos.ime.usp.br/img/home/background.png')",
+                justifyContent: 'center',
+                backgroundImage: `url(${home})`,
                 backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
                 backgroundColor: 'black',
                 width: '100%',
                 height: '100vh',
             }}
         >
             <Stack
-                direction={{ xs: 'column', sm: 'row' }}
-                spacing={{ xs: 3 }}
+                direction='row'
                 sx={{
                     alignItems: "center",
                     justifyContent: "space-between",
-                    width: '90%',
-                    height: { xs: 'auto', sm: 160 },
-                    paddingTop: 3
+                    width: '100%',
+                    height: { xs: 20, sm: 60 },
+                    backgroundColor: 'primary.main',
+                    position: 'absolute',
+                    top: 0,
                 }}
             >
-                <Container
-                    sx={{
-                        height: 'auto',
-                        width: { xs: 320, sm: 460 }
+                <img
+                    style={{
+                        height: '70%',
+                        marginLeft: '16px',
                     }}
-                >
-                    <img
-                        style={{
-                            width: '100%'
-                        }}
-                        src="https://requerimentos.ime.usp.br/img/home/ime-logo-title.svg"
-                    />
-                </Container>
+                    src="img/footer/ime-logo-footer.svg"
+                />
+                <img
+                    style={{
+                        height: '70%',
+                        marginRight: '16px',
+                    }}
+                    src="img/footer/usp-logo.svg"
+                />
+            </Stack>
+
+            <Stack
+                direction='column'
+                spacing={3}
+                sx={{
+                    alignItems: "flex-start",
+                    justifyContent: "center",
+                    backgroundColor: 'rgb(255, 255, 255)',
+                    padding: 4,
+                    borderRadius: 2,
+                    boxShadow: 3,
+                    textAlign: 'left',
+                }}
+            >
+                <Typography variant="h3">
+                    Aproveitamento de Estudos
+                </Typography>
+                <Typography variant="subtitle1">
+                    Entre para realizar seus requerimentos de aproveitamento de estudo.
+                </Typography>
+
                 <Button
                     variant="contained"
                     size="large"
                     color="primary"
                     href="login"
-                    style={{ textAlign: 'center' }}
+                    startIcon={<LoginIcon />}
                 >
-                    <LoginIcon /> Acessar
+                    Acessar
                 </Button>
-            </Stack>
-
-            <Stack
-                direction='row'
-                sx={{
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: '100%',
-                    height: { xs: 100, sm: 140 },
-                    backgroundColor: 'primary.main',
-                }}
-            >
-                <Stack
-                    direction='row'
-                    sx={{
-                        justifyContent: "space-between",
-                        width: '90%',
-                        height: 'auto'
-                    }}
-                >
-                    <Container
-                        disableGutters
-                        sx={{
-                            alignContent: 'center',
-                            height: 'auto',
-                            width: { xs: 200, sm: 460 },
-                            margin: 0
-                        }}
-                    >
-                        <img
-                            style={{
-                                width: '100%'
-                            }}
-                            src="img/footer/ime-logo-footer.svg"
-                        />
-                    </Container>
-                    <Container
-                        disableGutters
-                        sx={{
-                            alignContent: 'center',
-                            height: 'auto',
-                            width: { xs: 110, sm: 170 },
-                            margin: 0
-                        }}
-                    >
-                        <img
-                            style={{
-                                width: '100%'
-                            }}
-                            src="img/footer/usp-logo.svg"
-                        />
-                    </Container>
-                </Stack>
             </Stack>
         </Stack>
     );

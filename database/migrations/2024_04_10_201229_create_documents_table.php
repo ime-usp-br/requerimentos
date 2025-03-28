@@ -18,8 +18,10 @@ class CreateDocumentsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignId('requisition_id')->constrained()->cascadeOnDelete();
+            $table->unsignedInteger('version');
             $table->enum('type', [DocumentType::TAKEN_DISCS_RECORD, DocumentType::CURRENT_COURSE_RECORD, DocumentType::TAKEN_DISCS_SYLLABUS, DocumentType::REQUESTED_DISC_SYLLABUS]);
             $table->string('path');
+            $table->string('hash');
         });
     }
 

@@ -1,26 +1,21 @@
 import React from 'react';
-import { Stack, Button, Box } from '@mui/material';
+import { router } from '@inertiajs/react'
+import { Stack, Paper } from '@mui/material';
+
 import ComboBox from '../ComboBox';
+import Builder from '../../RequisitionList/RequisitionListBody/builder';
+import buttonComponentList from '../../RequisitionList/RequisitionListBody/UserActions/buttonComponentList';
 
-export default function HeaderActions({ roleId, userRoles }) {
+export default function HeaderActions({ roleId,
+                                        showRoleSelector, 
+                                        userRoles, 
+                                        actionsParams,
+                                        isExit }) {
     const handleComboBoxChange = (value) => {
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-        fetch(route('role.switch'), {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken
-            },
-            body: JSON.stringify({
-                'role-switch': value.id
-            })
-        }).then(response => {
-            window.location.href = response.url;
-        });
+        router.post(route('role.switch'), { 'role-switch': value.id });
     };
 
+    let builder = new Builder(buttonComponentList);
     return (
         <Stack 
             direction='row'
@@ -30,25 +25,29 @@ export default function HeaderActions({ roleId, userRoles }) {
             }}
             spacing={2}
         >
-            { roleId > 1 && userRoles.length > 1 && (
+            { (roleId != 0) && (userRoles.length > 1) && showRoleSelector && (
                 <ComboBox
                     size='small'
                     options={userRoles}
                     optionGetter={(option) => option.name}
                     defaultValue={userRoles.find(val => val.id == roleId)}
-                    sx={{ width: 230 }}
+                    sx={{
+                        width: 250,
+                    }}
                     name='papel'
                     onChange={handleComboBoxChange}
                 />
             )}
-            <Button 
-                variant="contained" 
-                size="large"
-                color="primary" 
-                href={'/'}
-            >
-                Sair
-            </Button>
+            
+            { builder.build(isExit ? ['exit'] : ['go_back']).map((itemBuilder) =>
+                itemBuilder(actionsParams)
+            ) }
+                
         </Stack>
     );
 };
+
+
+// import { useDialogContext }
+
+// [isOpen, setOpen, setClose ] = useDialogContext();
