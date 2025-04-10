@@ -28,7 +28,7 @@ const ManageUsers = ({ users }) => {
                     !(user.codpes === data.nusp && user.role === data.role)
             )
         );
-        post(route("teste.deleteRole"), {
+        post(route("role.remove"), {
             onSuccess: () => {},
         });
 
@@ -65,13 +65,13 @@ const ManageUsers = ({ users }) => {
             accessorKey: "role",
             header: "Papel",
             filterVariant: "multi-select",
-            size: 100,
+            size: 200,
         },
         {
             accessorFn: (row) => `remove-${row.codpes}-${row.role}`,
             id: "remove",
             header: "",
-            size: 100,
+            size: 0,
             enableSorting: false,
             enableColumnActions: false,
             Cell: ({ row }) => (
@@ -92,6 +92,21 @@ const ManageUsers = ({ users }) => {
         },
     ]);
 
+    let headerStyle = {
+        //simple styling with the `sx` prop, works just like a style prop in this example
+        sx: {
+            fontSize: 18,
+            // padding: 1
+        },
+    };
+
+    let bodyStyle = {
+        //simple styling with the `sx` prop, works just like a style prop in this example
+        sx: {
+            fontSize: 18,
+        },
+    };
+
     const table = useMaterialReactTable({
         columns,
         data: usersData,
@@ -103,13 +118,15 @@ const ManageUsers = ({ users }) => {
         enableGlobalFilter: true,
         enableSorting: true,
         enableColumnFilters: true,
+        muiTableHeadCellProps: headerStyle,
+        muiTableBodyCellProps: bodyStyle,
         initialState: { density: "compact" },
         state: { globalFilter },
         onGlobalFilterChange: setGlobalFilter,
     });
 
     return (
-        <Stack spacing={2} sx={{ marginTop: 10 }}>
+        <Stack spacing={2}>
             <RemoveRoleConfirmationDialog
                 open={confirmationOpen}
                 handleClose={handleCloseConfirmation}

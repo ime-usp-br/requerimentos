@@ -1,6 +1,8 @@
 import React from "react";
 import { Button, Tooltip, DialogActions, DialogContent, DialogContentText, Divider } from "@mui/material";
 import { router } from "@inertiajs/react"
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 import { useDialogContext } from '../../../Context/useDialogContext';
 import ListOfReviewers from "./ListOfReviewers";
 import ActionSuccessful from "../../../Atoms/Header/DialogBody/ActionSuccessful";
@@ -19,6 +21,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import AssignmentReturnIcon from '@mui/icons-material/AssignmentReturn';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
 
 const buttonSx = {
     padding: 0,
@@ -71,6 +74,28 @@ buttonComponentList.new_requisition = (params) => (
     </Tooltip>
 );
 
+buttonComponentList.edit_requisition = (params) => (
+    <Tooltip 
+        title="Edição não permitida"
+        disableHoverListener={params.requisitionEditStatus || params.roleId != 1}
+    >
+        <span>
+            <Button 
+                disableRipple
+                variant="raised"
+                disabled={!params.requisitionEditStatus && params.roleId == 1}
+                size="large"
+                color="primary" 
+                href={route('updateRequisition.get', { 'requisitionId': params.requisitionId })}
+                sx={{ width: '100%', ...buttonSx }}
+                startIcon={<ModeEditIcon />}
+            >
+                Editar Requerimento
+            </Button>
+        </span>
+    </Tooltip>
+);
+
 buttonComponentList.export = () => (
     <Button 
         disableRipple
@@ -90,7 +115,7 @@ buttonComponentList.send_to_department = (params) => {
 
     const handleSubmit = () => {
         router.post(
-            route('sg.sendToDepartment'), 
+            route('sendToDepartment'), 
             { 
                 'requisitionId': params.requisitionId 
             },
@@ -119,6 +144,34 @@ buttonComponentList.send_to_department = (params) => {
             Enviar para o Departamento
         </Button>
     );
+};
+
+buttonComponentList.export_current = () => {
+    const printDocument = () => {
+        const input = document.getElementById('requisition-paper');
+        html2canvas(input)
+            .then((canvas) => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF();
+                pdf.addImage(imgData, 'PNG', 0, 0, 260, 211);
+                // pdf.output('dataurlnewwindow');
+                pdf.save("download.pdf");
+            });
+    };
+
+    return (
+        <Button 
+            disableRipple
+            variant="raised"
+            sx={buttonSx} 
+            size="large"
+            color="primary"
+            startIcon={<ReviewsIcon />}
+            onClick={printDocument}
+            >
+            Exportar requerimento
+        </Button>
+    )
 };
 
 buttonComponentList.reviews = (params) => {
@@ -157,7 +210,7 @@ buttonComponentList.send_to_reviewers = (params) => {
     const { setDialogTitle, setDialogBody, openDialog, closeDialog } = useDialogContext();
 
     const handleClick = () => {
-        axios.get(route('reviewers'))
+        axios.get(route('reviewer.reviewerPick'))
             .then((response) => {
                 setDialogTitle('Lista de pareceristas');
                 setDialogBody(
@@ -292,6 +345,30 @@ buttonComponentList.submit_review = (params) => {
     )
 };
 
+buttonComponentList.requisition_period = (params) => {
+    return (
+        <Button 
+            variant="contained" 
+            color="primary" 
+            onClick={params.handleOpenRequisitionPeriod}
+        >
+            Período de requerimentos
+        </Button>
+    );
+};
+
+buttonComponentList.add_role = (params) => {
+    return (
+        <Button 
+            variant="contained" 
+            color="primary" 
+            onClick={params.handleOpenAddRole}
+        >
+            Adicionar um papel
+        </Button>
+    );
+};
+
 buttonComponentList.save = (params) => {
     return (
         <Button 
@@ -341,5 +418,7 @@ buttonComponentList.exit = () => {
         </Button>
     );
 }
+
+console.log(buttonComponentList);
 
 export default buttonComponentList;

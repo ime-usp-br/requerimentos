@@ -16,7 +16,7 @@ const RequisitionDetail = ({ label,
                              takenDiscSyllabi, 
                              requestedDiscSyllabi }) => {
     
-                                const theme = useTheme();
+    const theme = useTheme();
     const isLg = useMediaQuery(theme.breakpoints.up('lg'));
 
     const getElevation = () => {
@@ -41,9 +41,7 @@ const RequisitionDetail = ({ label,
             <Header
                 label={label} 
                 roleId={roleId} 
-                useActions={false}
                 userRoles={userRoles}
-                selectedActions={selectedActions}
                 actionsParams={actionsParams}
                 isExit={false} />
 
@@ -59,6 +57,7 @@ const RequisitionDetail = ({ label,
                 <ActionsMenu params={actionsParams} selectedActions={selectedActions} />
 
                 <Paper 
+                    id="requisition-paper"
                     elevation={getElevation()} 
                     sx={{ 
                         padding: { lg: 2 },

@@ -3,7 +3,9 @@ import { Button, Typography, Container, Stack } from '@mui/material';
 import ManageUsers from '../Components/AdminPage/ManageUsers';
 import AddRoleDialog from "../Components/AdminPage/Dialogs/AddRoleDialog";
 import RequisitionsPeriodDialog from "../Components/AdminPage/Dialogs/RequisitionsPeriodDialog";
-
+import Header from '../Components/Atoms/Header';
+import ActionsMenu1 from '../Components/Atoms/ActionsMenu1';
+import { AccessTimeRounded } from '@mui/icons-material';
 
 // Fake users object for testing
 const fakeUsers = [
@@ -27,31 +29,53 @@ const fakeUsers = [
 ];
 
 const AdminPage = ({ users = fakeUsers, requisition_period_status = false }) => {
+    console.log(users);
+    let actionsParams = {};
+
     const [addRoleOpen, setAddRoleOpen] = useState(false);
-    const handleOpenAddRole = () => setAddRoleOpen(true);
+    actionsParams.handleOpenAddRole = () => setAddRoleOpen(true);
     const handleCloseAddRole = () => setAddRoleOpen(false);
 
     const [requisitionPeriodOpen, setRequisitionPeriodOpen] = useState(false);
-    const handleOpenRequisitionPeriod = () => setRequisitionPeriodOpen(true);
+    actionsParams.handleOpenRequisitionPeriod = () => setRequisitionPeriodOpen(true);
     const handleCloseRequisitionPeriod = () => setRequisitionPeriodOpen(false);
 
     return (
-        <Stack spacing={2} padding={2} sx={{alignItems: "flex-start"}}>
-            <Stack spacing={2} width="95%" direction="row" justifyContent="space-between">
-                <Typography component="h1" variant="h4">Administração do sistema</Typography>
-                <Button variant="contained" href={route('list')}>Voltar</Button>
-            </Stack>
-            <Stack spacing={2} width="95%" direction="row" justifyContent="space-between">
+        <Stack 
+            direction='column'
+            sx={{
+                justifyContent: 'space-around',
+                alignItems: 'center',
+                width: '100%',
+                paddingBottom: 20
+            }}
+        >
+            <Header 
+                actionsParams={actionsParams}
+                showRoleSelector={false}
+                label="Administração do sistema"
+                isExit={false}
+            />
+            <Stack
+                direction='column'
+                spacing={4}
+                sx={{
+                    alignItems: 'top',
+                    justifyContent: 'center',
+                    width: '86%',
+                    paddingTop: 4
+                }} 
+            >    
+                <ActionsMenu1 
+                    selectedActions={[['requisition_period', 'add_role']]}
+                    params={actionsParams}
+                />
+                
                 <AddRoleDialog open={addRoleOpen} handleClose={handleCloseAddRole}/>
                 <RequisitionsPeriodDialog requisitionSubmissionIsOpen={false} requisitionEditionIsOpen={true} open={requisitionPeriodOpen} handleClose={handleCloseRequisitionPeriod}/>
-            </Stack>
-            <Stack spacing={2} direction="row">
-                <Button variant="contained" color="primary" onClick={handleOpenRequisitionPeriod}>Período de requerimentos</Button>
-                <Button variant="contained" color="primary" onClick={handleOpenAddRole}>Adicionar um papel</Button>
-            </Stack>
-            <Container>
+                
                 <ManageUsers users={users} />
-            </Container>
+            </Stack>
         </Stack>
     );
 };

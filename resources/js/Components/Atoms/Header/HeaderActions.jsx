@@ -25,7 +25,7 @@ export default function HeaderActions({ roleId,
             }}
             spacing={2}
         >
-            { (roleId != 0) && (userRoles.length > 1) && showRoleSelector && (
+            { showRoleSelector && (roleId != 0) && (userRoles.length > 1) && (
                 <ComboBox
                     size='small'
                     options={userRoles}

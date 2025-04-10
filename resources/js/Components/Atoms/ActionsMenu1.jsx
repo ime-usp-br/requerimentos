@@ -15,13 +15,19 @@ export default function ActionsMenu1({ selectedActions, params }) {
                 selectedActions.map((grouping, groupIndex) =>
                     builder.build(grouping).map((itemBuilder) =>
                         <Paper 
-                            elevation={2}
+                            elevation={0}
                             sx={{
                                 "& .MuiButton-root": {
                                     all: 'init',
                                     paddingY: 1,
                                     paddingX: 1.6,
-                                }
+                                    color: 'white',
+                                    backgroundColor: 'primary.main'
+                                },
+
+                                // "& .MuiButton-root:hover": {
+                                //     opacity: 0.8
+                                // }
                             }}
                         >
                             { itemBuilder(params) }

@@ -45,7 +45,7 @@ const AddRoleDialog = ({ open, handleClose }) => {
 				Adicione um papel
 			</DialogTitle>
 			<DialogContent>
-				<form onSubmit={handleSubmit} autoComplete="off">
+				<form id="role-form" onSubmit={handleSubmit} autoComplete="off">
 					<Stack>
 						<TextField
 							margin="dense"
@@ -97,7 +97,7 @@ const AddRoleDialog = ({ open, handleClose }) => {
 				<Button color="error" onClick={handleClose}>
 					Cancelar
 				</Button>
-				<Button variant="contained" type="submit" form="overlay-form" disabled={processing}>
+				<Button variant="contained" type="submit" form="role-form" disabled={processing}>
 					Adicionar
 				</Button>
 			</DialogActions>
