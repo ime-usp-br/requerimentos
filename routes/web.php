@@ -8,7 +8,7 @@ use App\Http\Controllers\ListController;
 use App\Http\Controllers\RequisitionController;
 use App\Http\Controllers\LoginController;
 
-// use App\Http\Controllers\SGController;
+use App\Http\Controllers\SGController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RecordController;
@@ -51,12 +51,10 @@ Route::middleware('auth')->group(function () {
     
     Route::group(['middleware' => CheckCurrentRole::class . ":" . RoleName::SG .
                                                             ',' . RoleName::SECRETARY], function () {
-        Route::get('/admin', function () {
-            return Inertia::render('AdminPage');
-        })->name('admin');
+        Route::get('/admin', [SGController::class, 'admin'])->name('admin');
         Route::post('/dar-papel', [RoleController::class, 'addRole'])->name('role.add');
         Route::post('/remover-papel', [RoleController::class, 'removeRole'])->name('role.remove');
-        Route::get('/escolher-parecerista/{requisitionId}', [ReviewController::class, 'reviewerPick'])->name('reviewer.reviewerPick');
+        Route::get('/escolher-parecerista', [ReviewController::class, 'reviewerPick'])->name('reviewer.reviewerPick');
         Route::post('/cadastrado/{requisitionId}', [RequisitionController::class, 'registered'])->name('registered');
         Route::get('/exportar-requerimentos', [RequisitionController::class, 'exportRequisitionsGet'])->name('exportRequisitionsGet');
         Route::post('/exportar-requerimentos', [RequisitionController::class, 'exportRequisitionsPost'])->name('exportRequisitionsPost');
@@ -67,9 +65,11 @@ Route::middleware('auth')->group(function () {
     ',' . RoleName::REVIEWER], function () {
         Route::get('/pareceres/{requisitionId}', [ReviewController::class, 'reviews'])->name('reviewer.reviews');
         
-        Route::post('/enviar-requerimento/{requisitionId}', [ReviewController::class, 'createReview'])->name('reviewer.sendToReviewer');
+        Route::post('/enviar-requerimento', [ReviewController::class, 'createReview'])->name('reviewer.sendToReviewer');
         
         Route::get('/historico/requerimento/{requisitionId}', [RecordController::class, 'requisitionRecord'])->name('record.requisition');
+    
+        Route::post('/enviar-ao-departamento', [RequisitionController::class, 'sendToDepartment'])->name('sendToDepartment');
     });
 });
     // // Route::prefix('sg')->middleware(CheckCurrentRole::class . ":" . RoleName::SG)->group(function () {

@@ -66,12 +66,14 @@ class RequisitionController extends Controller
                 $selectedActions = [];
                 break;
             case RoleId::SG:
-                $selectedActions = [['send_to_department'], 
+                $selectedActions = [['send_to_department'],
+                                    ['edit_requisition'], 
                                     ['send_to_reviewers', 
                                      'reviews'], 
                                     ['requisition_history'], 
                                     ['registered',
-                                     'automatic_requisition']];
+                                     'automatic_requisition',
+                                     'export_current']];
                 break;
             case RoleId::SECRETARY:
                 $selectedActions =  [['send_to_reviewers', 
