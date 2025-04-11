@@ -3,8 +3,8 @@ import { Button, Typography, Container, Stack } from '@mui/material';
 import ManageUsers from '../Components/AdminPage/ManageUsers';
 import AddRoleDialog from "../Components/AdminPage/Dialogs/AddRoleDialog";
 import RequisitionsPeriodDialog from "../Components/AdminPage/Dialogs/RequisitionsPeriodDialog";
-import Header from '../Components/Atoms/Header';
-import ActionsMenu1 from '../Components/Atoms/ActionsMenu1';
+import Header from '../Components/Header/Header';
+import ActionsMenuBar from '../Components/Atoms/ActionsMenuBar';
 import { AccessTimeRounded } from '@mui/icons-material';
 
 // Fake users object for testing
@@ -66,7 +66,7 @@ const AdminPage = ({ users = fakeUsers, requisition_period_status = false }) => 
                     paddingTop: 4
                 }} 
             >    
-                <ActionsMenu1 
+                <ActionsMenuBar 
                     selectedActions={[['requisition_period', 'add_role']]}
                     params={actionsParams}
                 />

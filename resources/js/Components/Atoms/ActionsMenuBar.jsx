@@ -1,10 +1,10 @@
 import React from 'react'
 import { Stack, Divider, Paper } from '@mui/material';
 
-import Builder from '../RequisitionList/RequisitionListBody/builder';
-import buttonComponentList from '../RequisitionList/RequisitionListBody/UserActions/buttonComponentList';
+import Builder from './ComponentBuilder/Builder';
+import buttonComponentList from './ComponentBuilder/buttonComponentList';
 
-export default function ActionsMenu1({ selectedActions, params }) {
+export default function ActionsMenuBar({ selectedActions, params }) {
     let builder = new Builder(buttonComponentList);
     return (
         <Stack 
@@ -23,11 +23,7 @@ export default function ActionsMenu1({ selectedActions, params }) {
                                     paddingX: 1.6,
                                     color: 'white',
                                     backgroundColor: 'primary.main'
-                                },
-
-                                // "& .MuiButton-root:hover": {
-                                //     opacity: 0.8
-                                // }
+                                }
                             }}
                         >
                             { itemBuilder(params) }

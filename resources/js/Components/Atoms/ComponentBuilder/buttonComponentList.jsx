@@ -1,11 +1,8 @@
 import React from "react";
 import { Button, Tooltip, DialogActions, DialogContent, DialogContentText, Divider } from "@mui/material";
-import { router } from "@inertiajs/react"
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
-import { useDialogContext } from '../../../Context/useDialogContext';
-import ListOfReviewers from "./ListOfReviewers";
-import ActionSuccessful from "../../../Atoms/Header/DialogBody/ActionSuccessful";
+import { useDialogContext } from '../../Context/useDialogContext';
+import ListOfReviewers from "../../Dialogs/ReviewerPicker";
+import ActionSuccessful from "../../Dialogs/ActionSuccessful";
 import axios from "axios";
 
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
@@ -24,23 +21,18 @@ import AssignmentReturnIcon from '@mui/icons-material/AssignmentReturn';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 
 const buttonSx = {
-    padding: 0,
-    margin: 0,
-    width: '100%',
-    textTransform: 'none',
-    alignItems: 'left',
-    justifyContent: 'flex-start',
-    backgroundColor:'transparent',
-    '&:hover': {
-        background: 'none',
-    }
+    // padding: 0,
+    // margin: 0,
+    // width: '100%',
+    // alignItems: 'left',
+    // justifyContent: 'flex-start'
 };
 
 let buttonComponentList = {};
 
 buttonComponentList.admin = () => (
     <Button 
-        disableRipple
+        // disableRipple
         variant="raised"
         sx={buttonSx} 
         size="large"

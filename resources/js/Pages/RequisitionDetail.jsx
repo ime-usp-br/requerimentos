@@ -2,8 +2,8 @@ import React from 'react';
 import { Container, Paper, Typography, Stack, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useTheme, useMediaQuery,
         } from '@mui/material';
 
-import Header from '../Components/Atoms/Header';
-import ActionsMenu from '../Components/Atoms/ActionsMenu2';
+import Header from '../Components/Header/Header';
+import ActionsMenu from '../Components/Atoms/ActionsMenuBox';
 
 const RequisitionDetail = ({ label,
                              roleId,

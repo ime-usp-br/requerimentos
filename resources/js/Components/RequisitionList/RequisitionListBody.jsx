@@ -1,9 +1,7 @@
 import React from "react";
 import { Stack } from "@mui/material";
-
-import ActionsMenu1 from "../Atoms/ActionsMenu1";
-
-import List from './RequisitionListBody/List';
+import ActionsMenuBar from "../Atoms/ActionsMenuBar";
+import RequisitionListTable from './RequisitionListTable';
 
 export default function RequisitionListBody({ requisitions, 
                                               selectedColumns,
@@ -20,8 +18,8 @@ export default function RequisitionListBody({ requisitions,
                 paddingTop: 4
             }} 
         >
-            <ActionsMenu1 params={actionsParams} selectedActions={selectedActions} />
-            <List 
+            <ActionsMenuBar params={actionsParams} selectedActions={selectedActions} />
+            <RequisitionListTable 
                 requisitions={requisitions} 
                 selectedColumns={selectedColumns}
             />

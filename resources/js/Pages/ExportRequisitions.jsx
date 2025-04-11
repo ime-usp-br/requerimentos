@@ -1,7 +1,7 @@
 import React from 'react';
 import { Stack, Button } from '@mui/material';
 
-import Header from '../Components/Atoms/Header';
+import Header from '../Components/Header/Header';
 import Filters from "../Components/ExportRequisitions/Filters";
 import { useForm } from '@inertiajs/react';
 import axios from 'axios';

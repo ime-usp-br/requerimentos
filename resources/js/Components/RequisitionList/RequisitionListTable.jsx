@@ -4,8 +4,8 @@ import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Link, Box } from '@mui/material';
 
-import Builder from './builder';
-import columnTypes from "./columnTypes";
+import Builder from '../Atoms/ComponentBuilder/Builder';
+import columnTypes from "../Atoms/ComponentBuilder/columnTypes";
 
 export default function List({ requisitions, selectedColumns }) {
     let textStyle = {
@@ -14,7 +14,6 @@ export default function List({ requisitions, selectedColumns }) {
             fontSize: 18,
         },
     };
-
     let builder = new Builder(columnTypes);
     let columns = useMemo(
         () => builder.build(selectedColumns),

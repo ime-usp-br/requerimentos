@@ -1,10 +1,10 @@
 import React from 'react';
 import { router } from '@inertiajs/react'
-import { Stack, Paper } from '@mui/material';
+import { Stack } from '@mui/material';
 
-import ComboBox from '../ComboBox';
-import Builder from '../../RequisitionList/RequisitionListBody/builder';
-import buttonComponentList from '../../RequisitionList/RequisitionListBody/UserActions/buttonComponentList';
+import ComboBox from '../Atoms/ComboBox';
+import Builder from '../Atoms/ComponentBuilder/Builder';
+import buttonComponentList from '../Atoms/ComponentBuilder/buttonComponentList';
 
 export default function HeaderActions({ roleId,
                                         showRoleSelector, 
@@ -25,7 +25,7 @@ export default function HeaderActions({ roleId,
             }}
             spacing={2}
         >
-            { showRoleSelector && (roleId != 0) && (userRoles.length > 1) && (
+            { showRoleSelector && (userRoles.length > 1) && (
                 <ComboBox
                     size='small'
                     options={userRoles}
