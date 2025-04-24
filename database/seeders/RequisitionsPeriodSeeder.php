@@ -15,7 +15,8 @@ class RequisitionsPeriodSeeder extends Seeder
     public function run()
     {
         RequisitionsPeriod::Create(
-            ['is_enabled' => true]
+            ['is_creation_enabled' => true],
+            ['is_update_enabled' => true]
         );
     }
 }

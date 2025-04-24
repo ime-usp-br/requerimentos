@@ -1,47 +1,49 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Button, Typography, Paper, Stack, TextField } from "@mui/material";
 import { useForm } from "@inertiajs/react";
 import {
     MaterialReactTable,
     useMaterialReactTable,
 } from "material-react-table";
-import RemoveRoleConfirmationDialog from "./Dialogs/RemoveRoleConfirmationDialog";
+import RemoveRoleConfirmationDialog from "../Dialogs/RemoveRoleConfirmationDialog";
+import { useDialogContext } from '../Context/useDialogContext';
+import axios from "axios";
 
-const ManageUsers = ({ users }) => {
-    const [globalFilter, setGlobalFilter] = React.useState("");
 
-    const [confirmationOpen, setOpenConfirmation] = React.useState(false);
-    const handleOpenConfirmation = () => setOpenConfirmation(true);
-    const handleCloseConfirmation = () => setOpenConfirmation(false);
+function ManageUsers({ users }) {
+    const [globalFilter, setGlobalFilter] = useState("");
 
-    const handleRemoveRole = (name, nusp, role) => {
-        setData("name", name);
-        setData("nusp", nusp);
-        setData("role", role);
-        handleOpenConfirmation();
-    };
+    const { setDialogTitle, setDialogBody, openDialog, closeDialog } = useDialogContext();
 
-    const removeRole = () => {
+    function handleRemoveRole(name, nusp, role) {
+        const updatedData = { name, nusp, role };
+    
+        setDialogTitle("Confirmação de remoção de papel");
+        setDialogBody(
+            <RemoveRoleConfirmationDialog
+                removeRole={() => removeRole(updatedData)}
+                data={updatedData}
+            />
+        );
+        openDialog();
+    }
+    
+    async function removeRole(updatedData) {
         setUsersData((prevData) =>
             prevData.filter(
                 (user) =>
-                    !(user.codpes === data.nusp && user.role === data.role)
+                    !(user.codpes === updatedData.nusp && user.role == updatedData.role)
             )
         );
-        post(route("role.remove"), {
-            onSuccess: () => {},
-        });
+    
+        try {
+            await axios.post(route("role.remove"), updatedData);
+        } catch (error) {
+            console.error("Error:", error.response?.data || error.message);
+        }
+    }
 
-        handleCloseConfirmation();
-    };
-
-    const { data, setData, post } = useForm({
-        name: "",
-        nusp: "",
-        role: "",
-    });
-
-    const [usersData, setUsersData] = React.useState(() =>
+    const [usersData, setUsersData] = useState(() =>
         users.flatMap((user) =>
             user.roles.map((role) => ({
                 id: user.id,
@@ -93,15 +95,12 @@ const ManageUsers = ({ users }) => {
     ]);
 
     let headerStyle = {
-        //simple styling with the `sx` prop, works just like a style prop in this example
         sx: {
             fontSize: 18,
-            // padding: 1
         },
     };
 
     let bodyStyle = {
-        //simple styling with the `sx` prop, works just like a style prop in this example
         sx: {
             fontSize: 18,
         },
@@ -127,12 +126,6 @@ const ManageUsers = ({ users }) => {
 
     return (
         <Stack spacing={2}>
-            <RemoveRoleConfirmationDialog
-                open={confirmationOpen}
-                handleClose={handleCloseConfirmation}
-                removeRole={removeRole}
-                data={data}
-            />
             <Typography variant="h5">Usuários cadastrados</Typography>
             <TextField
                 label="Pesquisar"

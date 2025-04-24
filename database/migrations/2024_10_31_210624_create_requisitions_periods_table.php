@@ -15,7 +15,8 @@ class CreateRequisitionsPeriodsTable extends Migration
     {
         Schema::create('requisitions_periods', function (Blueprint $table) {
             $table->id();
-            $table->boolean('is_enabled')->default(true);
+            $table->boolean('is_creation_enabled')->default(true);
+            $table->boolean('is_update_enabled')->default(true);
             $table->timestamps();
         });
     }

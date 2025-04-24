@@ -25,6 +25,7 @@ class LoginController extends Controller
 			$user->email = $userSenhaUnica->email;
 			$user->name = $userSenhaUnica->nompes;
 			$user->current_role_id = RoleId::STUDENT;
+			$user->assignRole(RoleId::STUDENT);
 			$user->save();
 		}
 		Auth::login($user, true);

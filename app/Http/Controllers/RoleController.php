@@ -57,7 +57,8 @@ class RoleController extends Controller
             }
         }
 
-        return response()->noContent();
+
+        return response()->json(['success' => true], 200);
     }
 
     public function switchRole(Request $request) {

@@ -2,6 +2,7 @@
 
 use Inertia\Inertia;
 use App\Enums\RoleName;
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ListController;
@@ -49,9 +50,16 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/trocar-papel', [RoleController::class, 'switchRole'])->name('role.switch');
     
+
+
+    Route::group(['middleware' => CheckCurrentRole::class . ":" . RoleName::SG], function () {
+        Route::get('/status-periodo-requerimento', [AdminController::class, 'getRequisitionPeriodStatus'])->name('admin.getRequisitionPeriodStatus');
+        Route::post('/alterar-periodo-requerimento', [AdminController::class, 'setRequisitionPeriodStatus'])->name('admin.setRequisitionPeriodStatus');
+    });
+    
     Route::group(['middleware' => CheckCurrentRole::class . ":" . RoleName::SG .
                                                             ',' . RoleName::SECRETARY], function () {
-        Route::get('/admin', [SGController::class, 'admin'])->name('admin');
+        Route::get('/admin', [AdminController::class, 'admin'])->name('admin');
         Route::post('/dar-papel', [RoleController::class, 'addRole'])->name('role.add');
         Route::post('/remover-papel', [RoleController::class, 'removeRole'])->name('role.remove');
         Route::get('/escolher-parecerista', [ReviewController::class, 'reviewerPick'])->name('reviewer.reviewerPick');

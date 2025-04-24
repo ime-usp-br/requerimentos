@@ -1,45 +1,10 @@
-import React, { useState } from 'react';
-import { Button, Typography, Container, Stack } from '@mui/material';
+import React from 'react';
+import { Stack } from '@mui/material';
 import ManageUsers from '../Components/AdminPage/ManageUsers';
-import AddRoleDialog from "../Components/AdminPage/Dialogs/AddRoleDialog";
-import RequisitionsPeriodDialog from "../Components/AdminPage/Dialogs/RequisitionsPeriodDialog";
 import Header from '../Components/Header/Header';
 import ActionsMenuBar from '../Components/Atoms/ActionsMenuBar';
-import { AccessTimeRounded } from '@mui/icons-material';
 
-// Fake users object for testing
-const fakeUsers = [
-    {
-        id: 1,
-        name: 'John Doe',
-        codpes: '123456',
-        roles: [
-            { name: 'Parecerista' },
-            { name: 'Serviço de Graduação' }
-        ]
-    },
-    {
-        id: 2,
-        name: 'Jane Smith',
-        codpes: '654321',
-        roles: [
-            { name: 'Secretaria de Departamento' }
-        ]
-    }
-];
-
-const AdminPage = ({ users = fakeUsers, requisition_period_status = false }) => {
-    console.log(users);
-    let actionsParams = {};
-
-    const [addRoleOpen, setAddRoleOpen] = useState(false);
-    actionsParams.handleOpenAddRole = () => setAddRoleOpen(true);
-    const handleCloseAddRole = () => setAddRoleOpen(false);
-
-    const [requisitionPeriodOpen, setRequisitionPeriodOpen] = useState(false);
-    actionsParams.handleOpenRequisitionPeriod = () => setRequisitionPeriodOpen(true);
-    const handleCloseRequisitionPeriod = () => setRequisitionPeriodOpen(false);
-
+function AdminPage({ users }){
     return (
         <Stack 
             direction='column'
@@ -51,7 +16,6 @@ const AdminPage = ({ users = fakeUsers, requisition_period_status = false }) => 
             }}
         >
             <Header 
-                actionsParams={actionsParams}
                 showRoleSelector={false}
                 label="Administração do sistema"
                 isExit={false}
@@ -68,11 +32,7 @@ const AdminPage = ({ users = fakeUsers, requisition_period_status = false }) => 
             >    
                 <ActionsMenuBar 
                     selectedActions={[['requisition_period', 'add_role']]}
-                    params={actionsParams}
                 />
-                
-                <AddRoleDialog open={addRoleOpen} handleClose={handleCloseAddRole}/>
-                <RequisitionsPeriodDialog requisitionSubmissionIsOpen={false} requisitionEditionIsOpen={true} open={requisitionPeriodOpen} handleClose={handleCloseRequisitionPeriod}/>
                 
                 <ManageUsers users={users} />
             </Stack>

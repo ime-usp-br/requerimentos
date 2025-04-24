@@ -1,10 +1,8 @@
 import React from "react";
 import {
 	Button,
-	Dialog,
 	DialogActions,
 	DialogContent,
-	DialogTitle,
 	TextField,
 	Radio,
 	RadioGroup,
@@ -15,8 +13,11 @@ import {
 	Collapse
 } from "@mui/material";
 import { useForm } from "@inertiajs/react";
+import { useDialogContext } from '../Context/useDialogContext';
 
-const AddRoleDialog = ({ open, handleClose }) => {
+function AddRoleDialog() {
+	const { closeDialog } = useDialogContext();
+
 	const { data, setData, post, processing, errors } = useForm({
 		nusp: '',
 		role: '',
@@ -30,20 +31,15 @@ const AddRoleDialog = ({ open, handleClose }) => {
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		post(route('role.add'), {
-			onSuccess: () => handleClose()
+			onSuccess: () => {
+				closeDialog();
+				window.location.reload();
+			}
 		});
 	};
 
 	return (
-		<Dialog
-			open={open}
-			onClose={handleClose}
-			aria-labelledby="alert-dialog-title"
-			aria-describedby="alert-dialog-description"
-		>
-			<DialogTitle id="alert-dialog-title">
-				Adicione um papel
-			</DialogTitle>
+		<>
 			<DialogContent>
 				<form id="role-form" onSubmit={handleSubmit} autoComplete="off">
 					<Stack>
@@ -94,14 +90,14 @@ const AddRoleDialog = ({ open, handleClose }) => {
 				</form>
 			</DialogContent>
 			<DialogActions>
-				<Button color="error" onClick={handleClose}>
+				<Button color="error" onClick={closeDialog}>
 					Cancelar
 				</Button>
 				<Button variant="contained" type="submit" form="role-form" disabled={processing}>
 					Adicionar
 				</Button>
 			</DialogActions>
-		</Dialog>
+		</>
 	);
 };
 
