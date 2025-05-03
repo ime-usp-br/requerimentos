@@ -3,13 +3,13 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use App\Models\Department;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Database\Seeders\RoleAndPermissionSeeder;
 use Database\Seeders\DepartmentSeeder;
 use App\Enums\RoleId;
-
+use App\Enums\RoleName;
+use App\Enums\DepartmentId;
 class RoleControllerTest extends TestCase
 {
     use RefreshDatabase;
@@ -35,38 +35,50 @@ class RoleControllerTest extends TestCase
         $this->asRole(RoleID::SG);
 
         $user = User::factory()->create([
+            'id' => '123456',
             'codpes' => '123456'
         ]);
 
         $response = $this->post('/dar-papel', [
             'nusp' => $user->codpes,
-            'role' => "Serviço de Graduação",
-            'department' => ''
+            'role_id' => RoleId::SG,
+            'department_id' => ''
         ]);
-
-        $response->assertRedirect();
-        $user->refresh(); 
-        $this->assertTrue($user->hasRole(RoleID::SG));
+        $response->assertSuccessful();
+        $user->refresh();
+        $this->assertDatabaseHas('department_user_roles', [
+            'user_id' => $user->id,
+            'role_id' => RoleId::SG,
+            'department_id' => null
+        ]);
 
         $response = $this->post('/dar-papel', [
             'nusp' =>  $user->codpes,
-            'role' => 'Parecerista',
-            'department' => ''
+            'role_id' => RoleId::REVIEWER,
+            'department_id' => DepartmentId::MAC
         ]);
 
-        $response->assertRedirect();
+        $response->assertSuccessful();
         $user->refresh(); 
-        $this->assertTrue($user->hasRole(RoleID::REVIEWER));
+        $this->assertDatabaseHas('department_user_roles', [
+            'user_id' => $user->id,
+            'role_id' => RoleId::REVIEWER,
+            'department_id' => DepartmentId::MAC
+        ]);
 
         $response = $this->post('/dar-papel', [
             'nusp' =>  $user->codpes,
-            'role' => 'Secretaria',
-            'department' => 'MAC'
+            'role_id' => RoleId::SECRETARY,
+            'department_id' => DepartmentId::MAC
         ]);
 
-        $response->assertRedirect();
+        $response->assertSuccessful();
         $user->refresh(); 
-        $this->assertTrue($user->departments()->where('code', 'MAC')->exists());        
+        $this->assertDatabaseHas('department_user_roles', [
+            'user_id' => $user->id,
+            'role_id' => RoleId::SECRETARY,
+            'department_id' => DepartmentId::MAC
+        ]);
     }
 
     public function test_secretary_can_add_reviewer_and_secretary()
@@ -79,24 +91,31 @@ class RoleControllerTest extends TestCase
 
         $response = $this->post('/dar-papel', [
             'nusp' => $user->codpes,
-            'role' => 'Parecerista',
-            'department' => ''
+            'role_id' => RoleId::REVIEWER,
+            'department_id' => DepartmentId::MAC
         ]);
 
-        $response->assertRedirect();
+        $response->assertSuccessful();
         $user->refresh();
-        $this->assertTrue($user->hasRole('Parecerista'));
+        $this->assertDatabaseHas('department_user_roles', [
+            'user_id' => $user->id,
+            'role_id' => RoleId::REVIEWER,
+            'department_id' => DepartmentId::MAC
+        ]);
         
         $response = $this->post('/dar-papel', [
             'nusp' => $user->codpes,
-            'role' => 'Secretaria',
-            'department' => 'MAC'
+            'role_id' => RoleId::SECRETARY,
+            'department_id' => DepartmentId::MAC
         ]);
         
-        $response->assertRedirect();
+        $response->assertSuccessful();
         $user->refresh();
-        $this->assertTrue($user->hasRole('Secretaria'));
-        $this->assertTrue($user->departments()->where('code', 'MAC')->exists());
+        $this->assertDatabaseHas('department_user_roles', [
+            'user_id' => $user->id,
+            'role_id' => RoleId::SECRETARY,
+            'department_id' => DepartmentId::MAC
+        ]);
     }
 
     public function test_secretary_cannot_add_sg()
@@ -109,8 +128,8 @@ class RoleControllerTest extends TestCase
         
         $response = $this->post('/dar-papel', [
             'nusp' => $user->codpes,
-            'role' => 'Serviço de Graduação',
-            'department' => ''
+            'role_id' => RoleId::SG,
+            'department_id' => null
         ]);
 
         $response->assertForbidden();
@@ -123,8 +142,8 @@ class RoleControllerTest extends TestCase
 
         $response = $this->post('/dar-papel', [
             'nusp' => $user->codpes,
-            'role' => 'Secretaria',
-            'department' => 'MAC'
+            'role_id' => RoleId::SECRETARY,
+            'department_id' => DepartmentId::MAC
         ]);
 
         $response->assertForbidden();
@@ -138,8 +157,8 @@ class RoleControllerTest extends TestCase
 
         $response = $this->post('/dar-papel', [
             'nusp' => $user->codpes,
-            'role' => 'Secretaria',
-            'department' => 'MAC'
+            'role_id' => RoleId::SECRETARY,
+            'department_id' => DepartmentId::MAC
         ]);
 
         $response->assertForbidden();
@@ -150,42 +169,51 @@ class RoleControllerTest extends TestCase
         $this->asRole(RoleID::SG);
 
         $user = User::factory()->create(['codpes' => '123456']);
-        $user->assignRole('Parecerista');
-        $user->assignRole('Serviço de Graduação');
-        $user->assignRole('Secretaria');
-        $department = Department::where('code', 'MAC')->first();
-        $user->departments()->attach($department->id);
+        $user->assignRole(RoleId::SECRETARY, DepartmentId::MAC);
+        $user->assignRole(RoleId::REVIEWER, DepartmentId::MAC);
+        $user->assignRole(RoleId::SG, null);
 
         $response = $this->post('/remover-papel', [
             'nusp' => '123456',
-            'role' => 'Secretaria',
-            'department' => 'MAC'
+            'role_id' => RoleId::SECRETARY,
+            'department_id' => DepartmentId::MAC
         ]);
 
-        $response->assertNoContent();
+        $response->assertSuccessful();
         $user->refresh();
-        $this->assertFalse($user->hasRole('Secretaria'));
-        $this->assertFalse($user->departments()->where('code', 'MAC')->exists());
+        $this->assertDatabaseMissing('department_user_roles', [
+            'user_id' => $user->id,
+            'role_id' => RoleId::SECRETARY,
+            'department_id' => DepartmentId::MAC
+        ]);
 
         $response = $this->post('/remover-papel', [
             'nusp' => '123456',
-            'role' => 'Parecerista',
-            'department' => ''
+            'role_id' => RoleId::REVIEWER,
+            'department_id' => DepartmentId::MAC
         ]);
 
-        $response->assertNoContent();
+        $response->assertSuccessful();
         $user->refresh();
-        $this->assertFalse($user->hasRole('Parecerista'));
+        $this->assertDatabaseMissing('department_user_roles', [
+            'user_id' => $user->id,
+            'role_id' => RoleId::REVIEWER,
+            'department_id' => DepartmentId::MAC
+        ]);
 
         $response = $this->post('/remover-papel', [
             'nusp' => '123456',
-            'role' => 'Serviço de Graduação',
-            'department' => ''
+            'role_id' => RoleId::SG,
+            'department_id' => null
         ]);
 
-        $response->assertNoContent();
+        $response->assertSuccessful();
         $user->refresh();
-        $this->assertFalse($user->hasRole('Serviço de Graduação'));
+        $this->assertDatabaseMissing('department_user_roles', [
+            'user_id' => $user->id,
+            'role_id' => RoleId::SG,
+            'department_id' => null
+        ]);
     }
 
     public function test_secretary_can_remove_reviewer_and_secretary_roles()
@@ -193,31 +221,28 @@ class RoleControllerTest extends TestCase
         $this->asRole(RoleID::SECRETARY);
 
         $user = User::factory()->create(['codpes' => '123456']);
-        $user->assignRole('Secretaria');
-        $user->assignRole('Parecerista');
-        $department = Department::where('code', 'MAC')->first();
-        $user->departments()->attach($department->id);
+        $user->assignRole(RoleId::SECRETARY, DepartmentId::MAC);
+        $user->assignRole(RoleId::REVIEWER, DepartmentId::MAC);
 
         $response = $this->post('/remover-papel', [
             'nusp' => '123456',
-            'role' => 'Secretaria',
-            'department' => 'MAC'
+            'role_id' => RoleId::SECRETARY,
+            'department_id' => DepartmentId::MAC
         ]);
 
-        $response->assertNoContent();
+        $response->assertSuccessful();
         $user->refresh();
-        $this->assertFalse($user->hasRole('Secretaria'));
-        $this->assertFalse($user->departments()->where('code', 'MAC')->exists());
+        $this->assertFalse($user->hasRole(RoleId::SECRETARY, DepartmentId::MAC));
 
         $response = $this->post('/remover-papel', [
             'nusp' => '123456',
-            'role' => 'Parecerista',
-            'department' => ''
+            'role_id' => RoleId::REVIEWER,
+            'department_id' => DepartmentId::MAC
         ]);
 
-        $response->assertNoContent();
+        $response->assertSuccessful();
         $user->refresh();
-        $this->assertFalse($user->hasRole('Parecerista'));
+        $this->assertFalse($user->hasRole(RoleId::REVIEWER, DepartmentId::MAC));
     }
 
     public function test_secretary_cannot_remove_sg_role()
@@ -225,12 +250,12 @@ class RoleControllerTest extends TestCase
         $this->asRole(RoleID::SECRETARY);
 
         $user = User::factory()->create(['codpes' => '123456']);
-        $user->assignRole('Serviço de Graduação');
+        $user->assignRole(RoleId::SG, null);
 
         $response = $this->post('/remover-papel', [
             'nusp' => '123456',
-            'role' => 'Serviço de Graduação',
-            'department' => ''
+            'role_id' => RoleId::SG,
+            'department_id' => ''
         ]);
 
         $response->assertForbidden();
@@ -242,14 +267,12 @@ class RoleControllerTest extends TestCase
         $this->asRole(RoleID::REVIEWER);
 
         $user = User::factory()->create(['codpes' => '123456']);
-        $user->assignRole('Secretaria');
-        $department = Department::where('code', 'MAC')->first();
-        $user->departments()->attach($department->id);
+        $user->assignRole(RoleId::SECRETARY, DepartmentId::MAC);
 
         $response = $this->post('/remover-papel', [
             'nusp' => '123456',
-            'role' => 'Secretaria',
-            'department' => 'MAC'
+            'role_id' => RoleId::SECRETARY,
+            'department_id' => DepartmentId::MAC
         ]);
 
         $response->assertForbidden();
@@ -260,14 +283,12 @@ class RoleControllerTest extends TestCase
         $this->asRole(RoleID::STUDENT);
 
         $user = User::factory()->create(['codpes' => '123456']);
-        $user->assignRole('Secretaria');
-        $department = Department::where('code', 'MAC')->first();
-        $user->departments()->attach($department->id);
+        $user->assignRole(RoleId::SECRETARY, DepartmentId::MAC);
 
         $response = $this->post('/remover-papel', [
             'nusp' => '123456',
-            'role' => 'Secretaria',
-            'department' => 'MAC'
+            'role_id' => RoleId::SECRETARY,
+            'department_id' => DepartmentId::MAC
         ]);
 
         $response->assertForbidden();
@@ -279,25 +300,29 @@ class RoleControllerTest extends TestCase
             'codpes' => '123456',
             'current_role_id' => RoleId::SG
         ]);
-        $user->assignRole(RoleId::SG);
-        $user->assignRole(RoleId::REVIEWER);
+        $user->assignRole(RoleId::SG, null);
+        $user->assignRole(RoleId::REVIEWER, DepartmentId::MAC);
         $this->actingAs($user);
 
         $response = $this->post('/trocar-papel', [
-            'role-switch' => RoleId::REVIEWER
+            'role_id' => RoleId::REVIEWER,
+            'department_id' => DepartmentId::MAC
         ]);
 
         $response->assertRedirect();
         $user->refresh();
         $this->assertEquals(RoleId::REVIEWER, $user->current_role_id);
+        $this->assertEquals(DepartmentId::MAC, $user->current_department_id);
 
         $response = $this->post('/trocar-papel', [
-            'role-switch' => RoleId::SG
+            'role_id' => RoleId::SG,
+            'department_id' => "",
         ]);
 
         $response->assertRedirect();
         $user->refresh();
         $this->assertEquals(RoleId::SG, $user->current_role_id);
+        $this->assertNull($user->current_department_id);
     }
 
     public function test_user_cannot_switch_to_role_they_do_not_own()
@@ -306,11 +331,12 @@ class RoleControllerTest extends TestCase
             'codpes' => '123456',
             'current_role_id' => RoleId::SG
         ]);
-        $user->assignRole(RoleId::SG);
+        $user->assignRole(RoleId::SG, null);
         $this->actingAs($user);
 
         $response = $this->post('/trocar-papel', [
-            'role-switch' => RoleId::REVIEWER
+            'role_id' => RoleId::REVIEWER,
+            'department_id' => DepartmentId::MAC
         ]);
 
         $response->assertForbidden();

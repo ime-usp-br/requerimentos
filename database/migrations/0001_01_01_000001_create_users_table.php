@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->foreignId('current_role_id')->references('id')->on('roles');
+            $table->foreignId('current_department_id')->nullable(); // will receive correct relation with department on department migration
             $table->string('password')->nullable();
             $table->rememberToken();
             $table->timestamps();

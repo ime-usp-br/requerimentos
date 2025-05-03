@@ -10,73 +10,66 @@ use Illuminate\Support\Facades\Auth;
 
 class RoleController extends Controller
 {
-    public function addRole(Request $request) {
-        $validationRules = [
-            'nusp' => 'required | numeric | integer',
-            'role' => 'required',
-            'department' => 'required_if:role,department'
-        ];        
-        $data = $request->validate($validationRules);
-        
-        if ($data['role'] === 'Serviço de Graduação' && !(Auth::user()->current_role_id === RoleId::SG)) {
+    private function validateRoleRequest(Request $request, $additionalRules = []) {
+        $baseRules = [
+            'nusp' => 'required|numeric|integer',
+            'role_id' => 'required|exists:roles,id',
+            'department_id' => 'nullable|required_if:role_id,' . RoleId::SECRETARY . ',' . RoleId::REVIEWER . '|exists:departments,id',
+        ];
+
+        return $request->validate(array_merge($baseRules, $additionalRules));
+    }
+
+    private function checkUnauthorizedSG($roleId) {
+        if ($roleId === RoleId::SG && !(Auth::user()->current_role_id === RoleId::SG)) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
-        
-        $targetUser = User::firstOrCreate(['codpes' => $data['nusp']], ['codpes' => $data['nusp'], 'current_role_id' => 1]);
-        $targetUser->assignRole($data['role']);
-        
-        if ($data['role'] === 'Secretaria') {
-            $department = Department::where('code', $data['department'])->first();
-            if ($department) {
-                $targetUser->departments()->syncWithoutDetaching([$department->id]);
-            }
+
+        return null;
+    }
+
+    public function addRole(Request $request) {
+        $data = $this->validateRoleRequest($request);
+
+        if ($response = $this->checkUnauthorizedSG($data['role_id'])) {
+            return $response;
         }
-        return back();
+
+        $targetUser = User::firstOrCreate(['codpes' => $data['nusp']], ['codpes' => $data['nusp'], 'current_role_id' => 1]);
+        $targetUser->assignRole($data['role_id'], $data['department_id'] ?? null);
+        return response()->json(['success' => true], 200);
     }
 
     public function removeRole(Request $request) {
-        $validationRules = [
-            'nusp' => 'required | numeric | integer',
-            'role' => 'required',
-            'department' => 'required_if:role,department'
-        ];        
-        $data = $request->validate($validationRules);
+        $data = $this->validateRoleRequest($request);
 
-        if ($data['role'] === 'Serviço de Graduação' && !(Auth::user()->current_role_id === RoleId::SG)) {
-            return response()->json(['error' => 'Unauthorized'], 403);
+        if ($response = $this->checkUnauthorizedSG($data['role_id'])) {
+            return $response;
         }
-        
+
         $user = User::where('codpes', $data['nusp'])->first();
-        $user->removeRole($data['role']);
+        $user->removeRole($data['role_id'], $data['department_id'] ?? null);
         
-        if ($data['role'] === 'Secretaria') {
-            $departmentCode = $data['department'];
-            $department = Department::where('code', $departmentCode)->first();
-            if ($department) {
-                $user->departments()->detach($department->id);
-            }
-        }
-
-
         return response()->json(['success' => true], 200);
     }
 
     public function switchRole(Request $request) {
-        $validationRules = [
-            'role-switch' => 'required|exists:roles,id'
-        ];        
-        $data = $request->validate($validationRules);
+        $data = $this->validateRoleRequest($request, [
+            'nusp' => 'nullable'
+        ]);
 
         $user = Auth::user();
-        $newRoleId = (int) $data['role-switch'];
 
-        if (!$user->roles->contains('id', $newRoleId)) {
+        if (!$user->hasRole($data['role_id'], $data['department_id'] ?? null)) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
-        $user->current_role_id = $newRoleId;
-        $user->save();
-        
+        try {
+            $user->changeCurrentRole($data['role_id'], $data['department_id'] ?? null);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 403);
+        }
+
         return redirect()->back();
     }
 }

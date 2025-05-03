@@ -1,4 +1,3 @@
-php
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -15,10 +14,18 @@ return new class extends Migration
             $table->string('name');
             $table->timestamps();
         });
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreign('current_department_id')->references('id')->on('departments')->onDelete('set null');
+        });
     }
 
     public function down()
     {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['current_department_id']);
+        });
+
         Schema::dropIfExists('departments');
     }
 };

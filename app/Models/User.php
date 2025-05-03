@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Models\Role;
 use App\Models\Department;
 use App\Enums\RoleId;
+use App\Models\DepartmentUserRole;
 
 class User extends Authenticatable
 {
@@ -25,7 +26,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'current_role_id',
+        'current_role_id', // references roles.id
+        'current_department_id', // nullable, references departments.id
         'codpes'
     ];
 
@@ -52,18 +54,77 @@ class User extends Authenticatable
         ];
     }
 
-    public function currentRole() {
+    /**
+     * Get all department-role assignments for the user.
+     */
+    public function departmentUserRoles()
+    {
+        return $this->hasMany(DepartmentUserRole::class);
+    }
+
+    /**
+     * Get the current role for the user.
+     */
+    public function currentRole()
+    {
         return $this->belongsTo(Role::class, 'current_role_id');
     }
 
-    public function departments()
+    /**
+     * Get the current department for the user (nullable).
+     */
+    public function currentDepartment()
     {
-        return $this->belongsToMany(Department::class, 'user_departments');
+        return $this->belongsTo(Department::class, 'current_department_id');
     }
 
-    public function isSecretaryOf($departmentCode)
+    /**
+     * Assign a role with an optional department to the user.
+     */
+    public function assignRole($roleId, $departmentId = null)
     {
-        return $this->role_id === RoleId::SECRETARY && 
-               $this->departments()->where('code', $departmentCode)->exists();
+        return DepartmentUserRole::firstOrCreate([
+            'user_id' => $this->id,
+            'role_id' => $roleId,
+            'department_id' => $departmentId,
+        ]);
+    }
+    private function findRole($roleId, $departmentId = null)
+    {
+        $query = DepartmentUserRole::where('user_id', $this->id)
+            ->where('role_id', $roleId);
+
+        if ($departmentId !== null) {
+            $query->where('department_id', $departmentId);
+        }
+
+        return $query->first();
+    }
+
+    public function removeRole($roleId, $departmentId = null): void
+    {
+        $role = $this->findRole($roleId, $departmentId);
+
+        if (!$role) {
+            throw new \Exception('Role not found.');
+        }
+
+        $role->delete();
+    }
+
+    public function hasRole($roleId, $departmentId = null): bool
+    {
+        return $this->findRole($roleId, $departmentId) !== null;
+    }
+
+    public function changeCurrentRole($roleId, $departmentId = null)
+    {
+        if (!$this->hasRole($roleId, $departmentId)) {
+            throw new \Exception('Unauthorized');
+        }
+
+        $this->current_role_id = $roleId;
+        $this->current_department_id = $departmentId;
+        $this->save();
     }
 }

@@ -8,8 +8,8 @@ class Department extends Model
 {
     protected $fillable = ['code', 'name'];
 
-    public function users()
+    public function departmentUserRoles()
     {
-        return $this->belongsToMany(User::class, 'user_departments');
+        return $this->hasMany(DepartmentUserRole::class);
     }
 }

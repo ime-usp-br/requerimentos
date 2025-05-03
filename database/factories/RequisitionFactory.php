@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Enums\Course;
-use App\Enums\Department;
+use App\Enums\DepartmentName;
 use App\Enums\DisciplineType;
 use App\Enums\EventType;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -18,7 +18,7 @@ class RequisitionFactory extends Factory
     public function definition()
     {
         return [
-            'department' => $this->faker->randomElement([Department::EXTERNAL, Department::MAC, Department::MAE, Department::MAT, Department::MAP]), 
+            'department' => $this->faker->randomElement([DepartmentName::EXTERNAL, DepartmentName::MAC, DepartmentName::MAE, DepartmentName::MAT, DepartmentName::MAP]), 
             'requested_disc' => $this->faker->sentence(3),
             'requested_disc_type' => $this->faker->randomElement([DisciplineType::EXTRACURRICULAR, DisciplineType::MANDATORY, DisciplineType::OPTIONAL_ELECTIVE, DisciplineType::OPTIONAL_FREE]),
             'requested_disc_code' => $this->faker->word(),

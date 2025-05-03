@@ -50,8 +50,6 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/trocar-papel', [RoleController::class, 'switchRole'])->name('role.switch');
     
-
-
     Route::group(['middleware' => CheckCurrentRole::class . ":" . RoleName::SG], function () {
         Route::get('/status-periodo-requerimento', [AdminController::class, 'getRequisitionPeriodStatus'])->name('admin.getRequisitionPeriodStatus');
         Route::post('/alterar-periodo-requerimento', [AdminController::class, 'setRequisitionPeriodStatus'])->name('admin.setRequisitionPeriodStatus');
@@ -86,7 +84,6 @@ Route::middleware('auth')->group(function () {
         // Route::get('/exporta-csv', [RequisitionController::class, 'exportCSV'])->name('export.csv');
 
         // Route::post('/remover-papel', [RoleController::class, 'removeRole'])->name('role.remove');
-
 
         // Route::get('/export', [RequisitionController::class, 'filterAndExport'])->name('pages.requisitions.filterAndExport');
 

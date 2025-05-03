@@ -2,8 +2,7 @@
 
 namespace App\Enums;
 
-// 
-class Department 
+class DepartmentName 
 {
     const MAC = 'MAC';
     const MAE = 'MAE';
