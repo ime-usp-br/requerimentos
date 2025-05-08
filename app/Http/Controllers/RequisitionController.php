@@ -89,7 +89,6 @@ class RequisitionController extends Controller
 
         return Inertia::render('RequisitionDetail', ['label' => 'Requerimentos', 
                                                     'roleId' => $roleId,
-                                                    'useActions' => true,
                                                     'userRoles' => $user->roles,
                                                     'selectedActions' => $selectedActions,
                                                     'requisition' => $requisition,
@@ -102,9 +101,13 @@ class RequisitionController extends Controller
 
     public function newRequisitionGet()
     {
-        $isStudent = Auth::user()->current_role_id == RoleId::STUDENT;
-
-        return Inertia::render('RequisitionForm', ['isStudent' => $isStudent, 'isUpdate' => false]);
+        $user = Auth::user();
+        return Inertia::render('RequisitionForm', ['isStudent' => $user->current_role_id == RoleId::STUDENT,
+                                                    'label' => 'Novo Requerimento',
+                                                    'roleId' => $user->current_role_id,
+                                                    'userRoles' => $user->roles, 
+                                                    'isUpdate' => false,
+                                                    ]);
     }
 
     public function newRequisitionPost(RequisitionCreationRequest $request)
@@ -232,12 +235,15 @@ class RequisitionController extends Controller
             'observations' => $requisition->observations,
         ];
 
-        $isStudent = Auth::user()->current_role_id == RoleId::STUDENT;
+        $user = Auth::user();
 
         return Inertia::render('RequisitionForm', [
-            'isStudent' => $isStudent,
+            'requisitionData' => $requisitionData,
+            'label' => 'Novo Requerimento',
+            'roleId' => $user->current_role_id,
+            'userRoles' => $user->roles, 
+            'isStudent' => $user->current_role_id == RoleId::STUDENT,
             'isUpdate' => true,
-            'requisitionData' => $requisitionData
         ]);
     }
 

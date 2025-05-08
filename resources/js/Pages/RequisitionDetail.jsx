@@ -64,9 +64,6 @@ const RequisitionDetail = ({ label,
                         width: '65%'
                     }}
                 >
-                    {/* <Typography variant="h4" component="h1" gutterBottom>
-                        Detalhes do Requerimento
-                    </Typography> */}
                     <Stack spacing={3} divider={<Divider orientation="horizontal" flexItem />}>
                         <Stack spacing={1}>
                             <Typography variant="h6" sx={{ fontWeight: 600 }}>Dados Pessoais</Typography>
