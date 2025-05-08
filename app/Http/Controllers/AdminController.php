@@ -7,27 +7,36 @@ use App\Models\User;
 use App\Models\RequisitionsPeriod;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use App\Models\Role;
+use App\Models\Department;
 
 class AdminController extends Controller
 {
 	public function admin()
 	{
-		$selectedColumns = ['name', 'codpes', 'id'];
-		$usersWithRoles = User::whereHas('roles', function ($query) {
-				$query->where('id', '!=', RoleId::STUDENT);
-			})
-			->select($selectedColumns)
+		$users = User::with(['departmentUserRoles.role', 'departmentUserRoles.department'])
 			->get()
-			->map(function ($user) {
-				return [
-					"codpes" => $user->codpes,
-					"name" => $user->name,
-					"roles" => $user->roles,
-				];
-			});
+				->flatMap(function ($user) {
+					return $user->departmentUserRoles
+						->filter(function ($dur) {
+							return $dur->role_id != RoleId::STUDENT;
+						})
+						->map(function ($dur) use ($user) {
+							return [
+								'nusp' => $user->codpes,
+								'name' => $user->name,
+								'roleId' => $dur->role_id,
+								'roleName' => optional($dur->role)->name,
+								'departmentId' => $dur->department_id,
+								'departmentName' => optional($dur->department)->name,
+							];
+						});
+				})
+				->values();
 
-		return Inertia::render('AdminPage', ['users' => $usersWithRoles]);
+		return Inertia::render('AdminPage', ['users' => $users]);
 	}
+
 
 	public function getRequisitionPeriodStatus()
 	{
@@ -53,4 +62,5 @@ class AdminController extends Controller
 
 		return redirect()->back()->with('success', 'Requisition period status updated successfully.');
 	}
+
 }

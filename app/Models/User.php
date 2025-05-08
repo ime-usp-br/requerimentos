@@ -127,4 +127,12 @@ class User extends Authenticatable
         $this->current_department_id = $departmentId;
         $this->save();
     }
+
+    /**
+     * Get all roles for the user (with department info if needed).
+     */
+    public function getRolesAttribute()
+    {
+        return $this->departmentUserRoles()->with('role', 'department')->get();
+    }
 }

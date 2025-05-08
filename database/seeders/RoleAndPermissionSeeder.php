@@ -25,11 +25,14 @@ class RoleAndPermissionSeeder extends Seeder
         ];
 
         foreach ($roles as $roleId => $roleName) {
+            $hasDepartment = in_array($roleId, [RoleId::REVIEWER, RoleId::SECRETARY]);
             if (!Role::where('id', $roleId)->exists()) {
-                Role::create(['id' => $roleId, 'name' => $roleName]);
+                Role::create([
+                    'id' => $roleId,
+                    'name' => $roleName,
+                    'has_department' => $hasDepartment,
+                ]);
             }
         }
-
-        Permission::create(['name' => 'admin']);
     }
 }

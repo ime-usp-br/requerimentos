@@ -8,7 +8,6 @@ use Tests\TestCase;
 use Database\Seeders\RoleAndPermissionSeeder;
 use Database\Seeders\DepartmentSeeder;
 use App\Enums\RoleId;
-use App\Enums\RoleName;
 use App\Enums\DepartmentId;
 class RoleControllerTest extends TestCase
 {
@@ -41,8 +40,8 @@ class RoleControllerTest extends TestCase
 
         $response = $this->post('/dar-papel', [
             'nusp' => $user->codpes,
-            'role_id' => RoleId::SG,
-            'department_id' => ''
+            'roleId' => RoleId::SG,
+            'departmentId' => ''
         ]);
         $response->assertSuccessful();
         $user->refresh();
@@ -54,8 +53,8 @@ class RoleControllerTest extends TestCase
 
         $response = $this->post('/dar-papel', [
             'nusp' =>  $user->codpes,
-            'role_id' => RoleId::REVIEWER,
-            'department_id' => DepartmentId::MAC
+            'roleId' => RoleId::REVIEWER,
+            'departmentId' => DepartmentId::MAC
         ]);
 
         $response->assertSuccessful();
@@ -68,8 +67,8 @@ class RoleControllerTest extends TestCase
 
         $response = $this->post('/dar-papel', [
             'nusp' =>  $user->codpes,
-            'role_id' => RoleId::SECRETARY,
-            'department_id' => DepartmentId::MAC
+            'roleId' => RoleId::SECRETARY,
+            'departmentId' => DepartmentId::MAC
         ]);
 
         $response->assertSuccessful();
@@ -91,8 +90,8 @@ class RoleControllerTest extends TestCase
 
         $response = $this->post('/dar-papel', [
             'nusp' => $user->codpes,
-            'role_id' => RoleId::REVIEWER,
-            'department_id' => DepartmentId::MAC
+            'roleId' => RoleId::REVIEWER,
+            'departmentId' => DepartmentId::MAC
         ]);
 
         $response->assertSuccessful();
@@ -105,8 +104,8 @@ class RoleControllerTest extends TestCase
         
         $response = $this->post('/dar-papel', [
             'nusp' => $user->codpes,
-            'role_id' => RoleId::SECRETARY,
-            'department_id' => DepartmentId::MAC
+            'roleId' => RoleId::SECRETARY,
+            'departmentId' => DepartmentId::MAC
         ]);
         
         $response->assertSuccessful();
@@ -128,8 +127,8 @@ class RoleControllerTest extends TestCase
         
         $response = $this->post('/dar-papel', [
             'nusp' => $user->codpes,
-            'role_id' => RoleId::SG,
-            'department_id' => null
+            'roleId' => RoleId::SG,
+            'departmentId' => null
         ]);
 
         $response->assertForbidden();
@@ -142,8 +141,8 @@ class RoleControllerTest extends TestCase
 
         $response = $this->post('/dar-papel', [
             'nusp' => $user->codpes,
-            'role_id' => RoleId::SECRETARY,
-            'department_id' => DepartmentId::MAC
+            'roleId' => RoleId::SECRETARY,
+            'departmentId' => DepartmentId::MAC
         ]);
 
         $response->assertForbidden();
@@ -157,8 +156,8 @@ class RoleControllerTest extends TestCase
 
         $response = $this->post('/dar-papel', [
             'nusp' => $user->codpes,
-            'role_id' => RoleId::SECRETARY,
-            'department_id' => DepartmentId::MAC
+            'roleId' => RoleId::SECRETARY,
+            'departmentId' => DepartmentId::MAC
         ]);
 
         $response->assertForbidden();
@@ -175,8 +174,8 @@ class RoleControllerTest extends TestCase
 
         $response = $this->post('/remover-papel', [
             'nusp' => '123456',
-            'role_id' => RoleId::SECRETARY,
-            'department_id' => DepartmentId::MAC
+            'roleId' => RoleId::SECRETARY,
+            'departmentId' => DepartmentId::MAC
         ]);
 
         $response->assertSuccessful();
@@ -189,8 +188,8 @@ class RoleControllerTest extends TestCase
 
         $response = $this->post('/remover-papel', [
             'nusp' => '123456',
-            'role_id' => RoleId::REVIEWER,
-            'department_id' => DepartmentId::MAC
+            'roleId' => RoleId::REVIEWER,
+            'departmentId' => DepartmentId::MAC
         ]);
 
         $response->assertSuccessful();
@@ -203,8 +202,8 @@ class RoleControllerTest extends TestCase
 
         $response = $this->post('/remover-papel', [
             'nusp' => '123456',
-            'role_id' => RoleId::SG,
-            'department_id' => null
+            'roleId' => RoleId::SG,
+            'departmentId' => null
         ]);
 
         $response->assertSuccessful();
@@ -226,8 +225,8 @@ class RoleControllerTest extends TestCase
 
         $response = $this->post('/remover-papel', [
             'nusp' => '123456',
-            'role_id' => RoleId::SECRETARY,
-            'department_id' => DepartmentId::MAC
+            'roleId' => RoleId::SECRETARY,
+            'departmentId' => DepartmentId::MAC
         ]);
 
         $response->assertSuccessful();
@@ -236,8 +235,8 @@ class RoleControllerTest extends TestCase
 
         $response = $this->post('/remover-papel', [
             'nusp' => '123456',
-            'role_id' => RoleId::REVIEWER,
-            'department_id' => DepartmentId::MAC
+            'roleId' => RoleId::REVIEWER,
+            'departmentId' => DepartmentId::MAC
         ]);
 
         $response->assertSuccessful();
@@ -254,8 +253,8 @@ class RoleControllerTest extends TestCase
 
         $response = $this->post('/remover-papel', [
             'nusp' => '123456',
-            'role_id' => RoleId::SG,
-            'department_id' => ''
+            'roleId' => RoleId::SG,
+            'departmentId' => ''
         ]);
 
         $response->assertForbidden();
@@ -271,8 +270,8 @@ class RoleControllerTest extends TestCase
 
         $response = $this->post('/remover-papel', [
             'nusp' => '123456',
-            'role_id' => RoleId::SECRETARY,
-            'department_id' => DepartmentId::MAC
+            'roleId' => RoleId::SECRETARY,
+            'departmentId' => DepartmentId::MAC
         ]);
 
         $response->assertForbidden();
@@ -287,8 +286,8 @@ class RoleControllerTest extends TestCase
 
         $response = $this->post('/remover-papel', [
             'nusp' => '123456',
-            'role_id' => RoleId::SECRETARY,
-            'department_id' => DepartmentId::MAC
+            'roleId' => RoleId::SECRETARY,
+            'departmentId' => DepartmentId::MAC
         ]);
 
         $response->assertForbidden();
@@ -305,8 +304,8 @@ class RoleControllerTest extends TestCase
         $this->actingAs($user);
 
         $response = $this->post('/trocar-papel', [
-            'role_id' => RoleId::REVIEWER,
-            'department_id' => DepartmentId::MAC
+            'roleId' => RoleId::REVIEWER,
+            'departmentId' => DepartmentId::MAC
         ]);
 
         $response->assertRedirect();
@@ -315,8 +314,8 @@ class RoleControllerTest extends TestCase
         $this->assertEquals(DepartmentId::MAC, $user->current_department_id);
 
         $response = $this->post('/trocar-papel', [
-            'role_id' => RoleId::SG,
-            'department_id' => "",
+            'roleId' => RoleId::SG,
+            'departmentId' => "",
         ]);
 
         $response->assertRedirect();
@@ -335,8 +334,8 @@ class RoleControllerTest extends TestCase
         $this->actingAs($user);
 
         $response = $this->post('/trocar-papel', [
-            'role_id' => RoleId::REVIEWER,
-            'department_id' => DepartmentId::MAC
+            'roleId' => RoleId::REVIEWER,
+            'departmentId' => DepartmentId::MAC
         ]);
 
         $response->assertForbidden();
