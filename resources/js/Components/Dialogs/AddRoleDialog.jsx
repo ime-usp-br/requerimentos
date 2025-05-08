@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Button,
 	DialogActions,
@@ -17,15 +17,33 @@ import { useDialogContext } from '../Context/useDialogContext';
 
 function AddRoleDialog() {
 	const { closeDialog } = useDialogContext();
-
+	const [roles, setRoles] = useState([]);
+	const [departments, setDepartments] = useState([]);
 	const { data, setData, post, processing, errors } = useForm({
 		nusp: '',
-		role: '',
-		department: ''
+		roleId: '',
+		departmentId: ''
 	});
+	const selectedRole = roles.find(r => String(r.id) === String(data.roleId));
+
+	useEffect(() => {
+		fetch(route('role.listRolesAndDepartments'))
+			.then(res => res.json())
+			.then(({ roles, departments }) => {
+				setRoles(roles);
+				setDepartments(departments);
+			});
+	}, []);
 
 	const handleChange = (event) => {
-		setData(event.target.name, event.target.value);
+		const { name, value } = event.target;
+		setData(name, value);
+		if (name === "roleId") {
+			const role = roles.find(r => String(r.id) === String(value));
+			if (!role?.has_department) {
+				setData("departmentId", "");
+			}
+		}
 	};
 
 	const handleSubmit = (event) => {
@@ -60,29 +78,37 @@ function AddRoleDialog() {
 							<FormLabel component="legend">Tipo de papel</FormLabel>
 							<RadioGroup
 								aria-label="role"
-								name="role"
-								value={data.role}
+								name="roleId"
+								value={data.roleId}
 								onChange={handleChange}
 							>
-								<FormControlLabel value="Parecerista" control={<Radio />} label="Parecerista" />
-								<FormControlLabel value="Serviço de Graduação" control={<Radio />} label="Serviço de Graduação" />
-								<FormControlLabel value="Secretaria" control={<Radio />} label="Secretaria de Departamento" />
+								{roles.map(role => (
+									<FormControlLabel
+										key={role.id}
+										value={String(role.id)}
+										control={<Radio />}
+										label={role.name}
+									/>
+								))}
 							</RadioGroup>
 						</FormControl>
-						<Collapse in={data.role === 'Secretaria'}>
-							<FormControl component="fieldset" margin="dense" required={data.role === 'department'}>
+						<Collapse in={!!selectedRole && selectedRole.has_department}>
+							<FormControl component="fieldset" margin="dense" required={!!selectedRole && selectedRole.has_department}>
 								<FormLabel component="legend">Departamento</FormLabel>
 								<RadioGroup
 									aria-label="department"
-									name="department"
-									value={data.department}
+									name="departmentId"
+									value={data.departmentId}
 									onChange={handleChange}
 								>
-									<FormControlLabel value="MAC" control={<Radio />} label="MAC" />
-									<FormControlLabel value="MAP" control={<Radio />} label="MAP" />
-									<FormControlLabel value="MAT" control={<Radio />} label="MAT" />
-									<FormControlLabel value="MAE" control={<Radio />} label="MAE" />
-									<FormControlLabel value="VRT" control={<Radio />} label="Virtual" />
+									{departments.map(dep => (
+										<FormControlLabel
+											key={dep.id}
+											value={String(dep.id)}
+											control={<Radio />}
+											label={dep.name}
+										/>
+									))}
 								</RadioGroup>
 							</FormControl>
 						</Collapse>

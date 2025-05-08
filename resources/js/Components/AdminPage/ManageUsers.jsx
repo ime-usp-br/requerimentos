@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from "react";
 import { Button, Typography, Paper, Stack, TextField } from "@mui/material";
-import { useForm } from "@inertiajs/react";
 import {
     MaterialReactTable,
     useMaterialReactTable,
@@ -13,49 +12,51 @@ import axios from "axios";
 function ManageUsers({ users }) {
     const [globalFilter, setGlobalFilter] = useState("");
 
-    const { setDialogTitle, setDialogBody, openDialog, closeDialog } = useDialogContext();
+    const { setDialogTitle, setDialogBody, openDialog } = useDialogContext();
 
-    function handleRemoveRole(name, nusp, role) {
-        const updatedData = { name, nusp, role };
-    
+    const [usersData, setUsersData] = useState(() =>
+        users.map((user) => ({
+            name: user.name,
+            nusp: user.nusp,
+            roleName: user.roleName,
+            roleId: user.roleId,
+            departmentName: user.departmentName,
+            departmentId: user.departmentId
+        }))
+    )
+
+    function handleRemoveRole(userRole) {
         setDialogTitle("Confirmação de remoção de papel");
         setDialogBody(
             <RemoveRoleConfirmationDialog
-                removeRole={() => removeRole(updatedData)}
-                data={updatedData}
+                userRole={userRole}
+                removeRole={() => removeRole(userRole)}
             />
         );
         openDialog();
     }
-    
-    async function removeRole(updatedData) {
+
+    async function removeRole(userRole) {
         setUsersData((prevData) =>
             prevData.filter(
                 (user) =>
-                    !(user.codpes === updatedData.nusp && user.role == updatedData.role)
+                    !(user.nusp === userRole.nusp
+                        && user.roleId == userRole.roleId
+                        && user.departmentId == userRole.departmentId)
             )
         );
-    
+
         try {
-            await axios.post(route("role.remove"), updatedData);
+            await axios.post(route("role.remove"), {nusp: userRole.nusp, 
+                                                    roleId: userRole.roleId, 
+                                                    departmentId: userRole.departmentId});
         } catch (error) {
             console.error("Error:", error.response?.data || error.message);
         }
     }
 
-    const [usersData, setUsersData] = useState(() =>
-        users.flatMap((user) =>
-            user.roles.map((role) => ({
-                id: user.id,
-                name: user.name,
-                codpes: user.codpes,
-                role: role.name,
-            }))
-        )
-    );
-
     const columns = useMemo(() => [
-        { accessorKey: "codpes", header: "Número USP", size: 50 },
+        { accessorKey: "nusp", header: "Número USP", size: 50 },
         {
             accessorKey: "name",
             header: "Nome",
@@ -64,13 +65,19 @@ function ManageUsers({ users }) {
                 cell.getValue() ?? "Desconhecido (usuário nunca logou no site)",
         },
         {
-            accessorKey: "role",
+            accessorKey: "roleName",
             header: "Papel",
             filterVariant: "multi-select",
             size: 200,
         },
         {
-            accessorFn: (row) => `remove-${row.codpes}-${row.role}`,
+            accessorKey: "departmentName",
+            header: "Departamento",
+            filterVariant: "multi-select",
+            size: 200,
+        },
+        {
+            accessorFn: (row) => `remove-${row.nusp}-${row.role}`,
             id: "remove",
             header: "",
             size: 0,
@@ -80,13 +87,7 @@ function ManageUsers({ users }) {
                 <Button
                     variant="contained"
                     color="error"
-                    onClick={() =>
-                        handleRemoveRole(
-                            row.original.name,
-                            row.original.codpes,
-                            row.original.role
-                        )
-                    }
+                    onClick={() => handleRemoveRole(row.original)}
                 >
                     Remover papel
                 </Button>

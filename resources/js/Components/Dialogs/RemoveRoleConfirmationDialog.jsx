@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import { useDialogContext } from '../Context/useDialogContext';
 
-function RemoveRoleConfirmationDialog({ removeRole, data }) {
+function RemoveRoleConfirmationDialog({ userRole, removeRole }) {
     const { closeDialog } = useDialogContext();
 
     function handleConfirm() {
@@ -19,8 +19,8 @@ function RemoveRoleConfirmationDialog({ removeRole, data }) {
         <>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                    Você tem certeza que deseja retirar o papel {data.role} do
-                    usuário {data.name} (nº usp {data.nusp})?
+                    Você tem certeza que deseja retirar o papel {userRole.roleName} {userRole.departmentName} do
+                    usuário {userRole.name} (Número USP {userRole.nusp})?
                 </DialogContentText>
             </DialogContent>
             <DialogActions>

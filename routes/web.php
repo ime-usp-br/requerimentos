@@ -37,17 +37,13 @@ Route::get('/phpinfo', function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/lista', [ListController::class, 'list'])->name('list');
-    
     Route::get('/novo-requerimento', [RequisitionController::class, 'newRequisitionGet'])->name('newRequisition.get');
         // ->middleware('requisitions.period');
     Route::post('/novo-requerimento', [RequisitionController::class, 'newRequisitionPost'])->name('newRequisition.post');
         // ->middleware('requisitions.period');
-
     Route::get('/atualizar-requerimento/{requisitionId}', [RequisitionController::class, 'updateRequisitionGet'])->name('updateRequisition.get');
     Route::post('/atualizar-requerimento', [RequisitionController::class, 'updateRequisitionPost'])->name('updateRequisition.post');
-
     Route::get('/detalhe/{requisitionId}', [RequisitionController::class, 'showRequisition'])->name('showRequisition');
-
     Route::post('/trocar-papel', [RoleController::class, 'switchRole'])->name('role.switch');
     
     Route::group(['middleware' => CheckCurrentRole::class . ":" . RoleName::SG], function () {
@@ -58,6 +54,7 @@ Route::middleware('auth')->group(function () {
     Route::group(['middleware' => CheckCurrentRole::class . ":" . RoleName::SG .
                                                             ',' . RoleName::SECRETARY], function () {
         Route::get('/admin', [AdminController::class, 'admin'])->name('admin');
+        Route::get('/ver-papeis', [RoleController::class, 'listRolesAndDepartments'])->name('role.listRolesAndDepartments');
         Route::post('/dar-papel', [RoleController::class, 'addRole'])->name('role.add');
         Route::post('/remover-papel', [RoleController::class, 'removeRole'])->name('role.remove');
         Route::get('/escolher-parecerista', [ReviewController::class, 'reviewerPick'])->name('reviewer.reviewerPick');
@@ -67,14 +64,11 @@ Route::middleware('auth')->group(function () {
     });
     
     Route::group(['middleware' => CheckCurrentRole::class . ":" . RoleName::SG .
-    ',' . RoleName::SECRETARY .
-    ',' . RoleName::REVIEWER], function () {
+                                                            ',' . RoleName::SECRETARY .
+                                                            ',' . RoleName::REVIEWER], function () {
         Route::get('/pareceres/{requisitionId}', [ReviewController::class, 'reviews'])->name('reviewer.reviews');
-        
         Route::post('/enviar-requerimento', [ReviewController::class, 'createReview'])->name('reviewer.sendToReviewer');
-        
         Route::get('/historico/requerimento/{requisitionId}', [RecordController::class, 'requisitionRecord'])->name('record.requisition');
-    
         Route::post('/enviar-ao-departamento', [RequisitionController::class, 'sendToDepartment'])->name('sendToDepartment');
     });
 });

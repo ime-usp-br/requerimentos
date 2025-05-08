@@ -36,9 +36,10 @@ class RoleController extends Controller
             return $response;
         }
 
-        $targetUser = User::firstOrCreate(['codpes' => $data['nusp']], ['codpes' => $data['nusp'], 'current_roleId' => 1]);
+        $targetUser = User::firstOrCreate(['codpes' => $data['nusp']], ['codpes' => $data['nusp'], 'current_role_id' => 1]);
         $targetUser->assignRole($data['roleId'], $data['departmentId'] ?? null);
-        return response()->json(['success' => true], 200);
+
+        return redirect()->back()->with('success', 'Role added successfully.');
     }
 
     public function removeRole(Request $request) {
@@ -78,8 +79,6 @@ class RoleController extends Controller
 	{
 		$roles = Role::where('id', '!=', RoleId::STUDENT)->get();
 		$departments = Department::all();
-
-		dd($roles, $departments);
 
 		return response()->json([
 			'roles' => $roles,

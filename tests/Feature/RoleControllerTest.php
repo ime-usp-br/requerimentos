@@ -43,7 +43,7 @@ class RoleControllerTest extends TestCase
             'roleId' => RoleId::SG,
             'departmentId' => ''
         ]);
-        $response->assertSuccessful();
+        $response->assertRedirect();
         $user->refresh();
         $this->assertDatabaseHas('department_user_roles', [
             'user_id' => $user->id,
@@ -57,7 +57,7 @@ class RoleControllerTest extends TestCase
             'departmentId' => DepartmentId::MAC
         ]);
 
-        $response->assertSuccessful();
+        $response->assertRedirect();
         $user->refresh(); 
         $this->assertDatabaseHas('department_user_roles', [
             'user_id' => $user->id,
@@ -71,7 +71,7 @@ class RoleControllerTest extends TestCase
             'departmentId' => DepartmentId::MAC
         ]);
 
-        $response->assertSuccessful();
+        $response->assertRedirect();
         $user->refresh(); 
         $this->assertDatabaseHas('department_user_roles', [
             'user_id' => $user->id,
@@ -94,7 +94,7 @@ class RoleControllerTest extends TestCase
             'departmentId' => DepartmentId::MAC
         ]);
 
-        $response->assertSuccessful();
+        $response->assertRedirect();
         $user->refresh();
         $this->assertDatabaseHas('department_user_roles', [
             'user_id' => $user->id,
@@ -108,7 +108,7 @@ class RoleControllerTest extends TestCase
             'departmentId' => DepartmentId::MAC
         ]);
         
-        $response->assertSuccessful();
+        $response->assertRedirect();
         $user->refresh();
         $this->assertDatabaseHas('department_user_roles', [
             'user_id' => $user->id,
