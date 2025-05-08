@@ -10,11 +10,13 @@ export default function RequisitionList({ label,
                                           selectedActions,
                                           roleId,
                                           userRoles, 
-                                          requisitionPeriodStatus
+                                          requisitionEditionStatus,
+                                          requisitionCreationStatus
                                         }) {
     let actionsParams = {};
     actionsParams.roleId = roleId;
-    actionsParams.requisitionPeriodStatus = requisitionPeriodStatus;
+    actionsParams.requisitionEditionStatus = requisitionEditionStatus;
+    actionsParams.requisitionCreationStatus = requisitionCreationStatus;
 
     return (
         <Stack 
