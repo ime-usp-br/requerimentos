@@ -30,7 +30,9 @@ class ListController extends Controller
                 break;
         }
         
-        $requisition_period_status = RequisitionsPeriod::latest('id')->first()->is_enabled;
+        $requisition_period = RequisitionsPeriod::latest('id')->first();
+        $requisition_creation_status = $requisition_period->is_creation_enabled;
+        $requisition_edition_status = $requisition_period->is_update_enabled;
 
         return Inertia::render('RequisitionList', [
             'label' => 'Requerimentos',
@@ -40,7 +42,8 @@ class ListController extends Controller
             'roleId' => $roleId, 
             'useActions' => true,
             'userRoles' => $user->roles,
-            'requisitionPeriodStatus' => $requisition_period_status
+            'requisitionEditionStatus' => $requisition_edition_status,
+            'requisitionCreationStatus' => $requisition_creation_status,
         ]);
     }
 

@@ -16,16 +16,14 @@ class CheckCurrentRole
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next, ...$roleNames)
+    public function handle(Request $request, Closure $next, ...$roleIds)
     {   
         $user = Auth::user();
-        foreach($roleNames as $roleName) {
-            $role = Role::where('name', $roleName)->first();
-            if ($user->current_role_id === $role->id) {
+        foreach($roleIds as $roleId) {
+            if ((string) $user->current_role_id === (string) $roleId) {
                 return $next($request);
             }
         }
-        
         abort(403);
     }
 }
