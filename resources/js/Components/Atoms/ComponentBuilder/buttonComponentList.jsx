@@ -22,12 +22,43 @@ import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import AssignmentReturnIcon from '@mui/icons-material/AssignmentReturn';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 
-const buttonSx = {
-    // padding: 0,
-    // margin: 0,
-    // width: '100%',
-    // alignItems: 'left',
-    // justifyContent: 'flex-start'
+function MainPageButton({children, ...props}){
+    return (
+        <Button
+            variant="contained"
+            {...props}
+        >
+            {children}
+        </Button>
+    );
+};
+
+function RequisitionDetailButton({children, ...props}){
+    return (
+        <Button
+            disableRipple
+            variant="text"
+            color="black"
+            {...props}
+        >
+            {children}
+        </Button>
+    );
+};
+
+function HeaderButton({children, ...props}){
+    return (
+        <Button
+            variant="outlined"
+            style={{
+                color: 'white',
+                borderColor: 'white'
+            }}
+            {...props}
+        >
+            {children}
+        </Button>
+    );
 };
 
 let buttonComponentList = {};
@@ -42,28 +73,21 @@ buttonComponentList.add_role = () => {
     }
 
     return (
-        <Button
-            variant="contained"
-            color="primary"
+        <MainPageButton
             onClick={handleClick}
         >
             Adicionar um papel
-        </Button>
+        </MainPageButton>
     );
 };
 
 buttonComponentList.admin = () => (
-    <Button
-        // disableRipple
-        variant="raised"
-        sx={buttonSx}
-        size="large"
-        color="primary"
+    <MainPageButton
         href={route('admin')}
         startIcon={<AdminPanelSettingsIcon />}
     >
         Administrar Sistema
-    </Button>
+    </MainPageButton>
 );
 
 buttonComponentList.automatic_requisition = (params) => {
@@ -106,94 +130,66 @@ buttonComponentList.automatic_requisition = (params) => {
     };
 
     return (
-        <Button
-            disableRipple
-            variant="raised"
-            sx={buttonSx}
-            size="large"
-            color="secondary"
+        <RequisitionDetailButton
             onClick={handleClick}
             startIcon={<PrecisionManufacturingIcon />}
         >
             Deferimento Automático
-        </Button>
+        </RequisitionDetailButton>
     );
 };
 
 buttonComponentList.edit_requisition = (params) => (
     <Tooltip
         title="Edição não permitida"
-        disableHoverListener={params.requisitionEditStatus || params.roleId != 1}
+        disableHoverListener={params.requisitionEditionStatus || params.roleId != 1}
     >
         <span>
-            <Button
-                disableRipple
-                variant="raised"
-                disabled={!params.requisitionEditStatus && params.roleId == 1}
-                size="large"
-                color="primary"
+            <RequisitionDetailButton
+                disabled={!params.requisitionEditionStatus && params.roleId == 1}
                 href={route('updateRequisition.get', { 'requisitionId': params.requisitionId })}
-                sx={{ width: '100%', ...buttonSx }}
                 startIcon={<ModeEditIcon />}
             >
                 Editar Requerimento
-            </Button>
+            </RequisitionDetailButton>
         </span>
     </Tooltip>
 );
 
 buttonComponentList.go_back = () => {
     return (
-        <Button
-            variant="outlined"
-            size="large"
-            style={{
-                color: 'white',
-                borderColor: 'white'
-            }}
+        <HeaderButton
             startIcon={<KeyboardReturnIcon />}
             onClick={() => window.history.back()}
         >
             Voltar
-        </Button>
+        </HeaderButton>
     );
 }
 
 buttonComponentList.new_requisition = (params) => (
     <Tooltip
         title="Disponível durante o período de requerimentos"
-        disableHoverListener={params.requisitionPeriodStatus || params.roleId == 2}
+        disableHoverListener={params.requisitionCreationStatus || params.roleId == 2}
     >
-        <span>
-            <Button
-                disableRipple
-                variant="raised"
-                disabled={!params.requisitionPeriodStatus && params.roleId != 2}
-                size="large"
-                color="primary"
-                href={route('newRequisition.get')}
-                sx={{ width: '100%', ...buttonSx }}
-                startIcon={<AddIcon />}
-            >
-                Criar Requerimento
-            </Button>
-        </span>
+        <MainPageButton
+            disabled={!params.requisitionCreationStatus && params.roleId == 1}
+            href={route('newRequisition.get')}
+            startIcon={<AddIcon />}
+        >
+            Criar Requerimento
+        </MainPageButton>
     </Tooltip>
 );
 
 
 buttonComponentList.export = () => (
-    <Button
-        disableRipple
-        variant="raised"
-        sx={buttonSx}
-        size="large"
-        color="primary"
+    <MainPageButton
         href={route('exportRequisitionsGet')}
         startIcon={<FileDownloadIcon />}
     >
         Exportar
-    </Button>
+    </MainPageButton>
 );
 
 
@@ -211,66 +207,45 @@ buttonComponentList.export_current = () => {
     };
 
     return (
-        <Button
-            disableRipple
-            variant="raised"
-            sx={buttonSx}
-            size="large"
-            color="primary"
+        <RequisitionDetailButton
             startIcon={<ReviewsIcon />}
             onClick={printDocument}
         >
             Exportar requerimento
-        </Button>
+        </RequisitionDetailButton>
     )
 };
 
 buttonComponentList.exit = () => {
     return (
-        <Button
-            variant="outlined"
-            size="large"
-            style={{
-                color: 'white',
-                borderColor: 'white'
-            }}
+        <HeaderButton
             href={route('logout')}
             startIcon={<LogoutIcon />}
         >
             Sair
-        </Button>
+        </HeaderButton>
     );
 }
 
 buttonComponentList.registered = (params) => {
     return (
-        <Button
-            disableRipple
-            variant="raised"
-            sx={buttonSx}
-            size="large"
-            color="primary"
+        <RequisitionDetailButton
             href={route('registered', { 'requisitionId': params.requisitionId })}
             startIcon={<HowToRegIcon />}
         >
             Registrado no Jupiter
-        </Button>
+        </RequisitionDetailButton>
     )
 };
 
 buttonComponentList.requisition_history = (params) => {
     return (
-        <Button
-            disableRipple
-            variant="raised"
-            sx={buttonSx}
-            size="large"
-            color="primary"
+        <RequisitionDetailButton
             href={route('record.requisition', { 'requisitionId': params.requisitionId })}
             startIcon={<HistoryIcon />}
         >
             Histórico do Requerimento
-        </Button>
+        </RequisitionDetailButton>
     );
 }
 
@@ -292,45 +267,33 @@ buttonComponentList.requisition_period = () => {
     }
 
     return (
-        <Button
-            variant="contained"
-            color="primary"
+        <MainPageButton
             onClick={handleClick}
         >
             Período de requerimentos
-        </Button>
+        </MainPageButton>
     );
 };
 
 buttonComponentList.reviews = (params) => {
     return (
-        <Button
-            disableRipple
-            variant="raised"
-            sx={buttonSx}
-            size="large"
-            color="primary"
+        <RequisitionDetailButton
             href={route('reviewer.reviews', { 'requisitionId': params.requisitionId })}
             startIcon={<ReviewsIcon />}
         >
             Pareceres dados
-        </Button>
+        </RequisitionDetailButton>
     );
 };
 
 buttonComponentList.save = (params) => {
     return (
-        <Button
-            disableRipple
-            variant="raised"
-            sx={buttonSx}
-            size="large"
-            color="primary"
+        <MainPageButton
             href={route('record.requisition', { 'requisitionId': params.requisitionId })}
             startIcon={<SaveIcon />}
         >
             Salvar alterações
-        </Button>
+        </MainPageButton>
     );
 }
 
@@ -357,17 +320,12 @@ buttonComponentList.send_to_department = (params) => {
     }
 
     return (
-        <Button
-            disableRipple
-            variant="raised"
-            sx={buttonSx}
-            size="large"
-            color="primary"
+        <MainPageButton
             onClick={handleSubmit}
             startIcon={<SendIcon />}
         >
             Enviar para o Departamento
-        </Button>
+        </MainPageButton>
     );
 };
 
@@ -391,17 +349,12 @@ buttonComponentList.send_to_reviewers = (params) => {
     }
 
     return (
-        <Button
-            disableRipple
-            variant="raised"
-            sx={buttonSx}
-            size="large"
-            color="primary"
+        <RequisitionDetailButton
             onClick={handleClick}
             startIcon={<SendToMobileIcon />}
         >
             Enviar para Pareceristas
-        </Button>
+        </RequisitionDetailButton>
     );
 };
 
@@ -426,17 +379,12 @@ buttonComponentList.submit_review = (params) => {
     }
 
     return (
-        <Button
-            disableRipple
-            variant="raised"
-            sx={buttonSx}
-            size="large"
-            color="primary"
+        <RequisitionDetailButton
             onClick={handleSubmit}
             startIcon={<AssignmentReturnIcon />}
         >
             Enviar parecer
-        </Button>
+        </RequisitionDetailButton>
     )
 };
 

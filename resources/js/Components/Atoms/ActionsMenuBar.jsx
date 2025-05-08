@@ -14,18 +14,7 @@ export default function ActionsMenuBar({ selectedActions, params }) {
             { 
                 selectedActions.map((grouping, groupIndex) =>
                     builder.build(grouping).map((itemBuilder) =>
-                        <Paper 
-                            elevation={0}
-                            sx={{
-                                "& .MuiButton-root": {
-                                    all: 'init',
-                                    paddingY: 1,
-                                    paddingX: 1.6,
-                                    color: 'white',
-                                    backgroundColor: 'primary.main'
-                                }
-                            }}
-                        >
+                        <Paper elevation={0} >
                             { itemBuilder(params) }
                         </Paper>
                     ).concat((selectedActions.length - 1 != groupIndex) ? [<Divider />] : [])
