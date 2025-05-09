@@ -1,6 +1,8 @@
 import React from 'react';
 import { Container, Paper, Typography, Stack, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useTheme, useMediaQuery,
         } from '@mui/material';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import Link from '@mui/material/Link';
 
 import Header from '../Components/Header/Header';
 import ActionsMenu from '../Components/Atoms/ActionsMenuBox';
@@ -11,10 +13,11 @@ const RequisitionDetail = ({ label,
                              selectedActions,
                              requisition,
                              takenDiscs, 
-                             takenDiscsRecords, 
-                             currentCourseRecords, 
-                             takenDiscSyllabi, 
-                             requestedDiscSyllabi }) => {
+                             takenDiscsRecord, 
+                             currentCourseRecord, 
+                             takenDiscSyllabus, 
+                             requestedDiscSyllabus,
+                             documents }) => {
     
     const theme = useTheme();
     const isLg = useMediaQuery(theme.breakpoints.up('lg'));
@@ -117,10 +120,13 @@ const RequisitionDetail = ({ label,
 
                         <Stack spacing={1}>
                             <Typography variant="h6" sx={{ fontWeight: 600 }}>Documentos</Typography>
-                            <Typography variant="body2"><strong>Histórico Escolar da Instituição de Origem:</strong> {takenDiscsRecords.name}</Typography>
-                            <Typography variant="body2"><strong>Histórico Escolar do Curso Atual:</strong> {currentCourseRecords.name}</Typography>
-                            <Typography variant="body2"><strong>Ementas das Disciplinas Cursadas:</strong> {takenDiscSyllabi.name}</Typography>
-                            <Typography variant="body2"><strong>Ementa da Disciplina a Ser Dispensada:</strong> {requestedDiscSyllabi.name}</Typography>
+                            {documents && documents.length > 0 && documents.map((doc) => (
+                                <Typography variant="body2" key={doc.id}>
+                                    <Link href={`/documents/${doc.id}/view`} target="_blank" rel="noopener" sx={{ display: 'inline-flex', alignItems: 'center' }} underline="hover">
+                                        {doc.type} <OpenInNewIcon fontSize="small" sx={{ ml: 0.5 }} />
+                                    </Link>
+                                </Typography>
+                            ))}
                         </Stack>
 
                         <Stack spacing={1}>

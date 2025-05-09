@@ -10,8 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Database\Seeders\RoleAndPermissionSeeder;
-use Database\Seeders\DepartmentSeeder;
+use Database\Seeders\DatabaseSeeder;
 use App\Enums\RoleId;
 use App\Enums\DocumentType;
 use App\Enums\EventType;
@@ -24,7 +23,7 @@ class RequisitionControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->seed(RoleAndPermissionSeeder::class);
+        $this->seed(DatabaseSeeder::class);
     }
 
     private function asRole($roleId)

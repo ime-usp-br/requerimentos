@@ -16,7 +16,6 @@ use App\Models\Requisition;
 use App\Models\Review;
 use App\Models\TakenDisciplines;
 use App\Models\TakenDisciplinesVersion;
-use App\Models\RequisitionsPeriod;
 use App\Models\RequisitionsVersion;
 use App\Http\Requests\RequisitionCreationRequest;
 use App\Http\Requests\RequisitionUpdateRequest;
@@ -38,27 +37,15 @@ class RequisitionController extends Controller
 
         $documents = $requisition->documents->sortByDesc('created_at');
 
-        $takenDiscsRecords = [];
-        $currentCourseRecords = [];
-        $takenDiscSyllabi = [];
-        $requestedDiscSyllabi = [];
-
+        // Only keep the latest version of each document type
+        $latestDocuments = [];
         foreach ($documents as $document) {
-            switch ($document->type) {
-                case DocumentType::TAKEN_DISCS_RECORD:
-                    array_push($takenDiscsRecords, $document);
-                    break;
-                case DocumentType::CURRENT_COURSE_RECORD:
-                    array_push($currentCourseRecords, $document);
-                    break;
-                case DocumentType::TAKEN_DISCS_SYLLABUS:
-                    array_push($takenDiscSyllabi, $document);
-                    break;
-                case DocumentType::REQUESTED_DISC_SYLLABUS:
-                    array_push($requestedDiscSyllabi, $document);
-                    break;
+            $type = $document->type;
+            if (!isset($latestDocuments[$type]) || $document->version > $latestDocuments[$type]->version) {
+                $latestDocuments[$type] = $document;
             }
         }
+        $latestDocumentsArray = array_values($latestDocuments);
 
         $roleId = $user->current_role_id;
         switch ($roleId) {
@@ -87,16 +74,15 @@ class RequisitionController extends Controller
         }
 
 
-        return Inertia::render('RequisitionDetail', ['label' => 'Requerimentos', 
-                                                    'roleId' => $roleId,
-                                                    'userRoles' => $user->roles,
-                                                    'selectedActions' => $selectedActions,
-                                                    'requisition' => $requisition,
-                                                    'takenDiscs' => $requisition->takenDisciplines,
-                                                    'takenDiscsRecords' => $takenDiscsRecords,
-                                                    'currentCourseRecords' => $currentCourseRecords,
-                                                    'takenDiscSyllabi' => $takenDiscSyllabi,
-                                                    'requestedDiscSyllabi' => $requestedDiscSyllabi]);
+        return Inertia::render('RequisitionDetail', [
+            'label' => 'Requerimentos', 
+            'roleId' => $roleId,
+            'userRoles' => $user->roles,
+            'selectedActions' => $selectedActions,
+            'requisition' => $requisition,
+            'takenDiscs' => $requisition->takenDisciplines,
+            'documents' => $latestDocumentsArray,
+        ]);
     }
 
     public function newRequisitionGet()

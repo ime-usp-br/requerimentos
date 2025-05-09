@@ -18,7 +18,10 @@ class DocumentFactory extends Factory
         return [
             'requisition_id' => $this->faker->unique->numberBetween(1, 50),
             'type' => $this->faker->randomElement([DocumentType::TAKEN_DISCS_RECORD, DocumentType::CURRENT_COURSE_RECORD, DocumentType::TAKEN_DISCS_SYLLABUS, DocumentType::REQUESTED_DISC_SYLLABUS]),
+            'version' => $this->faker->numberBetween(1, 3),
             'path' => Str::random(20),
+            'hash' => Str::random(64),
+            
         ];
     }
 }

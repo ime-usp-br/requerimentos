@@ -5,8 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Database\Seeders\RoleAndPermissionSeeder;
-use Database\Seeders\DepartmentSeeder;
+use Database\Seeders\DatabaseSeeder;
 use App\Enums\RoleId;
 use App\Enums\DepartmentId;
 class RoleControllerTest extends TestCase
@@ -17,8 +16,7 @@ class RoleControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->seed(RoleAndPermissionSeeder::class);
-        $this->seed(DepartmentSeeder::class);
+        $this->seed(DatabaseSeeder::class);
     }
 
     private function asRole($roleId){
