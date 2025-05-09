@@ -234,8 +234,7 @@ buttonComponentList.exit = ({ styles = {} }) => (
     </Button>
 );
 
-buttonComponentList.registered = (params) => {
-    console.log(params);
+buttonComponentList.registered = ({ actionsParams = {}, styles = {} }) => {
     const { setDialogTitle, setDialogBody, openDialog, closeDialog } = useDialogContext();
 
     const handleClick = () => {
@@ -243,7 +242,7 @@ buttonComponentList.registered = (params) => {
         const submitAndReturnToList = () => {
             router.post(
                 route('registered'),
-                { 'requisitionId': params.requisitionId },
+                { 'requisitionId': actionsParams.requisitionId },
                 {
                     onSuccess: (resp) => {
                         console.log(resp);
@@ -276,12 +275,14 @@ buttonComponentList.registered = (params) => {
     };
 
     return (
-        <RequisitionDetailButton
+        <Button
+            key="registered"
             onClick={handleClick}
             startIcon={<HowToRegIcon />}
+            {...styles}
         >
             Registrado no Jupiter
-        </RequisitionDetailButton>
+        </Button>
     )
 };
 
@@ -443,41 +444,24 @@ buttonComponentList.submit_review = ({ actionsParams = {}, styles = {} }) => {
     )
 };
 
-buttonComponentList.result = (params) => {
+buttonComponentList.result = ({ actionsParams = {}, styles = {} }) => {
     const { setDialogTitle, setDialogBody, openDialog } = useDialogContext();
 
     const handleClick = () => {
         setDialogTitle('Resultado');
-        setDialogBody(<RequisitionResultDialog requisitionId={params.requisitionId} />);
+        setDialogBody(<RequisitionResultDialog requisitionId={actionsParams.requisitionId} />);
         openDialog();
     };
 
     return (
-        <RequisitionDetailButton
+        <Button
+            key="result"
             onClick={handleClick}
             startIcon={<AssignmentTurnedInIcon />}
+            {...styles}
         >
             Dar resultado
-        </RequisitionDetailButton>
-    )
-};
-
-buttonComponentList.result = (params) => {
-    const { setDialogTitle, setDialogBody, openDialog } = useDialogContext();
-
-    const handleClick = () => {
-        setDialogTitle('Resultado');
-        setDialogBody(<RequisitionResultDialog requisitionId={params.requisitionId} />);
-        openDialog();
-    };
-
-    return (
-        <RequisitionDetailButton
-            onClick={handleClick}
-            startIcon={<AssignmentTurnedInIcon />}
-        >
-            Dar resultado
-        </RequisitionDetailButton>
+        </Button>
     )
 };
 
