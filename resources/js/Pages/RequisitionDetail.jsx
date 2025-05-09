@@ -1,6 +1,8 @@
 import React from 'react';
 import { Container, Paper, Typography, Stack, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useTheme, useMediaQuery,
         } from '@mui/material';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import Link from '@mui/material/Link';
 
 import Header from '../Components/Header/Header';
 import ActionsMenu from '../Components/Atoms/ActionsMenuBox';
@@ -11,10 +13,7 @@ const RequisitionDetail = ({ label,
                              selectedActions,
                              requisition,
                              takenDiscs, 
-                             takenDiscsRecords, 
-                             currentCourseRecords, 
-                             takenDiscSyllabi, 
-                             requestedDiscSyllabi }) => {
+                             documents }) => {
     
     const theme = useTheme();
     const isLg = useMediaQuery(theme.breakpoints.up('lg'));
@@ -54,7 +53,7 @@ const RequisitionDetail = ({ label,
                     width: '100%',
                     paddingTop: 4
                 }}>
-                <ActionsMenu params={actionsParams} selectedActions={selectedActions} />
+                <ActionsMenu actionsParams={actionsParams} selectedActions={selectedActions} />
 
                 <Paper 
                     id="requisition-paper"
@@ -64,9 +63,6 @@ const RequisitionDetail = ({ label,
                         width: '65%'
                     }}
                 >
-                    {/* <Typography variant="h4" component="h1" gutterBottom>
-                        Detalhes do Requerimento
-                    </Typography> */}
                     <Stack spacing={3} divider={<Divider orientation="horizontal" flexItem />}>
                         <Stack spacing={1}>
                             <Typography variant="h6" sx={{ fontWeight: 600 }}>Dados Pessoais</Typography>
@@ -120,10 +116,13 @@ const RequisitionDetail = ({ label,
 
                         <Stack spacing={1}>
                             <Typography variant="h6" sx={{ fontWeight: 600 }}>Documentos</Typography>
-                            <Typography variant="body2"><strong>Histórico Escolar da Instituição de Origem:</strong> {takenDiscsRecords.name}</Typography>
-                            <Typography variant="body2"><strong>Histórico Escolar do Curso Atual:</strong> {currentCourseRecords.name}</Typography>
-                            <Typography variant="body2"><strong>Ementas das Disciplinas Cursadas:</strong> {takenDiscSyllabi.name}</Typography>
-                            <Typography variant="body2"><strong>Ementa da Disciplina a Ser Dispensada:</strong> {requestedDiscSyllabi.name}</Typography>
+                            {documents && documents.length > 0 && documents.map((doc) => (
+                                <Typography variant="body2" key={doc.id}>
+                                    <Link href={`/documents/${doc.id}/view`} target="_blank" rel="noopener" sx={{ display: 'inline-flex', alignItems: 'center' }} underline="hover">
+                                        {doc.type} <OpenInNewIcon fontSize="small" sx={{ ml: 0.5 }} />
+                                    </Link>
+                                </Typography>
+                            ))}
                         </Stack>
 
                         <Stack spacing={1}>

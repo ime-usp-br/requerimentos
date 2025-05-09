@@ -2,7 +2,8 @@ import React from 'react';
 import LoginIcon from '@mui/icons-material/Login';
 import { Stack, Button, Container, Typography } from '@mui/material';
 import home from '../../img/home.jpg';
-
+import imeLogo from '../../img/ime-logo.svg';
+import uspLogo from '../../img/usp-logo.svg';
 
 export default function Home() {
     return (
@@ -37,14 +38,14 @@ export default function Home() {
                         height: '70%',
                         marginLeft: '16px',
                     }}
-                    src="img/footer/ime-logo-footer.svg"
+                    src={imeLogo}
                 />
                 <img
                     style={{
                         height: '70%',
                         marginRight: '16px',
                     }}
-                    src="img/footer/usp-logo.svg"
+                    src={uspLogo}
                 />
             </Stack>
 

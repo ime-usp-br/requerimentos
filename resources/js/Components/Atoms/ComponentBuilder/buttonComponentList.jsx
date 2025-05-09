@@ -66,52 +66,51 @@ function HeaderButton({children, ...props}){
 
 let buttonComponentList = {};
 
-buttonComponentList.add_role = () => {
+buttonComponentList.add_role = ({ styles }) => {
     const { setDialogTitle, setDialogBody, openDialog } = useDialogContext();
-
     function handleClick() {
         setDialogTitle('Adicionar papel');
         setDialogBody(<AddRoleDialog />);
         openDialog();
     }
-
     return (
-        <MainPageButton
+        <Button
+            key="add_role"
             onClick={handleClick}
+            {...styles}
         >
             Adicionar um papel
-        </MainPageButton>
+        </Button>
     );
 };
 
-buttonComponentList.admin = () => (
-    <MainPageButton
+buttonComponentList.admin = ({ styles }) => (
+    <Button
+        key="admin"
         href={route('admin')}
         startIcon={<AdminPanelSettingsIcon />}
+        {...styles}
     >
         Administrar Sistema
-    </MainPageButton>
+    </Button>
 );
 
-buttonComponentList.automatic_requisition = (params) => {
+buttonComponentList.automatic_requisition = ({ styles, actionParams }) => {
     const { setDialogTitle, setDialogBody, openDialog, closeDialog } = useDialogContext();
-
     const handleClick = () => {
         setDialogTitle('Confirmação');
         const submitAndReturnToList = () => {
             router.post(
                 route('automaticDeferral'),
-                { 'requisitionId': params.requisitionId },
+                { 'requisitionId': actionParams.requisitionId },
                 {
                     onSuccess: (resp) => {
-                        console.log(resp);
                         closeDialog();
                         setDialogTitle('Deferimento automático realizado');
                         setDialogBody(<ActionSuccessful dialogText={'O deferimento automático foi realizado com sucesso.'} />)
                         router.get(route('list'));
                     },
                     onError: (error) => {
-                        console.log(error);
                         closeDialog();
                     }
                 });
@@ -131,72 +130,77 @@ buttonComponentList.automatic_requisition = (params) => {
         );
         openDialog();
     };
-
     return (
-        <RequisitionDetailButton
+        <Button
+            key="automatic_requisition"
             onClick={handleClick}
             startIcon={<PrecisionManufacturingIcon />}
+            {...styles}
         >
             Deferimento Automático
-        </RequisitionDetailButton>
+        </Button>
     );
 };
 
-buttonComponentList.edit_requisition = (params) => (
-    <Tooltip
-        title="Edição não permitida"
-        disableHoverListener={params.requisitionEditionStatus || params.roleId != 1}
-    >
-        <span>
-            <RequisitionDetailButton
-                disabled={!params.requisitionEditionStatus && params.roleId == 1}
-                href={route('updateRequisition.get', { 'requisitionId': params.requisitionId })}
+buttonComponentList.edit_requisition = ({ actionsParams = {}, styles = {} }) => {
+    return (
+        <Tooltip
+            title="Edição não permitida"
+            disableHoverListener={actionsParams.requisitionEditionStatus || actionsParams.roleId != 1}
+        >
+            <Button
+                key="edit_requisition"
+                disabled={!actionsParams.requisitionEditionStatus && actionsParams.roleId == 1}
+                href={route('updateRequisition.get', { 'requisitionId': actionsParams.requisitionId })}
                 startIcon={<ModeEditIcon />}
+                {...styles}
             >
                 Editar Requerimento
-            </RequisitionDetailButton>
-        </span>
-    </Tooltip>
+            </Button>
+        </Tooltip>
+    );
+};
+
+buttonComponentList.go_back = ({ styles = {} }) => (
+    <Button
+        key="go_back"
+        startIcon={<KeyboardReturnIcon />}
+        onClick={() => window.history.back()}
+        {...styles}
+    >
+        Voltar
+    </Button>
 );
 
-buttonComponentList.go_back = () => {
-    return (
-        <HeaderButton
-            startIcon={<KeyboardReturnIcon />}
-            onClick={() => window.history.back()}
-        >
-            Voltar
-        </HeaderButton>
-    );
-}
-
-buttonComponentList.new_requisition = (params) => (
+buttonComponentList.new_requisition = ({ actionsParams = {}, styles = {} }) => (
     <Tooltip
         title="Disponível durante o período de requerimentos"
-        disableHoverListener={params.requisitionCreationStatus || params.roleId == 2}
+        disableHoverListener={actionsParams.requisitionCreationStatus || actionsParams.roleId == 2}
     >
-        <MainPageButton
-            disabled={!params.requisitionCreationStatus && params.roleId == 1}
+        <Button
+            key="new_requisition"
+            disabled={!actionsParams.requisitionCreationStatus && actionsParams.roleId == 1}
             href={route('newRequisition.get')}
             startIcon={<AddIcon />}
+            {...styles}
         >
             Criar Requerimento
-        </MainPageButton>
+        </Button>
     </Tooltip>
 );
 
-
-buttonComponentList.export = () => (
-    <MainPageButton
+buttonComponentList.export = ({ styles = {} }) => (
+    <Button
+        key="export"
         href={route('exportRequisitionsGet')}
         startIcon={<FileDownloadIcon />}
+        {...styles}
     >
         Exportar
-    </MainPageButton>
+    </Button>
 );
 
-
-buttonComponentList.export_current = () => {
+buttonComponentList.export_current = ({ styles = {} }) => {
     const printDocument = () => {
         const input = document.getElementById('requisition-paper');
         html2canvas(input)
@@ -204,31 +208,31 @@ buttonComponentList.export_current = () => {
                 const imgData = canvas.toDataURL('image/png');
                 const pdf = new jsPDF();
                 pdf.addImage(imgData, 'PNG', 0, 0, 260, 211);
-                // pdf.output('dataurlnewwindow');
                 pdf.save("download.pdf");
             });
     };
-
     return (
-        <RequisitionDetailButton
+        <Button
+            key="export_current"
             startIcon={<ReviewsIcon />}
             onClick={printDocument}
+            {...styles}
         >
             Exportar requerimento
-        </RequisitionDetailButton>
+        </Button>
     )
 };
 
-buttonComponentList.exit = () => {
-    return (
-        <HeaderButton
-            href={route('logout')}
-            startIcon={<LogoutIcon />}
-        >
-            Sair
-        </HeaderButton>
-    );
-}
+buttonComponentList.exit = ({ styles = {} }) => (
+    <Button
+        key="exit"
+        href={route('logout')}
+        startIcon={<LogoutIcon />}
+        {...styles}
+    >
+        Sair
+    </Button>
+);
 
 buttonComponentList.registered = (params) => {
     console.log(params);
@@ -281,25 +285,23 @@ buttonComponentList.registered = (params) => {
     )
 };
 
-buttonComponentList.requisition_history = (params) => {
-    return (
-        <RequisitionDetailButton
-            href={route('record.requisition', { 'requisitionId': params.requisitionId })}
-            startIcon={<HistoryIcon />}
-        >
-            Histórico do Requerimento
-        </RequisitionDetailButton>
-    );
-}
+buttonComponentList.requisition_history = ({ actionsParams = {}, styles = {} }) => (
+    <Button
+        key="requisition_history"
+        href={route('record.requisition', { 'requisitionId': actionsParams.requisitionId })}
+        startIcon={<HistoryIcon />}
+        {...styles}
+    >
+        Histórico do Requerimento
+    </Button>
+);
 
-buttonComponentList.requisition_period = () => {
+buttonComponentList.requisition_period = ({ styles = {} }) => {
     const { setDialogTitle, setDialogBody, openDialog } = useDialogContext();
-
     function handleClick() {
         axios.get(route('admin.getRequisitionPeriodStatus'))
             .then((response) => {
                 const { isUpdateEnabled, isCreationEnabled } = response.data;
-
                 setDialogTitle('Configuração do período de Requerimentos');
                 setDialogBody(<RequisitionsPeriodDialog isUpdateEnabled={isUpdateEnabled} isCreationEnabled={isCreationEnabled} />);
                 openDialog();
@@ -308,42 +310,41 @@ buttonComponentList.requisition_period = () => {
                 console.error('Error fetching requisition period status:', error);
             });
     }
-
     return (
-        <MainPageButton
+        <Button
+            key="requisition_period"
             onClick={handleClick}
+            {...styles}
         >
             Período de requerimentos
-        </MainPageButton>
+        </Button>
     );
 };
 
-buttonComponentList.reviews = (params) => {
-    return (
-        <RequisitionDetailButton
-            href={route('reviewer.reviews', { 'requisitionId': params.requisitionId })}
-            startIcon={<ReviewsIcon />}
-        >
-            Pareceres dados
-        </RequisitionDetailButton>
-    );
-};
+buttonComponentList.reviews = ({ actionsParams = {}, styles = {} }) => (
+    <Button
+        key="reviews"
+        href={route('reviewer.reviews', { 'requisitionId': actionsParams.requisitionId })}
+        startIcon={<ReviewsIcon />}
+        {...styles}
+    >
+        Pareceres dados
+    </Button>
+);
 
-buttonComponentList.save = (params) => {
-    return (
-        <MainPageButton
-            href={route('record.requisition', { 'requisitionId': params.requisitionId })}
-            startIcon={<SaveIcon />}
-        >
-            Salvar alterações
-        </MainPageButton>
-    );
-}
+buttonComponentList.save = ({ actionsParams = {}, styles = {} }) => (
+    <Button
+        key="save"
+        href={route('record.requisition', { 'requisitionId': actionsParams.requisitionId })}
+        startIcon={<SaveIcon />}
+        {...styles}
+    >
+        Salvar alterações
+    </Button>
+);
 
-
-buttonComponentList.send_to_department = (params) => {
+buttonComponentList.send_to_department = ({ actionsParams = {}, styles = {} }) => {
     const { setDialogTitle, setDialogBody, openDialog, _closeDialog } = useDialogContext();
-
     const handleSubmit = () => {
         setDialogBody(
             <>
@@ -359,11 +360,10 @@ buttonComponentList.send_to_department = (params) => {
         router.post(
             route('sendToDepartment'),
             {
-                'requisitionId': params.requisitionId
+                'requisitionId': actionsParams.requisitionId
             },
             {
                 onSuccess: (page) => {
-                    console.log(page.props.data);
                     setDialogTitle('Requerimento enviado');
                     setDialogBody(<ActionSuccessful dialogText={'Enviado ao departamento com sucesso.'} />);
                     openDialog();
@@ -372,27 +372,27 @@ buttonComponentList.send_to_department = (params) => {
             }
         );
     }
-
     return (
-        <RequisitionDetailButton
+        <Button
+            key="send_to_department"
             onClick={handleSubmit}
             startIcon={<SendIcon />}
+            {...styles}
         >
             Enviar para o Departamento
-        </RequisitionDetailButton>
+        </Button>
     );
 };
 
-buttonComponentList.send_to_reviewers = (params) => {
+buttonComponentList.send_to_reviewers = ({ actionsParams = {}, styles = {} }) => {
     const { setDialogTitle, setDialogBody, openDialog, closeDialog } = useDialogContext();
-
     const handleClick = () => {
         axios.get(route('reviewer.reviewerPick'))
             .then((response) => {
                 setDialogTitle('Lista de pareceristas');
                 setDialogBody(
                     <ListOfReviewers
-                        requisitionId={params.requisitionId}
+                        requisitionId={actionsParams.requisitionId}
                         reviewers={response.data}
                         closeDialog={closeDialog}
                     />
@@ -401,25 +401,25 @@ buttonComponentList.send_to_reviewers = (params) => {
             }
         );
     }
-
     return (
-        <RequisitionDetailButton
+        <Button
+            key="send_to_reviewers"
             onClick={handleClick}
             startIcon={<SendToMobileIcon />}
+            {...styles}
         >
             Enviar para Pareceristas
-        </RequisitionDetailButton>
+        </Button>
     );
 };
 
-buttonComponentList.submit_review = (params) => {
+buttonComponentList.submit_review = ({ actionsParams = {}, styles = {} }) => {
     const { setDialogTitle, setDialogBody, openDialog, _closeDialog } = useDialogContext();
-
     const handleSubmit = () => {
         router.post(
             route('submitReview'),
             {
-                'requisitionId': params.requisitionId
+                'requisitionId': actionsParams.requisitionId
             },
             {
                 onSuccess: () => {
@@ -431,13 +431,33 @@ buttonComponentList.submit_review = (params) => {
             }
         );
     }
+    return (
+        <Button
+            key="submit_review"
+            onClick={handleSubmit}
+            startIcon={<AssignmentReturnIcon />}
+            {...styles}
+        >
+            Enviar parecer
+        </Button>
+    )
+};
+
+buttonComponentList.result = (params) => {
+    const { setDialogTitle, setDialogBody, openDialog } = useDialogContext();
+
+    const handleClick = () => {
+        setDialogTitle('Resultado');
+        setDialogBody(<RequisitionResultDialog requisitionId={params.requisitionId} />);
+        openDialog();
+    };
 
     return (
         <RequisitionDetailButton
-            onClick={handleSubmit}
-            startIcon={<AssignmentReturnIcon />}
+            onClick={handleClick}
+            startIcon={<AssignmentTurnedInIcon />}
         >
-            Enviar parecer
+            Dar resultado
         </RequisitionDetailButton>
     )
 };

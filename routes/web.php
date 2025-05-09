@@ -12,9 +12,8 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RecordController;
-use App\Http\Middleware\CheckCurrentRole;
 
-use App\Http\Middleware\CheckRequisitionsPeriod;
+use App\Http\Controllers\DocumentsController;
 
 Route::get('/', function () {
     return Inertia::render('Home');
@@ -56,6 +55,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/trocar-papel', [RoleController::class, 'switchRole'])
         ->name('role.switch');
     
+    Route::get('/documents/{id}/view', [DocumentsController::class, 'view'])->name('documents.view');
+
     // ======== ACESSO SG + Secretarias + Pareceristas ======== //
     Route::group(['middleware' => 'check.current.role:' . implode(',', [RoleId::SG, RoleId::SECRETARY, RoleId::REVIEWER])], function () {
         Route::get('/pareceres/{requisitionId}', [ReviewController::class, 'reviews'])
