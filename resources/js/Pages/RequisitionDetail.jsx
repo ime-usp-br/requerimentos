@@ -23,6 +23,19 @@ const RequisitionDetail = ({ label,
         return 0;
     };
 
+    let resultColor;
+    switch (requisition.result) {
+        case "Deferido":
+            resultColor = "green";
+            break;
+        case "Indeferido":
+        case "Inconsistência nas informações":
+            resultColor = "red";
+            break;
+        default:
+            resultColor = "";
+    }
+
     let actionsParams = {};
 
     actionsParams.requisitionId = requisition.id;
@@ -128,6 +141,12 @@ const RequisitionDetail = ({ label,
                         <Stack spacing={1}>
                             <Typography variant="h6" sx={{ fontWeight: 600 }}>Observações</Typography>
                             <Typography variant="body2">{requisition.observations}</Typography>
+                        </Stack>
+
+                        <Stack spacing={1}>
+                            <Typography variant="h6" sx={{ fontWeight: 600 }}>Resultado</Typography>
+                            <Typography variant="body2" color={resultColor}><strong>Status:</strong> {requisition.result}</Typography>
+                            <Typography variant="body2"><strong>Comentário:</strong> {requisition.result_text}</Typography>
                         </Stack>
                     </Stack>
                 </Paper>
