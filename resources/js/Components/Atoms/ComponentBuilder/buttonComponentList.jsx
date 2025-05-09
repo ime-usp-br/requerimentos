@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Button, Tooltip, DialogActions, DialogContent, DialogContentText, Divider } from "@mui/material";
+import React from "react";
+import { Button, Tooltip, DialogActions, DialogContent, DialogContentText, Alert } from "@mui/material";
 import { useDialogContext } from '../../Context/useDialogContext';
 import ListOfReviewers from "../../Dialogs/ReviewerPicker";
 import ActionSuccessful from "../../Dialogs/ActionSuccessful";
 import AddRoleDialog from "../../Dialogs/AddRoleDialog";
 import RequisitionsPeriodDialog from "../../Dialogs/RequisitionsPeriodDialog";
+import RequisitionResultDialog from "../../Dialogs/RequisitionResultDialog";
+import { router } from "@inertiajs/react";
 import axios from "axios";
 
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
@@ -21,6 +23,7 @@ import HowToRegIcon from '@mui/icons-material/HowToReg';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import AssignmentReturnIcon from '@mui/icons-material/AssignmentReturn';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 
 function MainPageButton({children, ...props}){
     return (
@@ -228,9 +231,49 @@ buttonComponentList.exit = () => {
 }
 
 buttonComponentList.registered = (params) => {
+    console.log(params);
+    const { setDialogTitle, setDialogBody, openDialog, closeDialog } = useDialogContext();
+
+    const handleClick = () => {
+        setDialogTitle('Confirmação');
+        const submitAndReturnToList = () => {
+            router.post(
+                route('registered'),
+                { 'requisitionId': params.requisitionId },
+                {
+                    onSuccess: (resp) => {
+                        console.log(resp);
+                        closeDialog();
+                        setDialogTitle('Marcado com sucesso');
+                        setDialogBody(<ActionSuccessful dialogText={'O requerimento foi marcado como "Registrado no Júpiter".'} />)
+                        openDialog();
+                    },
+                    onError: (error) => {
+                        console.log(error);
+                        closeDialog();
+                    }
+                });
+        };
+        setDialogBody(
+            <>
+                <DialogContent>
+                    <DialogContentText>
+                        Tem certeza de que quer marcar como "Registrado"?
+                    </DialogContentText>
+                    <Alert severity="warning">Marque o requerimento <strong>após</strong> registrar o parecer no Júpiter.</Alert>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={submitAndReturnToList}>Sim</Button>
+                    <Button onClick={closeDialog} sx={{ color: 'red' }}>Não</Button>
+                </DialogActions>
+            </>
+        );
+        openDialog();
+    };
+
     return (
         <RequisitionDetailButton
-            href={route('registered', { 'requisitionId': params.requisitionId })}
+            onClick={handleClick}
             startIcon={<HowToRegIcon />}
         >
             Registrado no Jupiter
@@ -302,6 +345,17 @@ buttonComponentList.send_to_department = (params) => {
     const { setDialogTitle, setDialogBody, openDialog, _closeDialog } = useDialogContext();
 
     const handleSubmit = () => {
+        setDialogBody(
+            <>
+                <DialogContent>
+                    <DialogContentText>
+                        Enviando...
+                    </DialogContentText>
+                </DialogContent>
+            </>
+        );
+        openDialog();
+
         router.post(
             route('sendToDepartment'),
             {
@@ -320,12 +374,12 @@ buttonComponentList.send_to_department = (params) => {
     }
 
     return (
-        <MainPageButton
+        <RequisitionDetailButton
             onClick={handleSubmit}
             startIcon={<SendIcon />}
         >
             Enviar para o Departamento
-        </MainPageButton>
+        </RequisitionDetailButton>
     );
 };
 
@@ -345,7 +399,7 @@ buttonComponentList.send_to_reviewers = (params) => {
                 );
                 openDialog();
             }
-            );
+        );
     }
 
     return (
@@ -384,6 +438,25 @@ buttonComponentList.submit_review = (params) => {
             startIcon={<AssignmentReturnIcon />}
         >
             Enviar parecer
+        </RequisitionDetailButton>
+    )
+};
+
+buttonComponentList.result = (params) => {
+    const { setDialogTitle, setDialogBody, openDialog } = useDialogContext();
+
+    const handleClick = () => {
+        setDialogTitle('Resultado');
+        setDialogBody(<RequisitionResultDialog requisitionId={params.requisitionId} />);
+        openDialog();
+    };
+
+    return (
+        <RequisitionDetailButton
+            onClick={handleClick}
+            startIcon={<AssignmentTurnedInIcon />}
+        >
+            Dar resultado
         </RequisitionDetailButton>
     )
 };

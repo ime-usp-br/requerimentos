@@ -54,7 +54,13 @@ export default function ReviewerPicker({ requisitionId, reviewers, closeDialog }
         );
     };
 
-    let data = reviewers;
+    const data = useMemo(() => 
+        reviewers.map(item => ({
+            ...item,
+            name: item.name === null ? '*Desconhecido*' : item.name,
+        })),
+    [reviewers]);
+    
     const table = useMaterialReactTable({
         columns,
         data,

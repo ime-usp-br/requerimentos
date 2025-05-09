@@ -80,7 +80,7 @@ Route::middleware('auth')->group(function () {
             ->name('role.remove');
         Route::get('/escolher-parecerista', [ReviewController::class, 'reviewerPick'])
             ->name('reviewer.reviewerPick');
-        Route::post('/cadastrado/{requisitionId}', [RequisitionController::class, 'registered'])
+        Route::post('/cadastrado', [RequisitionController::class, 'registered'])
             ->name('registered');
         Route::get('/exportar-requerimentos', [RequisitionController::class, 'exportRequisitionsGet'])
             ->name('exportRequisitionsGet');
@@ -94,5 +94,7 @@ Route::middleware('auth')->group(function () {
             ->name('admin.getRequisitionPeriodStatus');
         Route::post('/alterar-periodo-requerimento', [AdminController::class, 'setRequisitionPeriodStatus'])
             ->name('admin.setRequisitionPeriodStatus');
+        Route::post('/dar-resultado-ao-requerimento', [RequisitionController::class, 'setRequisitionResult'])
+            ->name('giveResultToRequisition');
     });
 });

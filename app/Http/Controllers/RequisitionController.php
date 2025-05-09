@@ -66,7 +66,8 @@ class RequisitionController extends Controller
                 $selectedActions = [];
                 break;
             case RoleId::SG:
-                $selectedActions = [['send_to_department'],
+                $selectedActions = [['send_to_department',
+                                     'result'],
                                     ['edit_requisition'], 
                                     ['send_to_reviewers', 
                                      'reviews'], 
@@ -544,11 +545,11 @@ class RequisitionController extends Controller
         return response('', 200)->header('Content-Type', 'text/plain');
     } 
 
-    public function registered($requisitionId) {
-        DB::transaction(function () use ($requisitionId) {
+    public function registered(Request $request) {
+        DB::transaction(function () use ($request) {
             $user = Auth::user();
 
-            $requisition = Requisition::find($requisitionId);
+            $requisition = Requisition::find($request->requisitionId);
             $requisition->situation = EventType::REGISTERED;
             $requisition->registered = true;
             $requisition->internal_status = "Registrado no Jupiter por " . $user->name;
@@ -556,7 +557,7 @@ class RequisitionController extends Controller
 
             $event = new Event;
             $event->type = EventType::REGISTERED;
-            $event->requisition_id = $requisitionId;
+            $event->requisition_id = $request->requisitionId;
             $event->author_name = $user->name;
             $event->author_nusp = $user->codpes;
             $event->version = $requisition->latest_version;
@@ -655,5 +656,62 @@ class RequisitionController extends Controller
         ]);
     }
 
+    public function setRequisitionResult(Request $request) 
+    {
+        $this->checkUserUpdatePermission($request->requisitionId);
+        if (!$this->hasRequisitionResultChanged($request))
+        {
+            abort(400, 'No changes were submitted.');
+        }
+        $requisition = Requisition::find($request->requisitionId);
+        $resultType = $this->getResultEventTypeFrom($request);
+
+        $requisition->result = $request->result;
+        $requisition->result_text = $request->result_text;
+        $requisition->situation = $resultType;
+        $requisition->internal_status = $resultType;
+        $requisition->save();
+
+        $user = Auth::user();
+
+        $event = new Event;
+        $event->type = $resultType;
+        $event->requisition_id = $request->requisitionId;
+        $event->author_name = $user->name;
+        $event->author_nusp = $user->codpes;
+        $event->version = $requisition->latest_version;
+        $event->message = $resultType;
+        $event->save();
+
+        return response('', 200)->header('Content-Type', 'text/plain');
+    }
+
+    private function hasRequisitionResultChanged($updateRequest)
+    {
+        $requisition = Requisition::find($updateRequest["requisitionId"]);
+
+        $hasChanged = False;
+        if ($requisition->result !== $updateRequest["result"]) {
+            $hasChanged = True;
+        }
+
+        return $hasChanged;
+    }
+
+    private function getResultEventTypeFrom($updateRequest)
+    {
+        switch ($updateRequest["result"]) {
+            case "Inconsistência nas informações":
+                $resultType = EventType::BACK_TO_STUDENT;
+                break;
+            case "Deferido":
+                $resultType = EventType::ACCEPTED;
+                break;
+            case "Indeferido":
+                $resultType = EventType::REJECTED;
+                break;
+        }
+        return $resultType;
+    }
 
 }

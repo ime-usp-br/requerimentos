@@ -27,4 +27,20 @@ class DepartmentUserRole extends Model
     {
         return $this->belongsTo(\Spatie\Permission\Models\Role::class);
     }
+
+    public static function getUsersWithRoleAndDepartment($roleId, $departmentId) {
+        if ($departmentId == null) {
+            $record = self::with('user')
+                ->where('role_id', $roleId)
+                ->get();
+        }
+        else {
+            $record = self::with('user')
+                ->where('role_id', $roleId)
+                ->where('department_id', $departmentId)
+                ->get();
+        }
+
+        return $record->pluck('user');
+    }
 }

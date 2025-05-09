@@ -6,7 +6,10 @@ use App\Models\User;
 use App\Models\Event;
 use App\Models\Review;
 use App\Models\ReviewsVersion;
+use App\Models\DepartmentUserRole;
 use App\Enums\RoleName;
+use App\Enums\RoleId;
+use App\Enums\DepartmentId;
 use App\Enums\EventType;
 use App\Enums\DocumentType;
 use App\Models\Requisition;
@@ -22,8 +25,17 @@ class ReviewController extends Controller
 {
     public function reviewerPick()
     {
-        $reviewRole = Role::where('name', RoleName::REVIEWER)->first();
-        $reviewers = $reviewRole->users;
+        $currentUser = Auth::user();
+
+        if ($currentUser->current_role_id == RoleId::SG) {
+            // If the authenticated role is 2, get every user with roleid 3
+            $reviewers = DepartmentUserRole::getUsersWithRoleAndDepartment(RoleId::REVIEWER, null);
+        } else {
+            // Else, select only users with the same department and roleid 3
+            $reviewers = DepartmentUserRole::getUsersWithRoleAndDepartment(RoleId::REVIEWER, $currentUser->department_id);
+        }
+
+        // dd($reviewers);
 
         return $reviewers;
     }
@@ -32,13 +44,11 @@ class ReviewController extends Controller
     {
         $reviewer_nusps = array_keys($request['reviewer_nusps']);
         $requisitionId = $request['requisitionId'];
+        // return $request;
         DB::transaction(function () use ($reviewer_nusps, $requisitionId) {
             foreach ($reviewer_nusps as $reviewer_nusp) {
                 // primeiro realiza a busca dos dados do parecerista
-                $reviewRole = Role::where('name', RoleName::REVIEWER)->first();
-                $reviewer = $reviewRole->users->filter(function ($user) use ($reviewer_nusp) {
-                    return $user->codpes == $reviewer_nusp;
-                })->first();
+                $reviewer = User::where('codpes', $reviewer_nusp)->first();
 
                 $rev = Review::where('requisition_id', $requisitionId)
                     ->where('reviewer_nusp', $reviewer->codpes)
@@ -63,7 +73,6 @@ class ReviewController extends Controller
                 // $req->situation é o que aparece na linha do requerimento na tabela 
                 // para o aluno (não contém o nome do parecerista)
                 $req->situation = EventType::SENT_TO_REVIEWERS;
-                $req->validated = true;
 
                 $event = new Event;
                 $event->type = EventType::SENT_TO_REVIEWERS;

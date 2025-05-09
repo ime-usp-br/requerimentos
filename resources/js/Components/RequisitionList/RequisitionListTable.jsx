@@ -1,7 +1,7 @@
 import React from 'react';
 import { useMemo } from 'react';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import PageviewIcon from '@mui/icons-material/Pageview';
 import { Link, Box } from '@mui/material';
 
 import Builder from '../Atoms/ComponentBuilder/Builder';
@@ -45,7 +45,7 @@ export default function List({ requisitions, selectedColumns }) {
         },
         renderRowActions: ({ row }) => (
             <Link href={route('showRequisition', { requisitionId: row.original.id })} underline='never' color='textDisabled'>
-                <VisibilityIcon />
+                <PageviewIcon />
             </Link>
         ),
         initialState: { density: 'compact' },
