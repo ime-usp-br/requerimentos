@@ -13,10 +13,6 @@ const RequisitionDetail = ({ label,
                              selectedActions,
                              requisition,
                              takenDiscs, 
-                             takenDiscsRecord, 
-                             currentCourseRecord, 
-                             takenDiscSyllabus, 
-                             requestedDiscSyllabus,
                              documents }) => {
     
     const theme = useTheme();
@@ -57,7 +53,7 @@ const RequisitionDetail = ({ label,
                     width: '100%',
                     paddingTop: 4
                 }}>
-                <ActionsMenu params={actionsParams} selectedActions={selectedActions} />
+                <ActionsMenu actionsParams={actionsParams} selectedActions={selectedActions} />
 
                 <Paper 
                     id="requisition-paper"

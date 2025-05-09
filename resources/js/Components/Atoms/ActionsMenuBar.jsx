@@ -4,8 +4,11 @@ import { Stack, Divider, Paper } from '@mui/material';
 import Builder from './ComponentBuilder/Builder';
 import buttonComponentList from './ComponentBuilder/buttonComponentList';
 
-export default function ActionsMenuBar({ selectedActions, params }) {
+export default function ActionsMenuBar({ selectedActions, actionsParams }) {
     let builder = new Builder(buttonComponentList);
+    const actionsMenubarButtonStyle = {
+        variant: 'contained'
+    };
     return (
         <Stack 
             direction={{ xs: 'column', sm: 'row' }}
@@ -15,7 +18,7 @@ export default function ActionsMenuBar({ selectedActions, params }) {
                 selectedActions.map((grouping, groupIndex) =>
                     builder.build(grouping).map((itemBuilder) =>
                         <Paper elevation={0} >
-                            { itemBuilder(params) }
+                            { itemBuilder({ actionsParams, styles: actionsMenubarButtonStyle }) }
                         </Paper>
                     ).concat((selectedActions.length - 1 != groupIndex) ? [<Divider />] : [])
                 ).flat() 

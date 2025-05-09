@@ -18,7 +18,7 @@ export default function RequisitionListBody({ requisitions,
                 paddingTop: 4
             }} 
         >
-            <ActionsMenuBar params={actionsParams} selectedActions={selectedActions} />
+            <ActionsMenuBar actionsParams={actionsParams} selectedActions={selectedActions} />
             <RequisitionListTable 
                 requisitions={requisitions} 
                 selectedColumns={selectedColumns}

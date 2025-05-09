@@ -7,17 +7,25 @@ import Builder from '../Atoms/ComponentBuilder/Builder';
 import buttonComponentList from '../Atoms/ComponentBuilder/buttonComponentList';
 
 export default function HeaderActions({ roleId,
-                                        showRoleSelector, 
-                                        userRoles, 
-                                        actionsParams,
-                                        isExit }) {
+    showRoleSelector,
+    userRoles,
+    actionsParams,
+    isExit }) {
     const handleComboBoxChange = (value) => {
         router.post(route('role.switch'), { 'role-switch': value.id });
     };
 
     let builder = new Builder(buttonComponentList);
+    const headerActionsButtonStyle = {
+        variant: 'outlined',
+        sx: {
+            color: 'white',
+            borderColor: 'white'
+        }
+    };
+
     return (
-        <Stack 
+        <Stack
             direction='row'
             sx={{
                 justifyContent: { sm: 'space-between', md: 'space-around' },
@@ -25,7 +33,7 @@ export default function HeaderActions({ roleId,
             }}
             spacing={2}
         >
-            { showRoleSelector && (userRoles.length > 1) && (
+            {showRoleSelector && (userRoles.length > 1) && (
                 <ComboBox
                     size='small'
                     options={userRoles}
@@ -38,16 +46,11 @@ export default function HeaderActions({ roleId,
                     onChange={handleComboBoxChange}
                 />
             )}
-            
-            { builder.build(isExit ? ['exit'] : ['go_back']).map((itemBuilder) =>
-                itemBuilder(actionsParams)
-            ) }
-                
+
+            {builder.build(isExit ? ['exit'] : ['go_back']).map((itemBuilder) =>
+                itemBuilder({ actionsParams, styles: headerActionsButtonStyle })
+            )}
+
         </Stack>
     );
 };
-
-
-// import { useDialogContext }
-
-// [isOpen, setOpen, setClose ] = useDialogContext();
