@@ -1660,4 +1660,72 @@ class RequisitionControllerTest extends TestCase
             'version' => 3,
         ]);
     }
+
+    public function test_set_requisition_result_success()
+    {
+        // Test that non-SG roles are not allowed
+        $nonAllowedRoles = [RoleId::STUDENT, RoleId::SECRETARY, RoleId::REVIEWER];
+        foreach ($nonAllowedRoles as $role) {
+            $user = User::factory()->create([
+                'codpes' => '111111',
+                'name' => 'Test User',
+                'email' => 'user@test.com',
+                'current_role_id' => $role,
+            ]);
+            $this->actingAs($user);
+            $requisition = Requisition::factory()->create([
+                'student_nusp' => '111111',
+                'student_name' => 'Test User',
+                'email' => 'user@test.com',
+                'editable' => true,
+                'result' => 'Sem resultado',
+                'latest_version' => 1,
+            ]);
+            $payload = [
+                'requisitionId' => $requisition->id,
+                'result' => 'Deferido',
+                'result_text' => 'Approved by test'
+            ];
+            $response = $this->post('/dar-resultado-ao-requerimento', $payload);
+            $response->assertStatus(403);
+        }
+
+        // Test that SG role is allowed to set the result
+        $user = User::factory()->create([
+            'codpes' => '222222',
+            'name' => 'Test SG',
+            'email' => 'sg@test.com',
+            'current_role_id' => RoleId::SG,
+        ]);
+        $this->actingAs($user);
+        $requisition = Requisition::factory()->create([
+            'student_nusp' => '333333',
+            'student_name' => 'Another Student',
+            'email' => 'another@test.com',
+            'editable' => true,
+            'result' => 'Sem resultado',
+            'latest_version' => 1,
+        ]);
+        $payload = [
+            'requisitionId' => $requisition->id,
+            'result' => 'Deferido',
+            'result_text' => 'Approved by test from SG'
+        ];
+        $response = $this->post('/dar-resultado-ao-requerimento', $payload);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('requisitions', [
+            'id' => $requisition->id,
+            'result' => 'Deferido',
+            'result_text' => 'Approved by test from SG',
+            'situation' => EventType::ACCEPTED,
+            'internal_status' => EventType::ACCEPTED,
+        ]);
+        $this->assertDatabaseHas('events', [
+            'requisition_id' => $requisition->id,
+            'type' => EventType::ACCEPTED,
+            'author_nusp' => '222222',
+            'version' => $requisition->latest_version,
+        ]);
+    }
 }
