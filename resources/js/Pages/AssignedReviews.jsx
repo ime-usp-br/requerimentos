@@ -1,8 +1,8 @@
 import React from 'react';
 import { Stack } from '@mui/material';
 
-import Header from '../Components/Header/Header';
-import AssignedReviewsBody from '../Components/AssignedReviews/AssignedReviewsBody';
+import Header from '../Features/Header/Header';
+import AssignedReviewsBody from '../Features/AssignedReviews/AssignedReviewsBody';
 
 export default function AssignedReviews({ label,
                                           roleId,

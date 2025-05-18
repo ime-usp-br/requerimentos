@@ -23,7 +23,7 @@
         "@mui/material": "^6.4.2",
         "@mui/styled-engine-sc": "^6.4.2",
         "@mui/x-data-grid": "^7.25.0",
-        "@mui/x-date-pickers": "^7.25.0",
+        "@mui/x-date-pickers": "^7.29.3",
         "dayjs": "^1.11.13",
         "material-react-table": "^3.1.0",
         "react": "^19.0.0",

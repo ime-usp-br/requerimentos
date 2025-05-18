@@ -1,5 +1,5 @@
 import React from 'react';
-import RequisitionDetail from '../Components/RequisitionDetail/RequisitionDetail';
+import RequisitionDetail from '../Features/RequisitionDetail/RequisitionDetail';
 import BasePage from './BasePage';
 
 const RequisitionDetailPage = ({ label,
@@ -24,6 +24,7 @@ const RequisitionDetailPage = ({ label,
             actionsProps={{
                 actionsParams: actionsParams,
                 selectedActions: selectedActions,
+                variant: 'box'
             }}
         >
             <RequisitionDetail requisition={requisition} takenDiscs={takenDiscs} documents={documents} />

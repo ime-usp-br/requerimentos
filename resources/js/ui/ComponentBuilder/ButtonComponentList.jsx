@@ -1,14 +1,7 @@
 import React from "react";
-import { Button, Tooltip, DialogActions, DialogContent, DialogContentText, Alert } from "@mui/material";
-import { useDialogContext } from '../../Context/useDialogContext';
-import ListOfReviewers from "../../Dialogs/ReviewerPicker";
-import ActionSuccessful from "../../Dialogs/ActionSuccessful";
-import AddRoleDialog from "../../Dialogs/AddRoleDialog";
-import RequisitionsPeriodDialog from "../../Dialogs/RequisitionsPeriodDialog";
-import RequisitionResultDialog from "../../Dialogs/RequisitionResultDialog";
 import { router } from "@inertiajs/react";
 import axios from "axios";
-
+import { Button, Tooltip, DialogActions, DialogContent, DialogContentText, Alert } from "@mui/material";
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import AddIcon from '@mui/icons-material/Add';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
@@ -24,6 +17,13 @@ import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import AssignmentReturnIcon from '@mui/icons-material/AssignmentReturn';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+
+import { useDialogContext } from '../../Context/useDialogContext';
+import ListOfReviewers from "../../Features/RequisitionDetail/ReviewerPicker";
+import ActionSuccessful from "../../Dialogs/ActionSuccessful";
+import AddRoleDialog from "../../Features/Admin/AddRoleDialog";
+import RequisitionsPeriodDialog from "../../Features/Admin/RequisitionsPeriodDialog";
+import RequisitionResultDialog from "../../Features/RequisitionDetail/RequisitionResultDialog";
 
 function MainPageButton({children, ...props}){
     return (

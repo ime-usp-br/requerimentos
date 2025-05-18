@@ -12,8 +12,8 @@ import {
     Alert
 } from "@mui/material";
 import { router } from "@inertiajs/react";
-import { useDialogContext } from '../Context/useDialogContext';
-import ActionSuccessful from "./ActionSuccessful";
+import { useDialogContext } from '../../Context/useDialogContext';
+import ActionSuccessful from "../../Dialogs/ActionSuccessful";
 
 function RequisitionResultDialog({ requisitionId }) {
 	const [selectedOption, setSelectedOption] = useState("");

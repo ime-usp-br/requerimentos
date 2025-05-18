@@ -5,7 +5,7 @@ import {
     DialogContent,
     DialogContentText,
 } from "@mui/material";
-import { useDialogContext } from '../Context/useDialogContext';
+import { useDialogContext } from '../../Context/useDialogContext';
 
 function RemoveRoleConfirmationDialog({ userRole, removeRole }) {
     const { closeDialog } = useDialogContext();

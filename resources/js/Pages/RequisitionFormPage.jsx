@@ -1,6 +1,6 @@
 import React from "react";
 import BasePage from "./BasePage";
-import RequisitionForm from "../Components/RequisitionForm/RequisitionForm";
+import RequisitionForm from "../Features/RequisitionForm/RequisitionForm";
 
 const RequisitionFormPage = ({ requisitionData, label, roleId, userRoles, isStudent, isUpdate }) => {
     return (

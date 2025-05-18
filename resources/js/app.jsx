@@ -6,7 +6,7 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
-import { DialogProvider } from "./Components/Context/useDialogContext"
+import { DialogProvider } from "./Context/useDialogContext"
 
 createInertiaApp({
   resolve: name => {

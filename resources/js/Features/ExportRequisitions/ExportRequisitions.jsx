@@ -38,6 +38,7 @@ function ExportRequisitions({ options }) {
 			sx={{
 				alignItems: { xs: 'left', sm: 'baseline' },
 			}}
+			width="100%"
 		>
 			<Filters options={options} setData={setData} />
 			<Button

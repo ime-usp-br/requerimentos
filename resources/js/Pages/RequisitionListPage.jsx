@@ -1,5 +1,5 @@
 import React from 'react';
-import RequisitionListTable from '../Components/RequisitionList/RequisitionListTable';
+import RequisitionListTable from '../Features/RequisitionList/RequisitionListTable';
 import BasePage from './BasePage';
 
 
@@ -30,7 +30,8 @@ function RequisitionList({ label,
             }}
             actionsProps={{
                 selectedActions: selectedActions,
-                actionsParams: actionsParams
+                actionsParams: actionsParams,
+                variant: 'bar'
             }}
         >
             <RequisitionListTable

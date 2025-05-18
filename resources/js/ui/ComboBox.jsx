@@ -1,7 +1,7 @@
 import React from "react";
 import { Autocomplete, TextField } from "@mui/material";
 
-export default function ComboBox({ size, options, sx, name, optionGetter, defaultValue, onChange }) {
+export default function ComboBox({ size, options, sx, name, optionGetter, defaultValue, onChange, ...props }) {
     return (
         <Autocomplete 
             size={size}
@@ -14,8 +14,10 @@ export default function ComboBox({ size, options, sx, name, optionGetter, defaul
                 <TextField 
                     {...params}
                     label={name} 
-                />)}
+                />
+            )}
             onChange={(_, value) => onChange(value)}
+            {...props}
         />
     );
 };

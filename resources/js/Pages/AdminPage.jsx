@@ -1,7 +1,7 @@
 import React from 'react';
 
 import BasePage from './BasePage';
-import ManageUsers from '../Components/Admin/ManageUsers';
+import ManageUsers from '../Features/Admin/ManageUsers';
 
 function AdminPage({ users }){
     return (
@@ -12,7 +12,8 @@ function AdminPage({ users }){
                 showRoleSelector: false
             }}
             actionsProps={{
-                selectedActions: [['requisition_period', 'add_role']]
+                selectedActions: [['requisition_period', 'add_role']],
+                variant: "bar"
             }}
         >
             <ManageUsers users={users} />

@@ -4,8 +4,8 @@ import {
     MaterialReactTable,
     useMaterialReactTable,
 } from "material-react-table";
-import RemoveRoleConfirmationDialog from "../Dialogs/RemoveRoleConfirmationDialog";
-import { useDialogContext } from '../Context/useDialogContext';
+import RemoveRoleConfirmationDialog from "./RemoveRoleConfirmationDialog";
+import { useDialogContext } from '../../Context/useDialogContext';
 import axios from "axios";
 
 
@@ -126,7 +126,7 @@ function ManageUsers({ users }) {
     });
 
     return (
-        <Stack spacing={2}>
+        <Stack spacing={2} sx={{ width: "100%" }}>
             <Typography variant="h5">Usuários cadastrados</Typography>
             <TextField
                 label="Pesquisar"

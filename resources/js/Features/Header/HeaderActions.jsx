@@ -2,9 +2,9 @@ import React from 'react';
 import { router } from '@inertiajs/react'
 import { Stack } from '@mui/material';
 
-import ComboBox from '../Atoms/ComboBox';
-import Builder from '../Atoms/ComponentBuilder/Builder';
-import buttonComponentList from '../Atoms/ComponentBuilder/buttonComponentList';
+import ComboBox from '../../ui/ComboBox';
+import Builder from '../../ui/ComponentBuilder/Builder';
+import buttonComponentList from '../../ui/ComponentBuilder/ButtonComponentList';
 
 export default function HeaderActions({ 
     roleId,

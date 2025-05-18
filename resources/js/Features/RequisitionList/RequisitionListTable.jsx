@@ -1,11 +1,12 @@
 import React from 'react';
 import { useMemo } from 'react';
 import { MaterialReactTable, useMaterialReactTable, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton } from 'material-react-table';
+
 import PageviewIcon from '@mui/icons-material/Pageview';
 import { Link, Box } from '@mui/material';
 
-import Builder from '../Atoms/ComponentBuilder/Builder';
-import columnTypes from "../Atoms/ComponentBuilder/columnTypes";
+import Builder from '../../ui/ComponentBuilder/Builder';
+import columnTypes from "../../ui/ComponentBuilder/TableColumnTypes";
 
 function List({ requisitions, selectedColumns }) {
     let textStyle = {

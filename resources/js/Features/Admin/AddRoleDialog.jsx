@@ -13,7 +13,7 @@ import {
 	Collapse
 } from "@mui/material";
 import { useForm } from "@inertiajs/react";
-import { useDialogContext } from '../Context/useDialogContext';
+import { useDialogContext } from '../../Context/useDialogContext';
 
 function AddRoleDialog() {
 	const { closeDialog } = useDialogContext();

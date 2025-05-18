@@ -1,22 +1,20 @@
 import React from 'react';
 import { MenuList, MenuItem, Divider, Paper } from '@mui/material';
-import Builder from './ComponentBuilder/Builder';
-import buttonComponentList from './ComponentBuilder/buttonComponentList';
 
-export default function ActionsMenuBox({ selectedActions, actionsParams}) {
-    let builder = new Builder(buttonComponentList);
-    const actionsMenuBoxButtonStyles = {
-        disableRipple: true,
-        variant: 'text',
-        color: 'black',
-        sx: {
-            padding: '12px 24px',
-            width: '100%',
-            height: '100%',
-            textAlign: 'left',
-            justifyContent: 'flex-start', 
-        }
-    };
+const actionsMenuBoxButtonStyles = {
+    disableRipple: true,
+    variant: 'text',
+    color: 'black',
+    sx: {
+        padding: '12px 24px',
+        width: '100%',
+        height: '100%',
+        textAlign: 'left',
+        justifyContent: 'flex-start',
+    }
+};
+
+export default function ActionsMenuBox({ builder, selectedActions, actionsParams }) {
 
     return (
         <Paper

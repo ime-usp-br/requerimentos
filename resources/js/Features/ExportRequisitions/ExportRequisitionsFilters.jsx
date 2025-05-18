@@ -1,70 +1,72 @@
 import React from 'react';
 import { Stack } from '@mui/material';
-import { DateField, LocalizationProvider } from '@mui/x-date-pickers';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
-import ComboBox from '../Atoms/ComboBox';
+import ComboBox from '../../ui/ComboBox';
 
 function ExportRequisitionFilters({ options, setData }) {
-
     const comboStyle = {
         width: '100%'
     };
+    const [startDate, setStartDate] = React.useState(null);
+    const [endDate, setEndDate] = React.useState(null);
 
     return (
         <Stack
-            direction='column'
+            direction="row"
             spacing={2}
             sx={{
-                justifyContent: 'space-between',
-                alignItems: 'center',
                 width: '100%'
             }}
         >
             <ComboBox
                 options={options.internal_statusOptions}
-                size='small'
                 defaultValue={options.internal_statusOptions[0]}
                 sx={comboStyle}
-                name='Situação'
+                name="Situação"
                 onChange={(value) => setData('internal_status', value)}
             />
             <ComboBox
                 options={options.departments}
-                size='small'
                 defaultValue={options.departments[0]}
                 sx={comboStyle}
-                name='Departamento'
+                name="Departamento"
                 onChange={(value) => setData('department', value)}
             />
             <ComboBox
                 options={options.discTypes}
-                size='small'
                 defaultValue={options.discTypes[0]}
                 sx={comboStyle}
-                name='Tipo de Disciplina'
+                name="Tipo de Disciplina"
                 onChange={(value) => setData('requested_disc_type', value)}
             />
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DateField 
-                    label="Data Inicial" 
-                    size='small' 
-                    sx={comboStyle} 
-                    onChange={(value) => setData('start_date', value['$d'].toISOString().slice(0, 10))}
+                <DatePicker
+                    label="Data Inicial"
+                    value={startDate}
+                    onChange={(newValue) => {
+                        setStartDate(newValue);
+                        setData('start_date', newValue?.$d ? newValue.$d.toISOString().slice(0, 10) : '');
+                    }}
                     format="DD/MM/YYYY"
+                    sx={comboStyle}
                 />
             </LocalizationProvider>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DateField 
-                    label="Data Final" 
-                    size='small'
-                    sx={comboStyle} 
-                    onChange={(value) => setData('end_date', value['$d'].toISOString().slice(0, 10))}
+                <DatePicker
+                    label="Data Final"
+                    value={endDate}
+                    onChange={(newValue) => {
+                        setEndDate(newValue);
+                        setData('end_date', newValue?.$d ? newValue.$d.toISOString().slice(0, 10) : '');
+                    }}
                     format="DD/MM/YYYY"
+                    sx={comboStyle}
                 />
             </LocalizationProvider>
         </Stack>
     );
-};
+}
 
 export default ExportRequisitionFilters;

@@ -1,6 +1,6 @@
 import React from 'react';
 import BasePage from './BasePage';
-import ExportRequisitions from '../Components/ExportRequisitions/ExportRequisitions';
+import ExportRequisitions from '../Features/ExportRequisitions/ExportRequisitions';
 
 function ExportRequisitionsPage({ label, roleId, userRoles, options }) {
     return (

@@ -10,7 +10,7 @@ import {
 	Collapse
 } from "@mui/material";
 import axios from "axios";
-import { useDialogContext } from '../Context/useDialogContext';
+import { useDialogContext } from '../../Context/useDialogContext';
 
 
 const RequisitionsPeriodDialog = ({ isCreationEnabled, isUpdateEnabled }) => {

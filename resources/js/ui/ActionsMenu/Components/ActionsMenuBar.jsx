@@ -1,0 +1,35 @@
+import React from 'react'
+import { styled } from '@mui/material/styles';
+import { Stack, Divider, Paper } from '@mui/material';
+import ActionsMenu from '../ActionsMenu';
+
+const ActionsMenuContainer = styled(Stack)(({ theme }) => ({
+    width: '100%',
+    flexDirection: 'row',
+    gap: theme.spacing(2),
+
+    [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column',
+        gap: theme.spacing(1),
+    },
+}));
+
+const actionsMenubarButtonStyle = {
+    variant: 'contained'
+};
+
+export default function ActionsMenuBar({ builder, selectedActions, actionsParams }) {
+    return (
+        <ActionsMenuContainer>
+            {
+                selectedActions.map((grouping, groupIndex) =>
+                    builder.build(grouping).map((itemBuilder) =>
+                        <Paper elevation={0} >
+                            {itemBuilder({ actionsParams, styles: actionsMenubarButtonStyle })}
+                        </Paper>
+                    ).concat((selectedActions.length - 1 != groupIndex) ? [<Divider />] : [])
+                ).flat()
+            }
+        </ActionsMenuContainer>
+    );
+};
