@@ -5,7 +5,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 import ComboBox from '../Atoms/ComboBox';
 
-export default function Filters({ options, setData }) {
+function ExportRequisitionFilters({ options, setData }) {
 
     const comboStyle = {
         width: '100%'
@@ -66,3 +66,5 @@ export default function Filters({ options, setData }) {
         </Stack>
     );
 };
+
+export default ExportRequisitionFilters;

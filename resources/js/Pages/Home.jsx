@@ -1,6 +1,6 @@
 import React from 'react';
 import LoginIcon from '@mui/icons-material/Login';
-import { Stack, Button, Container, Typography } from '@mui/material';
+import { Stack, Button, Typography } from '@mui/material';
 import home from '../../img/home.jpg';
 import imeLogo from '../../img/ime-logo.svg';
 import uspLogo from '../../img/usp-logo.svg';

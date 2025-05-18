@@ -34,7 +34,7 @@ class ListController extends Controller
         $requisition_creation_status = $requisition_period->is_creation_enabled;
         $requisition_edition_status = $requisition_period->is_update_enabled;
 
-        return Inertia::render('RequisitionList', [
+        return Inertia::render('RequisitionListPage', [
             'label' => 'Requerimentos',
             'requisitions' => $requisitions, 
             'selectedColumns' => $selectedColumns,

@@ -7,7 +7,7 @@ import { Link, Box } from '@mui/material';
 import Builder from '../Atoms/ComponentBuilder/Builder';
 import columnTypes from "../Atoms/ComponentBuilder/columnTypes";
 
-export default function List({ requisitions, selectedColumns }) {
+function List({ requisitions, selectedColumns }) {
     let textStyle = {
         //simple styling with the `sx` prop, works just like a style prop in this example
         sx: {
@@ -70,3 +70,5 @@ export default function List({ requisitions, selectedColumns }) {
         </Box>
     );
 };
+
+export default List;
