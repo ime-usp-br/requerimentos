@@ -1,6 +1,6 @@
 import React from 'react';
 import { useMemo } from 'react';
-import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
+import { MaterialReactTable, useMaterialReactTable, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton } from 'material-react-table';
 import PageviewIcon from '@mui/icons-material/Pageview';
 import { Link, Box } from '@mui/material';
 
@@ -31,9 +31,9 @@ export default function List({ requisitions, selectedColumns }) {
         enableColumnDragging: false,
         enableFilters: true,
         enableColumnFilters: true,
-        enableTopToolbar: false,
+        enableTopToolbar: true,
         enableColumnOrdering: true,
-        enableGlobalFilter: true,
+        enableGlobalFilter: false,
         enableRowActions: true,
         muiTableHeadCellProps: textStyle,
         muiTableBodyCellProps: textStyle,
@@ -50,7 +50,14 @@ export default function List({ requisitions, selectedColumns }) {
                 </Link>
             </Box>
         ),
-        initialState: { density: 'compact' },
+        initialState: { density: 'compact', showGlobalFilter: true },
+        renderTopToolbarCustomActions: ({ table }) => (
+            <Box sx={{ display: 'flex', gap: '1rem', p: '4px' }}>
+                <MRT_GlobalFilterTextField table={table} />
+                <MRT_ToggleFiltersButton table={table} />
+            </Box>
+        ),
+        renderToolbarInternalActions: ({ table }) => <></>,
     });
 
     return (

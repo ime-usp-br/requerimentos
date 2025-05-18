@@ -56,21 +56,29 @@ class RoleController extends Controller
     }
 
     public function switchRole(Request $request) {
+        // dd($request);
         $data = $this->validateRoleRequest($request, [
             'nusp' => 'nullable'
         ]);
-
+        
+        // dd($data);
         $user = Auth::user();
-
-        if (!$user->hasRole($data['roleId'], $data['departmentId'] ?? null)) {
+        
+        if (!$user->hasRole($request['roleId'], $request['departmentId'] ?? null)) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
         try {
-            $user->changeCurrentRole($data['roleId'], $data['departmentId'] ?? null);
+            $user->changeCurrentRole($request['roleId'], $request['departmentId'] ?? null);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 403);
         }
+
+        $user = Auth::user();
+        $user->current_role_id = (int) $request['roleId'];
+        $user->current_department_id = $request['departmentId'] != null ? (int) $request['departmentId'] : null;
+        $user->save();
+
 
         return redirect()->back();
     }
