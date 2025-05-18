@@ -6,13 +6,21 @@ import ComboBox from '../Atoms/ComboBox';
 import Builder from '../Atoms/ComponentBuilder/Builder';
 import buttonComponentList from '../Atoms/ComponentBuilder/buttonComponentList';
 
-export default function HeaderActions({ roleId,
+export default function HeaderActions({ 
+    roleId,
     showRoleSelector,
     userRoles,
     actionsParams,
     isExit }) {
     const handleComboBoxChange = (value) => {
-        router.post(route('role.switch'), { 'role-switch': value.id });
+        console.log(value);
+        router.post(
+            route('role.switch'), 
+            { 
+                'roleId': value.role_id,
+                'departmentId': value.department_id,
+            }
+        );
     };
 
     let builder = new Builder(buttonComponentList);
@@ -22,6 +30,13 @@ export default function HeaderActions({ roleId,
             color: 'white',
             borderColor: 'white'
         }
+    };
+
+    let getRoleName = (option) => {
+        if (!option.department)
+            return option.role.name;
+
+        return option.role.name + " do " + option.department.name;
     };
 
     return (
@@ -37,10 +52,18 @@ export default function HeaderActions({ roleId,
                 <ComboBox
                     size='small'
                     options={userRoles}
-                    optionGetter={(option) => option.name}
-                    defaultValue={userRoles.find(val => val.id == roleId)}
+                    optionGetter={getRoleName}
+                    defaultValue={userRoles.find(val => val.role_id == roleId)}
                     sx={{
                         width: 250,
+                        "& .MuiInputLabel-root": { color: "white" },
+                        "& .MuiInputLabel-root.Mui-focused": { color: "white" },
+                        "& .MuiOutlinedInput-root": { color: "white" },
+                        "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": { borderColor: "white" },
+                        "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": { borderColor: "white" },
+                        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "white" },
+                        "& .MuiAutocomplete-popupIndicator": { color: "white" },
+                        "& .MuiSvgIcon-root": { color: "white" }
                     }}
                     name='papel'
                     onChange={handleComboBoxChange}

@@ -18,6 +18,8 @@ export default function RequisitionList({ label,
     actionsParams.requisitionEditionStatus = requisitionEditionStatus;
     actionsParams.requisitionCreationStatus = requisitionCreationStatus;
 
+    console.log(userRoles);
+
     return (
         <Stack 
             direction='column'
@@ -30,7 +32,7 @@ export default function RequisitionList({ label,
             <Header 
                 label={label} 
                 roleId={roleId} 
-                useRoles={true}
+                showRoleSelector={true}
                 userRoles={userRoles}
                 selectedActions={selectedActions}
                 actionsParams={actionsParams}

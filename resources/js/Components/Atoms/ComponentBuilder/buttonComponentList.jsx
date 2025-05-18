@@ -266,8 +266,12 @@ buttonComponentList.registered = ({ actionsParams = {}, styles = {} }) => {
                     <Alert severity="warning">Marque o requerimento <strong>após</strong> registrar o parecer no Júpiter.</Alert>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={submitAndReturnToList}>Sim</Button>
-                    <Button onClick={closeDialog} sx={{ color: 'red' }}>Não</Button>
+                    <Button color="error" onClick={closeDialog}>
+                        Cancelar
+                    </Button>
+                    <Button variant="contained" onClick={submitAndReturnToList}>
+                        Confirmar
+                    </Button>
                 </DialogActions>
             </>
         );
