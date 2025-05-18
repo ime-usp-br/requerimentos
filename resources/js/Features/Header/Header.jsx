@@ -4,12 +4,10 @@ import { Stack } from '@mui/material';
 import HeaderActions from "./HeaderActions"
 
 export default function Header({
-        label,
-        roleId,
-        showRoleSelector,
-        userRoles,
-        actionsParams,
-        isExit }) {
+    label,
+    showRoleSelector,
+    actionsParams,
+    isExit }) {
     return (
         <Stack
             direction='column'
@@ -47,9 +45,7 @@ export default function Header({
                     {label}
                 </Typography>
                 <HeaderActions
-                    roleId={roleId}
                     showRoleSelector={showRoleSelector}
-                    userRoles={userRoles}
                     isExit={isExit}
                     actionsParams={actionsParams}
                 />

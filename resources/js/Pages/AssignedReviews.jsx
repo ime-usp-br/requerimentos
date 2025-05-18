@@ -5,14 +5,9 @@ import Header from '../Features/Header/Header';
 import AssignedReviewsBody from '../Features/AssignedReviews/AssignedReviewsBody';
 
 export default function AssignedReviews({ label,
-                                          roleId,
-                                          userRoles,
                                           selectedActions,
                                           reviews
                                         }) {
-
-    
-
     return (
         <Stack 
             direction='column'
@@ -25,8 +20,6 @@ export default function AssignedReviews({ label,
         >
             <Header 
                 label={label} 
-                roleId={roleId} 
-                userRoles={userRoles}
                 selectedActions={selectedActions} />
             <AssignedReviewsBody reviews={reviews} />
         </Stack>

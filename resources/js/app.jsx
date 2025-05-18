@@ -7,6 +7,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
 import { DialogProvider } from "./Context/useDialogContext"
+import { UserProvider } from "./Context/useUserContext"
 
 createInertiaApp({
   resolve: name => {
@@ -14,9 +15,17 @@ createInertiaApp({
     return pages[`./Pages/${name}.jsx`]
   },
   setup({ el, App, props }) {
-    createRoot(el).render(
+    const root = createRoot(el)
+    
+    root.render(
       <DialogProvider>
-        <App {...props} />
+        <App {...props}>
+          {({ Component, key, props }) => (
+            <UserProvider>
+              <Component key={key} {...props} />
+            </UserProvider>
+          )}
+        </App>
       </DialogProvider>
     )
   },

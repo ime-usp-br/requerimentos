@@ -3,8 +3,6 @@ import RequisitionDetail from '../Features/RequisitionDetail/RequisitionDetail';
 import BasePage from './BasePage';
 
 const RequisitionDetailPage = ({ label,
-    roleId,
-    userRoles,
     selectedActions,
     requisition,
     takenDiscs,
@@ -17,8 +15,6 @@ const RequisitionDetailPage = ({ label,
         <BasePage
             headerProps={{
                 label: label,
-                roleId: roleId,
-                userRoles: userRoles,
                 isExit: false
             }}
             actionsProps={{

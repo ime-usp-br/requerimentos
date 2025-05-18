@@ -5,31 +5,54 @@ import { Stack } from '@mui/material';
 import ComboBox from '../../ui/ComboBox';
 import Builder from '../../ui/ComponentBuilder/Builder';
 import buttonComponentList from '../../ui/ComponentBuilder/ButtonComponentList';
+import { useUser } from '../../Context/useUserContext';
+import { styled } from '@mui/material/styles';
 
-export default function HeaderActions({ 
-    roleId,
+const HeaderActionsContainer = styled(Stack)(({ theme }) => ({
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    [theme.breakpoints.up('md')]: {
+        justifyContent: 'space-around',
+    },
+}));
+
+const StyledComboBox = styled(ComboBox)(({ theme }) => ({
+    width: 250,
+    userSelect: 'none',
+    '& .MuiInputLabel-root': { color: 'white', userSelect: 'none' },
+    '& .MuiInputLabel-root.Mui-focused': { color: 'white' },
+    '& .MuiOutlinedInput-root': { color: 'white', userSelect: 'none' },
+    '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+    '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+    '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+    '& .MuiAutocomplete-popupIndicator': { color: 'white' },
+    '& .MuiSvgIcon-root': { color: 'white' }
+}));
+
+const headerActionsButtonStyle = {
+    variant: 'outlined',
+    sx: {
+        color: 'white',
+        borderColor: 'white'
+    }
+};
+
+export default function HeaderActions({
     showRoleSelector,
-    userRoles,
     actionsParams,
     isExit }) {
+    const { user } = useUser();
+    const userRoles = user?.roles || [];
+    const roleId = user?.current_role_id;
+
     const handleComboBoxChange = (value) => {
-        console.log(value);
         router.post(
-            route('role.switch'), 
-            { 
+            route('role.switch'),
+            {
                 'roleId': value.role_id,
                 'departmentId': value.department_id,
             }
         );
-    };
-
-    let builder = new Builder(buttonComponentList);
-    const headerActionsButtonStyle = {
-        variant: 'outlined',
-        sx: {
-            color: 'white',
-            borderColor: 'white'
-        }
     };
 
     let getRoleName = (option) => {
@@ -39,32 +62,19 @@ export default function HeaderActions({
         return option.role.name + " do " + option.department.name;
     };
 
+    let builder = new Builder(buttonComponentList);
+
+    // Styled ComboBox using styled-components from MUI
+
+
     return (
-        <Stack
-            direction='row'
-            sx={{
-                justifyContent: { sm: 'space-between', md: 'space-around' },
-                alignItems: "center"
-            }}
-            spacing={2}
-        >
+        <HeaderActionsContainer direction='row' spacing={2}>
             {showRoleSelector && (userRoles.length > 1) && (
-                <ComboBox
+                <StyledComboBox
                     size='small'
                     options={userRoles}
                     optionGetter={getRoleName}
-                    defaultValue={userRoles.find(val => val.role_id == roleId)}
-                    sx={{
-                        width: 250,
-                        "& .MuiInputLabel-root": { color: "white" },
-                        "& .MuiInputLabel-root.Mui-focused": { color: "white" },
-                        "& .MuiOutlinedInput-root": { color: "white" },
-                        "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": { borderColor: "white" },
-                        "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": { borderColor: "white" },
-                        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "white" },
-                        "& .MuiAutocomplete-popupIndicator": { color: "white" },
-                        "& .MuiSvgIcon-root": { color: "white" }
-                    }}
+                    value={userRoles.find(val => val.role_id == roleId) || null}
                     name='papel'
                     onChange={handleComboBoxChange}
                 />
@@ -74,6 +84,6 @@ export default function HeaderActions({
                 itemBuilder({ actionsParams, styles: headerActionsButtonStyle })
             )}
 
-        </Stack>
+        </HeaderActionsContainer>
     );
 };

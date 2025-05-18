@@ -39,9 +39,6 @@ class ListController extends Controller
             'requisitions' => $requisitions, 
             'selectedColumns' => $selectedColumns,
             'selectedActions' => $selectedActions,
-            'roleId' => $roleId, 
-            'useActions' => true,
-            'userRoles' => $user->roles,
             'requisitionEditionStatus' => $requisition_edition_status,
             'requisitionCreationStatus' => $requisition_creation_status,
         ]);

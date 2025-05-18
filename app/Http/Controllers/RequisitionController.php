@@ -50,7 +50,7 @@ class RequisitionController extends Controller
         $roleId = $user->current_role_id;
         switch ($roleId) {
             case RoleId::STUDENT:
-                $selectedActions = [];
+                $selectedActions =  [['edit_requisition']];
                 break;
             case RoleId::SG:
                 $selectedActions = [['send_to_department',
@@ -76,9 +76,7 @@ class RequisitionController extends Controller
 
 
         return Inertia::render('RequisitionDetailPage', [
-            'label' => 'Requerimentos', 
-            'roleId' => $roleId,
-            'userRoles' => $user->roles,
+            'label' => 'Requerimentos',
             'selectedActions' => $selectedActions,
             'requisition' => $requisition,
             'takenDiscs' => $requisition->takenDisciplines,
@@ -91,8 +89,6 @@ class RequisitionController extends Controller
         $user = Auth::user();
         return Inertia::render('RequisitionFormPage', ['isStudent' => $user->current_role_id == RoleId::STUDENT,
                                                     'label' => 'Novo Requerimento',
-                                                    'roleId' => $user->current_role_id,
-                                                    'userRoles' => $user->roles, 
                                                     'isUpdate' => false,
                                                     ]);
     }
@@ -227,8 +223,6 @@ class RequisitionController extends Controller
         return Inertia::render('RequisitionFormPage', [
             'requisitionData' => $requisitionData,
             'label' => 'Novo Requerimento',
-            'roleId' => $user->current_role_id,
-            'userRoles' => $user->roles, 
             'isStudent' => $user->current_role_id == RoleId::STUDENT,
             'isUpdate' => true,
         ]);
@@ -573,7 +567,7 @@ class RequisitionController extends Controller
         $internal_statusOptions = ['Todos', 'Deferido', 'Indeferido', 'Encaminhado para a Secretaria'];
 
         $options = compact('courses', 'statuses', 'departments', 'discTypes', 'internal_statusOptions');
-        return Inertia::render('ExportRequisitionsPage', ['label' => "Exportação de requerimentos", 'roleId' => $roleId, 'userRoles' => $user->roles, 'options' => $options]);
+        return Inertia::render('ExportRequisitionsPage', ['label' => "Exportação de requerimentos", 'options' => $options]);
     }
 
     public function exportRequisitionsPost(Request $request)

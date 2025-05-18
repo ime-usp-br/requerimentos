@@ -1,17 +1,18 @@
 import React from 'react';
 import RequisitionListTable from '../Features/RequisitionList/RequisitionListTable';
 import BasePage from './BasePage';
+import { useUser } from '../Context/useUserContext';
 
 
-function RequisitionList({ label,
+function RequisitionListPage({ label,
     requisitions,
     selectedColumns,
     selectedActions,
-    roleId,
-    userRoles,
     requisitionEditionStatus,
     requisitionCreationStatus
 }) {
+    const { roleId } = useUser();
+    
     let actionsParams = {};
     actionsParams.roleId = roleId;
     actionsParams.requisitionEditionStatus = requisitionEditionStatus;
@@ -21,16 +22,14 @@ function RequisitionList({ label,
         <BasePage
             headerProps={{
                 label: label,
-                roleId: roleId,
                 showRoleSelector: true,
-                userRoles: userRoles,
                 selectedActions: selectedActions,
                 actionsParams: actionsParams,
                 isExit: true
             }}
             actionsProps={{
                 selectedActions: selectedActions,
-                actionsParams: actionsParams,
+                actionsProps: actionsParams,
                 variant: 'bar'
             }}
         >
@@ -41,4 +40,4 @@ function RequisitionList({ label,
     );
 }
 
-export default RequisitionList;
+export default RequisitionListPage;

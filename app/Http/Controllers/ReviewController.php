@@ -111,8 +111,6 @@ class ReviewController extends Controller
         $requisition = Requisition::with('reviews')->find($requisitionId);
 
         return Inertia::render('AssignedReviews', [ 'label' => 'Requerimentos', 
-                                                    'roleId' => $roleId,
-                                                    'userRoles' => $user->roles,
                                                     'selectedActions' => [],
                                                     'reviews' => $requisition->reviews ]);
     }
