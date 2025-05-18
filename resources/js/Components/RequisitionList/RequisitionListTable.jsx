@@ -40,13 +40,15 @@ export default function List({ requisitions, selectedColumns }) {
         displayColumnDefOptions: {
             'mrt-row-actions': {
                 header: null, //change header text
-                size: 0, //make actions column wider
+                size: 80, //make actions column wider
             },
         },
         renderRowActions: ({ row }) => (
-            <Link href={route('showRequisition', { requisitionId: row.original.id })} underline='never' color='textDisabled'>
-                <PageviewIcon />
-            </Link>
+            <Box display="flex" alignItems="center" justifyContent="center" height="100%">
+                <Link href={route('showRequisition', { requisitionId: row.original.id })} underline='never' color='textDisabled' display="flex" alignItems="center" justifyContent="center">
+                    <PageviewIcon fontSize="large" />
+                </Link>
+            </Box>
         ),
         initialState: { density: 'compact' },
     });
