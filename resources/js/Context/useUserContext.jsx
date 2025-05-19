@@ -16,20 +16,15 @@ const UserProvider = ({ children }) => {
       return false;
     }
 
-    const roleMatch = userData.currentRole.role_id === roleId;
+    const roleMatch = userData.currentRoleId === roleId;
     const departmentMatch =
-      departmentId === null || userData.currentDepartment?.id === departmentId;
+      departmentId === null || userData.currentDepartmentId === departmentId;
 
     return roleMatch && departmentMatch;
   };
 
-  const value = {
-    user: userData,
-    isRole,
-  };
-
   return (
-    <UserContext.Provider value={value}>
+    <UserContext.Provider value={{ user: userData, isRole }}>
       {children}
     </UserContext.Provider>
   );

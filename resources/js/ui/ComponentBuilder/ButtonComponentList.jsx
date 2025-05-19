@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect }from "react";
+
 import { router } from "@inertiajs/react";
 import axios from "axios";
 import { Button, Tooltip, DialogActions, DialogContent, DialogContentText, Alert } from "@mui/material";
@@ -19,6 +20,8 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 
 import { useDialogContext } from '../../Context/useDialogContext';
+import { useRequisitionContext } from '../../Features/RequisitionDetail/useRequisitionContext';
+import { useUser } from "../../Context/useUserContext";
 import ListOfReviewers from "../../Features/RequisitionDetail/ReviewerPicker";
 import ActionSuccessful from "../../Dialogs/ActionSuccessful";
 import AddRoleDialog from "../../Features/Admin/AddRoleDialog";
@@ -56,14 +59,16 @@ buttonComponentList.admin = ({ styles }) => (
     </Button>
 );
 
-buttonComponentList.automatic_requisition = ({ styles, actionParams }) => {
+buttonComponentList.automatic_requisition = ({ styles }) => {
     const { setDialogTitle, setDialogBody, openDialog, closeDialog } = useDialogContext();
+    const { requisitionData } = useRequisitionContext();
+
     const handleClick = () => {
         setDialogTitle('Confirmação');
         const submitAndReturnToList = () => {
             router.post(
                 route('automaticDeferral'),
-                { 'requisitionId': actionParams.requisitionId },
+                { 'requisitionId': requisitionData.id },
                 {
                     onSuccess: (resp) => {
                         closeDialog();
@@ -103,21 +108,41 @@ buttonComponentList.automatic_requisition = ({ styles, actionParams }) => {
     );
 };
 
-buttonComponentList.edit_requisition = ({ actionsParams = {}, styles = {} }) => {
+buttonComponentList.edit_requisition = ({ styles = {} }) => {
+    const { isRole } = useUser();
+    const { requisitionData } = useRequisitionContext();
+    const [isUpdateEnabled, setIsUpdateEnabled] = useState(false);
+
+    useEffect(() => {
+        let mounted = true;
+        axios.get(route('getRequisitionPeriodStatus'))
+            .then((response) => {
+                if (mounted) setIsUpdateEnabled(response.data.isUpdateEnabled);
+            })
+            .catch(() => {
+                if (mounted) setIsUpdateEnabled(false);
+            });
+        return () => { mounted = false; };
+    }, []);
+
+    const isButtonEnabled = (isUpdateEnabled && requisitionData.editable) || !isRole(1);
+
     return (
         <Tooltip
             title="Edição não permitida"
-            disableHoverListener={actionsParams.requisitionEditionStatus || actionsParams.roleId != 1}
-        >
-            <Button
-                key="edit_requisition"
-                disabled={!actionsParams.requisitionEditionStatus && actionsParams.roleId == 1}
-                href={route('updateRequisition.get', { 'requisitionId': actionsParams.requisitionId })}
-                startIcon={<ModeEditIcon />}
-                {...styles}
-            >
-                Editar Requerimento
-            </Button>
+            disableHoverListener={isButtonEnabled}
+        >   
+            <span>
+                <Button
+                    key="edit_requisition"
+                    disabled={!isButtonEnabled}
+                    href={route('updateRequisition.get', { 'requisitionId': requisitionData.id })}
+                    startIcon={<ModeEditIcon />}
+                    {...styles}
+                >
+                    Editar Requerimento
+                </Button>
+            </span>
         </Tooltip>
     );
 };
@@ -133,22 +158,41 @@ buttonComponentList.go_back = ({ styles = {} }) => (
     </Button>
 );
 
-buttonComponentList.new_requisition = ({ actionsParams = {}, styles = {} }) => (
-    <Tooltip
-        title="Disponível durante o período de requerimentos"
-        disableHoverListener={actionsParams.requisitionCreationStatus || actionsParams.roleId == 2}
-    >
-        <Button
-            key="new_requisition"
-            disabled={!actionsParams.requisitionCreationStatus && actionsParams.roleId == 1}
-            href={route('newRequisition.get')}
-            startIcon={<AddIcon />}
-            {...styles}
+buttonComponentList.new_requisition = ({ styles = {} }) => {
+    const { isRole } = useUser();
+    const [isCreationEnabled, setIsCreationEnabled] = useState(false);
+
+    useEffect(() => {
+        let mounted = true;
+        axios.get(route('getRequisitionPeriodStatus'))
+            .then((response) => {
+                if (mounted) setIsCreationEnabled(response.data.isCreationEnabled);
+            })
+            .catch(() => {
+                if (mounted) setIsCreationEnabled(false);
+            });
+        return () => { mounted = false; };
+    }, []);
+
+    return (
+        <Tooltip
+            title="Disponível durante o período de requerimentos"
+            disableHoverListener={isCreationEnabled || !isRole(1)}
         >
-            Criar Requerimento
-        </Button>
-    </Tooltip>
-);
+            <span>
+                <Button
+                    key="new_requisition"
+                    disabled={!isCreationEnabled && isRole(1)}
+                    href={route('newRequisition.get')}
+                    startIcon={<AddIcon />}
+                    {...styles}
+                >
+                    Criar Requerimento
+                </Button>
+            </span>
+        </Tooltip>
+    );
+}
 
 buttonComponentList.export = ({ styles = {} }) => (
     <Button
@@ -195,15 +239,16 @@ buttonComponentList.exit = ({ styles = {} }) => (
     </Button>
 );
 
-buttonComponentList.registered = ({ actionsParams = {}, styles = {} }) => {
+buttonComponentList.registered = ({ styles = {} }) => {
     const { setDialogTitle, setDialogBody, openDialog, closeDialog } = useDialogContext();
+    const { requisitionData } = useRequisitionContext();
 
     const handleClick = () => {
         setDialogTitle('Confirmação');
         const submitAndReturnToList = () => {
             router.post(
                 route('registered'),
-                { 'requisitionId': actionsParams.requisitionId },
+                { 'requisitionId': requisitionData.id },
                 {
                     onSuccess: (resp) => {
                         console.log(resp);
@@ -247,21 +292,25 @@ buttonComponentList.registered = ({ actionsParams = {}, styles = {} }) => {
     )
 };
 
-buttonComponentList.requisition_history = ({ actionsParams = {}, styles = {} }) => (
-    <Button
-        key="requisition_history"
-        href={route('record.requisition', { 'requisitionId': actionsParams.requisitionId })}
-        startIcon={<HistoryIcon />}
-        {...styles}
-    >
-        Histórico do Requerimento
-    </Button>
-);
+buttonComponentList.requisition_history = ({ styles = {} }) => {
+    const { requisitionData } = useRequisitionContext();
+    
+    return (
+        <Button
+            key="requisition_history"
+            href={route('record.requisition', { 'requisitionId': requisitionData.id })}
+            startIcon={<HistoryIcon />}
+            {...styles}
+        >
+            Histórico do Requerimento
+        </Button>
+    );
+};
 
 buttonComponentList.requisition_period = ({ styles = {} }) => {
     const { setDialogTitle, setDialogBody, openDialog } = useDialogContext();
     function handleClick() {
-        axios.get(route('admin.getRequisitionPeriodStatus'))
+        axios.get(route('getRequisitionPeriodStatus'))
             .then((response) => {
                 const { isUpdateEnabled, isCreationEnabled } = response.data;
                 setDialogTitle('Configuração do período de Requerimentos');
@@ -283,30 +332,40 @@ buttonComponentList.requisition_period = ({ styles = {} }) => {
     );
 };
 
-buttonComponentList.reviews = ({ actionsParams = {}, styles = {} }) => (
-    <Button
-        key="reviews"
-        href={route('reviewer.reviews', { 'requisitionId': actionsParams.requisitionId })}
-        startIcon={<ReviewsIcon />}
-        {...styles}
-    >
-        Pareceres dados
-    </Button>
-);
+buttonComponentList.reviews = ({ styles = {} }) => {
+    const { requisitionData } = useRequisitionContext();
+    
+    return (
+        <Button
+            key="reviews"
+            href={route('reviewer.reviews', { 'requisitionId': requisitionData.id })}
+            startIcon={<ReviewsIcon />}
+            {...styles}
+        >
+            Pareceres dados
+        </Button>
+    );
+};
 
-buttonComponentList.save = ({ actionsParams = {}, styles = {} }) => (
-    <Button
-        key="save"
-        href={route('record.requisition', { 'requisitionId': actionsParams.requisitionId })}
-        startIcon={<SaveIcon />}
-        {...styles}
-    >
-        Salvar alterações
-    </Button>
-);
+buttonComponentList.save = ({ styles = {} }) => {
+    const { requisitionData } = useRequisitionContext();
+    
+    return (
+        <Button
+            key="save"
+            href={route('record.requisition', { 'requisitionId': requisitionData.id })}
+            startIcon={<SaveIcon />}
+            {...styles}
+        >
+            Salvar alterações
+        </Button>
+    );
+};
 
-buttonComponentList.send_to_department = ({ actionsParams = {}, styles = {} }) => {
+buttonComponentList.send_to_department = ({ styles = {} }) => {
     const { setDialogTitle, setDialogBody, openDialog, _closeDialog } = useDialogContext();
+    const { requisitionData } = useRequisitionContext();
+    
     const handleSubmit = () => {
         setDialogBody(
             <>
@@ -322,7 +381,7 @@ buttonComponentList.send_to_department = ({ actionsParams = {}, styles = {} }) =
         router.post(
             route('sendToDepartment'),
             {
-                'requisitionId': actionsParams.requisitionId
+                'requisitionId': requisitionData.id
             },
             {
                 onSuccess: (page) => {
@@ -346,15 +405,17 @@ buttonComponentList.send_to_department = ({ actionsParams = {}, styles = {} }) =
     );
 };
 
-buttonComponentList.send_to_reviewers = ({ actionsParams = {}, styles = {} }) => {
+buttonComponentList.send_to_reviewers = ({ styles = {} }) => {
     const { setDialogTitle, setDialogBody, openDialog, closeDialog } = useDialogContext();
+    const { requisitionData } = useRequisitionContext();
+    
     const handleClick = () => {
         axios.get(route('reviewer.reviewerPick'))
             .then((response) => {
                 setDialogTitle('Lista de pareceristas');
                 setDialogBody(
                     <ListOfReviewers
-                        requisitionId={actionsParams.requisitionId}
+                        requisitionId={requisitionData.id}
                         reviewers={response.data}
                         closeDialog={closeDialog}
                     />
@@ -375,12 +436,13 @@ buttonComponentList.send_to_reviewers = ({ actionsParams = {}, styles = {} }) =>
     );
 };
 
-buttonComponentList.submit_review = ({ actionsParams = {}, styles = {} }) => {
-    const { setDialogTitle, setDialogBody, openDialog, _closeDialog } = useDialogContext();
+buttonComponentList.submit_review = ({ styles = {} }) => {
+    const { setDialogTitle, setDialogBody, openDialog } = useDialogContext();
+    const { requisitionData } = useRequisitionContext();
     
     const handleClick = () => {
         setDialogTitle('Parecer');
-        setDialogBody(<SubmitResultDialog requisitionId={actionsParams.requisitionId} type="review" submitRoute="submitReview" />);
+        setDialogBody(<SubmitResultDialog requisitionId={requisitionData.id} type="review" submitRoute="submitReview" />);
         openDialog();
     };
 
@@ -396,12 +458,13 @@ buttonComponentList.submit_review = ({ actionsParams = {}, styles = {} }) => {
     )
 };
 
-buttonComponentList.result = ({ actionsParams = {}, styles = {} }) => {
+buttonComponentList.result = ({ styles = {} }) => {
     const { setDialogTitle, setDialogBody, openDialog } = useDialogContext();
+    const { requisitionData } = useRequisitionContext();
 
     const handleClick = () => {
         setDialogTitle('Resultado');
-        setDialogBody(<SubmitResultDialog requisitionId={actionsParams.requisitionId} />);
+        setDialogBody(<SubmitResultDialog requisitionId={requisitionData.id} />);
         openDialog();
     };
 

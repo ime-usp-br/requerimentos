@@ -4,7 +4,7 @@ import buttonComponentList from '../ComponentBuilder/ButtonComponentList';
 import ActionsMenuBar from './Components/ActionsMenuBar';
 import ActionsMenuBox from './Components/ActionsMenuBox';
 
-function ActionsMenu({ selectedActions, actionsParams, variant }) {
+function ActionsMenu({ selectedActions, variant }) {
 	const builder = new Builder(buttonComponentList);
 	const MenuComponent = variant === 'box' ? ActionsMenuBox : ActionsMenuBar;
 
@@ -12,7 +12,6 @@ function ActionsMenu({ selectedActions, actionsParams, variant }) {
 		<MenuComponent
 			builder={builder}
 			selectedActions={selectedActions}
-			actionsParams={actionsParams}
 		/>
 	);
 }

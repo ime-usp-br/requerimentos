@@ -39,7 +39,6 @@ const headerActionsButtonStyle = {
 
 export default function HeaderActions({
     showRoleSelector,
-    actionsParams,
     isExit }) {
     const { user } = useUser();
     const userRoles = user?.roles || [];
@@ -64,9 +63,6 @@ export default function HeaderActions({
 
     let builder = new Builder(buttonComponentList);
 
-    // Styled ComboBox using styled-components from MUI
-
-
     return (
         <HeaderActionsContainer direction='row' spacing={2}>
             {showRoleSelector && (userRoles.length > 1) && (
@@ -81,7 +77,7 @@ export default function HeaderActions({
             )}
 
             {builder.build(isExit ? ['exit'] : ['go_back']).map((itemBuilder) =>
-                itemBuilder({ actionsParams, styles: headerActionsButtonStyle })
+                itemBuilder({ styles: headerActionsButtonStyle })
             )}
 
         </HeaderActionsContainer>

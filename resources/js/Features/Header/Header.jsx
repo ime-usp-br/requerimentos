@@ -6,7 +6,6 @@ import HeaderActions from "./HeaderActions"
 export default function Header({
     label,
     showRoleSelector,
-    actionsParams,
     isExit }) {
     return (
         <Stack
@@ -47,7 +46,6 @@ export default function Header({
                 <HeaderActions
                     showRoleSelector={showRoleSelector}
                     isExit={isExit}
-                    actionsParams={actionsParams}
                 />
             </Stack>
         </Stack>

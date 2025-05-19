@@ -30,17 +30,11 @@ class ListController extends Controller
                 break;
         }
         
-        $requisition_period = RequisitionsPeriod::latest('id')->first();
-        $requisition_creation_status = $requisition_period->is_creation_enabled;
-        $requisition_edition_status = $requisition_period->is_update_enabled;
-
         return Inertia::render('RequisitionListPage', [
             'label' => 'Requerimentos',
             'requisitions' => $requisitions, 
             'selectedColumns' => $selectedColumns,
             'selectedActions' => $selectedActions,
-            'requisitionEditionStatus' => $requisition_edition_status,
-            'requisitionCreationStatus' => $requisition_creation_status,
         ]);
     }
 

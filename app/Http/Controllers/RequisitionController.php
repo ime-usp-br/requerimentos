@@ -349,13 +349,10 @@ class RequisitionController extends Controller
             ];
         }
 
-        // Debugging information
-
         if ($existingTakenDisciplinesArray != $newTakenDisciplinesArray) {
             $hasChanged = True;
         }
-
-
+        
         return $hasChanged;
     }
 
@@ -625,8 +622,6 @@ class RequisitionController extends Controller
             return $data;
         });
 
-        // dd($exportData);
-
         return new StreamedResponse(function () use ($exportData) {
             $handle = fopen('php://output', 'w');
             fputcsv($handle, array_keys($exportData->first()));
@@ -656,6 +651,7 @@ class RequisitionController extends Controller
         $requisition->result_text = $request->result_text;
         $requisition->situation = $resultType;
         $requisition->internal_status = $resultType;
+        $requisition->editable = $resultType == EventType::BACK_TO_STUDENT;
         $requisition->save();
 
         $user = Auth::user();

@@ -14,7 +14,7 @@ const actionsMenuBoxButtonStyles = {
     }
 };
 
-export default function ActionsMenuBox({ builder, selectedActions, actionsParams }) {
+export default function ActionsMenuBox({ builder, selectedActions }) {
 
     return (
         <Paper
@@ -26,7 +26,7 @@ export default function ActionsMenuBox({ builder, selectedActions, actionsParams
                     selectedActions.map((grouping, groupIndex) =>
                         builder.build(grouping).map((itemBuilder, itemIndex) =>
                             <MenuItem key={`group-${groupIndex}-item-${itemIndex}`} sx={{ padding: 0 }}>
-                                {itemBuilder({ actionsParams, styles: actionsMenuBoxButtonStyles })}
+                                {itemBuilder({ styles: actionsMenuBoxButtonStyles })}
                             </MenuItem>
                         ).concat((selectedActions.length - 1 != groupIndex) ? [<Divider key={`divider-${groupIndex}`} />] : [])
                     ).flat()

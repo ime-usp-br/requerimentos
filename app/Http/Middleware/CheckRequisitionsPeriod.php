@@ -30,6 +30,12 @@ class CheckRequisitionsPeriod
         if ($type === 'edition' && $currentStatus && $currentStatus->is_update_enabled) {
             return $next($request);
         }
-        abort(404);
+        if ($type === 'creation') {
+            abort(403, 'Criação de requerimentos não está aberta no momento');
+        } elseif ($type === 'edition') {
+            abort(403, 'Edição de requerimentos não está aberta no momento');
+        } else {
+            abort(404);
+        }
     }
 }

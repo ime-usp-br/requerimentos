@@ -18,14 +18,14 @@ const actionsMenubarButtonStyle = {
     variant: 'contained'
 };
 
-export default function ActionsMenuBar({ builder, selectedActions, actionsParams }) {
+export default function ActionsMenuBar({ builder, selectedActions }) {
     return (
         <ActionsMenuContainer>
             {
                 selectedActions.map((grouping, groupIndex) =>
                     builder.build(grouping).map((itemBuilder, itemIndex) =>
                         <Paper elevation={0} key={`paper-${groupIndex}-${itemIndex}`}>
-                            {itemBuilder({ actionsParams, styles: actionsMenubarButtonStyle })}
+                            {itemBuilder({ styles: actionsMenubarButtonStyle })}
                         </Paper>
                     ).concat(
                         (selectedActions.length - 1 !== groupIndex)

@@ -54,7 +54,8 @@ Route::middleware('auth')->group(function () {
         ->name('showRequisition');
     Route::post('/trocar-papel', [RoleController::class, 'switchRole'])
         ->name('role.switch');
-    
+    Route::get('/status-periodo-requerimento', [AdminController::class, 'getRequisitionPeriodStatus'])
+        ->name('getRequisitionPeriodStatus');
     Route::get('/documents/{id}/view', [DocumentsController::class, 'view'])->name('documents.view');
 
     // ======== ACESSO SG + Secretarias + Pareceristas ======== //
@@ -91,8 +92,6 @@ Route::middleware('auth')->group(function () {
 
     // ======== ACESSO SG ======== //
     Route::group(['middleware' => 'check.current.role:' . RoleId::SG], function () {
-        Route::get('/status-periodo-requerimento', [AdminController::class, 'getRequisitionPeriodStatus'])
-            ->name('admin.getRequisitionPeriodStatus');
         Route::post('/alterar-periodo-requerimento', [AdminController::class, 'setRequisitionPeriodStatus'])
             ->name('admin.setRequisitionPeriodStatus');
         Route::post('/dar-resultado-ao-requerimento', [RequisitionController::class, 'setRequisitionResult'])
