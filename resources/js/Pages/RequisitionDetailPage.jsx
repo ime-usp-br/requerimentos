@@ -10,7 +10,7 @@ const RequisitionDetailPage = ({ label,
     documents }) => {
 
     return (
-        <RequisitionProvider requisitionData={requisition}>
+        <RequisitionProvider requisitionData={{...requisition, 'takenDiscs': takenDiscs}}>
             <BasePage
                 headerProps={{
                     label: label,
