@@ -23,11 +23,15 @@ export default function ActionsMenuBar({ builder, selectedActions, actionsParams
         <ActionsMenuContainer>
             {
                 selectedActions.map((grouping, groupIndex) =>
-                    builder.build(grouping).map((itemBuilder) =>
-                        <Paper elevation={0} >
+                    builder.build(grouping).map((itemBuilder, itemIndex) =>
+                        <Paper elevation={0} key={`paper-${groupIndex}-${itemIndex}`}>
                             {itemBuilder({ actionsParams, styles: actionsMenubarButtonStyle })}
                         </Paper>
-                    ).concat((selectedActions.length - 1 != groupIndex) ? [<Divider />] : [])
+                    ).concat(
+                        (selectedActions.length - 1 !== groupIndex)
+                            ? [<Divider key={`divider-${groupIndex}`} />]
+                            : []
+                    )
                 ).flat()
             }
         </ActionsMenuContainer>
