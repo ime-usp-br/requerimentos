@@ -25,45 +25,6 @@ import AddRoleDialog from "../../Features/Admin/AddRoleDialog";
 import RequisitionsPeriodDialog from "../../Features/Admin/RequisitionsPeriodDialog";
 import RequisitionResultDialog from "../../Features/RequisitionDetail/RequisitionResultDialog";
 
-function MainPageButton({children, ...props}){
-    return (
-        <Button
-            variant="contained"
-            {...props}
-        >
-            {children}
-        </Button>
-    );
-};
-
-function RequisitionDetailButton({children, ...props}){
-    return (
-        <Button
-            disableRipple
-            variant="text"
-            color="black"
-            {...props}
-        >
-            {children}
-        </Button>
-    );
-};
-
-function HeaderButton({children, ...props}){
-    return (
-        <Button
-            variant="outlined"
-            style={{
-                color: 'white',
-                borderColor: 'white'
-            }}
-            {...props}
-        >
-            {children}
-        </Button>
-    );
-};
-
 let buttonComponentList = {};
 
 buttonComponentList.add_role = ({ styles }) => {
