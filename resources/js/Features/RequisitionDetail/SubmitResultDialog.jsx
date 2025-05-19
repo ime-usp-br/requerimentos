@@ -15,7 +15,7 @@ import { router } from "@inertiajs/react";
 import { useDialogContext } from '../../Context/useDialogContext';
 import ActionSuccessful from "../../Dialogs/ActionSuccessful";
 
-function RequisitionResultDialog({ requisitionId }) {
+function SubmitResultDialog({ requisitionId, type = 'requisition', submitRoute = 'giveResultToRequisition' }) {
 	const [selectedOption, setSelectedOption] = useState("");
 	const [comment, setComment] = useState("");
     const [alert, setAlert] = useState(false);
@@ -32,30 +32,33 @@ function RequisitionResultDialog({ requisitionId }) {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
+
+		console.log(selectedOption, comment);
         
 		if (selectedOption == "") {
 			setAlertText("Não submeta um resultado antes de escolher uma opção.");
             setAlert(true);
             return;
 		}
-        if (selectedOption == "rejected" && comment.trim() == "") {
+        if (selectedOption == "Indeferido" && comment.trim() == "") {
 			setAlertText("Uma justificativa é necessária para indeferir.");
             setAlert(true);
             return;
         }
+
         router.post(
-            route('giveResultToRequisition'),
+            route(submitRoute),
             { 
 				'requisitionId': requisitionId,
 				'result': selectedOption,
-				'result_text': comment
+				'result_text': comment == "" && "Deferido"
 			},
             {
                 onSuccess: (resp) => {
                     console.log(resp);
                     closeDialog();
-                    setDialogTitle('Requerimento atualizado com sucesso');
-                    setDialogBody(<ActionSuccessful dialogText={'O requerimento foi atualizado com sucesso.'} />)
+                    setDialogTitle('Enviado com sucesso');
+                    setDialogBody(<ActionSuccessful dialogText={'O resultado foi enviado com sucesso.'} />)
                     openDialog();
                 },
                 onError: (error) => {
@@ -73,13 +76,15 @@ function RequisitionResultDialog({ requisitionId }) {
 					<Stack spacing={2}>
 						<FormControl component="fieldset">
 							<RadioGroup name="resultOption" value={selectedOption} onChange={handleOptionChange}>
-								<FormControlLabel value="Inconsistência nas informações" control={<Radio />} label="Inconsistência nas informações" />
+								{ (type == 'requisition') &&
+									<FormControlLabel value="Inconsistência nas informações" control={<Radio />} label="Inconsistência nas informações" />
+								}
 								<FormControlLabel value="Deferido" control={<Radio />} label="Deferido" />
 								<FormControlLabel value="Indeferido" control={<Radio />} label="Indeferido" />
 							</RadioGroup>
 						</FormControl>
 						<TextField
-							label="Comentário"
+							label="Observações"
 							variant="outlined"
 							fullWidth
 							multiline
@@ -103,4 +108,4 @@ function RequisitionResultDialog({ requisitionId }) {
 	);
 };
 
-export default RequisitionResultDialog;
+export default SubmitResultDialog;

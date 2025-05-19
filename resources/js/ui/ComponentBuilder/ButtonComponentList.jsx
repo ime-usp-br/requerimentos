@@ -23,7 +23,7 @@ import ListOfReviewers from "../../Features/RequisitionDetail/ReviewerPicker";
 import ActionSuccessful from "../../Dialogs/ActionSuccessful";
 import AddRoleDialog from "../../Features/Admin/AddRoleDialog";
 import RequisitionsPeriodDialog from "../../Features/Admin/RequisitionsPeriodDialog";
-import RequisitionResultDialog from "../../Features/RequisitionDetail/RequisitionResultDialog";
+import SubmitResultDialog from "../../Features/RequisitionDetail/SubmitResultDialog";
 
 let buttonComponentList = {};
 
@@ -377,26 +377,17 @@ buttonComponentList.send_to_reviewers = ({ actionsParams = {}, styles = {} }) =>
 
 buttonComponentList.submit_review = ({ actionsParams = {}, styles = {} }) => {
     const { setDialogTitle, setDialogBody, openDialog, _closeDialog } = useDialogContext();
-    const handleSubmit = () => {
-        router.post(
-            route('submitReview'),
-            {
-                'requisitionId': actionsParams.requisitionId
-            },
-            {
-                onSuccess: () => {
-                    setDialogTitle('Parecer enviado');
-                    setDialogBody(<ActionSuccessful dialogText={'O parecer foi enviado com sucesso.'} />);
-                    openDialog();
-                },
-                onError: (errors) => console.log(errors)
-            }
-        );
-    }
+    
+    const handleClick = () => {
+        setDialogTitle('Parecer');
+        setDialogBody(<SubmitResultDialog requisitionId={actionsParams.requisitionId} type="review" submitRoute="submitReview" />);
+        openDialog();
+    };
+
     return (
         <Button
             key="submit_review"
-            onClick={handleSubmit}
+            onClick={handleClick}
             startIcon={<AssignmentReturnIcon />}
             {...styles}
         >
@@ -410,7 +401,7 @@ buttonComponentList.result = ({ actionsParams = {}, styles = {} }) => {
 
     const handleClick = () => {
         setDialogTitle('Resultado');
-        setDialogBody(<RequisitionResultDialog requisitionId={actionsParams.requisitionId} />);
+        setDialogBody(<SubmitResultDialog requisitionId={actionsParams.requisitionId} />);
         openDialog();
     };
 

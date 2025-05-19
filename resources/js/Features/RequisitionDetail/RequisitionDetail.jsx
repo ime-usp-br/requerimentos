@@ -120,7 +120,7 @@ const RequisitionDetail = ({
 					<Stack spacing={1}>
 						<Typography variant="h6" sx={{ fontWeight: 600 }}>Resultado</Typography>
 						<Typography variant="body2" color={resultColor}><strong>Status:</strong> {requisition.result}</Typography>
-						<Typography variant="body2"><strong>Comentário:</strong> {requisition.result_text}</Typography>
+						<Typography variant="body2"><strong>Justificativa:</strong> {requisition.result_text}</Typography>
 					</Stack>
 				</Stack>
 			</Paper>

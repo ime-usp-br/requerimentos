@@ -136,8 +136,8 @@ class ReviewController extends Controller
                 $new_hist->save();
             }
 
-            $review->reviewer_decision = $request->decision;
-            $review->justification = $request->justification;
+            $review->reviewer_decision = $request->result;
+            $review->justification = $request->result_text;
             $review->latest_version = ($review->latest_version + 1);
             $review->save();
 
