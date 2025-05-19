@@ -42,7 +42,7 @@ export default function HeaderActions({
     isExit }) {
     const { user } = useUser();
     const userRoles = user?.roles || [];
-    const roleId = user?.current_role_id;
+    const roleId = user?.currentRoleId;
 
     const handleComboBoxChange = (value) => {
         router.post(
@@ -71,7 +71,7 @@ export default function HeaderActions({
                     options={userRoles}
                     optionGetter={getRoleName}
                     value={userRoles.find(val => val.role_id == roleId) || null}
-                    name='papel'
+                    name='Papel'
                     onChange={handleComboBoxChange}
                 />
             )}

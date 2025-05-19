@@ -53,7 +53,7 @@ columnTypes.requested_disc = {
             </Typography>,
     accessorKey: 'requested_disc',
     enableHiding: false,
-    size: 260
+    size: 0
 };
 
 columnTypes.situation = {
@@ -67,8 +67,7 @@ columnTypes.situation = {
     enableHiding: false,
     accessorFn: (row) => (
         <Typography 
-            variant="subtitle1" 
-            width={6}
+            variant="h7"
             style={{ wordBreak: 'break-word' }}
         >
             {row.situation}
