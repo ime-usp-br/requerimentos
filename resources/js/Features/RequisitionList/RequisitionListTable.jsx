@@ -1,9 +1,9 @@
 import React from 'react';
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { MaterialReactTable, useMaterialReactTable, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton } from 'material-react-table';
 
 import PageviewIcon from '@mui/icons-material/Pageview';
-import { Link, Box } from '@mui/material';
+import { Link, Box, Button } from '@mui/material';
 
 import Builder from '../../ui/ComponentBuilder/Builder';
 import columnTypes from "../../ui/ComponentBuilder/TableColumnTypes";
@@ -20,6 +20,15 @@ function List({ requisitions, selectedColumns }) {
         () => builder.build(selectedColumns),
         [selectedColumns],
     );
+
+    const [columnFilters, setColumnFilters] = useState(() => {
+        return JSON.parse(sessionStorage.getItem('filters'));
+    });
+
+    useEffect(() => {
+        sessionStorage.setItem('filters', JSON.stringify(columnFilters));
+    }, [columnFilters]);
+
     let data = requisitions;
     const table = useMaterialReactTable({
         columns,
@@ -51,14 +60,18 @@ function List({ requisitions, selectedColumns }) {
                 </Link>
             </Box>
         ),
-        initialState: { density: 'compact', showGlobalFilter: true },
+        state: { columnFilters, density: 'compact', showGlobalFilter: true },
         renderTopToolbarCustomActions: ({ table }) => (
             <Box sx={{ display: 'flex', gap: '1rem', p: '4px' }}>
                 <MRT_GlobalFilterTextField table={table} />
                 <MRT_ToggleFiltersButton table={table} />
+                <Button variant="outlined" onClick={() => setColumnFilters([])}>
+                    Limpar Filtros
+                </Button>
             </Box>
         ),
         renderToolbarInternalActions: ({ table }) => <></>,
+        onColumnFiltersChange: setColumnFilters
     });
 
     return (

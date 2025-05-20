@@ -11,6 +11,7 @@ use Inertia\Inertia;
 use App\Enums\RoleId;
 use App\Enums\EventType;
 use App\Enums\DocumentType;
+use App\Enums\ReviewerDecision;
 use App\Models\Document;
 use App\Models\Event;
 use App\Models\Requisition;
@@ -496,21 +497,30 @@ class RequisitionController extends Controller
     public function automaticDeferral(Request $request) {
         DB::transaction(function () use ($request) {
             $user = Auth::user();
+
+            /*
+
+            cria um parecer deferido no nome do mebro da SG,
+
+
+            */
+
+            // Atualiza a situação para "parecer deferido automaticamente"
             $requisition = Requisition::find($request['requisitionId']);
             $requisitionId = $request['requisitionId'];
-            $requisition->situation = EventType::RETURNED_BY_REVIEWER;
-            $requisition->internal_status = EventType::RETURNED_BY_REVIEWER;
+            $requisition->situation = EventType::AUTOMATIC_DEFERRAL;
+            $requisition->internal_status = EventType::AUTOMATIC_DEFERRAL;
             $requisition->registered = false;
             $requisition->save();
 
-            // Cria um parecer "deferido" e salva
+            // Cria o parecer "deferido" e salva
             $review = new Review;
             $review->reviewer_name = $user->name;
             $review->reviewer_nusp = $user->codpes;
             $review->requisition_id = $requisitionId;
-            $review->reviewer_decision = EventType::ACCEPTED;
+            $review->reviewer_decision = ReviewerDecision::ACCEPTED;
             $review->justification = 'Deferimento automático';
-            $review->latest_version = 0;
+            $review->latest_version = 1;
             $review->save();
 
             // Cria um novo evento para registrar o parecer
@@ -602,6 +612,11 @@ class RequisitionController extends Controller
 
             $reviewIsEmpty = $requisition->getRelation('reviews')->isEmpty();
 
+            $reviews = '';
+            foreach ($requisition->getRelation('reviews') as $review) {
+                $review += $review->reviewer_decision + ';';
+            }
+
             $data = [
                 'Nome' => $requisition->student_name,
                 'Número USP' => $requisition->student_nusp,
@@ -611,7 +626,7 @@ class RequisitionController extends Controller
                 'Departamento responsável' => $requisition->department,
                 'Situação' => $requisition->internal_status,
                 'Data de encaminhamento ao departamento/unidade' => $setToDepartment != null ? $setToDepartment->created_at->format('d-m-Y') : null,
-                'Parecer' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->reviewer_decision,
+                'Parecer' => $reviewIsEmpty ? null : $reviews,
                 'Parecerista' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->reviewer_name,
                 'Data do parecer' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->updated_at->format('d-m-Y'),
                 'Data do registro no Júpiter pelo Departamento' => $registeredAtJupiter != null ? $registeredAtJupiter->created_at->format('d-m-Y') : null

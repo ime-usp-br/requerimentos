@@ -29,7 +29,8 @@ class CreateEventsTable extends Migration
                 EventType::IN_REVALUATION,
                 EventType::RESENT_BY_STUDENT,
                 EventType::SENT_TO_DEPARTMENT,
-                EventType::REGISTERED]);
+                EventType::REGISTERED,
+                EventType::AUTOMATIC_DEFERRAL]);
             $table->string('message')->nullable();
             $table->foreignId('requisition_id')->constrained()->cascadeOnDelete();
             $table->unsignedInteger('version');

@@ -12,6 +12,7 @@ class EventType
     const SENT_TO_DEPARTMENT = 'Enviado para análise do departamento';
     const SENT_TO_REVIEWERS = 'Enviado para análise dos pareceristas';
     const RETURNED_BY_REVIEWER = 'Retornado por um parecerista';
+    const AUTOMATIC_DEFERRAL = 'Parecer deferido automaticamente';
     const REGISTERED = 'Aguardando avaliação da CG';
     const ACCEPTED = 'Requerimento deferido';
     const REJECTED = 'Requerimento indeferido';

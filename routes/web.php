@@ -96,5 +96,7 @@ Route::middleware('auth')->group(function () {
             ->name('admin.setRequisitionPeriodStatus');
         Route::post('/dar-resultado-ao-requerimento', [RequisitionController::class, 'setRequisitionResult'])
             ->name('giveResultToRequisition');
+        Route::post('/deferimento-automatico', [RequisitionController::class, 'automaticDeferral'])
+            ->name('automaticDeferral');
     });
 });
