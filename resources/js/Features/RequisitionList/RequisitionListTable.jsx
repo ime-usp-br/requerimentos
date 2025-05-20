@@ -22,7 +22,7 @@ function List({ requisitions, selectedColumns }) {
     );
 
     const [columnFilters, setColumnFilters] = useState(() => {
-        return JSON.parse(sessionStorage.getItem('filters'));
+        return JSON.parse(sessionStorage.getItem('filters')) || [];
     });
 
     useEffect(() => {
