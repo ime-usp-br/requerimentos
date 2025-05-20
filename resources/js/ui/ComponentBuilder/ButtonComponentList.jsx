@@ -214,8 +214,6 @@ buttonComponentList.export = ({ styles = {} }) => (
 buttonComponentList.export_current = ({ styles = {} }) => {
     const { requisitionData } = useRequisitionContext();
 
-    console.log(requisitionData);
-
     const printDocument = async () => {
         const pdf = new jsPDF();
         
@@ -247,8 +245,6 @@ buttonComponentList.export_current = ({ styles = {} }) => {
                 docs.unshift(pdfInstance.output('blob'));
                 
                 const mergedPdf = await PDFDocument.create();
-
-                console.log(docs);
 
                 for (const blob of docs) {
                     const arrayBuffer = await blob.arrayBuffer();
