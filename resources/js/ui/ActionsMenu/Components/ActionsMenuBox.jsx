@@ -19,9 +19,9 @@ export default function ActionsMenuBox({ builder, selectedActions }) {
     return (
         <Paper
             elevation={3}
-            sx={{ position: 'sticky', top: 140 }}
+            sx={{ position: 'sticky', top: 140, padding: 0}}
         >
-            <MenuList>
+            <MenuList sx={{ padding: 0 }}>
                 {
                     selectedActions.map((grouping, groupIndex) =>
                         builder.build(grouping).map((itemBuilder, itemIndex) =>

@@ -24,7 +24,11 @@ columnTypes.created_at = {
                 <b>Data<br /> de criação</b>
             </Typography>,
     accessorKey: 'created_at',
-    accessorFn: (row) => row.created_at.slice(0, 16).replace('T', ' '),
+    accessorFn: (row) => {
+        const date = new Date(row.created_at);
+        const pad = (n) => n.toString().padStart(2, '0');
+        return `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    },
     enableHiding: false,
     enableColumnActions: false,
     size: 0
@@ -38,8 +42,11 @@ columnTypes.updated_at = {
                 <b>Última <br /> modificação</b>
             </Typography>,
     accessorKey: 'updated_at',
-    accessorFn: (row) => row.updated_at.slice(0, 16).replace('T', ' '),
-    enableHiding: false,
+    accessorFn: (row) => {
+        const date = new Date(row.updated_at);
+        const pad = (n) => n.toString().padStart(2, '0');
+        return `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    },    enableHiding: false,
     enableColumnActions: false,
     size: 0
 };

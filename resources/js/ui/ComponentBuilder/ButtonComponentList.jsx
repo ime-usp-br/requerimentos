@@ -35,10 +35,12 @@ import RequisitionDetailExport from "../../Features/RequisitionDetail/Requisitio
 let buttonComponentList = {};
 
 buttonComponentList.add_role = ({ styles }) => {
+    const { user } = useUser();
+
     const { setDialogTitle, setDialogBody, openDialog } = useDialogContext();
     function handleClick() {
         setDialogTitle('Adicionar papel');
-        setDialogBody(<AddRoleDialog />);
+        setDialogBody(<AddRoleDialog user={user}/>);
         openDialog();
     }
     return (
@@ -216,8 +218,6 @@ buttonComponentList.export = ({ styles = {} }) => (
 buttonComponentList.export_current = ({ styles = {} }) => {
     const { requisitionData } = useRequisitionContext();
 
-    console.log(requisitionData);
-
     const printDocument = async () => {
         const pdf = new jsPDF();
         
@@ -249,8 +249,6 @@ buttonComponentList.export_current = ({ styles = {} }) => {
                 docs.unshift(pdfInstance.output('blob'));
                 
                 const mergedPdf = await PDFDocument.create();
-
-                console.log(docs);
 
                 for (const blob of docs) {
                     const arrayBuffer = await blob.arrayBuffer();
@@ -468,9 +466,8 @@ buttonComponentList.send_to_department = ({ styles = {} }) => {
 buttonComponentList.send_to_reviewers = ({ styles = {} }) => {
     const { setDialogTitle, setDialogBody, openDialog, closeDialog } = useDialogContext();
     const { requisitionData } = useRequisitionContext();
-    
     const handleClick = () => {
-        axios.get(route('reviewer.reviewerPick'))
+        axios.get(route('reviewer.reviewerPick', { requisitionId: requisitionData.id }))
             .then((response) => {
                 setDialogTitle('Lista de pareceristas');
                 setDialogBody(

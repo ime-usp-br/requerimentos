@@ -4,7 +4,6 @@ import Filters from "./ExportRequisitionsFilters";
 import { useForm } from '@inertiajs/react';
 import axios from 'axios';
 
-
 function ExportRequisitions({ options }) {
 	const { data, setData } = useForm({
 		internal_status: options.internal_statusOptions[0],
@@ -23,7 +22,8 @@ function ExportRequisitions({ options }) {
 			const url = window.URL.createObjectURL(new Blob([response.data]));
 			const link = document.createElement('a');
 			link.href = url;
-			link.setAttribute('download', 'requisitions_export.csv');
+			const dateTimeStr = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+			link.setAttribute('download', `requisitions_export_${dateTimeStr}.xlsx`);
 			document.body.appendChild(link);
 			link.click();
 			link.remove();

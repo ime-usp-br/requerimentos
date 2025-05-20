@@ -487,7 +487,7 @@ class RequisitionController extends Controller
         $event->save();
 
         $requisition->situation = EventType::SENT_TO_DEPARTMENT;
-        $requisition->internal_status = EventType::SENT_TO_DEPARTMENT;
+        $requisition->internal_status = EventType::SENT_TO_DEPARTMENT . " " .  $requisition->department;
         $requisition->registered = false;
         $requisition->save();
 
@@ -635,18 +635,32 @@ class RequisitionController extends Controller
             return $data;
         });
 
-        return new StreamedResponse(function () use ($exportData) {
-            $handle = fopen('php://output', 'w');
-            fputcsv($handle, array_keys($exportData->first()));
+        return new StreamedResponse(function() use ($exportData) {
+            $xml = '<?xml version="1.0" encoding="UTF-8"?>';
+            $xml .= '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">';
+            $xml .= '<Worksheet ss:Name="Sheet1">';
+            $xml .= '<Table>';
+
+            $xml .= '<Row>';
+            foreach (array_keys($exportData->first()) as $header) {
+                $xml .= '<Cell><Data ss:Type="String">' . htmlspecialchars($header) . '</Data></Cell>';
+            }
+            $xml .= '</Row>';
 
             foreach ($exportData as $row) {
-                fputcsv($handle, $row);
+                $xml .= '<Row>';
+                foreach ($row as $cell) {
+                    $xml .= '<Cell><Data ss:Type="String">' . htmlspecialchars($cell) . '</Data></Cell>';
+                }
+                $xml .= '</Row>';
             }
 
-            fclose($handle);
+            $xml .= '</Table>';
+            $xml .= '</Worksheet>';
+            $xml .= '</Workbook>';
         }, 200, [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="requisitions_export.csv"',
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="requisitions_export.xlsx"',
         ]);
     }
 

@@ -80,7 +80,7 @@ Route::middleware('auth')->group(function () {
             ->name('role.add');
         Route::post('/remover-papel', [RoleController::class, 'removeRole'])
             ->name('role.remove');
-        Route::get('/escolher-parecerista', [ReviewController::class, 'reviewerPick'])
+        Route::get('/escolher-parecerista/{requisitionId}', [ReviewController::class, 'reviewerPick'])
             ->name('reviewer.reviewerPick');
         Route::post('/cadastrado', [RequisitionController::class, 'registered'])
             ->name('registered');

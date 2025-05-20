@@ -82,16 +82,27 @@ class RoleController extends Controller
 
         return redirect()->back();
     }
-
     public function listRolesAndDepartments()
-	{
-		$roles = Role::where('id', '!=', RoleId::STUDENT)->get();
-		$departments = Department::all();
+    {
+        $user = Auth::user();
+        $rolesQuery = Role::where('id', '!=', RoleId::STUDENT);
 
-		return response()->json([
-			'roles' => $roles,
-			'departments' => $departments,
-		]);
-	}
+        if ($user && $user->current_role_id == RoleId::SECRETARY) {
+            $roles = $rolesQuery->where('id', '!=', RoleId::SG)->get();
+            return response()->json([
+                'roles' => $roles,
+            ]);
+        }
+        else{
+            $roles = $rolesQuery->get();
+            $departments = Department::all();
+    
+            return response()->json([
+                'roles' => $roles,
+                'departments' => $departments,
+            ]);
+        }
+
+    }
 
 }

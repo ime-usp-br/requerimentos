@@ -4,11 +4,13 @@ import {
 } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import Link from '@mui/material/Link';
+import { useRequisitionContext } from './useRequisitionContext';
 
 const RequisitionDetail = ({
 	requisition,
 	takenDiscs,
 	documents }) => {
+	const { requisitionData } = useRequisitionContext();
 	const theme = useTheme();
 	const isMedium = useMediaQuery(theme.breakpoints.up('md'));
 
@@ -18,7 +20,7 @@ const RequisitionDetail = ({
 	};
 
 	let resultColor;
-	switch (requisition.result) {
+	switch (requisitionData.result) {
 		case "Deferido":
 			resultColor = "green";
 			break;
@@ -37,8 +39,7 @@ const RequisitionDetail = ({
 			sx={{
 				justifyContent: 'center',
 				alignItems: 'top',
-				width: '100%',
-				paddingTop: 4
+				width: '100%'
 			}}>
 
 			<Paper
@@ -51,23 +52,24 @@ const RequisitionDetail = ({
 			>
 				<Stack spacing={3} divider={<Divider orientation="horizontal" flexItem />}>
 					<Stack spacing={1}>
+						<Typography variant="body2">ID da Requisição: {requisitionData.id}</Typography>
 						<Typography variant="h6" sx={{ fontWeight: 600 }}>Dados Pessoais</Typography>
-						<Typography variant="body2"><strong>Nome:</strong> {requisition.student_name}</Typography>
-						<Typography variant="body2"><strong>Email:</strong> {requisition.email}</Typography>
-						<Typography variant="body2"><strong>Número USP:</strong> {requisition.student_nusp}</Typography>
+						<Typography variant="body2"><strong>Nome:</strong> {requisitionData.student_name}</Typography>
+						<Typography variant="body2"><strong>Email:</strong> {requisitionData.email}</Typography>
+						<Typography variant="body2"><strong>Número USP:</strong> {requisitionData.student_nusp}</Typography>
 					</Stack>
 
 					<Stack spacing={1}>
 						<Typography variant="h6" sx={{ fontWeight: 600 }}>Curso Atual</Typography>
-						<Typography variant="body2">{requisition.course}</Typography>
+						<Typography variant="body2">{requisitionData.course}</Typography>
 					</Stack>
 
 					<Stack spacing={1}>
 						<Typography variant="h6" sx={{ fontWeight: 600 }}>Disciplina Requerida</Typography>
-						<Typography variant="body2"><strong>Código:</strong> {requisition.requested_disc_code}</Typography>
-						<Typography variant="body2"><strong>Nome:</strong> {requisition.requested_disc}</Typography>
-						<Typography variant="body2"><strong>Tipo:</strong> {requisition.requested_disc_type}</Typography>
-						<Typography variant="body2"><strong>Departamento:</strong> {requisition.department}</Typography>
+						<Typography variant="body2"><strong>Código:</strong> {requisitionData.requested_disc_code}</Typography>
+						<Typography variant="body2"><strong>Nome:</strong> {requisitionData.requested_disc}</Typography>
+						<Typography variant="body2"><strong>Tipo:</strong> {requisitionData.requested_disc_type}</Typography>
+						<Typography variant="body2"><strong>Departamento:</strong> {requisitionData.department}</Typography>
 					</Stack>
 
 					<Stack spacing={1}>
@@ -113,13 +115,13 @@ const RequisitionDetail = ({
 
 					<Stack spacing={1}>
 						<Typography variant="h6" sx={{ fontWeight: 600 }}>Observações</Typography>
-						<Typography variant="body2">{requisition.observations}</Typography>
+						<Typography variant="body2">{requisitionData.observations}</Typography>
 					</Stack>
 
 					<Stack spacing={1}>
 						<Typography variant="h6" sx={{ fontWeight: 600 }}>Resultado</Typography>
-						<Typography variant="body2" color={resultColor}><strong>Status:</strong> {requisition.result}</Typography>
-						<Typography variant="body2"><strong>Justificativa:</strong> {requisition.result_text}</Typography>
+						<Typography variant="body2" color={resultColor}><strong>Status:</strong> {requisitionData.result}</Typography>
+						<Typography variant="body2"><strong>Justificativa:</strong> {requisitionData.result_text}</Typography>
 					</Stack>
 				</Stack>
 			</Paper>

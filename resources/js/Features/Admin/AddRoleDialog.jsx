@@ -15,14 +15,14 @@ import {
 import { useForm } from "@inertiajs/react";
 import { useDialogContext } from '../../Context/useDialogContext';
 
-function AddRoleDialog() {
+function AddRoleDialog({ user }) {
 	const { closeDialog } = useDialogContext();
 	const [roles, setRoles] = useState([]);
 	const [departments, setDepartments] = useState([]);
 	const { data, setData, post, processing, errors } = useForm({
 		nusp: '',
 		roleId: '',
-		departmentId: ''
+		departmentId: user.currentDepartmentId || '',
 	});
 	const selectedRole = roles.find(r => String(r.id) === String(data.roleId));
 
@@ -92,26 +92,28 @@ function AddRoleDialog() {
 								))}
 							</RadioGroup>
 						</FormControl>
-						<Collapse in={!!selectedRole && selectedRole.has_department}>
-							<FormControl component="fieldset" margin="dense" required={!!selectedRole && selectedRole.has_department}>
-								<FormLabel component="legend">Departamento</FormLabel>
-								<RadioGroup
-									aria-label="department"
-									name="departmentId"
-									value={data.departmentId}
-									onChange={handleChange}
-								>
-									{departments.map(dep => (
-										<FormControlLabel
-											key={dep.id}
-											value={String(dep.id)}
-											control={<Radio />}
-											label={dep.name}
-										/>
-									))}
-								</RadioGroup>
-							</FormControl>
-						</Collapse>
+						{departments && (
+							<Collapse in={!!selectedRole && selectedRole.has_department}>
+								<FormControl component="fieldset" margin="dense" required={!!selectedRole && selectedRole.has_department}>
+									<FormLabel component="legend">Departamento</FormLabel>
+									<RadioGroup
+										aria-label="department"
+										name="departmentId"
+										value={data.departmentId}
+										onChange={handleChange}
+									>
+										{departments.map(dep => (
+											<FormControlLabel
+												key={dep.id}
+												value={String(dep.id)}
+												control={<Radio />}
+												label={dep.name}
+											/>
+										))}
+									</RadioGroup>
+								</FormControl>
+							</Collapse>
+						)}
 					</Stack>
 				</form>
 			</DialogContent>

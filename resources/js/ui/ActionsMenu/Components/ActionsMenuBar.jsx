@@ -8,7 +8,7 @@ const ActionsMenuContainer = styled(Stack)(({ theme }) => ({
     flexDirection: 'row',
     gap: theme.spacing(2),
 
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
         flexDirection: 'column',
         gap: theme.spacing(1),
     },

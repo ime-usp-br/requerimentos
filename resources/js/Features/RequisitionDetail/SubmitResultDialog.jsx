@@ -34,7 +34,6 @@ function SubmitResultDialog({ requisitionId, type = 'requisition', submitRoute =
 		// Let the backend handle validation through Inertia's useForm
 		post(route(submitRoute), {
 			onSuccess: (resp) => {
-				console.log(resp);
 				closeDialog();
 				setDialogTitle('Enviado com sucesso');
 				setDialogBody(<ActionSuccessful dialogText={'O resultado foi enviado com sucesso.'} />);
