@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use App\Enums\RoleId;
 use App\Models\Requisition;
-use App\Models\RequisitionsPeriod;
+use App\Models\Department;
+use App\Enums\EventType;
 
 class ListController extends Controller
 {
@@ -45,16 +46,30 @@ class ListController extends Controller
         return [$requisitions, $selectedColumns, $selectedActions];
     }
 
-    private function sgList($user) { 
+    private function sgList() { 
         $selectedColumns = ['created_at', 'updated_at', 'id', 'student_name', 'student_nusp', 'internal_status', 'department'];
         $requisitions = Requisition::select($selectedColumns)->get();
         $selectedActions = [['admin', 'new_requisition', 'export']];
         return [$requisitions, $selectedColumns, $selectedActions];
     }
 
-    private function secretaryList($user) { 
-        $selectedColumns = ['id', 'created_at', 'requested_disc', 'situation'];
-        $requisitions = Requisition::with('takenDisciplines')->select($selectedColumns)->where('student_nusp', $user->codpes)->get();
+    private function secretaryList($user) {
+        $statuses = [
+            EventType::SENT_TO_DEPARTMENT,
+            EventType::SENT_TO_REVIEWERS,
+            EventType::RETURNED_BY_REVIEWER,
+        ];
+
+        $selectedColumns = ['id', 'created_at', 'updated_at', 'requested_disc', 'situation', 'department'];
+
+        $departmentCode = Department::where('id', $user->current_department_id)->value('code');
+
+        $requisitions = Requisition::with('takenDisciplines')
+            ->select($selectedColumns)
+            ->where('department', $departmentCode)
+            ->whereIn('situation', $statuses)
+            ->get();
+
         $selectedActions = [['admin']];
         return [$requisitions, $selectedColumns, $selectedActions];
     }
