@@ -9,7 +9,6 @@ const RequisitionDetail = ({
 	requisition,
 	takenDiscs,
 	documents }) => {
-
 	const theme = useTheme();
 	const isMedium = useMediaQuery(theme.breakpoints.up('md'));
 

@@ -9,64 +9,46 @@ import {
 	FormControlLabel,
 	FormControl,
 	Stack,
-    Alert
+	Alert,
+	Typography,
+	IconButton
 } from "@mui/material";
-import { router } from "@inertiajs/react";
+import CloseIcon from "@mui/icons-material/Close";
+import { useForm } from "@inertiajs/react";
 import { useDialogContext } from '../../Context/useDialogContext';
 import ActionSuccessful from "../../Dialogs/ActionSuccessful";
 
 function SubmitResultDialog({ requisitionId, type = 'requisition', submitRoute = 'giveResultToRequisition' }) {
-	const [selectedOption, setSelectedOption] = useState("");
-	const [comment, setComment] = useState("");
-    const [alert, setAlert] = useState(false);
 	const [alertText, setAlertText] = useState("");
-    const { setDialogTitle, setDialogBody, openDialog, closeDialog } = useDialogContext();
-    
-	const handleOptionChange = (event) => {
-		setSelectedOption(event.target.value);
-	};
-
-	const handleCommentChange = (event) => {
-		setComment(event.target.value);
-	};
+	const { setDialogTitle, setDialogBody, openDialog, closeDialog } = useDialogContext();
+	
+	const { data, setData, post, processing, errors } = useForm({
+		requisitionId: requisitionId,
+		result: "",
+		result_text: ""
+	});
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
 
-		console.log(selectedOption, comment);
-        
-		if (selectedOption == "") {
-			setAlertText("Não submeta um resultado antes de escolher uma opção.");
-            setAlert(true);
-            return;
-		}
-        if (selectedOption == "Indeferido" && comment.trim() == "") {
-			setAlertText("Uma justificativa é necessária para indeferir.");
-            setAlert(true);
-            return;
-        }
-
-        router.post(
-            route(submitRoute),
-            { 
-				'requisitionId': requisitionId,
-				'result': selectedOption,
-				'result_text': comment == "" && "Deferido"
+		// Let the backend handle validation through Inertia's useForm
+		post(route(submitRoute), {
+			onSuccess: (resp) => {
+				console.log(resp);
+				closeDialog();
+				setDialogTitle('Enviado com sucesso');
+				setDialogBody(<ActionSuccessful dialogText={'O resultado foi enviado com sucesso.'} />);
+				openDialog();
 			},
-            {
-                onSuccess: (resp) => {
-                    console.log(resp);
-                    closeDialog();
-                    setDialogTitle('Enviado com sucesso');
-                    setDialogBody(<ActionSuccessful dialogText={'O resultado foi enviado com sucesso.'} />)
-                    openDialog();
-                },
-                onError: (error) => {
-                    console.log(error);
-                    closeDialog();
-                }
-            }
-        );
+			onError: (errors) => {
+				console.log(errors);
+				// Errors are now automatically handled by useForm
+				// But we can still set an alert for custom error messages
+				if (typeof errors === 'string') {
+					setAlertText(errors);
+				}
+			}
+		});
 	};
 
 	return (
@@ -74,14 +56,27 @@ function SubmitResultDialog({ requisitionId, type = 'requisition', submitRoute =
 			<DialogContent>
 				<form id="result-form" onSubmit={handleSubmit} autoComplete="off">
 					<Stack spacing={2}>
-						<FormControl component="fieldset">
-							<RadioGroup name="resultOption" value={selectedOption} onChange={handleOptionChange}>
-								{ (type == 'requisition') &&
+						<FormControl component="fieldset" error={errors.result ? true : false}>
+							<RadioGroup
+								name="result"
+								value={data.result}
+								onChange={(e) => setData('result', e.target.value)}
+							>
+								{type === 'requisition' &&
 									<FormControlLabel value="Inconsistência nas informações" control={<Radio />} label="Inconsistência nas informações" />
 								}
 								<FormControlLabel value="Deferido" control={<Radio />} label="Deferido" />
 								<FormControlLabel value="Indeferido" control={<Radio />} label="Indeferido" />
 							</RadioGroup>
+							{errors.result && (
+								<Typography
+									variant="caption"
+									color="error"
+									sx={{ marginTop: '3px', marginLeft: '14px' }}
+								>
+									{errors.result}
+								</Typography>
+							)}
 						</FormControl>
 						<TextField
 							label="Observações"
@@ -89,23 +84,47 @@ function SubmitResultDialog({ requisitionId, type = 'requisition', submitRoute =
 							fullWidth
 							multiline
 							rows={4}
-							value={comment}
-							onChange={handleCommentChange}
+							name="result_text"
+							value={data.result_text}
+							onChange={(e) => setData('result_text', e.target.value)}
+							error={errors.result_text ? true : false}
+							helperText={errors.result_text}
 						/>
 					</Stack>
 				</form>
 			</DialogContent>
-            { alert && <Alert severity="error">{alertText}</Alert> }
+			{alertText && (
+				<Alert
+					severity="error"
+					action={
+						<IconButton
+							aria-label="close"
+							color="inherit"
+							size="small"
+							onClick={() => setAlertText("")}
+						>
+							<CloseIcon fontSize="inherit" />
+						</IconButton>
+					}
+				>
+					{alertText}
+				</Alert>
+			)}
 			<DialogActions>
-                <Button color="error" onClick={closeDialog}>
-                    Cancelar
-                </Button>
-				<Button variant="contained" type="submit" form="result-form">
+				<Button color="error" onClick={closeDialog}>
+					Cancelar
+				</Button>
+				<Button 
+					variant="contained" 
+					type="submit" 
+					form="result-form" 
+					disabled={processing ||	!data.result }
+				>
 					Confirmar
 				</Button>
 			</DialogActions>
 		</>
 	);
-};
+}
 
 export default SubmitResultDialog;

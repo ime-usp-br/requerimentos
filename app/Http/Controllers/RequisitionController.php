@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 use App\Enums\RoleId;
 use App\Enums\EventType;
@@ -268,11 +269,8 @@ class RequisitionController extends Controller
                 ]);
                 abort(500, $e->getMessage());
             }
-            return Inertia::location(route('list'));
         } 
-        else {
-            abort(400, 'No changes were submitted.');
-        }
+        return Inertia::location(route('list'));
     }
 
     private function checkUserUpdatePermission($requisitionId){
@@ -637,13 +635,28 @@ class RequisitionController extends Controller
         ]);
     }
 
+    // Tem que bloquear se o resultado é indeferido e o texto é vazio
     public function setRequisitionResult(Request $request) 
     {
         $this->checkUserUpdatePermission($request->requisitionId);
+        
+        // Validate the request using Laravel's validation system with translations
+        $validator = Validator::make($request->all(), [
+            'requisitionId' => 'required|exists:requisitions,id',
+            'result' => 'required|string',
+            'result_text' => 'required_if:result,Indeferido|nullable|string',
+        ]);
+        
+        // If validation fails for any other reason
+        if ($validator->fails()) {
+            return back()->withErrors($validator);
+        }
+        
         if (!$this->hasRequisitionResultChanged($request))
         {
-            abort(400, 'No changes were submitted.');
+            return response('', 200)->header('Content-Type', 'text/plain');
         }
+
         $requisition = Requisition::find($request->requisitionId);
         $resultType = $this->getResultEventTypeFrom($request);
 
@@ -673,7 +686,10 @@ class RequisitionController extends Controller
         $requisition = Requisition::find($updateRequest["requisitionId"]);
 
         $hasChanged = False;
-        if ($requisition->result !== $updateRequest["result"]) {
+        if (
+            $requisition->result !== $updateRequest["result"] ||
+            $requisition->result_text !== $updateRequest["result_text"]
+        ) {
             $hasChanged = True;
         }
 
