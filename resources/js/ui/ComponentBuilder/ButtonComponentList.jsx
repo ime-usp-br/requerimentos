@@ -35,10 +35,12 @@ import RequisitionDetailExport from "../../Features/RequisitionDetail/Requisitio
 let buttonComponentList = {};
 
 buttonComponentList.add_role = ({ styles }) => {
+    const { user } = useUser();
+
     const { setDialogTitle, setDialogBody, openDialog } = useDialogContext();
     function handleClick() {
         setDialogTitle('Adicionar papel');
-        setDialogBody(<AddRoleDialog />);
+        setDialogBody(<AddRoleDialog user={user}/>);
         openDialog();
     }
     return (

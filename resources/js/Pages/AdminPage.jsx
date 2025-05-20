@@ -2,8 +2,16 @@ import React from 'react';
 
 import BasePage from './BasePage';
 import ManageUsers from '../Features/Admin/ManageUsers';
+import { useUser } from '../Context/useUserContext';
 
-function AdminPage({ users }){
+function AdminPage({ systemUsers }){
+    const { isRole } = useUser();
+
+    const selectedActions = [
+        ...(isRole(2) ? ['requisition_period'] : []),
+        'add_role'
+    ];
+
     return (
         <BasePage
             headerProps={{
@@ -12,11 +20,11 @@ function AdminPage({ users }){
                 showRoleSelector: false
             }}
             actionsProps={{
-                selectedActions: [['requisition_period', 'add_role']],
+                selectedActions: [selectedActions],
                 variant: "bar"
             }}
         >
-            <ManageUsers users={users} />
+            <ManageUsers users={systemUsers} />
         </BasePage>
     );
 };
