@@ -460,9 +460,8 @@ buttonComponentList.send_to_department = ({ styles = {} }) => {
 buttonComponentList.send_to_reviewers = ({ styles = {} }) => {
     const { setDialogTitle, setDialogBody, openDialog, closeDialog } = useDialogContext();
     const { requisitionData } = useRequisitionContext();
-    
     const handleClick = () => {
-        axios.get(route('reviewer.reviewerPick'))
+        axios.get(route('reviewer.reviewerPick', { requisitionId: requisitionData.id }))
             .then((response) => {
                 setDialogTitle('Lista de pareceristas');
                 setDialogBody(

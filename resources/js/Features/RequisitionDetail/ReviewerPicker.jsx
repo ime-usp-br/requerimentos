@@ -7,11 +7,10 @@ import { useDialogContext } from '../../Context/useDialogContext';
 import ActionSuccessful from '../../Dialogs/ActionSuccessful';
 
 export default function ReviewerPicker({ requisitionId, reviewers, closeDialog }) {
-    const { setDialogTitle, setDialogBody, openDialog, _closeDialog } = useDialogContext();
+    const { setDialogTitle, setDialogBody, openDialog } = useDialogContext();
 
     const [rowSelection, setRowSelection] = useState({});
     let textStyle = {
-        //simple styling with the `sx` prop, works just like a style prop in this example
         sx: {
             fontSize: 18,
         },
@@ -40,7 +39,7 @@ export default function ReviewerPicker({ requisitionId, reviewers, closeDialog }
             route('reviewer.sendToReviewer'), 
             { 
                 'requisitionId': requisitionId,
-                'reviewer_nusps': rowSelection
+                'reviewerNusps': rowSelection
             },
             {
                 onSuccess: () => {
@@ -86,6 +85,12 @@ export default function ReviewerPicker({ requisitionId, reviewers, closeDialog }
             },
         },
         initialState: { density: 'compact' },
+        muiTableBodyRowProps: ({ row }) => ({
+            onClick: () => {
+                table.getRow(row.id).toggleSelected();
+            },
+            sx: { cursor: 'pointer' },
+        }),
     });
 
     return (

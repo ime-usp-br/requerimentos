@@ -7,48 +7,36 @@ use App\Models\Event;
 use App\Models\Review;
 use App\Models\ReviewsVersion;
 use App\Models\DepartmentUserRole;
-use App\Enums\RoleName;
 use App\Enums\RoleId;
-use App\Enums\DepartmentId;
 use App\Enums\EventType;
-use App\Enums\DocumentType;
 use App\Models\Requisition;
 use App\Notifications\ReviewerNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
-use App\Models\RequisitionsPeriod;
+use App\Models\Department;
 use Inertia\Inertia;
 
 class ReviewController extends Controller
 {
-    public function reviewerPick()
-    {
-        $currentUser = Auth::user();
-
-        if ($currentUser->current_role_id == RoleId::SG) {
-            // If the authenticated role is 2, get every user with roleid 3
-            $reviewers = DepartmentUserRole::getUsersWithRoleAndDepartment(RoleId::REVIEWER, null);
-        } else {
-            // Else, select only users with the same department and roleid 3
-            $reviewers = DepartmentUserRole::getUsersWithRoleAndDepartment(RoleId::REVIEWER, $currentUser->department_id);
-        }
-
-        // dd($reviewers);
+    public function reviewerPick($requisitionId)
+    {   
+        $requisitionDepartment = Requisition::find($requisitionId)->department;
+        $departmentId = Department::where('code', $requisitionDepartment)->first()->id;
+        $reviewers = DepartmentUserRole::getUsersWithRoleAndDepartment(RoleId::REVIEWER, $departmentId);
 
         return $reviewers;
     }
 
     public function createReview(Request $request)
     {
-        $reviewer_nusps = array_keys($request['reviewer_nusps']);
+        $reviewerNusps = array_keys($request['reviewerNusps']);
         $requisitionId = $request['requisitionId'];
         // return $request;
-        DB::transaction(function () use ($reviewer_nusps, $requisitionId) {
-            foreach ($reviewer_nusps as $reviewer_nusp) {
+        DB::transaction(function () use ($reviewerNusps, $requisitionId) {
+            foreach ($reviewerNusps as $reviewerNusp) {
                 // primeiro realiza a busca dos dados do parecerista
-                $reviewer = User::where('codpes', $reviewer_nusp)->first();
+                $reviewer = User::where('codpes', $reviewerNusp)->first();
 
                 $rev = Review::where('requisition_id', $requisitionId)
                     ->where('reviewer_nusp', $reviewer->codpes)
@@ -106,8 +94,6 @@ class ReviewController extends Controller
 
     public function reviews($requisitionId)
     {
-        $user = Auth::user();
-        $roleId = $user->current_role_id;
         $requisition = Requisition::with('reviews')->find($requisitionId);
 
         return Inertia::render('AssignedReviews', [ 'label' => 'Requerimentos', 
