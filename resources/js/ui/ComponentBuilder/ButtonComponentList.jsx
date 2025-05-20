@@ -1,7 +1,10 @@
 import React, { useState, useEffect }from "react";
 
+import { createRoot } from "react-dom/client";
 import { router } from "@inertiajs/react";
 import axios from "axios";
+import { jsPDF } from "jspdf";
+import { PDFDocument } from "pdf-lib";
 import { Button, Tooltip, DialogActions, DialogContent, DialogContentText, Alert } from "@mui/material";
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import AddIcon from '@mui/icons-material/Add';
@@ -27,6 +30,7 @@ import ActionSuccessful from "../../Dialogs/ActionSuccessful";
 import AddRoleDialog from "../../Features/Admin/AddRoleDialog";
 import RequisitionsPeriodDialog from "../../Features/Admin/RequisitionsPeriodDialog";
 import SubmitResultDialog from "../../Features/RequisitionDetail/SubmitResultDialog";
+import RequisitionDetailExport from "../../Features/RequisitionDetail/RequisitionDetailExport";
 
 let buttonComponentList = {};
 
@@ -201,20 +205,68 @@ buttonComponentList.export = ({ styles = {} }) => (
         startIcon={<FileDownloadIcon />}
         {...styles}
     >
-        Exportar
+        Exportar Lista
     </Button>
 );
 
 buttonComponentList.export_current = ({ styles = {} }) => {
-    const printDocument = () => {
-        const input = document.getElementById('requisition-paper');
-        html2canvas(input)
-            .then((canvas) => {
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF();
-                pdf.addImage(imgData, 'PNG', 0, 0, 260, 211);
-                pdf.save("download.pdf");
-            });
+    const { requisitionData } = useRequisitionContext();
+
+    console.log(requisitionData);
+
+    const printDocument = async () => {
+        const pdf = new jsPDF();
+        
+        const container = document.createElement('div');
+        const root = createRoot(container);
+        root.render(
+            <RequisitionDetailExport 
+                requisition={requisitionData} 
+            />
+        );
+
+        let docs = [];
+        for (let doc of requisitionData.documents) {
+            const blob = await axios.get(
+                route('documents.view', { 'id': doc.id }),
+                {
+                    responseType: 'blob'
+                }
+            );
+            docs.push(blob.data);
+        }
+
+        pdf.html(container, {
+            html2canvas: {
+                scale: 0.2 // Adjust this scale factor to shrink/grow the content.
+            },
+            callback: async (pdfInstance) => {
+                // Get the PDF blob.
+                docs.unshift(pdfInstance.output('blob'));
+                
+                const mergedPdf = await PDFDocument.create();
+
+                console.log(docs);
+
+                for (const blob of docs) {
+                    const arrayBuffer = await blob.arrayBuffer();
+                    const pdf = await PDFDocument.load(arrayBuffer);
+                    const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+                    copiedPages.forEach(page => mergedPdf.addPage(page));
+                }
+
+                const mergedPdfBytes = await mergedPdf.save();
+                const mergedBlob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
+                // I'll just shove the logic in here I guess
+                const url = URL.createObjectURL(mergedBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = "requisition.pdf";
+                link.click();
+            },
+            x: 0,
+            y: 0,
+        });
     };
     return (
         <Button
