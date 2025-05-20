@@ -18,6 +18,19 @@ class LoginController extends Controller
 	public function callbackHandler()
 	{
 		$userSenhaUnica = Socialite::driver('senhaunica')->user();
+
+		$fromIME = false;
+        foreach ($userSenhaUnica->vinculo as $vinculo){
+            if (isset($vinculo["siglaUnidade"]) && $vinculo["siglaUnidade"] === 'IME') {
+                $fromIME = true;
+                break; 
+            }
+        }
+        
+        if (!$fromIME) {
+            abort(403, 'Acesso negado. Seu vínculo com o IME não foi encontrado. Se você for aluno do IME, entre em contato com o serviço de graduação.');
+        }
+
 		$user = User::where('codpes', $userSenhaUnica->codpes)->first();
 		if (is_null($user)) {
 			$user = new User;
