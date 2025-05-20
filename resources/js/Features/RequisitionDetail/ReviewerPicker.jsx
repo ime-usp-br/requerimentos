@@ -94,8 +94,12 @@ export default function ReviewerPicker({ requisitionId, reviewers, closeDialog }
                 <MaterialReactTable table={table} />
             </DialogContent>
             <DialogActions>
-                <Button onClick={closeDialog}>Cancelar</Button>
-                <Button onClick={submit}>Enviar</Button>
+                <Button color="error" onClick={closeDialog}>
+                    Cancelar
+                </Button>
+                <Button variant="contained" onClick={submit}>
+                    Enviar
+                </Button>
             </DialogActions>
         </>
     );

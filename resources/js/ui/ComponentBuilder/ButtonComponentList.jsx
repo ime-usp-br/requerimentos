@@ -93,8 +93,12 @@ buttonComponentList.automatic_requisition = ({ styles }) => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={closeDialog} sx={{ color: 'red' }}>Não</Button>
-                    <Button onClick={submitAndReturnToList}>Sim</Button>
+                    <Button color="error" onClick={closeDialog}>
+                        Cancelar
+                    </Button>
+                    <Button variant="contained" onClick={submitAndReturnToList}>
+                        Confirmar
+                    </Button>
                 </DialogActions>
             </>
         );
@@ -271,11 +275,11 @@ buttonComponentList.export_current = ({ styles = {} }) => {
     return (
         <Button
             key="export_current"
-            startIcon={<ReviewsIcon />}
+            startIcon={<FileDownloadIcon />}
             onClick={printDocument}
             {...styles}
         >
-            Exportar requerimento
+            Exportar Requerimento
         </Button>
     )
 };
@@ -324,8 +328,12 @@ buttonComponentList.registered = ({ styles = {} }) => {
                     <Alert severity="warning">Marque o requerimento <strong>após</strong> registrar o parecer no Júpiter.</Alert>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={closeDialog} sx={{ color: 'red' }}>Não</Button>
-                    <Button onClick={submitAndReturnToList}>Sim</Button>
+                    <Button color="error" onClick={closeDialog}>
+                        Cancelar
+                    </Button>
+                    <Button variant="contained" onClick={submitAndReturnToList}>
+                        Confirmar
+                    </Button>
                 </DialogActions>
             </>
         );
