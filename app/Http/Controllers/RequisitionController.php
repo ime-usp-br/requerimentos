@@ -537,6 +537,8 @@ class RequisitionController extends Controller
     } 
 
     public function registered(Request $request) {
+        $this->checkUserRegisteredPermission($request->requisitionId);
+
         DB::transaction(function () use ($request) {
             $user = Auth::user();
 
@@ -557,6 +559,27 @@ class RequisitionController extends Controller
         });
 
         return response('', 200)->header('Content-Type', 'text/plain');
+    }
+
+    private function checkUserRegisteredPermission($requisitionId){
+        $requisition = Requisition::find($requisitionId);
+
+        $user = Auth::user();
+
+        if (!$requisition) {
+            abort(404);
+        }
+        if (($user->current_role_id != RoleID::SG) &&
+            ($user->current_role_id != RoleID::SECRETARY)
+        ) {
+            abort(403);
+        }
+
+        if (($user->current_role_id == RoleID::SECRETARY) &&
+            ($user->department != $requisition->department)
+        ) {
+            abort(403);
+        }
     }
 
     public function exportRequisitionsGet()

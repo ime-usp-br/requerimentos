@@ -11,9 +11,11 @@ use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Database\Seeders\DatabaseSeeder;
+// use App\Models\DepartmentUserRole;
 use App\Enums\RoleId;
 use App\Enums\DocumentType;
 use App\Enums\EventType;
+use App\Enums\DepartmentId;
 
 class RequisitionControllerTest extends TestCase
 {
@@ -1653,6 +1655,160 @@ class RequisitionControllerTest extends TestCase
         $this->assertDatabaseMissing('events', [
             'requisition_id' => $requisition->id,
             'type' => EventType::REJECTED,
+        ]);
+    }
+
+    public function test_mark_as_registered_success_for_sg()
+    {
+        $user = User::factory()->create([
+            'codpes' => '123456',
+            'name' => 'Test SG User',
+            'email' => 'sg_user@test.com',
+            'current_role_id' => RoleId::SG,
+        ]);
+        $this->actingAs($user);
+
+        $requisition = Requisition::factory()->create([
+            'student_nusp' => '999876',
+            'student_name' => 'Student Test',
+            'email' => 'student_test@test.com',
+            'editable' => false,
+            'department' => 'MAC',
+            'result' => 'Deferido',
+            'latest_version' => 1,
+        ]);
+
+        $payload = [
+            'requisitionId' => $requisition->id
+        ];
+        
+        $response = $this->post('/cadastrado', $payload);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('requisitions', [
+            'id' => $requisition->id,
+            'internal_status' => "Registrado no Jupiter por Test SG User",
+            'situation' => "Aguardando avaliação da CG",
+        ]);
+
+        $this->assertDatabaseHas('events', [
+            'requisition_id' => $requisition->id,
+            'type' => EventType::REGISTERED,
+            'author_nusp' => '123456',
+            'version' => $requisition->latest_version,
+        ]);
+    }
+
+    public function test_mark_as_registered_success_for_sg_any_department()
+    {
+        // Use a department different from the requisition to test SG can mark any department
+        $sgUser = User::factory()->create([
+            'codpes' => '654321',
+            'name' => 'Test SG User',
+            'email' => 'sg_user_test@test.com',
+            'current_role_id' => RoleId::SG,
+        ]);
+        
+        $this->actingAs($sgUser);
+
+        // Create a requisition with MAC department
+        $requisition = Requisition::factory()->create([
+            'student_nusp' => '999876',
+            'student_name' => 'Student Test',
+            'email' => 'student_test@test.com',
+            'editable' => false,
+            'department' => 'MAC', 
+            'result' => 'Deferido',
+            'latest_version' => 1,
+        ]);
+
+        $payload = [
+            'requisitionId' => $requisition->id
+        ];
+        
+        $response = $this->post('/cadastrado', $payload);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('requisitions', [
+            'id' => $requisition->id,
+            'internal_status' => "Registrado no Jupiter por Test SG User",
+            'situation' => "Aguardando avaliação da CG",
+        ]);
+
+        $this->assertDatabaseHas('events', [
+            'requisition_id' => $requisition->id,
+            'type' => EventType::REGISTERED,
+            'author_nusp' => '654321',
+            'version' => $requisition->latest_version,
+        ]);
+        
+        // Now test with a different department to ensure SG can handle any department
+        $requisitionMAE = Requisition::factory()->create([
+            'student_nusp' => '888777',
+            'student_name' => 'MAE Student',
+            'email' => 'mae_student@test.com',
+            'editable' => false,
+            'department' => 'MAE', // Different department
+            'result' => 'Deferido',
+            'latest_version' => 1,
+        ]);
+
+        $payload = [
+            'requisitionId' => $requisitionMAE->id
+        ];
+        
+        $response = $this->post('/cadastrado', $payload);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('requisitions', [
+            'id' => $requisitionMAE->id,
+            'internal_status' => "Registrado no Jupiter por Test SG User",
+            'situation' => "Aguardando avaliação da CG",
+        ]);
+    }
+
+    public function test_mark_as_registered_forbidden_for_secretary_of_different_department()
+    {
+        $userDepartment = DepartmentId::MAC;
+        $requisitionDepartment = 'MAE';
+        
+        // Create a secretary user with MAC department role
+        $user = User::factory()->create([
+            'codpes' => '654321',
+            'name' => 'Test Secretary User',
+            'email' => 'secretary_user@test.com',
+            'current_role_id' => RoleId::SECRETARY,
+            'current_department_id' => $userDepartment
+        ]);
+        
+        // Assign secretary role to MAC department
+        $user->assignRole(RoleId::SECRETARY, $userDepartment);
+        
+        $this->actingAs($user);
+
+        // Create a requisition with MAE department (different from secretary's department)
+        $requisition = Requisition::factory()->create([
+            'student_nusp' => '999876',
+            'student_name' => 'Student Test',
+            'email' => 'student_test@test.com',
+            'editable' => false,
+            'department' => $requisitionDepartment, // Different department (MAE) from the secretary
+            'result' => 'Deferido',
+            'latest_version' => 1,
+        ]);
+
+        $payload = [
+            'requisitionId' => $requisition->id
+        ];
+        
+        // Secretary should not be able to mark a requisition from a different department as registered
+        $response = $this->post('/cadastrado', $payload);
+        $response->assertStatus(403);
+
+        // Verify that no event was created for marking as registered
+        $this->assertDatabaseMissing('events', [
+            'requisition_id' => $requisition->id,
+            'type' => EventType::REGISTERED,
         ]);
     }
 }
