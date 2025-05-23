@@ -14,6 +14,7 @@ use App\Notifications\ReviewerNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use App\Models\Department;
 use Inertia\Inertia;
 
@@ -103,6 +104,19 @@ class ReviewController extends Controller
     
     public function submit(Request $request)
     {
+
+        // Validate the request using Laravel's validation system with translations
+        $validator = Validator::make($request->all(), [
+            'requisitionId' => 'required|exists:requisitions,id',
+            'result' => 'required|string',
+            'result_text' => 'required_if:result,Indeferido|nullable|string',
+        ]);
+        
+        // If validation fails for any other reason
+        if ($validator->fails()) {
+            return back()->withErrors($validator);
+        }
+
         $requisitionId = $request["requisitionId"];
         DB::transaction(function () use ($request, $requisitionId) {
             $user = Auth::user();

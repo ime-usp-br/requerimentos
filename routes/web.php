@@ -62,8 +62,6 @@ Route::middleware('auth')->group(function () {
     Route::group(['middleware' => 'check.current.role:' . implode(',', [RoleId::SG, RoleId::SECRETARY, RoleId::REVIEWER])], function () {
         Route::get('/pareceres/{requisitionId}', [ReviewController::class, 'reviews'])
             ->name('reviewer.reviews');
-        Route::post('/enviar-requerimento', [ReviewController::class, 'createReview'])
-            ->name('reviewer.sendToReviewer');
         Route::get('/historico/requerimento/{requisitionId}', [RecordController::class, 'requisitionRecord'])
             ->name('record.requisition');
         Route::post('/enviar-ao-departamento', [RequisitionController::class, 'sendToDepartment'])
@@ -82,6 +80,8 @@ Route::middleware('auth')->group(function () {
             ->name('role.remove');
         Route::get('/escolher-parecerista/{requisitionId}', [ReviewController::class, 'reviewerPick'])
             ->name('reviewer.reviewerPick');
+        Route::post('/enviar-requerimento', [ReviewController::class, 'createReview'])
+            ->name('reviewer.sendToReviewer');
         Route::post('/cadastrado', [RequisitionController::class, 'registered'])
             ->name('registered');
         Route::get('/exportar-requerimentos', [RequisitionController::class, 'exportRequisitionsGet'])
@@ -98,5 +98,11 @@ Route::middleware('auth')->group(function () {
             ->name('giveResultToRequisition');
         Route::post('/deferimento-automatico', [RequisitionController::class, 'automaticDeferral'])
             ->name('automaticDeferral');
+    });
+
+    // ======== ACESSO Pareceristas ======== //
+    Route::group(['middleware' => 'check.current.role:' . RoleId::REVIEWER], function () {
+        Route::post('/dar-parecer', [ReviewController::class, 'submit'])
+            ->name('submitReview');
     });
 });
