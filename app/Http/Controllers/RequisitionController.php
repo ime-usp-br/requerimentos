@@ -12,6 +12,7 @@ use App\Enums\RoleId;
 use App\Enums\EventType;
 use App\Enums\DocumentType;
 use App\Enums\ReviewerDecision;
+use App\Models\Department;
 use App\Models\Document;
 use App\Models\Event;
 use App\Models\Requisition;
@@ -565,7 +566,6 @@ class RequisitionController extends Controller
         $requisition = Requisition::find($requisitionId);
 
         $user = Auth::user();
-
         if (!$requisition) {
             abort(404);
         }
@@ -576,7 +576,7 @@ class RequisitionController extends Controller
         }
 
         if (($user->current_role_id == RoleID::SECRETARY) &&
-            ($user->department != $requisition->department)
+            ($user->currentDepartment->name != $requisition->department)
         ) {
             abort(403);
         }
