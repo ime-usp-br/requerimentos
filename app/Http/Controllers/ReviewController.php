@@ -11,6 +11,7 @@ use App\Enums\RoleId;
 use App\Enums\EventType;
 use App\Models\Requisition;
 use App\Notifications\ReviewerNotification;
+use App\Notifications\ReviewGivenNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -81,16 +82,19 @@ class ReviewController extends Controller
                 $req->save();
                 $event->save();
 
-                $reviewerUser = User::where('codpes', $reviewer->codpes)->first();
-
-                // se o parecerista nunca logou no sistema, o email dele é desconhecido 
-                if ($reviewerUser->email && env('APP_ENV') === 'production') {
-                    $reviewerUser->notify(new ReviewerNotification($reviewerUser));
-                }
+                $this->notifyReviewCreation($reviewerNusp);
             }
         });
 
         return response('', 200)->header('Content-Type', 'text/plain');
+    }
+
+    private function notifyReviewCreation($reviewer_nusp) {
+        $reviewerUser = User::where('codpes', $reviewer_nusp)->first();
+
+        if ($reviewerUser->email) {
+            $reviewerUser->notify(new ReviewerNotification($reviewerUser));
+        }
     }
 
     public function reviews($requisitionId)
@@ -157,7 +161,21 @@ class ReviewController extends Controller
 
             $event->save();
             $req->save();
+                
+            $this->notifyReviewGiven($requisitionId);
         });
+    }
+
+    private function notifyReviewGiven($requisitionId) {
+        $requisitionDepartment = Requisition::find($requisitionId)->department;
+        $departmentId = Department::where('code', $requisitionDepartment)->first()->id;
+        $departmentUsers = DepartmentUserRole::getUsersWithRoleAndDepartment(RoleId::SECRETARY, $departmentId);
+
+        foreach ($departmentUsers as $departmentUser) {
+            if ($departmentUser->email)
+                $departmentUser->notify(new ReviewGivenNotification($requisitionDepartment));
+        }
+
     }
 
     // public function previousReviews($requisitionId, $requestedDiscCode)

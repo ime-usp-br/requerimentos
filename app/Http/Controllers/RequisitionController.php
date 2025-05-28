@@ -12,7 +12,9 @@ use App\Enums\RoleId;
 use App\Enums\EventType;
 use App\Enums\DocumentType;
 use App\Enums\ReviewerDecision;
+use App\Models\User;
 use App\Models\Department;
+use App\Models\DepartmentUserRole;
 use App\Models\Document;
 use App\Models\Event;
 use App\Models\Requisition;
@@ -22,6 +24,11 @@ use App\Models\TakenDisciplinesVersion;
 use App\Models\RequisitionsVersion;
 use App\Http\Requests\RequisitionCreationRequest;
 use App\Http\Requests\RequisitionUpdateRequest;
+use App\Notifications\DepartmentNotification;
+use App\Notifications\RequisitionResultNotification;
+use App\Notifications\RegisteredNotification;
+use App\Notifications\RequisitionCreatedNotification;
+use App\Notifications\RequisitionUpdatedNotification;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class RequisitionController extends Controller
@@ -101,10 +108,11 @@ class RequisitionController extends Controller
         $validatedRequest = $request->validated();
 
         try {
-            DB::transaction(function () use ($validatedRequest) {
-                $requisition = new Requisition;
+            $AuthUser = Auth::user();
 
-                $AuthUser = Auth::user();
+            DB::transaction(function () use ($validatedRequest, $AuthUser) {
+                $requisition = new Requisition;
+                
                 if ($AuthUser->current_role_id == 1) {
                     $requisition->student_nusp = $AuthUser->codpes;
                     $requisition->student_name = $AuthUser->name;
@@ -182,6 +190,10 @@ class RequisitionController extends Controller
                 $event->version = 1;
                 $event->save();
             });
+           
+            if ($AuthUser->current_role_id != RoleId::SG) {
+                $this->notifyRequisitionCreation();
+            }
 
             return Inertia::location(route('list'));
         } catch (\Exception $e) {
@@ -189,6 +201,15 @@ class RequisitionController extends Controller
                 'exception' => $e,
             ]);
             abort(500, $e->getMessage());
+        }
+    }
+
+    private function notifyRequisitionCreation() {
+        $sgUsers = DepartmentUserRole::getUsersWithRoleAndDepartment(RoleId::SG, null);
+
+        foreach ($sgUsers as $sgUser) {
+            if ($sgUser->email)
+                $sgUser->notify(new RequisitionCreatedNotification());
         }
     }
 
@@ -265,6 +286,10 @@ class RequisitionController extends Controller
                     $event->version = $requisition->latest_version;
                     $event->save();
                 });
+
+                $this->notifyRequisitionUpdate();
+
+
             } catch (\Exception $e) {
                 Log::error('Error on updateRequisition: ' . $e->getMessage(), [
                     'exception' => $e,
@@ -476,23 +501,50 @@ class RequisitionController extends Controller
         $requisition->save();
     }
 
+    private function notifyRequisitionUpdate() {
+        $sgUsers = DepartmentUserRole::getUsersWithRoleAndDepartment(RoleId::SG, null);
+
+        foreach ($sgUsers as $sgUser) {
+            if ($sgUser->email)
+                $sgUser->notify(new RequisitionUpdatedNotification());
+        }
+    }
+
     public function sendToDepartment(Request $request) {
-        $requisition = Requisition::find($request['requisitionId']);
+        $requisitionId = $request['requisitionId'];
 
-        $event = new Event;
-        $event->type = EventType::SENT_TO_DEPARTMENT;
-        $event->requisition_id = $request['requisitionId'];
-        $event->author_name = Auth::user()->name; 
-        $event->author_nusp = Auth::user()->codpes;
-        $event->version = $requisition->latest_version;  
-        $event->save();
+        DB::transaction(function () use ($request, $requisitionId) {
+            $requisition = Requisition::find($requisitionId);
 
-        $requisition->situation = EventType::SENT_TO_DEPARTMENT;
-        $requisition->internal_status = EventType::SENT_TO_DEPARTMENT . " " .  $requisition->department;
-        $requisition->registered = false;
-        $requisition->save();
+            $event = new Event;
+            $event->type = EventType::SENT_TO_DEPARTMENT;
+            $event->requisition_id = $request['requisitionId'];
+            $event->author_name = Auth::user()->name; 
+            $event->author_nusp = Auth::user()->codpes;
+            $event->version = $requisition->latest_version;  
+            $event->save();
+
+            $requisition->situation = EventType::SENT_TO_DEPARTMENT;
+            $requisition->internal_status = EventType::SENT_TO_DEPARTMENT . " " .  $requisition->department;
+            $requisition->registered = false;
+            $requisition->save();
+
+        });
+       
+        $this->notifyDepartment($requisitionId);
 
         return response('', 200)->header('Content-Type', 'text/plain');
+    }
+
+    private function notifyDepartment($requisitionId) {
+        $requisitionDepartment = Requisition::find($requisitionId)->department;
+        $departmentId = Department::where('code', $requisitionDepartment)->first()->id;
+        $departmentUsers = DepartmentUserRole::getUsersWithRoleAndDepartment(RoleId::SECRETARY, $departmentId);
+
+        foreach ($departmentUsers as $departmentUser) {
+            if ($departmentUser->email)
+                $departmentUser->notify(new DepartmentNotification($departmentUser, $requisitionDepartment));
+        }
     }
 
     public function automaticDeferral(Request $request) {
@@ -559,6 +611,8 @@ class RequisitionController extends Controller
             $event->save();
         });
 
+        $this->notifyRegisted($request->requisitionId);
+
         return response('', 200)->header('Content-Type', 'text/plain');
     }
 
@@ -580,6 +634,17 @@ class RequisitionController extends Controller
         ) {
             abort(403);
         }
+    }
+
+    private function notifyRegisted($requisitionId) {
+        $requisitionDepartment = Requisition::find($requisitionId)->department;
+        $sgUsers = DepartmentUserRole::getUsersWithRoleAndDepartment(RoleId::SG, null);
+
+        foreach ($sgUsers as $sgUser) {
+            if ($sgUser->email)
+                $sgUser->notify(new RegisteredNotification($requisitionDepartment));
+        }
+
     }
 
     public function exportRequisitionsGet()
@@ -710,6 +775,8 @@ class RequisitionController extends Controller
         }
 
         $requisition = Requisition::find($request->requisitionId);
+        $studentCodpes = $requisition->codpes;
+
         $resultType = $this->getResultEventTypeFrom($request);
 
         $requisition->result = $request->result;
@@ -729,6 +796,11 @@ class RequisitionController extends Controller
         $event->version = $requisition->latest_version;
         $event->message = $resultType;
         $event->save();
+
+
+
+        $this->notifyRequisitionResult($studentCodpes);
+
 
         return response('', 200)->header('Content-Type', 'text/plain');
     }
@@ -762,6 +834,11 @@ class RequisitionController extends Controller
                 break;
         }
         return $resultType;
+    }
+
+    private function notifyRequisitionResult($student_nusp) {
+        $studentUser = User::where('codpes', $student_nusp)->first();
+        $studentUser->notify(new RequisitionResultNotification($studentUser));
     }
 
 }
