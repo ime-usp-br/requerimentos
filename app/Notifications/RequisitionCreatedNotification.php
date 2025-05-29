@@ -2,28 +2,22 @@
 
 namespace App\Notifications;
 
-use App\Models\Requisition;
-use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class RequisitionResultNotification extends Notification
+class RequisitionCreatedNotification extends Notification
 {
     use Queueable;
-
-    protected $studentUser;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($studentUser)
+    public function __construct()
     {
-        $this->studentUser = $studentUser;
-        // $this->customMessage = $customMessage;
     }
 
     /**
@@ -45,13 +39,10 @@ class RequisitionResultNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        // $studentUserNusp = $this->studentUser->codpes;
-
-        // Requisition::where('nusp', );
         return (new MailMessage)
-                    ->subject('Atualização no requerimento de aproveitamento de estudos')
-                    ->greeting('Prezado(a) aluno(a) ' . $this->studentUser->name . ',')
-                    ->line('O seu requerimento de aproveitamento de estudos foi retornado. Para obter mais informações, acesse o site de requerimentos através do link abaixo.')
+                    ->subject('Requerimento criado')
+                    ->greeting('Requerimento foi criado por um aluno')
+                    ->line('Um novo requerimento de aproveitamento de estudos foi enviado à SG.')
                     ->action('Requerimentos', url('/'))
                     ->salutation('Atenciosamente, Serviço de Graduação do IME-USP.');
     }
