@@ -64,6 +64,8 @@ Route::middleware('auth')->group(function () {
             ->name('reviewer.reviews');
         Route::get('/historico/requerimento/{requisitionId}', [RecordController::class, 'requisitionRecord'])
             ->name('record.requisition');
+        Route::get('/historico/evento/{eventId}', [RecordController::class, 'requisitionVersion'])
+            ->name('record.event.version');
         Route::post('/enviar-ao-departamento', [RequisitionController::class, 'sendToDepartment'])
             ->name('sendToDepartment');
     });
