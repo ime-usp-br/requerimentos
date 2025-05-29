@@ -8,7 +8,7 @@ import {
     Button,
 } from "@mui/material";
 
-const TakenDisciplines = ({ data, setData}) => {
+const TakenDisciplines = ({ data, setData, errors = {} }) => {
     const handleRemoveDiscipline = () => {
         if (data.takenDiscCount > 1) {
             setData("takenDiscCount", data.takenDiscCount - 1);
@@ -60,6 +60,8 @@ const TakenDisciplines = ({ data, setData}) => {
                                         ])
                                     }
                                     key={`discipline-name-${index}`}
+                                    error={!!errors[`takenDiscNames.${index}`]}
+                                    helperText={errors[`takenDiscNames.${index}`]}
                                 />
                                 <TextField
                                     size="small"
@@ -74,6 +76,8 @@ const TakenDisciplines = ({ data, setData}) => {
                                         ])
                                     }
                                     key={`discipline-institution-${index}`}
+                                    error={!!errors[`takenDiscInstitutions.${index}`]}
+                                    helperText={errors[`takenDiscInstitutions.${index}`]}
                                 />
                                 <Stack direction="row" spacing={1.5} key={`discipline-codes-grades-${index}`}>
                                     <TextField
@@ -90,6 +94,8 @@ const TakenDisciplines = ({ data, setData}) => {
                                             ])
                                         }
                                         key={`discipline-code-${index}`}
+                                        error={!!errors[`takenDiscCodes.${index}`]}
+                                        helperText={errors[`takenDiscCodes.${index}`]}
                                     />
                                     <TextField
                                         fullWidth
@@ -105,6 +111,8 @@ const TakenDisciplines = ({ data, setData}) => {
                                             ])
                                         }
                                         key={`discipline-grade-${index}`}
+                                        error={!!errors[`takenDiscGrades.${index}`]}
+                                        helperText={errors[`takenDiscGrades.${index}`]}
                                     />
                                 </Stack>
                                 <Stack direction="row" spacing={1.5} key={`discipline-year-semester-${index}`}>
@@ -123,6 +131,8 @@ const TakenDisciplines = ({ data, setData}) => {
                                             ])
                                         }
                                         key={`discipline-year-${index}`}
+                                        error={!!errors[`takenDiscYears.${index}`]}
+                                        helperText={errors[`takenDiscYears.${index}`]}
                                     />
                                     <Autocomplete
                                         size="small"
@@ -142,6 +152,8 @@ const TakenDisciplines = ({ data, setData}) => {
                                                 label="Semestre em que foi cursada"
                                                 variant="outlined"
                                                 required
+                                                error={!!errors[`takenDiscSemesters.${index}`]}
+                                                helperText={errors[`takenDiscSemesters.${index}`]}
                                             />
                                         )}
                                         key={`discipline-semester-${index}`}

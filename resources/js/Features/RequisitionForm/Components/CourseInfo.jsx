@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import { Stack } from "@mui/system";
 
-const CourseData = ({ data, setData, isUpdate }) => {
+const CourseData = ({ data, setData, isUpdate, errors = {} }) => {
     const courses = [
         "Bacharelado em Ciência da Computação",
         "Bacharelado em Estatística",
@@ -22,7 +22,7 @@ const CourseData = ({ data, setData, isUpdate }) => {
             <Typography variant={"h6"} component={"legend"}>
                 Curso
             </Typography>
-            <FormControl fullWidth required>
+            <FormControl fullWidth required error={!!errors.course}>
                 <Autocomplete
                     size="small"
                     id="course"
@@ -37,6 +37,8 @@ const CourseData = ({ data, setData, isUpdate }) => {
                             label="Curso Atual"
                             variant="outlined"
                             disabled={isUpdate}
+                            error={!!errors.course}
+                            helperText={errors.course}
                         />
                     )}
                 />
