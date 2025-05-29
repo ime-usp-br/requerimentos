@@ -11,7 +11,6 @@ use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Database\Seeders\DatabaseSeeder;
-// use App\Models\DepartmentUserRole;
 use App\Enums\RoleId;
 use App\Enums\DocumentType;
 use App\Enums\EventType;
@@ -121,7 +120,7 @@ class RequisitionControllerTest extends TestCase
 
         $response->assertStatus(200);
     }
-	
+
     public function test_create_requisition()
     {
         Storage::fake('local');
@@ -999,7 +998,7 @@ class RequisitionControllerTest extends TestCase
             'hash' => 'requestedDiscSyllabus.pdf',
             'version' => 1,
         ]);
-        
+
         $response = $this->post("/atualizar-requerimento", [
             'requisitionId' => $requisition->id,
             'student_nusp' => '111111',
@@ -1166,7 +1165,7 @@ class RequisitionControllerTest extends TestCase
             'takenDiscSemesters' => ['Primeiro'],
             'takenDiscInstitutions' => ['Instituição Teste'],
         ]);
-    
+
         $response->assertRedirect(route('list'));
 
         $this->assertDatabaseMissing('taken_disciplines', [
@@ -1228,7 +1227,7 @@ class RequisitionControllerTest extends TestCase
             'version' => 2,
         ]);
     }
-    
+
     public function test_update_requisition_does_not_update_documents_if_same()
     {
         Storage::fake('local');
@@ -1602,15 +1601,20 @@ class RequisitionControllerTest extends TestCase
 
     public function test_set_requisition_result_success_for_sg()
     {
-        $user = User::factory()->create([
+        $sgUser = User::factory()->create([
             'codpes' => '555555',
             'name' => 'Test SG New',
             'email' => 'sg_new@test.com',
             'current_role_id' => RoleId::SG,
         ]);
-        $this->actingAs($user);
+        $this->actingAs($sgUser);
+
+        $studentUser = User::factory()->create([
+            'codpes' => '666666',
+        ]);
+
         $requisition = Requisition::factory()->create([
-            'student_nusp' => '666666',
+            'student_nusp' => $studentUser->codpes,
             'student_name' => 'Another Student New',
             'email' => 'another_new@test.com',
             'editable' => true,
@@ -1639,7 +1643,7 @@ class RequisitionControllerTest extends TestCase
             'version' => $requisition->latest_version,
         ]);
     }
-    
+
     public function test_set_requisition_result_indeferido_with_empty_text_returns_error()
     {
         $user = User::factory()->create([
@@ -1665,7 +1669,7 @@ class RequisitionControllerTest extends TestCase
             'result' => 'Indeferido',
             'result_text' => ''  // Empty text
         ];
-        
+
         $response = $this->post('/dar-resultado-ao-requerimento', $payload);
         $response->assertSessionHasErrors(['result_text']);
 
@@ -1698,7 +1702,7 @@ class RequisitionControllerTest extends TestCase
         $payload = [
             'requisitionId' => $requisition->id
         ];
-        
+
         $response = $this->post('/cadastrado', $payload);
         $response->assertStatus(200);
 
@@ -1725,7 +1729,7 @@ class RequisitionControllerTest extends TestCase
             'email' => 'sg_user_test@test.com',
             'current_role_id' => RoleId::SG,
         ]);
-        
+
         $this->actingAs($sgUser);
 
         // Create a requisition with MAC department
@@ -1734,7 +1738,7 @@ class RequisitionControllerTest extends TestCase
             'student_name' => 'Student Test',
             'email' => 'student_test@test.com',
             'editable' => false,
-            'department' => 'MAC', 
+            'department' => 'MAC',
             'result' => 'Deferido',
             'latest_version' => 1,
         ]);
@@ -1742,7 +1746,7 @@ class RequisitionControllerTest extends TestCase
         $payload = [
             'requisitionId' => $requisition->id
         ];
-        
+
         $response = $this->post('/cadastrado', $payload);
         $response->assertStatus(200);
 
@@ -1758,7 +1762,7 @@ class RequisitionControllerTest extends TestCase
             'author_nusp' => '654321',
             'version' => $requisition->latest_version,
         ]);
-        
+
         // Now test with a different department to ensure SG can handle any department
         $requisitionMAE = Requisition::factory()->create([
             'student_nusp' => '888777',
@@ -1773,7 +1777,7 @@ class RequisitionControllerTest extends TestCase
         $payload = [
             'requisitionId' => $requisitionMAE->id
         ];
-        
+
         $response = $this->post('/cadastrado', $payload);
         $response->assertStatus(200);
 
@@ -1788,7 +1792,7 @@ class RequisitionControllerTest extends TestCase
     {
         $userDepartment = DepartmentId::MAC;
         $requisitionDepartment = 'MAE';
-        
+
         // Create a secretary user with MAC department role
         $user = User::factory()->create([
             'codpes' => '654321',
@@ -1797,10 +1801,10 @@ class RequisitionControllerTest extends TestCase
             'current_role_id' => RoleId::SECRETARY,
             'current_department_id' => $userDepartment
         ]);
-        
+
         // Assign secretary role to MAC department
         $user->assignRole(RoleId::SECRETARY, $userDepartment);
-        
+
         $this->actingAs($user);
 
         // Create a requisition with MAE department (different from secretary's department)
@@ -1817,7 +1821,7 @@ class RequisitionControllerTest extends TestCase
         $payload = [
             'requisitionId' => $requisition->id
         ];
-        
+
         // Secretary should not be able to mark a requisition from a different department as registered
         $response = $this->post('/cadastrado', $payload);
         $response->assertStatus(403);

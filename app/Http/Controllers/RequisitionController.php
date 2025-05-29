@@ -207,7 +207,6 @@ class RequisitionController extends Controller
         }
     }
 
-
     public function updateRequisitionGet($requisitionId)
     {
         $this->checkUserUpdatePermission($requisitionId);
@@ -347,12 +346,13 @@ class RequisitionController extends Controller
 
                     $this->updateRequisitionData($requisition, $validatedRequest, $currentVersions);
 
+                    $user = Auth::user();
                     $requisition->refresh();
                     $event = new Event;
-                    $event->type = Auth::user()->current_role_id == RoleId::STUDENT ? EventType::UPDATED_BY_STUDENT : EventType::UPDATED_BY_SG;
+                    $event->type = $user->current_role_id == RoleId::STUDENT ? EventType::UPDATED_BY_STUDENT : EventType::UPDATED_BY_SG;
                     $event->requisition_id = $validatedRequest["requisitionId"];
-                    $event->author_name = Auth::user()->name;
-                    $event->author_nusp = Auth::user()->codpes;
+                    $event->author_name = $user->name;
+                    $event->author_nusp = $user->codpes;
                     $event->version = $requisition->latest_version;
                     $event->save();
                 });
@@ -574,11 +574,12 @@ class RequisitionController extends Controller
         DB::transaction(function () use ($request, $requisitionId) {
             $requisition = Requisition::find($requisitionId);
 
+            $user = Auth::user();
             $event = new Event;
             $event->type = EventType::SENT_TO_DEPARTMENT;
             $event->requisition_id = $request['requisitionId'];
-            $event->author_name = Auth::user()->name; 
-            $event->author_nusp = Auth::user()->codpes;
+            $event->author_name = $user->name; 
+            $event->author_nusp = $user->codpes;
             $event->version = $requisition->latest_version;  
             $event->save();
 
@@ -823,7 +824,6 @@ class RequisitionController extends Controller
         }
 
         $requisition = Requisition::find($request->requisitionId);
-        $studentCodpes = $requisition->codpes;
 
         $resultType = $this->getResultEventTypeFrom($request);
 
@@ -845,10 +845,7 @@ class RequisitionController extends Controller
         $event->message = $resultType;
         $event->save();
 
-
-
-        $this->notifyRequisitionResult($studentCodpes);
-
+        $this->notifyRequisitionResult($requisition->student_nusp);
 
         return response('', 200)->header('Content-Type', 'text/plain');
     }
@@ -886,7 +883,9 @@ class RequisitionController extends Controller
 
     private function notifyRequisitionResult($student_nusp) {
         $studentUser = User::where('codpes', $student_nusp)->first();
-        $studentUser->notify(new RequisitionResultNotification($studentUser));
+        if($studentUser){
+            $studentUser->notify(new RequisitionResultNotification($studentUser));
+        }
     }
 
 }
