@@ -8,6 +8,7 @@ use App\Models\Department;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use \Illuminate\Support\Facades\DB;
 
 class RoleController extends Controller
 {
@@ -35,9 +36,10 @@ class RoleController extends Controller
         if ($response = $this->checkUnauthorizedSG($data['roleId'])) {
             return $response;
         }
-
-        $targetUser = User::firstOrCreate(['codpes' => $data['nusp']], ['codpes' => $data['nusp'], 'current_role_id' => 1]);
-        $targetUser->assignRole($data['roleId'], $data['departmentId'] ?? null);
+        DB::transaction(function () use ($data) {
+            $targetUser = User::firstOrCreate(['codpes' => $data['nusp']], ['codpes' => $data['nusp'], 'current_role_id' => $data['roleId']]);
+            $targetUser->assignRole($data['roleId'], $data['departmentId'] ?? null);
+        });
 
         return redirect()->back()->with('success', 'Role added successfully.');
     }
