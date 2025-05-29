@@ -31,7 +31,6 @@ function SubmitResultDialog({ requisitionId, type = 'requisition', submitRoute =
 	const handleSubmit = (event) => {
 		event.preventDefault();
 
-		// Let the backend handle validation through Inertia's useForm
 		post(route(submitRoute), {
 			onSuccess: (resp) => {
 				closeDialog();
@@ -40,9 +39,6 @@ function SubmitResultDialog({ requisitionId, type = 'requisition', submitRoute =
 				openDialog();
 			},
 			onError: (errors) => {
-				console.log(errors);
-				// Errors are now automatically handled by useForm
-				// But we can still set an alert for custom error messages
 				if (typeof errors === 'string') {
 					setAlertText(errors);
 				}
