@@ -404,7 +404,6 @@ class RequisitionControllerTest extends TestCase
         ]);
     }
 
-
     public function test_update_requisition_page()
     {
         $user = User::factory()->create([
@@ -486,7 +485,6 @@ class RequisitionControllerTest extends TestCase
         $response->assertStatus(403);
     }
 
-
     public function test_update_requisition_page_is_always_accessible_by_sg()
     {
         $user = User::factory()->create([
@@ -519,6 +517,7 @@ class RequisitionControllerTest extends TestCase
 
         $response = $this->post('/atualizar-requerimento', [
             'requisitionId' => '999999',
+            'requestedDiscType' => 'Obrigatória',
             'requestedDiscDepartment' => 'MAC',
             'observations' => 'Observações atualizadas',
             'takenDiscRecord' => UploadedFile::fake()->create('takenDiscRecord.pdf', 100),
@@ -556,6 +555,7 @@ class RequisitionControllerTest extends TestCase
 
         $response = $this->post("/atualizar-requerimento", [
             'requisitionId' => $requisition->id,
+            'requestedDiscType' => 'Obrigatória',
             'requestedDiscDepartment' => 'MAC',
             'observations' => 'Observações atualizadas',
             'takenDiscRecord' => UploadedFile::fake()->create('takenDiscRecord.pdf', 100),
@@ -593,6 +593,7 @@ class RequisitionControllerTest extends TestCase
 
         $response = $this->post("/atualizar-requerimento", [
             'requisitionId' => $requisition->id,
+            'requestedDiscType' => 'Obrigatória',
             'requestedDiscDepartment' => 'MAC',
             'observations' => 'Observações atualizadas',
             'takenDiscRecord' => UploadedFile::fake()->create('takenDiscRecord.pdf', 100),
@@ -636,7 +637,7 @@ class RequisitionControllerTest extends TestCase
             'grade' => 9.5,
             'semester' => 'Primeiro',
             'institution' => 'Instituição Teste',
-            'latest_version' => 1,
+            'version' => 1,
         ]);
 
         Document::factory()->create([
@@ -673,6 +674,7 @@ class RequisitionControllerTest extends TestCase
 
         $response = $this->post("/atualizar-requerimento", [
             'requisitionId' => $requisition->id,
+            'requestedDiscType' => 'Obrigatória',
             'requestedDiscDepartment' => 'MAC',
             'observations' => 'Observações atualizadas',
             'takenDiscRecord' => UploadedFile::fake()->create('takenDiscRecord.pdf', 100),
@@ -729,7 +731,7 @@ class RequisitionControllerTest extends TestCase
             'grade' => 9.5,
             'semester' => 'Primeiro',
             'institution' => 'Instituição Teste',
-            'latest_version' => 1,
+            'version' => 1,
         ]);
 
         Document::factory()->create([
@@ -815,7 +817,7 @@ class RequisitionControllerTest extends TestCase
             'grade' => "9.5",
             'semester' => 'Primeiro',
             'institution' => 'Instituição Teste',
-            'latest_version' => 1,
+            'version' => 1,
         ]);
 
         TakenDisciplines::factory()->create([
@@ -826,7 +828,7 @@ class RequisitionControllerTest extends TestCase
             'grade' => "7.5",
             'semester' => 'Segundo',
             'institution' => 'Instituição Teste',
-            'latest_version' => 1,
+            'version' => 1,
         ]);
 
         Document::factory()->create([
@@ -863,6 +865,7 @@ class RequisitionControllerTest extends TestCase
 
         $response = $this->post("/atualizar-requerimento", [
             'requisitionId' => $requisition->id,
+            'requestedDiscType' => 'Obrigatória',
             'requestedDiscDepartment' => 'MAC',
             'observations' => 'Observações atualizadas',
             'takenDiscRecord' => UploadedFile::fake()->create('takenDiscRecord.pdf', 100),
@@ -879,31 +882,6 @@ class RequisitionControllerTest extends TestCase
         ]);
 
         $response->assertRedirect(route('list'));
-
-
-        $this->assertDatabaseHas('documents', [
-            'requisition_id' => $requisition->id,
-            'type' => DocumentType::TAKEN_DISCS_RECORD,
-            'version' => 2,
-        ]);
-
-        $this->assertDatabaseHas('documents', [
-            'requisition_id' => $requisition->id,
-            'type' => DocumentType::CURRENT_COURSE_RECORD,
-            'version' => 2,
-        ]);
-
-        $this->assertDatabaseHas('documents', [
-            'requisition_id' => $requisition->id,
-            'type' => DocumentType::TAKEN_DISCS_SYLLABUS,
-            'version' => 2,
-        ]);
-
-        $this->assertDatabaseHas('documents', [
-            'requisition_id' => $requisition->id,
-            'type' => DocumentType::REQUESTED_DISC_SYLLABUS,
-            'version' => 2,
-        ]);
 
         $this->assertDatabaseHas('requisitions', [
             'id' => $requisition->id,
@@ -930,34 +908,31 @@ class RequisitionControllerTest extends TestCase
             'grade' => 8.5,
             'semester' => 'Segundo',
             'institution' => 'Instituição Atualizada',
-            'latest_version' => 2,
+            'version' => 2,
         ]);
 
-        $this->assertDatabaseMissing('taken_disciplines', [
+        $this->assertDatabaseHas('documents', [
             'requisition_id' => $requisition->id,
-            'latest_version' => 1,
+            'type' => DocumentType::TAKEN_DISCS_RECORD,
+            'version' => 2,
         ]);
 
-        $this->assertDatabaseHas('taken_disciplines_versions', [
+        $this->assertDatabaseHas('documents', [
             'requisition_id' => $requisition->id,
-            'name' => 'Disciplina Cursada',
-            'code' => 'CURS123',
-            'year' => 2022,
-            'grade' => "9.5",
-            'semester' => 'Primeiro',
-            'institution' => 'Instituição Teste',
-            'version' => 1,
+            'type' => DocumentType::CURRENT_COURSE_RECORD,
+            'version' => 2,
         ]);
 
-        $this->assertDatabaseHas('taken_disciplines_versions', [
+        $this->assertDatabaseHas('documents', [
             'requisition_id' => $requisition->id,
-            'name' => 'Disciplina Cursada 2',
-            'code' => 'CURS456',
-            'year' => 2023,
-            'grade' => "7.5",
-            'semester' => 'Segundo',
-            'institution' => 'Instituição Teste',
-            'version' => 1,
+            'type' => DocumentType::TAKEN_DISCS_SYLLABUS,
+            'version' => 2,
+        ]);
+
+        $this->assertDatabaseHas('documents', [
+            'requisition_id' => $requisition->id,
+            'type' => DocumentType::REQUESTED_DISC_SYLLABUS,
+            'version' => 2,
         ]);
 
         $this->assertDatabaseHas('events', [
@@ -995,7 +970,7 @@ class RequisitionControllerTest extends TestCase
             'grade' => "9.5",
             'semester' => 'Primeiro',
             'institution' => 'Instituição Teste',
-            'latest_version' => 1,
+            'version' => 1,
         ]);
 
         Document::factory()->create([
@@ -1069,9 +1044,6 @@ class RequisitionControllerTest extends TestCase
             'requested_disc' => 'Disciplina Atualizada',
         ]);
         $this->assertDatabaseMissing('requisitions', [
-            'requested_disc_type' => 'Extracurricular',
-        ]);
-        $this->assertDatabaseMissing('requisitions', [
             'requested_disc_code' => 'NEW123',
         ]);
 
@@ -1081,7 +1053,7 @@ class RequisitionControllerTest extends TestCase
             'student_name' => 'Test Student',
             'email' => 'test@student.com',
             'requested_disc' => 'Disciplina Antiga',
-            'requested_disc_type' => 'Obrigatória',
+            'requested_disc_type' => 'Extracurricular',
             'requested_disc_code' => 'OLD123',
         ]);
 
@@ -1103,10 +1075,10 @@ class RequisitionControllerTest extends TestCase
             'grade' => 8.5,
             'semester' => 'Segundo',
             'institution' => 'Instituição Atualizada',
-            'latest_version' => 2,
+            'version' => 2,
         ]);
 
-        $this->assertDatabaseHas('taken_disciplines_versions', [
+        $this->assertDatabaseHas('taken_disciplines', [
             'requisition_id' => $requisition->id,
             'name' => 'Disciplina Cursada',
             'code' => 'CURS123',
@@ -1147,7 +1119,7 @@ class RequisitionControllerTest extends TestCase
             'grade' => "9.5",
             'semester' => 'Primeiro',
             'institution' => 'Instituição Teste',
-            'latest_version' => 1,
+            'version' => 1,
         ]);
 
         Document::factory()->create([
@@ -1184,6 +1156,7 @@ class RequisitionControllerTest extends TestCase
 
         $response = $this->post("/atualizar-requerimento", [
             'requisitionId' => $requisition->id,
+            'requestedDiscType' => 'Obrigatória',
             'requestedDiscDepartment' => 'MAC',
             'observations' => 'Observações atualizadas',
             'takenDiscRecord' => UploadedFile::fake()->create('takenDiscRecord.pdf', 100),
@@ -1209,11 +1182,7 @@ class RequisitionControllerTest extends TestCase
             'grade' => "9.5",
             'semester' => 'Primeiro',
             'institution' => 'Instituição Teste',
-            'latest_version' => 2,
-        ]);
-
-        $this->assertDatabaseMissing('taken_disciplines_versions', [
-            'requisition_id' => $requisition->id,
+            'version' => 2,
         ]);
 
         $this->assertDatabaseHas('documents', [
@@ -1287,7 +1256,7 @@ class RequisitionControllerTest extends TestCase
             'grade' => "9.5",
             'semester' => 'Primeiro',
             'institution' => 'Instituição Teste',
-            'latest_version' => 1,
+            'version' => 1,
         ]);
 
         $takenDiscRecord = UploadedFile::fake()->create('takenDiscRecord.pdf', 100);
@@ -1329,6 +1298,7 @@ class RequisitionControllerTest extends TestCase
 
         $response = $this->post("/atualizar-requerimento", [
             'requisitionId' => $requisition->id,
+            'requestedDiscType' => 'Obrigatória',
             'requestedDiscDepartment' => 'MAC',
             'observations' => 'Observações atualizadas',
             'takenDiscRecord' => $takenDiscRecord,
@@ -1353,7 +1323,7 @@ class RequisitionControllerTest extends TestCase
 
         $this->assertDatabaseHas('taken_disciplines', [
             'requisition_id' => $requisition->id,
-            'latest_version' => 2,
+            'version' => 2,
         ]);
 
         $this->assertDatabaseHas('requisitions', [
@@ -1412,7 +1382,7 @@ class RequisitionControllerTest extends TestCase
             'grade' => "9.5",
             'semester' => 'Primeiro',
             'institution' => 'Instituição Teste',
-            'latest_version' => 1,
+            'version' => 1,
         ]);
 
         $takenDiscRecord = UploadedFile::fake()->create('takenDiscRecord.pdf', 100);
@@ -1458,6 +1428,7 @@ class RequisitionControllerTest extends TestCase
             'courseRecord' => $courseRecord,
             'takenDiscSyllabus' => $takenDiscSyllabus,
             'requestedDiscSyllabus' => $requestedDiscSyllabus,
+            'requestedDiscType' => 'Obrigatória',
             'requestedDiscDepartment' => 'MAC',
             'takenDiscCount' => 1,
             'takenDiscNames' => ['Disciplina Cursada Atualizada'],
@@ -1478,7 +1449,7 @@ class RequisitionControllerTest extends TestCase
         $this->assertDatabaseHas('taken_disciplines', [
             'requisition_id' => $requisition->id,
             'name' => "Disciplina Cursada Atualizada",
-            'latest_version' => 2,
+            'version' => 2,
         ]);
 
         $this->assertDatabaseHas('requisitions', [
@@ -1509,6 +1480,7 @@ class RequisitionControllerTest extends TestCase
             'courseRecord' => $courseRecord,
             'takenDiscSyllabus' => $takenDiscSyllabus,
             'requestedDiscSyllabus' => $requestedDiscSyllabus,
+            'requestedDiscType' => 'Obrigatória',
             'requestedDiscDepartment' => 'MAC',
             'takenDiscCount' => 1,
             'takenDiscNames' => ['Disciplina Cursada Atualizada de Novo'],
@@ -1527,7 +1499,7 @@ class RequisitionControllerTest extends TestCase
         $this->assertDatabaseHas('taken_disciplines', [
             'requisition_id' => $requisition->id,
             'name' => "Disciplina Cursada Atualizada de Novo",
-            'latest_version' => 3,
+            'version' => 3,
         ]);
 
         $this->assertDatabaseHas('requisitions', [
@@ -1550,6 +1522,56 @@ class RequisitionControllerTest extends TestCase
             'requisition_id' => $requisition->id,
             'author_nusp' => '999999',
             'version' => 3,
+        ]);
+
+        $response = $this->post("/atualizar-requerimento", [
+            'requisitionId' => $requisition->id,
+            'takenDiscRecord' => $takenDiscRecord,
+            'courseRecord' => $courseRecord,
+            'takenDiscSyllabus' => $takenDiscSyllabus,
+            'requestedDiscSyllabus' => $requestedDiscSyllabus,
+            'requestedDiscType' => 'Obrigatória',
+            'requestedDiscDepartment' => 'MAC',
+            'observations' => 'Observações atualizadas',
+            'takenDiscCount' => 1,
+            'takenDiscNames' => ['Disciplina Cursada Atualizada de Novo'],
+            'takenDiscCodes' => ['CURS123'],
+            'takenDiscYears' => [2022],
+            'takenDiscGrades' => ["9.5"],
+            'takenDiscSemesters' => ['Primeiro'],
+            'takenDiscInstitutions' => ['Instituição Teste'],
+        ]);
+
+        $this->assertDatabaseMissing('documents', [
+            'requisition_id' => $requisition->id,
+            'version' => 2,
+        ]);
+
+        $this->assertDatabaseMissing('taken_disciplines', [
+            'requisition_id' => $requisition->id,
+            'version' => 4,
+        ]);
+
+        $this->assertDatabaseHas('requisitions', [
+            'id' => $requisition->id,
+            'latest_version' => 4,
+        ]);
+
+        $this->assertDatabaseHas('requisitions_versions', [
+            'requisition_id' => $requisition->id,
+            'version' => 3,
+            'taken_disciplines_version' => 3,
+            'taken_disc_record_version' => 1,
+            'course_record_version' => 1,
+            'taken_disc_syllabus_version' => 1,
+            'requested_disc_syllabus_version' => 1
+        ]);
+
+        $this->assertDatabaseHas('events', [
+            'type' => EventType::UPDATED_BY_STUDENT,
+            'requisition_id' => $requisition->id,
+            'author_nusp' => '999999',
+            'version' => 4,
         ]);
     }
 

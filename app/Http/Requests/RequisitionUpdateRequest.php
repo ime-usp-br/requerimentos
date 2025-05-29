@@ -27,6 +27,7 @@ class RequisitionUpdateRequest extends FormRequest
     {
         $rules = [
             'requisitionId' => 'required|integer',
+            'requestedDiscType' => 'required',
             'requestedDiscDepartment' => 'required|max:255',
             'observations' => 'string',
             'takenDiscRecord' => 'required|file|max:512|mimes:pdf',
