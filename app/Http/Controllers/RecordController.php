@@ -9,10 +9,9 @@ use App\Models\Review;
 use App\Models\Document;
 use App\Enums\DocumentType;
 use App\Models\Requisition;
-use Illuminate\Support\Facades\DB;
 use App\Models\RequisitionsVersion;
+use App\Models\TakenDisciplines;
 use Illuminate\Support\Facades\Auth;
-use App\Models\TakenDisciplinesVersion;
 use Inertia\Inertia;
 
 class RecordController extends Controller
@@ -32,89 +31,94 @@ class RecordController extends Controller
                         ->select($selectedEventColumns)
                         ->get();
 
-        // $roleToPreviousRouteMappings = [ 
-        //     RoleId::REVIEWER => route('reviewer.show', ['requisitionId' => $requisitionId]),
-        //     RoleId::SG => route('sg.show', ['requisitionId' => $requisitionId]),
-        //     RoleId::MAC_SECRETARY => route('department.show', ['departmentName' => 'mac', 'requisitionId' => $requisitionId]),
-        //     RoleId::MAE_SECRETARY => route('department.show', ['departmentName' => 'mae', 'requisitionId' => $requisitionId]),
-        //     RoleId::MAT_SECRETARY => route('department.show', ['departmentName' => 'mat', 'requisitionId' => $requisitionId]),
-        //     RoleId::MAP_SECRETARY => route('department.show', ['departmentName' => 'mac', 'requisitionId' => $requisitionId]),
-        //     RoleId::VRT_SECRETARY => route('department.show', ['departmentName' => 'virtual', 'requisitionId' => $requisitionId]),
-        // ];
-
-        // $previousRoute = $roleToPreviousRouteMappings[Auth::user()->current_role_id];
-
         $selectedColumns = ['type', 'created_at', 'ocurrence_time', 'author_name', 'author_nusp'];
 
-        return Inertia::render('RequisitionList', ['label' => 'Histórico do Requerimento ' . $requisitionId,
-                                                   'requisitions' => $events, 
+        return Inertia::render('RequisitionEventHistoryPage', ['label' => 'Histórico do Requerimento ' . $requisitionId,
+                                                   'events' => $events, 
                                                    'selectedColumns' => $selectedColumns,
                                                    'selectedActions' => [],
                                                    'roleId' => $roleId, 
                                                    'userRoles' => $user->roles,
-                                                   'detailRouteName' => 'student.show']);
+                                                   'requisitionId' => $requisitionId]);
     }
 
-    // public function requisitionVersion($eventId) {
+    public function requisitionVersion($eventId) {
 
-    //     $event = Event::find($eventId);
-    //     $requisitionId = $event->requisition_id;
+        $event = Event::find($eventId);
+        $requisitionId = $event->requisition_id;
 
-    //     $requisitionVersion = Requisition::with('takenDisciplines')->find($requisitionId);
-    //     $takenDisciplines = $requisitionVersion->takenDisciplines;
+        $requisition = Requisition::with('takenDisciplines')->find($requisitionId);
+        $documents = [];
 
-    //     if ($requisitionVersion->latest_version !== $event->version) {
-
-    //         $requisitionVersion = RequisitionsVersion
-    //                         ::where('requisition_id', $requisitionId)
-    //                         ->where('version', $event->version)
-    //                         ->first();
+        if ((int)$requisition->latest_version !== (int)$event->version) {
+            $requisitionVersion = RequisitionsVersion::where('requisition_id', $requisitionId)
+                                                    ->where('version', $event->version)
+                                                    ->first();
             
-    //         $takenDisciplines = TakenDisciplinesVersion
-    //                         ::where('requisition_id', $requisitionId)
-    //                         ->where('version', $event->version)
-    //                         ->get();
-    //     } 
-
-    //     $requisitionVersionDocuments = Document
-    //                                 ::where('created_at', 
-    //                                         '<=', 
-    //                                         $event->created_at)
-    //                                 ->where('requisition_id', $requisitionId)
-    //                                 ->orderBy('created_at', 'desc')
-    //                                 ->get(); 
-
-        
-
-    //     $takenDiscsRecords = [];
-    //     $currentCourseRecords = [];
-    //     $takenDiscSyllabi = [];
-    //     $requestedDiscSyllabi = [];
-
-    //     foreach ($requisitionVersionDocuments as $document) {
+            if (!$requisitionVersion) {
+                abort(404, 'Historical version not found');
+            }
             
-    //         switch ($document->type) {
-    //             case DocumentType::TAKEN_DISCS_RECORD:
-    //                 array_push($takenDiscsRecords, $document);
-    //                 break;
-    //             case DocumentType::CURRENT_COURSE_RECORD:
-    //                 array_push($currentCourseRecords, $document);
-    //                 break;
-    //             case DocumentType::TAKEN_DISCS_SYLLABUS:
-    //                 array_push($takenDiscSyllabi, $document);
-    //                 break;
-    //             case DocumentType::REQUESTED_DISC_SYLLABUS:
-    //                 array_push($requestedDiscSyllabi, $document);
-    //                 break;
-    //         }
-    //     }
+            $takenDisciplines = TakenDisciplines::where('requisition_id', $requisitionId)
+                                                    ->where('version', $requisitionVersion->taken_disciplines_version)
+                                                    ->get();
 
-    //     return view('pages.records.requisitionVersion', 
-    //                 ['req' => $requisitionVersion, 
-    //                 'event' => $event,
-    //                 'takenDiscs' => $takenDisciplines, 
-    //                 'takenDiscsRecords' => $takenDiscsRecords, 
-    //                 'currentCourseRecords' => $currentCourseRecords, 
-    //                 'takenDiscSyllabi' => $takenDiscSyllabi, 
-    //                 'requestedDiscSyllabi' => $requestedDiscSyllabi]);
+            $documentQueries = [
+                DocumentType::TAKEN_DISCS_RECORD => $requisitionVersion->taken_disc_record_version,
+                DocumentType::CURRENT_COURSE_RECORD => $requisitionVersion->course_record_version,
+                DocumentType::TAKEN_DISCS_SYLLABUS => $requisitionVersion->taken_disc_syllabus_version,
+                DocumentType::REQUESTED_DISC_SYLLABUS => $requisitionVersion->requested_disc_syllabus_version,
+            ];
+
+            foreach ($documentQueries as $documentType => $documentVersion) {
+                $document = Document::where('requisition_id', $requisitionId)
+                                  ->where('type', $documentType)
+                                  ->where('version', $documentVersion)
+                                  ->first();
+                if ($document) {
+                    $documents[] = $document;
+                }
+            }
+            
+            $requisitionData = $requisitionVersion->toArray();
+            $requisitionData['id'] = $requisitionId;
+            
+        } else {
+            $latestTakenDisciplinesVersion = TakenDisciplines::where('requisition_id', $requisitionId)
+                                                            ->max('version');
+            
+            $takenDisciplines = TakenDisciplines::where('requisition_id', $requisitionId)
+                                                ->where('version', $latestTakenDisciplinesVersion)
+                                                ->get();
+            
+            $documentTypes = [
+                DocumentType::TAKEN_DISCS_RECORD,
+                DocumentType::CURRENT_COURSE_RECORD,
+                DocumentType::TAKEN_DISCS_SYLLABUS,
+                DocumentType::REQUESTED_DISC_SYLLABUS
+            ];
+            
+            $documents = [];
+            foreach ($documentTypes as $documentType) {
+                $document = Document::where('requisition_id', $requisitionId)
+                                  ->where('type', $documentType)
+                                  ->orderBy('version', 'desc')
+                                  ->first();
+                if ($document) {
+                    $documents[] = $document;
+                }
+            }
+            
+            $requisitionData = $requisition->toArray();
+        }
+
+        return Inertia::render('RequisitionVersionDetailPage', [
+            'requisition' => $requisitionData,
+            'event' => $event,
+            'takenDisciplines' => $takenDisciplines,
+            'documents' => $documents,
+            'label' => 'Versão ' . $event->version . ' do requerimento ' . $requisitionId,
+            'requisitionId' => $requisitionId,
+        ]);
+    }
 }

@@ -24,15 +24,16 @@ class RequisitionUpdateRequest extends FormRequest
      * @return array
      */
     public function rules()
-    {
+    {   
         $rules = [
             'requisitionId' => 'required|integer',
+            'requestedDiscType' => 'required',
             'requestedDiscDepartment' => 'required|max:255',
             'observations' => 'string',
-            'takenDiscRecord' => 'required|file|max:512|mimes:pdf',
-            'courseRecord' => 'required|file|max:512|mimes:pdf',
-            'takenDiscSyllabus' => 'required|file|max:512|mimes:pdf',
-            'requestedDiscSyllabus' => 'required|file|max:512|mimes:pdf',
+            'takenDiscRecord' => 'nullable|file|max:512|mimes:pdf',
+            'courseRecord' => 'nullable|file|max:512|mimes:pdf',
+            'takenDiscSyllabus' => 'nullable|file|max:512|mimes:pdf',
+            'requestedDiscSyllabus' => 'nullable|file|max:512|mimes:pdf',
             'takenDiscCount' => 'required|numeric|integer',
         ];
             

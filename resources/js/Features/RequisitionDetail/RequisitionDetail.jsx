@@ -1,23 +1,15 @@
 import React from 'react';
 import {
-	Paper, Typography, Stack, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useTheme, useMediaQuery,
+	Paper, Typography, Stack, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow
 } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import Link from '@mui/material/Link';
 import { useRequisitionContext } from './useRequisitionContext';
 
 const RequisitionDetail = ({
-	requisition,
 	takenDiscs,
 	documents }) => {
 	const { requisitionData } = useRequisitionContext();
-	const theme = useTheme();
-	const isMedium = useMediaQuery(theme.breakpoints.up('md'));
-
-	const getElevation = () => {
-		if (isMedium) return 3;
-		return 0;
-	};
 
 	let resultColor;
 	switch (requisitionData.result) {
@@ -44,15 +36,15 @@ const RequisitionDetail = ({
 
 			<Paper
 				id="requisition-paper"
-				elevation={getElevation()}
+				elevation={3}
 				sx={{
-					padding: { md: 2 },
-					width: '65%'
+					padding: 2,
+					width: '100%'
 				}}
 			>
 				<Stack spacing={3} divider={<Divider orientation="horizontal" flexItem />}>
 					<Stack spacing={1}>
-						<Typography variant="body2">ID da Requisição: {requisitionData.id}</Typography>
+						<Typography variant="body2">ID do requerimento: {requisitionData.id}</Typography>
 						<Typography variant="h6" sx={{ fontWeight: 600 }}>Dados Pessoais</Typography>
 						<Typography variant="body2"><strong>Nome:</strong> {requisitionData.student_name}</Typography>
 						<Typography variant="body2"><strong>Email:</strong> {requisitionData.email}</Typography>

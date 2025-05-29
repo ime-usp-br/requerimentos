@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 use App\Enums\RoleId;
@@ -20,7 +19,6 @@ use App\Models\Event;
 use App\Models\Requisition;
 use App\Models\Review;
 use App\Models\TakenDisciplines;
-use App\Models\TakenDisciplinesVersion;
 use App\Models\RequisitionsVersion;
 use App\Http\Requests\RequisitionCreationRequest;
 use App\Http\Requests\RequisitionUpdateRequest;
@@ -45,9 +43,8 @@ class RequisitionController extends Controller
             abort(403);
         }
 
-        $documents = $requisition->documents->sortByDesc('created_at');
+        $documents = $requisition->documents;
 
-        // Only keep the latest version of each document type
         $latestDocuments = [];
         foreach ($documents as $document) {
             $type = $document->type;
@@ -108,15 +105,15 @@ class RequisitionController extends Controller
         $validatedRequest = $request->validated();
 
         try {
-            $AuthUser = Auth::user();
+            $user = Auth::user();
 
-            DB::transaction(function () use ($validatedRequest, $AuthUser) {
+            DB::transaction(function () use ($validatedRequest, $user) {
                 $requisition = new Requisition;
                 
-                if ($AuthUser->current_role_id == 1) {
-                    $requisition->student_nusp = $AuthUser->codpes;
-                    $requisition->student_name = $AuthUser->name;
-                    $requisition->email = $AuthUser->email;
+                if ($user->current_role_id == 1) {
+                    $requisition->student_nusp = $user->codpes;
+                    $requisition->student_name = $user->name;
+                    $requisition->email = $user->email;
                 } else {
                     $requisition->student_nusp = $validatedRequest['student_nusp'];
                     $requisition->student_name = $validatedRequest['student_name'];
@@ -178,28 +175,25 @@ class RequisitionController extends Controller
                     $takenDisc->semester = $validatedRequest["takenDiscSemesters"][$i];
                     $takenDisc->institution = $validatedRequest["takenDiscInstitutions"][$i];
                     $takenDisc->requisition_id = $requisition->id;
-                    $takenDisc->latest_version = 1;
+                    $takenDisc->version = 1;
                     $takenDisc->save();
                 }
 
                 $event = new Event;
                 $event->type = EventType::SENT_TO_SG;
                 $event->requisition_id = $requisition->id;
-                $event->author_name = $AuthUser->name;
-                $event->author_nusp = $AuthUser->codpes;
+                $event->author_name = $user->name;
+                $event->author_nusp = $user->codpes;
                 $event->version = 1;
                 $event->save();
             });
            
-            if ($AuthUser->current_role_id != RoleId::SG) {
+            if ($user->current_role_id != RoleId::SG) {
                 $this->notifyRequisitionCreation();
             }
 
             return Inertia::location(route('list'));
         } catch (\Exception $e) {
-            Log::error('Error on createRequisition: ' . $e->getMessage(), [
-                'exception' => $e,
-            ]);
             abort(500, $e->getMessage());
         }
     }
@@ -213,10 +207,27 @@ class RequisitionController extends Controller
         }
     }
 
+
     public function updateRequisitionGet($requisitionId)
     {
         $this->checkUserUpdatePermission($requisitionId);
-        $requisition = Requisition::with('takenDisciplines', 'documents')->find($requisitionId);
+        $requisition = Requisition::find($requisitionId);
+
+        $latestTakenDisciplinesVersion = TakenDisciplines::where('requisition_id', $requisitionId)
+            ->max('version') ?? 1;
+        
+        $latestTakenDisciplines = TakenDisciplines::where('requisition_id', $requisitionId)
+            ->where('version', $latestTakenDisciplinesVersion)
+            ->get();
+
+        $documents = Document::where('requisition_id', $requisitionId)->get();
+        $latestDocuments = [];
+        foreach ($documents as $document) {
+            $type = $document->type;
+            if (!isset($latestDocuments[$type]) || $document->version > $latestDocuments[$type]->version) {
+                $latestDocuments[$type] = $document;
+            }
+        }
 
         $requisitionData = [
             'requisitionId' => $requisition->id,
@@ -228,17 +239,41 @@ class RequisitionController extends Controller
             'requestedDiscType' => $requisition->requested_disc_type,
             'requestedDiscCode' => $requisition->requested_disc_code,
             'requestedDiscDepartment' => $requisition->department,
-            'takenDiscNames' => $requisition->takenDisciplines->pluck('name')->toArray(),
-            'takenDiscInstitutions' => $requisition->takenDisciplines->pluck('institution')->toArray(),
-            'takenDiscCodes' => $requisition->takenDisciplines->pluck('code')->toArray(),
-            'takenDiscYears' => $requisition->takenDisciplines->pluck('year')->toArray(),
-            'takenDiscGrades' => $requisition->takenDisciplines->pluck('grade')->toArray(),
-            'takenDiscSemesters' => $requisition->takenDisciplines->pluck('semester')->toArray(),
-            'takenDiscCount' => $requisition->takenDisciplines->count(),
-            'takenDiscRecord' => $requisition->documents->where('type', DocumentType::TAKEN_DISCS_RECORD)->first()->path ?? "",
-            'courseRecord' => $requisition->documents->where('type', DocumentType::CURRENT_COURSE_RECORD)->first()->path ?? "",
-            'takenDiscSyllabus' => $requisition->documents->where('type', DocumentType::TAKEN_DISCS_SYLLABUS)->first()->path ?? "",
-            'requestedDiscSyllabus' => $requisition->documents->where('type', DocumentType::REQUESTED_DISC_SYLLABUS)->first()->path ?? "",
+            'takenDiscNames' => $latestTakenDisciplines->pluck('name')->toArray(),
+            'takenDiscInstitutions' => $latestTakenDisciplines->pluck('institution')->toArray(),
+            'takenDiscCodes' => $latestTakenDisciplines->pluck('code')->toArray(),
+            'takenDiscYears' => $latestTakenDisciplines->pluck('year')->toArray(),
+            'takenDiscGrades' => $latestTakenDisciplines->pluck('grade')->toArray(),
+            'takenDiscSemesters' => $latestTakenDisciplines->pluck('semester')->toArray(),
+            'takenDiscCount' => $latestTakenDisciplines->count(),
+            'takenDiscRecord' => isset($latestDocuments[DocumentType::TAKEN_DISCS_RECORD]) ? [
+                'id' => $latestDocuments[DocumentType::TAKEN_DISCS_RECORD]->id,
+                'path' => $latestDocuments[DocumentType::TAKEN_DISCS_RECORD]->path,
+                'url' => route('documents.view', $latestDocuments[DocumentType::TAKEN_DISCS_RECORD]->id),
+                'version' => $latestDocuments[DocumentType::TAKEN_DISCS_RECORD]->version,
+                'created_at' => $latestDocuments[DocumentType::TAKEN_DISCS_RECORD]->created_at
+            ] : null,
+            'courseRecord' => isset($latestDocuments[DocumentType::CURRENT_COURSE_RECORD]) ? [
+                'id' => $latestDocuments[DocumentType::CURRENT_COURSE_RECORD]->id,
+                'path' => $latestDocuments[DocumentType::CURRENT_COURSE_RECORD]->path,
+                'url' => route('documents.view', $latestDocuments[DocumentType::CURRENT_COURSE_RECORD]->id),
+                'version' => $latestDocuments[DocumentType::CURRENT_COURSE_RECORD]->version,
+                'created_at' => $latestDocuments[DocumentType::CURRENT_COURSE_RECORD]->created_at
+            ] : null,
+            'takenDiscSyllabus' => isset($latestDocuments[DocumentType::TAKEN_DISCS_SYLLABUS]) ? [
+                'id' => $latestDocuments[DocumentType::TAKEN_DISCS_SYLLABUS]->id,
+                'path' => $latestDocuments[DocumentType::TAKEN_DISCS_SYLLABUS]->path,
+                'url' => route('documents.view', $latestDocuments[DocumentType::TAKEN_DISCS_SYLLABUS]->id),
+                'version' => $latestDocuments[DocumentType::TAKEN_DISCS_SYLLABUS]->version,
+                'created_at' => $latestDocuments[DocumentType::TAKEN_DISCS_SYLLABUS]->created_at
+            ] : null,
+            'requestedDiscSyllabus' => isset($latestDocuments[DocumentType::REQUESTED_DISC_SYLLABUS]) ? [
+                'id' => $latestDocuments[DocumentType::REQUESTED_DISC_SYLLABUS]->id,
+                'path' => $latestDocuments[DocumentType::REQUESTED_DISC_SYLLABUS]->path,
+                'url' => route('documents.view', $latestDocuments[DocumentType::REQUESTED_DISC_SYLLABUS]->id),
+                'version' => $latestDocuments[DocumentType::REQUESTED_DISC_SYLLABUS]->version,
+                'created_at' => $latestDocuments[DocumentType::REQUESTED_DISC_SYLLABUS]->created_at
+            ] : null,
             'observations' => $requisition->observations,
         ];
 
@@ -254,32 +289,67 @@ class RequisitionController extends Controller
 
     public function updateRequisitionPost(RequisitionUpdateRequest $request)
     {
-        $validatedRequest = $request->validated();
+        $validatedRequest = $request->validated();        
         $this->checkUserUpdatePermission($validatedRequest["requisitionId"]); 
         $requisition = Requisition::find($validatedRequest["requisitionId"]);
+
+        $allDocumentTypes = [
+            DocumentType::TAKEN_DISCS_RECORD,
+            DocumentType::CURRENT_COURSE_RECORD,
+            DocumentType::TAKEN_DISCS_SYLLABUS,
+            DocumentType::REQUESTED_DISC_SYLLABUS
+        ];
+
+        $documentVersions = Document::where('requisition_id', $requisition->id)
+            ->whereIn('type', $allDocumentTypes)
+            ->get()
+            ->groupBy('type')
+            ->map(function ($documents) {
+                return $documents->max('version');
+            })
+            ->toArray();
+
+        foreach ($allDocumentTypes as $type) {
+            if (!isset($documentVersions[$type])) {
+                $documentVersions[$type] = 0;
+            }
+        }
+
+        $takenDisciplinesVersion = TakenDisciplines::where('requisition_id', $requisition->id)
+            ->max('version') ?? 0;
+
+        $currentVersions = [
+            'documents' => $documentVersions,
+            'taken_disciplines' => $takenDisciplinesVersion
+        ];
 
         $changedDocuments = $this->changedDocuments($requisition, $validatedRequest);
         $hasTakenDisciplinesChanged = $this->hasTakenDisciplinesChanged($validatedRequest);
         $hasRequisitionDataChanged = $this->hasRequisitionDataChanged($validatedRequest);
         $hasChanges = !empty($changedDocuments) || $hasTakenDisciplinesChanged || $hasRequisitionDataChanged;   
+        
         if ($hasChanges) {
             try {
-                DB::transaction(function () use ($changedDocuments, $hasTakenDisciplinesChanged, $requisition, $validatedRequest) {
-                    $versions = [];
+                DB::transaction(function () use ($changedDocuments, $hasTakenDisciplinesChanged, $requisition, $validatedRequest, $currentVersions) {
+                    $newVersions = $currentVersions;
 
                     foreach ($changedDocuments as $document) {
-                        $versions[$document['type']] = $this->updateDocumentData($requisition->id, $document['document'], $document['type']);
+                        $newVersion = $currentVersions['documents'][$document['type']] + 1;
+                        $this->updateDocumentData($requisition->id, $document['document'], $document['type'], $newVersion);
+                        $newVersions['documents'][$document['type']] = $newVersion;
                     }
 
                     if ($hasTakenDisciplinesChanged) {
-                        $versions["taken_disciplines_version"] = $this->updateTakenDisciplinesData($validatedRequest);
+                        $newVersion = $currentVersions['taken_disciplines'] + 1;
+                        $this->updateTakenDisciplinesData($validatedRequest, $newVersion);
+                        $newVersions['taken_disciplines'] = $newVersion;
                     }
 
-                    $this->updateRequisitionData($requisition, $validatedRequest, $versions);
+                    $this->updateRequisitionData($requisition, $validatedRequest, $currentVersions);
 
                     $requisition->refresh();
                     $event = new Event;
-                    $event->type = EventType::UPDATED_BY_STUDENT;
+                    $event->type = Auth::user()->current_role_id == RoleId::STUDENT ? EventType::UPDATED_BY_STUDENT : EventType::UPDATED_BY_SG;
                     $event->requisition_id = $validatedRequest["requisitionId"];
                     $event->author_name = Auth::user()->name;
                     $event->author_nusp = Auth::user()->codpes;
@@ -288,19 +358,16 @@ class RequisitionController extends Controller
                 });
 
                 $this->notifyRequisitionUpdate();
-
-
+            
             } catch (\Exception $e) {
-                Log::error('Error on updateRequisition: ' . $e->getMessage(), [
-                    'exception' => $e,
-                ]);
                 abort(500, $e->getMessage());
             }
-        } 
+        }
         return Inertia::location(route('list'));
     }
 
-    private function checkUserUpdatePermission($requisitionId){
+    private function checkUserUpdatePermission($requisitionId)
+    {
         $requisition = Requisition::find($requisitionId);
 
         $user = Auth::user();
@@ -317,31 +384,51 @@ class RequisitionController extends Controller
 
     private function changedDocuments($requisition, $updateRequest)
     {
-        $existingDocuments = Document::where('requisition_id', $requisition->id)
-            ->where('version', $requisition->latest_version)
-            ->get();
+        $latestDocuments = Document::where('requisition_id', $requisition->id)
+            ->select('type', 'hash', 'version')
+            ->whereIn('type', [
+                DocumentType::TAKEN_DISCS_RECORD,
+                DocumentType::CURRENT_COURSE_RECORD,
+                DocumentType::TAKEN_DISCS_SYLLABUS,
+                DocumentType::REQUESTED_DISC_SYLLABUS
+            ])
+            ->get()
+            ->groupBy('type')
+            ->map(function ($documents) {
+                return $documents->sortByDesc('version')->first();
+            });
 
         $newDocuments = [
-            DocumentType::TAKEN_DISCS_RECORD => $updateRequest['takenDiscRecord'],
-            DocumentType::CURRENT_COURSE_RECORD => $updateRequest['courseRecord'],
-            DocumentType::TAKEN_DISCS_SYLLABUS => $updateRequest['takenDiscSyllabus'],
-            DocumentType::REQUESTED_DISC_SYLLABUS => $updateRequest['requestedDiscSyllabus'],
+            DocumentType::TAKEN_DISCS_RECORD => isset($updateRequest['takenDiscRecord']) && is_object($updateRequest['takenDiscRecord']) && method_exists($updateRequest['takenDiscRecord'], 'getRealPath') ? $updateRequest['takenDiscRecord'] : null,
+            DocumentType::CURRENT_COURSE_RECORD => isset($updateRequest['courseRecord']) && is_object($updateRequest['courseRecord']) && method_exists($updateRequest['courseRecord'], 'getRealPath') ? $updateRequest['courseRecord'] : null,
+            DocumentType::TAKEN_DISCS_SYLLABUS => isset($updateRequest['takenDiscSyllabus']) && is_object($updateRequest['takenDiscSyllabus']) && method_exists($updateRequest['takenDiscSyllabus'], 'getRealPath') ? $updateRequest['takenDiscSyllabus'] : null,
+            DocumentType::REQUESTED_DISC_SYLLABUS => isset($updateRequest['requestedDiscSyllabus']) && is_object($updateRequest['requestedDiscSyllabus']) && method_exists($updateRequest['requestedDiscSyllabus'], 'getRealPath') ? $updateRequest['requestedDiscSyllabus'] : null,
         ];
 
         $changedDocuments = [];
 
-        foreach ($existingDocuments as $existingDocument) {
-            $documentType = $existingDocument->type;
+        foreach ($newDocuments as $documentType => $newDocument) {
+            if (!$newDocument) {
+                continue;
+            }
 
-            $newDocumentHash = hash_file('sha256', $newDocuments[$documentType]);
-            if ($existingDocument->hash !== $newDocumentHash) {
+            $newDocumentHash = hash_file('sha256', $newDocument->getRealPath());
+            
+            if (isset($latestDocuments[$documentType])) {
+                $existingDocument = $latestDocuments[$documentType];
+                if ($existingDocument->hash !== $newDocumentHash) {
+                    $changedDocuments[] = [
+                        'type' => $documentType,
+                        'document' => $newDocument
+                    ];
+                }
+            } else {
                 $changedDocuments[] = [
                     'type' => $documentType,
-                    'document' => $newDocuments[$documentType]
+                    'document' => $newDocument
                 ];
             }
         }
-
         return $changedDocuments;
     }
 
@@ -349,7 +436,12 @@ class RequisitionController extends Controller
     {
         $hasChanged = False;
 
-        $existingTakenDisciplines = TakenDisciplines::where('requisition_id', $updateRequest["requisitionId"])->get();
+        $latestVersion = TakenDisciplines::where('requisition_id', $updateRequest["requisitionId"])
+            ->max('version') ?? 1;
+
+        $existingTakenDisciplines = TakenDisciplines::where('requisition_id', $updateRequest["requisitionId"])
+            ->where('version', $latestVersion)
+            ->get();
 
         $existingTakenDisciplinesArray = $existingTakenDisciplines->map(function ($discipline) {
             return [
@@ -374,6 +466,12 @@ class RequisitionController extends Controller
             ];
         }
 
+        $sortFn = function ($a, $b) {
+            return [$a['code'], $a['year']] <=> [$b['code'], $b['year']];
+        };
+        usort($existingTakenDisciplinesArray, $sortFn);
+        usort($newTakenDisciplinesArray, $sortFn);
+
         if ($existingTakenDisciplinesArray != $newTakenDisciplinesArray) {
             $hasChanged = True;
         }
@@ -385,52 +483,30 @@ class RequisitionController extends Controller
     {
         $requisition = Requisition::find($updateRequest["requisitionId"]);
         $hasChanged = False;
-        if (
-            $requisition->department !== $updateRequest["requestedDiscDepartment"]
-            || $requisition->observations !== $updateRequest["observations"]
-        ) {
+        
+        if ($requisition->observations !== $updateRequest["observations"] 
+            || $requisition->department !== $updateRequest["requestedDiscDepartment"]
+            || $requisition->requested_disc_type !== $updateRequest["requestedDiscType"]) {
             $hasChanged = True;
         }
 
         return $hasChanged;
     }
 
-    private function updateDocumentData($requisitionId, $documentData, $documentType)
+    private function updateDocumentData($requisitionId, $documentData, $documentType, $newVersion)
     {
-        $lastDocument = Document::where('requisition_id', $requisitionId)
-            ->where('type', $documentType)
-            ->orderBy('version', 'desc')
-            ->first();
-
         $document = new Document;
         $document->path = $documentData->store('test');
-        $document->hash = hash_file('sha256', $documentData);
-        $document->version = $lastDocument->version + 1;
+        $document->hash = hash_file('sha256', $documentData->getRealPath());
+        $document->version = $newVersion;
         $document->requisition_id = $requisitionId;
         $document->type = $documentType;
         $document->save();
-
-        return $lastDocument->version;
     }
 
-    private function updateTakenDisciplinesData($updateRequest)
+    private function updateTakenDisciplinesData($updateRequest, $newVersion)
     {
-        $existingTakenDisciplines = TakenDisciplines::where('requisition_id', $updateRequest["requisitionId"])->get();
-
-        foreach ($existingTakenDisciplines as $existingTakenDiscipline) {
-            $takenDiscVersion = new TakenDisciplinesVersion;
-            $takenDiscVersion->name = $existingTakenDiscipline->name;
-            $takenDiscVersion->code = $existingTakenDiscipline->code;
-            $takenDiscVersion->year = $existingTakenDiscipline->year;
-            $takenDiscVersion->grade = $existingTakenDiscipline->grade;
-            $takenDiscVersion->semester = $existingTakenDiscipline->semester;
-            $takenDiscVersion->institution = $existingTakenDiscipline->institution;
-            $takenDiscVersion->requisition_id = $existingTakenDiscipline->requisition_id;
-            $takenDiscVersion->version = $existingTakenDiscipline->latest_version;
-            $takenDiscVersion->save();
-        }
-
-        TakenDisciplines::where('requisition_id', $updateRequest["requisitionId"])->delete();
+        $requisitionId = $updateRequest["requisitionId"];
 
         for ($i = 0; $i < $updateRequest["takenDiscCount"]; $i++) {
             $takenDisc = new TakenDisciplines;
@@ -440,13 +516,10 @@ class RequisitionController extends Controller
             $takenDisc->grade = $updateRequest["takenDiscGrades"][$i];
             $takenDisc->semester = $updateRequest["takenDiscSemesters"][$i];
             $takenDisc->institution = $updateRequest["takenDiscInstitutions"][$i];
-            $takenDisc->requisition_id = $updateRequest["requisitionId"];
-            $takenDisc->latest_version = $existingTakenDisciplines->isNotEmpty() ? $existingTakenDisciplines->max('latest_version') + 1 : 1;
+            $takenDisc->requisition_id = $requisitionId;
+            $takenDisc->version = $newVersion;
             $takenDisc->save();
         }
-
-
-        return $takenDiscVersion->version;
     }
 
     private function updateRequisitionData($requisition, $updateRequest, $versions)
@@ -466,30 +539,15 @@ class RequisitionController extends Controller
         $requisitionVersion->result_text = $requisition->result_text;
         $requisitionVersion->version = $requisition->latest_version;
 
-        if ($requisition->latest_version > 1) {
-            $latestRequisitionVersion = RequisitionsVersion::where('requisition_id', $requisition->id)
-                ->where('version', $requisition->latest_version - 1)
-                ->first();
-        }
-        $initialVersion = 1;
-        $requisitionVersion->taken_disciplines_version = $versions['taken_disciplines_version']
-            ?? ($latestRequisitionVersion->taken_disciplines_version
-                ?? $initialVersion);
-        $requisitionVersion->taken_disc_record_version = $versions[DocumentType::TAKEN_DISCS_RECORD]
-            ?? ($latestRequisitionVersion->taken_disc_record_version
-                ?? $initialVersion);
-        $requisitionVersion->course_record_version = $versions[DocumentType::CURRENT_COURSE_RECORD]
-            ?? ($latestRequisitionVersion->course_record_version
-                ?? $initialVersion);
-        $requisitionVersion->taken_disc_syllabus_version = $versions[DocumentType::TAKEN_DISCS_SYLLABUS]
-            ?? ($latestRequisitionVersion->taken_disc_syllabus_version
-                ?? $initialVersion);
-        $requisitionVersion->requested_disc_syllabus_version = $versions[DocumentType::REQUESTED_DISC_SYLLABUS]
-            ?? ($latestRequisitionVersion->requested_disc_syllabus_version
-                ?? $initialVersion);
-
+        $requisitionVersion->taken_disciplines_version = $versions['taken_disciplines'];
+        $requisitionVersion->taken_disc_record_version = $versions['documents'][DocumentType::TAKEN_DISCS_RECORD];
+        $requisitionVersion->course_record_version = $versions['documents'][DocumentType::CURRENT_COURSE_RECORD];
+        $requisitionVersion->taken_disc_syllabus_version = $versions['documents'][DocumentType::TAKEN_DISCS_SYLLABUS];
+        $requisitionVersion->requested_disc_syllabus_version = $versions['documents'][DocumentType::REQUESTED_DISC_SYLLABUS];
+        
         $requisitionVersion->save();
-
+        
+        $requisition->requested_disc_type = $updateRequest['requestedDiscType'];
         $requisition->department = $updateRequest['requestedDiscDepartment'];
         $requisition->observations = $updateRequest["observations"];
 
@@ -550,13 +608,6 @@ class RequisitionController extends Controller
     public function automaticDeferral(Request $request) {
         DB::transaction(function () use ($request) {
             $user = Auth::user();
-
-            /*
-
-            cria um parecer deferido no nome do mebro da SG,
-
-
-            */
 
             // Atualiza a situação para "parecer deferido automaticamente"
             $requisition = Requisition::find($request['requisitionId']);
@@ -752,19 +803,16 @@ class RequisitionController extends Controller
         ]);
     }
 
-    // Tem que bloquear se o resultado é indeferido e o texto é vazio
     public function setRequisitionResult(Request $request) 
     {
         $this->checkUserUpdatePermission($request->requisitionId);
         
-        // Validate the request using Laravel's validation system with translations
         $validator = Validator::make($request->all(), [
             'requisitionId' => 'required|exists:requisitions,id',
             'result' => 'required|string',
             'result_text' => 'required_if:result,Indeferido|nullable|string',
         ]);
         
-        // If validation fails for any other reason
         if ($validator->fails()) {
             return back()->withErrors($validator);
         }

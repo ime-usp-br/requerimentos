@@ -9,7 +9,7 @@ import DocumentsUpload from "./Components/DocumentsUpload";
 import AdditionalInformation from "./Components/AdditionalInformation";
 
 const RequisitionForm = ({ requisitionData, isStudent, isUpdate }) => {
-	const { data, setData, post } = useForm({
+	const { data, setData, post, processing, errors } = useForm({
 		requisitionId: requisitionData?.requisitionId || "",
 		student_name: requisitionData?.student_name || "",
 		email: requisitionData?.email || "",
@@ -26,25 +26,30 @@ const RequisitionForm = ({ requisitionData, isStudent, isUpdate }) => {
 		takenDiscGrades: requisitionData?.takenDiscGrades || [""],
 		takenDiscSemesters: requisitionData?.takenDiscSemesters || [""],
 		takenDiscCount: requisitionData?.takenDiscCount || 1,
-		takenDiscRecord: requisitionData?.takenDiscRecord || "",
-		courseRecord: requisitionData?.courseRecord || "",
-		takenDiscSyllabus: requisitionData?.takenDiscSyllabus || "",
-		requestedDiscSyllabus: requisitionData?.requestedDiscSyllabus || "",
+		takenDiscRecord: requisitionData?.takenDiscRecord || null,
+		courseRecord: requisitionData?.courseRecord || null,
+		takenDiscSyllabus: requisitionData?.takenDiscSyllabus || null,
+		requestedDiscSyllabus: requisitionData?.requestedDiscSyllabus || null,
 		observations: requisitionData?.observations || "",
 	});
 
 	function submit(e) {
 		e.preventDefault();
 		const routeName = isUpdate ? "updateRequisition.post" : "newRequisition.post";
-		post(route(routeName), {
-			onSuccess: () => {
-				console.log("Post was successful");
-			},
-			onError: (errors) => {
-				console.log("Post failed", errors);
-				console.log("data:\n", data);
-			}
-		});
+
+		if (!data.takenDiscRecord || data.takenDiscRecord.type !== 'application/pdf') {
+			data.takenDiscRecord = null;
+		}
+		if (!data.courseRecord || data.courseRecord.type !== 'application/pdf') {
+			data.courseRecord = null;
+		}
+		if (!data.takenDiscSyllabus || data.takenDiscSyllabus.type !== 'application/pdf') {
+			data.takenDiscSyllabus = null;
+		}
+		if (!data.requestedDiscSyllabus || data.requestedDiscSyllabus.type !== 'application/pdf') {
+			data.requestedDiscSyllabus = null;
+		}
+		post(route(routeName));
 	}
 
 	const theme = useTheme();
@@ -63,16 +68,27 @@ const RequisitionForm = ({ requisitionData, isStudent, isUpdate }) => {
 					Crie um formulário para cada matéria a ser dispensada
 				</Alert>
 
+				{(errors.takenDiscCount || Object.keys(errors).length > 0) && (
+					<Alert severity="error" sx={{ mt: 2 }}>
+						{errors.takenDiscCount && (
+							<div>{errors.takenDiscCount}</div>
+						)}
+						{Object.keys(errors).length > 0 && !errors.takenDiscCount && (
+							<div>Por favor, corrija os erros nos campos destacados abaixo.</div>
+						)}
+					</Alert>
+				)}
+
 				<form onSubmit={submit}>
 					<Stack
 						spacing={2}
 						divider={<Divider orientation="horizontal" flexItem />}
 					>
-						{(!isStudent && !isUpdate) && (<PersonalData data={data} setData={setData} isUpdate={isUpdate} />)}
-						<CourseData data={data} setData={setData} isUpdate={isUpdate} />
-						<DisciplinesData data={data} setData={setData} isUpdate={isUpdate} />
-						<DocumentsUpload data={data} setData={setData} />
-						<AdditionalInformation data={data} setData={setData} />
+						{(!isStudent && !isUpdate) && (<PersonalData data={data} setData={setData} isUpdate={isUpdate} errors={errors} />)}
+						<CourseData data={data} setData={setData} isUpdate={isUpdate} errors={errors} />
+						<DisciplinesData data={data} setData={setData} isUpdate={isUpdate} errors={errors} />
+						<DocumentsUpload data={data} setData={setData} errors={errors} />
+						<AdditionalInformation data={data} setData={setData} errors={errors} />
 					</Stack>
 				</form>
 
@@ -80,7 +96,12 @@ const RequisitionForm = ({ requisitionData, isStudent, isUpdate }) => {
 					<Button variant="contained" color="primary" onClick={() => window.history.back()}>
 						Voltar
 					</Button>
-					<Button variant="contained" color="primary" onClick={submit}>
+					<Button 
+						variant="contained" 
+						color="primary" 
+						onClick={submit}
+						disabled={processing}
+					>
 						{isUpdate ? "Salvar edições" : "Encaminhar para análise"}
 					</Button>
 				</Stack>
