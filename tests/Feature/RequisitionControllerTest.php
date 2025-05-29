@@ -771,13 +771,8 @@ class RequisitionControllerTest extends TestCase
             'requestedDiscName' => 'Disciplina Atualizada',
             'requestedDiscType' => 'Obrigatória',
             'requestedDiscCode' => 'NEW123',
-            'requestedDiscDepartment' => 'MAC',
             'course' => 'Bacharelado em Ciência da Computação',
             'observations' => 'Observações atualizadas',
-            // Missing 'takenDiscRecord'
-            'courseRecord' => UploadedFile::fake()->create('courseRecord.pdf', 100),
-            'takenDiscSyllabus' => UploadedFile::fake()->create('takenDiscSyllabus.pdf', 100),
-            'requestedDiscSyllabus' => UploadedFile::fake()->create('requestedDiscSyllabus.pdf', 100),
             'takenDiscCount' => 1,
             'takenDiscNames' => ['Disciplina Cursada Atualizada'],
             'takenDiscCodes' => ['CURS456'],
@@ -787,7 +782,7 @@ class RequisitionControllerTest extends TestCase
             'takenDiscInstitutions' => ['Instituição Atualizada'],
         ]);
 
-        $response->assertSessionHasErrors(['takenDiscRecord']);
+        $response->assertSessionHasErrors(['requestedDiscDepartment']);
     }
 
     public function test_update_requisition()

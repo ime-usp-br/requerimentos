@@ -6,7 +6,7 @@ import {
     Autocomplete,
 } from "@mui/material";
 
-const RequiredDisciplines = ({ data, setData, isUpdate }) => {
+const RequiredDisciplines = ({ data, setData, isUpdate, errors = {} }) => {
     const discTypes = [
         "Obrigatória",
         "Optativa Eletiva",
@@ -36,6 +36,8 @@ const RequiredDisciplines = ({ data, setData, isUpdate }) => {
                     setData("requestedDiscName", e.target.value)
                 }
                 disabled={isUpdate}
+                error={!!errors.requestedDiscName}
+                helperText={errors.requestedDiscName}
             />
             <TextField
                 size="small"
@@ -46,6 +48,8 @@ const RequiredDisciplines = ({ data, setData, isUpdate }) => {
                     setData("requestedDiscCode", e.target.value)
                 }
                 disabled={isUpdate}
+                error={!!errors.requestedDiscCode}
+                helperText={errors.requestedDiscCode}
             />
             <Stack
                 direction="row"
@@ -65,10 +69,10 @@ const RequiredDisciplines = ({ data, setData, isUpdate }) => {
                             label="Tipo da disciplina requerida"
                             variant="outlined"
                             required
-                            disabled={isUpdate}
+                            error={!!errors.requestedDiscType}
+                            helperText={errors.requestedDiscType}
                         />
                     )}
-                    disabled={isUpdate}
                 />
                 <Autocomplete
                     size="small"
@@ -84,10 +88,10 @@ const RequiredDisciplines = ({ data, setData, isUpdate }) => {
                             label="Departamento da disciplina requerida"
                             variant="outlined"
                             required
-                            disabled={isUpdate}
+                            error={!!errors.requestedDiscDepartment}
+                            helperText={errors.requestedDiscDepartment}
                         />
                     )}
-                    disabled={isUpdate}
                 />
             </Stack>
         </Stack>
