@@ -17,4 +17,5 @@ class EventType
     const ACCEPTED = 'Requerimento deferido';
     const REJECTED = 'Requerimento indeferido';
     const IN_REVALUATION = 'Requerimento em reavaliação';
+    const CANCELLED = 'Requerimento cancelado';
 }
