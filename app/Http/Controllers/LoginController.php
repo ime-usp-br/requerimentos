@@ -34,7 +34,7 @@ class LoginController extends Controller
 
 		$user = User::where('codpes', $userSenhaUnica->codpes)->first();
 		if (is_null($user)) {
-			DB::transaction(function () use ($userSenhaUnica) {
+			$user = DB::transaction(function () use ($userSenhaUnica) {
 				$user = new User;
 				$user->codpes = $userSenhaUnica->codpes;
 				$user->email = $userSenhaUnica->email ?? $userSenhaUnica->emailUsp ?? $userSenhaUnica->emailAlternativo ?? 'invalido' . $userSenhaUnica->codpes . '@usp.br';
@@ -43,6 +43,7 @@ class LoginController extends Controller
 				$user->current_department_id = null;
 				$user->save();
 				$user->assignRole(RoleId::STUDENT);
+				return $user;
 			});
 		}
 		// Se o usuário nunca logou, mas recebeu uma role, precisamos dar a ele nome, email e a role estudante.
