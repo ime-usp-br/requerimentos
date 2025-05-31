@@ -7,4 +7,5 @@ class ReviewerDecision
     const PENDING = 'Sem decisão';
     const ACCEPTED = 'Deferido';
     const REJECTED = 'Indeferido';
+    const INCONSISTENT = 'Inconsistência nas informações';
 }

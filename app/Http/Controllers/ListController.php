@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use App\Enums\RoleId;
+use App\Enums\ReviewerDecision;
 use App\Models\Requisition;
 use App\Models\Department;
 use App\Enums\EventType;
@@ -79,7 +80,8 @@ class ListController extends Controller
         $requisitions = DB::table('reviews')
 			->join('requisitions', 'reviews.requisition_id', '=', 'requisitions.id')
 			->where('reviewer_nusp', $user->codpes)
-			->where('requisitions.situation', '=', 'Enviado para análise dos pareceristas')
+			->where('reviewer_decision', '!=', ReviewerDecision::ACCEPTED)
+			->where('reviewer_decision', '!=', ReviewerDecision::REJECTED)
 			->select($selectedReviewColumns)->get();
 
 		$selectedColumnsNames = ['created_at', 'student_name', 'requested_disc', 'reviewer_decision', 'updated_at', 'id'];

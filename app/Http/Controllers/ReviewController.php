@@ -9,6 +9,7 @@ use App\Models\ReviewsVersion;
 use App\Models\DepartmentUserRole;
 use App\Enums\RoleId;
 use App\Enums\EventType;
+use App\Enums\ReviewerDecision;
 use App\Models\Requisition;
 use App\Notifications\ReviewerNotification;
 use App\Notifications\ReviewGivenNotification;
@@ -119,6 +120,18 @@ class ReviewController extends Controller
         // If validation fails for any other reason
         if ($validator->fails()) {
             return back()->withErrors($validator);
+        }
+
+        // Por favor se isso ainda estiver aqui remova-o e faça melhor
+        if ($request->result == ReviewerDecision::INCONSISTENT) {
+            $user = Auth::user();
+            
+            $req = Requisition::find($request->requisitionId);
+            $req->situation = EventType::BACK_TO_STUDENT;
+            $req->internal_status = EventType::BACK_TO_STUDENT;
+            $req->editable = true;
+            $req->save();
+            return;
         }
 
         $requisitionId = $request["requisitionId"];
