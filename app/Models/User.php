@@ -10,6 +10,7 @@ use Spatie\Permission\Models\Role;
 use App\Models\Department;
 use App\Enums\RoleId;
 use App\Models\DepartmentUserRole;
+use App\Models\Requisition;
 
 class User extends Authenticatable
 {
@@ -134,5 +135,15 @@ class User extends Authenticatable
     public function getRolesAttribute()
     {
         return $this->departmentUserRoles()->with('role', 'department')->get();
+    }
+
+    public function isOwnerOf($requisitionId) {
+        $requisition = Requisition::find($requisitionId);
+
+        if (!$requisition) {
+            throw new \Exception('Requisition not found.');
+        }
+
+        return $this->current_role_id == $requisition->owner_role_id;
     }
 }

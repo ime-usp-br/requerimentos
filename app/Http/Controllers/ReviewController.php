@@ -29,13 +29,18 @@ class ReviewController extends Controller
 
         return $reviewers;
     }
-
+    
     public function createReview(Request $request)
     {
         $reviewerNusps = array_keys($request['reviewerNusps']);
         $requisitionId = $request['requisitionId'];
+        $user = Auth::user();
+
+        if (!$user->isOwnerOf($requisitionId)) {
+            abort(403);
+        }
         // return $request;
-        DB::transaction(function () use ($reviewerNusps, $requisitionId) {
+        DB::transaction(function () use ($reviewerNusps, $requisitionId, $user) {
             foreach ($reviewerNusps as $reviewerNusp) {
                 // primeiro realiza a busca dos dados do parecerista
                 $reviewer = User::where('codpes', $reviewerNusp)->first();
@@ -56,7 +61,6 @@ class ReviewController extends Controller
                     $rev->save();
                 }
 
-                $user = Auth::user();
 
                 $req = Requisition::find($requisitionId);
 
@@ -78,6 +82,9 @@ class ReviewController extends Controller
                     $event->message = "Enviado para o parecerista " . $reviewer->name;
                     $req->internal_status = $event->message;
                 }
+
+                // Give ownership to REVIEWER
+                $req->owner_role_id = RoleId::REVIEWER;
 
                 $req->save();
                 $event->save();
@@ -122,8 +129,13 @@ class ReviewController extends Controller
         }
 
         $requisitionId = $request["requisitionId"];
-        DB::transaction(function () use ($request, $requisitionId) {
-            $user = Auth::user();
+        $user = Auth::user();
+
+        if (!$user->isOwnerOf($requisitionId)) {
+            abort(403);
+        }
+
+        DB::transaction(function () use ($request, $requisitionId, $user) {
 
             $review = Review::where('requisition_id', $requisitionId)->where('reviewer_nusp', $user->codpes)->first();
             // Não tem devemos salvar a versão 0, já que ela
@@ -158,6 +170,9 @@ class ReviewController extends Controller
 
             $event->message = "Retornado pelo parecerista " . $user->name;
             $req->internal_status = $event->message;
+
+            // Give back to SECRETARY
+            $req->owner_role_id = RoleId::SECRETARY;
 
             $event->save();
             $req->save();

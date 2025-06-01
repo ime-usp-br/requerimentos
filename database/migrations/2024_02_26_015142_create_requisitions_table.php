@@ -32,6 +32,8 @@ class CreateRequisitionsTable extends Migration
             $table->enum('result', ['Sem resultado', 'Inconsistência nas informações', 'Deferido', 'Indeferido']);
             $table->text('result_text')->nullable();
             $table->boolean('editable');
+            $table->foreignId('owner_role_id')->constrained('roles');
+            $table->foreignId('borrower_role_id')->nullable()->constrained('roles');
         });
     }
 

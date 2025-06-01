@@ -132,6 +132,10 @@ class RequisitionController extends Controller
                 $requisition->observations = $validatedRequest["observations"] ?? "";
                 $requisition->latest_version = 1;
                 $requisition->editable = false;
+
+                // Giving ownership to SG
+                $requisition->owner_role_id = RoleId::SG;
+
                 $requisition->save();
 
                 $takenDiscsRecord = new Document;
@@ -570,11 +574,15 @@ class RequisitionController extends Controller
 
     public function sendToDepartment(Request $request) {
         $requisitionId = $request['requisitionId'];
+        $user = Auth::user();
 
-        DB::transaction(function () use ($request, $requisitionId) {
+        if (!$user->isOwnerOf($requisitionId)) {
+            abort(403);
+        }
+
+        DB::transaction(function () use ($request, $requisitionId, $user) {
             $requisition = Requisition::find($requisitionId);
 
-            $user = Auth::user();
             $event = new Event;
             $event->type = EventType::SENT_TO_DEPARTMENT;
             $event->requisition_id = $request['requisitionId'];
@@ -586,6 +594,10 @@ class RequisitionController extends Controller
             $requisition->situation = EventType::SENT_TO_DEPARTMENT;
             $requisition->internal_status = EventType::SENT_TO_DEPARTMENT . " " .  $requisition->department;
             $requisition->registered = false;
+
+            // Give ownership to SECRETARY
+            $requisition->owner_role_id = RoleId::SECRETARY;
+
             $requisition->save();
 
         });
@@ -642,20 +654,30 @@ class RequisitionController extends Controller
     } 
 
     public function registered(Request $request) {
-        $this->checkUserRegisteredPermission($request->requisitionId);
+        $requisitionId = $request->requisitionId;
+        $user = Auth::user();
 
-        DB::transaction(function () use ($request) {
-            $user = Auth::user();
+        $this->checkUserRegisteredPermission($requisitionId);
 
-            $requisition = Requisition::find($request->requisitionId);
+        if (!$user->isOwnerOf($requisitionId)) {
+            abort(403);
+        }
+
+        DB::transaction(function () use ($requisitionId, $user) {
+
+            $requisition = Requisition::find($requisitionId);
             $requisition->situation = EventType::REGISTERED;
             $requisition->registered = true;
             $requisition->internal_status = "Registrado no Jupiter por " . $user->name;
+
+            // Give ownership to SG
+            $requisition->owner_role_id = RoleId::SG;
+
             $requisition->save();
 
             $event = new Event;
             $event->type = EventType::REGISTERED;
-            $event->requisition_id = $request->requisitionId;
+            $event->requisition_id = $requisitionId;
             $event->author_name = $user->name;
             $event->author_nusp = $user->codpes;
             $event->version = $requisition->latest_version;
