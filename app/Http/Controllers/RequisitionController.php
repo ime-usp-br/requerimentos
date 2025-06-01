@@ -10,7 +10,7 @@ use Inertia\Inertia;
 use App\Enums\RoleId;
 use App\Enums\EventType;
 use App\Enums\DocumentType;
-use App\Enums\ReviewerDecision;
+use App\Enums\ResultType;
 use App\Models\User;
 use App\Models\Department;
 use App\Models\DepartmentUserRole;
@@ -296,6 +296,11 @@ class RequisitionController extends Controller
         $this->checkUserUpdatePermission($validatedRequest["requisitionId"]); 
         $requisition = Requisition::find($validatedRequest["requisitionId"]);
 
+        $user = Auth::user();
+        if (!$user->isOwnerOf($validatedRequest["requisitionId"]) && !$user->isBorrowing($validatedRequest["requisitionId"])) {
+            abort(403);
+        }
+
         $allDocumentTypes = [
             DocumentType::TAKEN_DISCS_RECORD,
             DocumentType::CURRENT_COURSE_RECORD,
@@ -333,7 +338,7 @@ class RequisitionController extends Controller
         
         if ($hasChanges) {
             try {
-                DB::transaction(function () use ($changedDocuments, $hasTakenDisciplinesChanged, $requisition, $validatedRequest, $currentVersions) {
+                DB::transaction(function () use ($changedDocuments, $hasTakenDisciplinesChanged, $requisition, $validatedRequest, $currentVersions, $user) {
                     $newVersions = $currentVersions;
 
                     foreach ($changedDocuments as $document) {
@@ -350,7 +355,6 @@ class RequisitionController extends Controller
 
                     $this->updateRequisitionData($requisition, $validatedRequest, $currentVersions);
 
-                    $user = Auth::user();
                     $requisition->refresh();
                     $event = new Event;
                     $event->type = $user->current_role_id == RoleId::STUDENT ? EventType::UPDATED_BY_STUDENT : EventType::UPDATED_BY_SG;
@@ -560,6 +564,10 @@ class RequisitionController extends Controller
             $requisition->internal_status = EventType::RESENT_BY_STUDENT;
         }
         $requisition->latest_version = $requisition->latest_version + 1;
+
+        // If req was borrowed, "give it back"
+        $requisition->borrower_role_id = null;
+
         $requisition->save();
     }
 
@@ -635,7 +643,7 @@ class RequisitionController extends Controller
             $review->reviewer_name = $user->name;
             $review->reviewer_nusp = $user->codpes;
             $review->requisition_id = $requisitionId;
-            $review->reviewer_decision = ReviewerDecision::ACCEPTED;
+            $review->reviewer_decision = ResultType::ACCEPTED;
             $review->justification = 'Deferimento automático';
             $review->latest_version = 1;
             $review->save();
@@ -829,6 +837,11 @@ class RequisitionController extends Controller
     public function setRequisitionResult(Request $request) 
     {
         $this->checkUserUpdatePermission($request->requisitionId);
+        $user = Auth::user();
+
+        if (!$user->isOwnerOf($request->requisitionId)) {
+            abort(403);
+        }
         
         $validator = Validator::make($request->all(), [
             'requisitionId' => 'required|exists:requisitions,id',
@@ -854,9 +867,11 @@ class RequisitionController extends Controller
         $requisition->situation = $resultType;
         $requisition->internal_status = $resultType;
         $requisition->editable = $resultType == EventType::BACK_TO_STUDENT;
-        $requisition->save();
 
-        $user = Auth::user();
+        // lend to the student only if the result is 'inconsistency'
+        $requisition->borrower_role_id = ($request->result == ResultType::INCONSISTENT) ? RoleId::STUDENT : null;
+
+        $requisition->save();
 
         $event = new Event;
         $event->type = $resultType;
@@ -890,13 +905,13 @@ class RequisitionController extends Controller
     private function getResultEventTypeFrom($updateRequest)
     {
         switch ($updateRequest["result"]) {
-            case "Inconsistência nas informações":
+            case ResultType::INCONSISTENT:
                 $resultType = EventType::BACK_TO_STUDENT;
                 break;
-            case "Deferido":
+            case ResultType::ACCEPTED:
                 $resultType = EventType::ACCEPTED;
                 break;
-            case "Indeferido":
+            case ResultType::REJECTED:
                 $resultType = EventType::REJECTED;
                 break;
         }

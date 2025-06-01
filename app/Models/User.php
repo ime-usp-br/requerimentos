@@ -146,4 +146,14 @@ class User extends Authenticatable
 
         return $this->current_role_id == $requisition->owner_role_id;
     }
+
+    public function isBorrowing($requisitionId) {
+        $requisition = Requisition::find($requisitionId);
+
+        if (!$requisition) {
+            throw new \Exception('Requisition not found.');
+        }
+
+        return $this->current_role_id == $requisition->borrower_role_id;
+    }
 }

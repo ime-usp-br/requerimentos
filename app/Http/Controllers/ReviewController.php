@@ -9,6 +9,7 @@ use App\Models\ReviewsVersion;
 use App\Models\DepartmentUserRole;
 use App\Enums\RoleId;
 use App\Enums\EventType;
+use App\Enums\ResultType;
 use App\Models\Requisition;
 use App\Notifications\ReviewerNotification;
 use App\Notifications\ReviewGivenNotification;
@@ -133,6 +134,19 @@ class ReviewController extends Controller
 
         if (!$user->isOwnerOf($requisitionId)) {
             abort(403);
+        }
+
+        // Por favor se alguém tiver uma solução melhor não hesite em mudar
+        if ($request->result == ResultType::INCONSISTENT) {
+            $user = Auth::user();
+            
+            $req = Requisition::find($request->requisitionId);
+            $req->situation = EventType::BACK_TO_STUDENT;
+            $req->internal_status = EventType::BACK_TO_STUDENT;
+            $req->editable = true;
+            $req->borrower_role_id = RoleId::STUDENT;
+            $req->save();
+            return;
         }
 
         DB::transaction(function () use ($request, $requisitionId, $user) {

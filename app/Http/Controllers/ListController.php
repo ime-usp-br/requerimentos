@@ -79,7 +79,7 @@ class ListController extends Controller
         $requisitions = DB::table('reviews')
 			->join('requisitions', 'reviews.requisition_id', '=', 'requisitions.id')
 			->where('reviewer_nusp', $user->codpes)
-			->where('requisitions.situation', '=', 'Enviado para análise dos pareceristas')
+			->where('requisitions.owner_role_id', '=', RoleId::REVIEWER)
 			->select($selectedReviewColumns)->get();
 
 		$selectedColumnsNames = ['created_at', 'student_name', 'requested_disc', 'reviewer_decision', 'updated_at', 'id'];

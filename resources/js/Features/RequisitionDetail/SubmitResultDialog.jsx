@@ -57,9 +57,7 @@ function SubmitResultDialog({ requisitionId, type = 'requisition', submitRoute =
 								value={data.result}
 								onChange={(e) => setData('result', e.target.value)}
 							>
-								{type === 'requisition' &&
-									<FormControlLabel value="Inconsistência nas informações" control={<Radio />} label="Inconsistência nas informações" />
-								}
+								<FormControlLabel value="Inconsistência nas informações" control={<Radio />} label="Inconsistência nas informações" />
 								<FormControlLabel value="Deferido" control={<Radio />} label="Deferido" />
 								<FormControlLabel value="Indeferido" control={<Radio />} label="Indeferido" />
 							</RadioGroup>
