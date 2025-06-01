@@ -55,6 +55,7 @@ class RequisitionControllerTest extends TestCase
             'requested_disc_code' => 'TEST123',
             'department' => 'MAC',
             'observations' => 'Observações de teste',
+            'owner_role_id' => RoleId::SG
         ]);
 
         $response = $this->get("/detalhe/{$requisition->id}");
@@ -89,6 +90,7 @@ class RequisitionControllerTest extends TestCase
             'requested_disc_code' => 'TEST123',
             'department' => 'MAC',
             'observations' => 'Observações de teste',
+            'owner_role_id' => RoleId::SG,
         ]);
 
         $response = $this->get("/detalhe/{$requisition->id}");
@@ -114,6 +116,7 @@ class RequisitionControllerTest extends TestCase
             'requested_disc_code' => 'TEST123',
             'department' => 'MAC',
             'observations' => 'Observações de teste',
+            'owner_role_id' => RoleId::SG,
         ]);
 
         $response = $this->get("/detalhe/{$requisition->id}");
@@ -155,6 +158,8 @@ class RequisitionControllerTest extends TestCase
             'requested_disc_code' => 'TEST123',
             'department' => 'MAC',
             'observations' => 'Observações de teste',
+            'owner_role_id' => RoleId::SG,
+            'borrower_role_id' => null,
         ]);
 
         $this->assertDatabaseHas('documents', [
@@ -394,6 +399,7 @@ class RequisitionControllerTest extends TestCase
             'requested_disc_code' => 'TEST123',
             'department' => 'MAC',
             'observations' => 'Observações de teste',
+            'owner_role_id' => RoleId::SG
         ]);
 
         $this->assertDatabaseHas('events', [
@@ -422,6 +428,8 @@ class RequisitionControllerTest extends TestCase
             'department' => 'MAC',
             'observations' => 'Observações de teste',
             'editable' => true,
+            'owner_role_id' => RoleId::SG,
+            'borrower_role_id' => RoleId::STUDENT,
         ]);
 
         $response = $this->get("/atualizar-requerimento/{$requisition->id}");
@@ -456,6 +464,7 @@ class RequisitionControllerTest extends TestCase
             'requested_disc_code' => 'TEST123',
             'department' => 'MAC',
             'observations' => 'Observações de teste',
+            'owner_role_id' => RoleId::SG,
         ]);
 
         $response = $this->get("/atualizar-requerimento/{$requisition->id}");
@@ -477,6 +486,7 @@ class RequisitionControllerTest extends TestCase
             'department' => 'MAC',
             'observations' => 'Observações de teste',
             'editable' => false,
+            'owner_role_id' => RoleId::SG,
         ]);
 
         $response = $this->get("/atualizar-requerimento/{$requisition->id}");
@@ -502,7 +512,8 @@ class RequisitionControllerTest extends TestCase
             'requested_disc_code' => 'TEST123',
             'department' => 'MAC',
             'observations' => 'Observações de teste',
-            'editable' => false
+            'editable' => false,
+            'owner_role_id' => RoleId::SG
         ]);
 
         $response = $this->get("/atualizar-requerimento/{$requisition->id}");
@@ -550,6 +561,8 @@ class RequisitionControllerTest extends TestCase
             'observations' => 'Observações antigas',
             'latest_version' => 1,
             'editable' => true,
+            'owner_role_id' => RoleId::SG,
+            'borrower_role_id' => RoleId::STUDENT
         ]);
 
         $response = $this->post("/atualizar-requerimento", [
@@ -588,6 +601,7 @@ class RequisitionControllerTest extends TestCase
             'observations' => 'Observações antigas',
             'latest_version' => 1,
             'editable' => false,
+            'owner_role_id' => RoleId::SG,
         ]);
 
         $response = $this->post("/atualizar-requerimento", [
@@ -625,7 +639,8 @@ class RequisitionControllerTest extends TestCase
             'department' => 'MAP',
             'observations' => 'Observações antigas',
             'latest_version' => 1,
-            'editable' => false
+            'editable' => false,
+            'owner_role_id' => RoleId::SG
         ]);
 
         TakenDisciplines::factory()->create([
@@ -720,6 +735,8 @@ class RequisitionControllerTest extends TestCase
             'observations' => 'Observações antigas',
             'latest_version' => 1,
             'editable' => true,
+            'owner_role_id' => RoleId::SG,
+            'borrower_role_id' => RoleId::STUDENT,
         ]);
 
         TakenDisciplines::factory()->create([
@@ -800,7 +817,9 @@ class RequisitionControllerTest extends TestCase
             'department' => 'MAP',
             'observations' => 'Observações antigas',
             'latest_version' => 1,
-            'editable' => true
+            'editable' => true,
+            'owner_role_id' => RoleId::SG,
+            'borrower_role_id' => RoleId::STUDENT,
         ]);
 
         TakenDisciplines::factory()->create([
@@ -953,7 +972,9 @@ class RequisitionControllerTest extends TestCase
             'department' => 'MAP',
             'observations' => 'Observações antigas',
             'latest_version' => 1,
-            'editable' => true
+            'editable' => true,
+            'owner_role_id' => RoleId::SG,
+            'borrower_role_id' => RoleId::STUDENT,
         ]);
 
         TakenDisciplines::factory()->create([
@@ -1102,7 +1123,9 @@ class RequisitionControllerTest extends TestCase
             'department' => 'MAP',
             'observations' => 'Observações antigas',
             'latest_version' => 1,
-            'editable' => true
+            'editable' => true,
+            'owner_role_id' => RoleId::SG,
+            'borrower_role_id' => RoleId::STUDENT,
         ]);
 
         TakenDisciplines::factory()->create([
@@ -1239,6 +1262,8 @@ class RequisitionControllerTest extends TestCase
             'department' => 'MAP',
             'observations' => 'Observações antigas',
             'latest_version' => 1,
+            'owner_role_id' => RoleId::SG,
+            'borrower_role_id' => RoleId::STUDENT,
             'editable' => true
         ]);
 
@@ -1349,11 +1374,11 @@ class RequisitionControllerTest extends TestCase
     {
         Storage::fake('local');
 
-        $user = User::factory()->create([
+        $studentUser = User::factory()->create([
             'codpes' => '999999',
             'current_role_id' => RoleId::STUDENT
         ]);
-        $this->actingAs($user);
+        $this->actingAs($studentUser);
 
         $requisition = Requisition::factory()->create([
             'student_nusp' => '999999',
@@ -1365,7 +1390,9 @@ class RequisitionControllerTest extends TestCase
             'department' => 'MAC',
             'observations' => 'Observações',
             'latest_version' => 1,
-            'editable' => true
+            'editable' => true,
+            'owner_role_id' => RoleId::SG,
+            'borrower_role_id' => RoleId::STUDENT
         ]);
 
         TakenDisciplines::factory()->create([
@@ -1468,6 +1495,7 @@ class RequisitionControllerTest extends TestCase
             'version' => 2,
         ]);
 
+        // The second update is not valid, since student lost it's right to update
         $response = $this->post("/atualizar-requerimento", [
             'requisitionId' => $requisition->id,
             'takenDiscRecord' => $takenDiscRecord,
@@ -1476,6 +1504,61 @@ class RequisitionControllerTest extends TestCase
             'requestedDiscSyllabus' => $requestedDiscSyllabus,
             'requestedDiscType' => 'Obrigatória',
             'requestedDiscDepartment' => 'MAC',
+            'takenDiscCount' => 1,
+            'takenDiscNames' => ['Disciplina Cursada Atualizada de Novo'],
+            'takenDiscCodes' => ['CURS123'],
+            'takenDiscYears' => [2022],
+            'takenDiscGrades' => ["9.5"],
+            'takenDiscSemesters' => ['Primeiro'],
+            'takenDiscInstitutions' => ['Instituição Teste'],
+        ]);
+
+        $this->assertDatabaseMissing('documents', [
+            'requisition_id' => $requisition->id,
+            'version' => 2,
+        ]);
+
+        $this->assertDatabaseHas('taken_disciplines', [
+            'requisition_id' => $requisition->id,
+            'name' => "Disciplina Cursada Atualizada",
+            'version' => 2,
+        ]);
+
+        $this->assertDatabaseHas('requisitions', [
+            'id' => $requisition->id,
+            'latest_version' => 2,
+        ]);
+
+        $this->assertDatabaseHas('requisitions_versions', [
+            'requisition_id' => $requisition->id,
+            'version' => 1,
+            'taken_disciplines_version' => 1,
+            'taken_disc_record_version' => 1,
+            'course_record_version' => 1,
+            'taken_disc_syllabus_version' => 1,
+            'requested_disc_syllabus_version' => 1
+        ]);
+
+        $this->assertDatabaseHas('events', [
+            'type' => EventType::UPDATED_BY_STUDENT,
+            'requisition_id' => $requisition->id,
+            'author_nusp' => '999999',
+            'version' => 2,
+        ]);
+
+        // Giving his right back - need to reload the requisition and update its properties
+        $requisition = Requisition::find($requisition->id);
+        $requisition->borrower_role_id = RoleId::STUDENT;
+        $requisition->save();
+        $response = $this->post("/atualizar-requerimento", [
+            'requisitionId' => $requisition->id,
+            'takenDiscRecord' => $takenDiscRecord,
+            'courseRecord' => $courseRecord,
+            'takenDiscSyllabus' => $takenDiscSyllabus,
+            'requestedDiscSyllabus' => $requestedDiscSyllabus,
+            'requestedDiscType' => 'Obrigatória',
+            'requestedDiscDepartment' => 'MAC',
+            'observations' => 'Observações atualizadas',
             'takenDiscCount' => 1,
             'takenDiscNames' => ['Disciplina Cursada Atualizada de Novo'],
             'takenDiscCodes' => ['CURS123'],
@@ -1517,56 +1600,6 @@ class RequisitionControllerTest extends TestCase
             'author_nusp' => '999999',
             'version' => 3,
         ]);
-
-        $response = $this->post("/atualizar-requerimento", [
-            'requisitionId' => $requisition->id,
-            'takenDiscRecord' => $takenDiscRecord,
-            'courseRecord' => $courseRecord,
-            'takenDiscSyllabus' => $takenDiscSyllabus,
-            'requestedDiscSyllabus' => $requestedDiscSyllabus,
-            'requestedDiscType' => 'Obrigatória',
-            'requestedDiscDepartment' => 'MAC',
-            'observations' => 'Observações atualizadas',
-            'takenDiscCount' => 1,
-            'takenDiscNames' => ['Disciplina Cursada Atualizada de Novo'],
-            'takenDiscCodes' => ['CURS123'],
-            'takenDiscYears' => [2022],
-            'takenDiscGrades' => ["9.5"],
-            'takenDiscSemesters' => ['Primeiro'],
-            'takenDiscInstitutions' => ['Instituição Teste'],
-        ]);
-
-        $this->assertDatabaseMissing('documents', [
-            'requisition_id' => $requisition->id,
-            'version' => 2,
-        ]);
-
-        $this->assertDatabaseMissing('taken_disciplines', [
-            'requisition_id' => $requisition->id,
-            'version' => 4,
-        ]);
-
-        $this->assertDatabaseHas('requisitions', [
-            'id' => $requisition->id,
-            'latest_version' => 4,
-        ]);
-
-        $this->assertDatabaseHas('requisitions_versions', [
-            'requisition_id' => $requisition->id,
-            'version' => 3,
-            'taken_disciplines_version' => 3,
-            'taken_disc_record_version' => 1,
-            'course_record_version' => 1,
-            'taken_disc_syllabus_version' => 1,
-            'requested_disc_syllabus_version' => 1
-        ]);
-
-        $this->assertDatabaseHas('events', [
-            'type' => EventType::UPDATED_BY_STUDENT,
-            'requisition_id' => $requisition->id,
-            'author_nusp' => '999999',
-            'version' => 4,
-        ]);
     }
 
     public function test_set_requisition_result_forbidden_for_non_sg_roles()
@@ -1586,6 +1619,7 @@ class RequisitionControllerTest extends TestCase
                 'student_name' => 'Test User ' . $roleIndex,
                 'email' => 'user' . $roleIndex . '@test.com',
                 'editable' => true,
+                'owner_role_id' => $role,
                 'result' => 'Sem resultado',
                 'latest_version' => 1,
             ]);
@@ -1618,6 +1652,7 @@ class RequisitionControllerTest extends TestCase
             'student_name' => 'Another Student New',
             'email' => 'another_new@test.com',
             'editable' => true,
+            'owner_role_id' => RoleId::SG,
             'result' => 'Sem resultado',
             'latest_version' => 1,
         ]);
@@ -1659,6 +1694,7 @@ class RequisitionControllerTest extends TestCase
             'student_name' => 'Student Test',
             'email' => 'student_test@test.com',
             'editable' => true,
+            'owner_role_id' => RoleId::SG,
             'result' => 'Sem resultado',
             'result_text' => null,
             'latest_version' => 1,
@@ -1695,6 +1731,7 @@ class RequisitionControllerTest extends TestCase
             'email' => 'student_test@test.com',
             'editable' => false,
             'department' => 'MAC',
+            'owner_role_id' => RoleId::SG,
             'result' => 'Deferido',
             'latest_version' => 1,
         ]);
@@ -1739,6 +1776,7 @@ class RequisitionControllerTest extends TestCase
             'email' => 'student_test@test.com',
             'editable' => false,
             'department' => 'MAC',
+            'owner_role_id' => RoleId::SG,
             'result' => 'Deferido',
             'latest_version' => 1,
         ]);
@@ -1770,6 +1808,7 @@ class RequisitionControllerTest extends TestCase
             'email' => 'mae_student@test.com',
             'editable' => false,
             'department' => 'MAE', // Different department
+            'owner_role_id' => RoleId::SG,
             'result' => 'Deferido',
             'latest_version' => 1,
         ]);
@@ -1814,6 +1853,7 @@ class RequisitionControllerTest extends TestCase
             'email' => 'student_test@test.com',
             'editable' => false,
             'department' => $requisitionDepartment, // Different department (MAE) from the secretary
+            'owner_role_id' => RoleId::SECRETARY,
             'result' => 'Deferido',
             'latest_version' => 1,
         ]);

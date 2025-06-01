@@ -27,6 +27,7 @@ class DocumentsControllerTest extends TestCase
     {
         $requisition = Requisition::factory()->create([
             'student_nusp' => $user->codpes,
+            'owner_role_id' => RoleId::SG
         ]);
         $file = UploadedFile::fake()->create('test.pdf', 10, 'application/pdf');
         Storage::fake('local');

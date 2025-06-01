@@ -43,7 +43,7 @@ class ReviewControllerTest extends TestCase
         return $user;
     }
     
-    private function createRequisition($studentNusp = '888888')
+    private function createRequisition($ownerRoleId = RoleId::REVIEWER, $studentNusp = '888888')
     {
         return Requisition::factory()->create([
             'student_nusp' => $studentNusp,
@@ -54,6 +54,7 @@ class ReviewControllerTest extends TestCase
             'requested_disc_code' => 'TEST123',
             'department' => 'MAC',
             'observations' => 'Observações de teste',
+            'owner_role_id' => $ownerRoleId
         ]);
     }
 
@@ -93,7 +94,7 @@ class ReviewControllerTest extends TestCase
         $this->asRole(RoleId::SECRETARY, $macDepartment->id);
         
         // Create a requisition for MAC department
-        $requisition = $this->createRequisition(); // By default, creates a MAC department requisition
+        $requisition = $this->createRequisition(RoleId::SECRETARY); // By default, creates a MAC department requisition
         
         // Call the endpoint
         $response = $this->get("/escolher-parecerista/{$requisition->id}");
@@ -136,6 +137,7 @@ class ReviewControllerTest extends TestCase
             'requested_disc_type' => 'Obrigatória',
             'requested_disc_code' => 'TEST123',
             'department' => 'MAP', // MAP department
+            'owner_role_id' => RoleId::SECRETARY,
             'observations' => 'Observações de teste',
         ]);
         
@@ -188,7 +190,7 @@ class ReviewControllerTest extends TestCase
         $reviewer->assignRole(RoleId::REVIEWER, DepartmentId::MAC);
         
         // Create a requisition
-        $requisition = $this->createRequisition();
+        $requisition = $this->createRequisition(RoleId::SECRETARY);
         
         // Call the endpoint to create a review
         $response = $this->post(route('reviewer.sendToReviewer'), [
@@ -230,7 +232,7 @@ class ReviewControllerTest extends TestCase
         // );
     }
     
-    public function test_create_review_multiple_reviewers()
+    public function test_create_review_for_multiple_reviewers()
     {
         Notification::fake();
         
@@ -253,7 +255,7 @@ class ReviewControllerTest extends TestCase
         $reviewer2->assignRole(RoleId::REVIEWER, DepartmentId::MAC);
         
         // Create a requisition
-        $requisition = $this->createRequisition();
+        $requisition = $this->createRequisition(RoleId::SECRETARY);
         
         // Call the endpoint to create multiple reviews
         $response = $this->post(route('reviewer.sendToReviewer'), [
@@ -525,63 +527,67 @@ class ReviewControllerTest extends TestCase
 
         // 1. Test that a STUDENT cannot create a review
         $student = $this->asRole(RoleId::STUDENT);
-        $requisition = $this->createRequisition();
+        // Create a requisition owned by SECRETARY role
+        $secretaryRequisition = $this->createRequisition(RoleId::SECRETARY);
         
         $response = $this->post(route('reviewer.sendToReviewer'), [
-            'requisitionId' => $requisition->id,
+            'requisitionId' => $secretaryRequisition->id,
             'reviewerNusps' => ['111111' => true]
         ]);
         
         // Should return 403 Forbidden
         $response->assertStatus(403);
         $this->assertDatabaseMissing('reviews', [
-            'requisition_id' => $requisition->id,
+            'requisition_id' => $secretaryRequisition->id,
             'reviewer_nusp' => '111111',
         ]);
         
         // 2. Test that a REVIEWER cannot create a review despite being in the route middleware
         $reviewerUser = $this->asRole(RoleId::REVIEWER, DepartmentId::MAC);
         $response = $this->post(route('reviewer.sendToReviewer'), [
-            'requisitionId' => $requisition->id,
+            'requisitionId' => $secretaryRequisition->id,
             'reviewerNusps' => ['111111' => true]
         ]);
         
         // Should return 403 Forbidden (additional authorization logic beyond route middleware)
         $response->assertStatus(403);
         $this->assertDatabaseMissing('reviews', [
-            'requisition_id' => $requisition->id,
+            'requisition_id' => $secretaryRequisition->id,
             'reviewer_nusp' => '111111',
         ]);
         
-        // 3. Test that a SECRETARY can create a review
+        // 3. Test that a SECRETARY can create a review for a requisition owned by SECRETARY
         $secretary = $this->asRole(RoleId::SECRETARY, DepartmentId::MAC);
         $response = $this->post(route('reviewer.sendToReviewer'), [
-            'requisitionId' => $requisition->id,
+            'requisitionId' => $secretaryRequisition->id,
             'reviewerNusps' => ['111111' => true]
         ]);
         
         // Should succeed
         $response->assertStatus(200);
         $this->assertDatabaseHas('reviews', [
-            'requisition_id' => $requisition->id,
+            'requisition_id' => $secretaryRequisition->id,
             'reviewer_nusp' => '111111',
         ]);
         
         // Clean up the created review for the next test
-        Review::where('requisition_id', $requisition->id)->delete();
-        Event::where('requisition_id', $requisition->id)->delete();
+        Review::where('requisition_id', $secretaryRequisition->id)->delete();
+        Event::where('requisition_id', $secretaryRequisition->id)->delete();
         
-        // 4. Test that an SG (Serviço de Graduação) can create a review
+        // Create a requisition owned by SG role for the next test
+        $sgRequisition = $this->createRequisition(RoleId::SG);
+        
+        // 4. Test that an SG (Serviço de Graduação) can create a review for a requisition owned by SG
         $sg = $this->asRole(RoleId::SG, DepartmentId::MAC);
         $response = $this->post(route('reviewer.sendToReviewer'), [
-            'requisitionId' => $requisition->id,
+            'requisitionId' => $sgRequisition->id,
             'reviewerNusps' => ['111111' => true]
         ]);
         
         // Should succeed
         $response->assertStatus(200);
         $this->assertDatabaseHas('reviews', [
-            'requisition_id' => $requisition->id,
+            'requisition_id' => $sgRequisition->id,
             'reviewer_nusp' => '111111',
         ]);
     }
