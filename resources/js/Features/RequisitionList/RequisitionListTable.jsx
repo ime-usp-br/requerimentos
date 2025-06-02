@@ -33,7 +33,6 @@ function List({ requisitions, selectedColumns }) {
     const table = useMaterialReactTable({
         columns,
         data,
-        rowCount: 20,
         enableSorting: true,
         enableDensityToggle: false,
         enableFullScreenToggle: false,
