@@ -19,7 +19,7 @@ use App\Enums\RoleId;
 use App\Enums\DocumentType;
 use App\Enums\EventType;
 
-class MigrateOldSystemData extends Command
+class MigrateDatabaseRequerimentosv1tov2 extends Command
 {
 	/**
 	 * The name and signature of the console command.
