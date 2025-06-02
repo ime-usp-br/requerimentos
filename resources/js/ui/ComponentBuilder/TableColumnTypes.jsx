@@ -72,12 +72,12 @@ columnTypes.situation = {
             </Typography>,
     accessorKey: 'situation',
     enableHiding: false,
-    accessorFn: (row) => (
+    Cell: ({ renderedCellValue }) => (
         <Typography 
             variant="h7"
             style={{ wordBreak: 'break-word' }}
         >
-            {row.situation}
+            {renderedCellValue}
         </Typography>
     )
 };
@@ -91,13 +91,13 @@ columnTypes.internal_status = {
             </Typography>,
     accessorKey: 'internal_status',
     enableHiding: false,
-    accessorFn: (row) => (
+    Cell: ({ renderedCellValue }) => (
         <Typography 
             variant="subtitle1"
             width={250}
             style={{ wordBreak: 'break-word', whiteSpace: "pre-line" }}
         >
-            {row.internal_status}
+            {renderedCellValue}
         </Typography>
     )
 };
