@@ -54,6 +54,16 @@ class RequisitionController extends Controller
         }
         $latestDocumentsArray = array_values($latestDocuments);
 
+        $takenDisciplines = $requisition->takenDisciplines;
+        $maxVersions = [];
+        foreach ($takenDisciplines as $disc) {
+            $code = $disc->code ?? '';
+            if (!isset($maxVersions[$code]) || $disc->version > $maxVersions[$code]->version) {
+                $maxVersions[$code] = $disc;
+            }
+        }
+        $latestTakenDisciplines = array_values($maxVersions);
+
         $roleId = $user->current_role_id;
         switch ($roleId) {
             case RoleId::STUDENT:
@@ -81,12 +91,11 @@ class RequisitionController extends Controller
                 break;
         }
 
-
         return Inertia::render('RequisitionDetailPage', [
             'label' => 'Requerimentos',
             'selectedActions' => $selectedActions,
             'requisition' => $requisition,
-            'takenDiscs' => $requisition->takenDisciplines,
+            'takenDiscs' => $latestTakenDisciplines,
             'documents' => $latestDocumentsArray,
         ]);
     }
@@ -555,6 +564,8 @@ class RequisitionController extends Controller
             $requisition->situation = EventType::RESENT_BY_STUDENT;
             $requisition->internal_status = EventType::RESENT_BY_STUDENT;
         }
+        $requisition->result = "Sem resultado";
+        $requisition->result_text = "";
         $requisition->latest_version = $requisition->latest_version + 1;
         $requisition->save();
     }
@@ -597,7 +608,7 @@ class RequisitionController extends Controller
 
     private function notifyDepartment($requisitionId) {
         $requisitionDepartment = Requisition::find($requisitionId)->department;
-        $departmentId = Department::where('code', $requisitionDepartment)->first()->id;
+        $departmentId = Department::where('name', $requisitionDepartment)->first()->id;
         $departmentUsers = DepartmentUserRole::getUsersWithRoleAndDepartment(RoleId::SECRETARY, $departmentId);
 
         foreach ($departmentUsers as $departmentUser) {
