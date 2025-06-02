@@ -12,7 +12,6 @@ columnTypes.id = {
             </Typography>,
     accessorKey: 'id',
     enableHiding: false,
-    enableSorting: false,
     size: 0
 };
 
@@ -31,7 +30,6 @@ columnTypes.created_at = {
         return `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
     },
     enableHiding: false,
-    enableColumnActions: false,
     size: 0
 };
 
@@ -50,7 +48,6 @@ columnTypes.updated_at = {
         return `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
     },
     enableHiding: false,
-    enableColumnActions: false,
     size: 0
 };
 
@@ -126,7 +123,6 @@ columnTypes.student_nusp = {
             </Typography>,
     accessorKey: 'student_nusp',
     enableHiding: false,
-    enableColumnActions: false,
     size: 0
 };
 
@@ -199,7 +195,6 @@ columnTypes.ocurrence_time  = {
             </Typography>,
     accessorFn: (row) => row.created_at.slice(11, 19),
     enableHiding: false,
-    enableColumnActions: false,
     size: 0
 };
 
