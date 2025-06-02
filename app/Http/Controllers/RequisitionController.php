@@ -135,7 +135,7 @@ class RequisitionController extends Controller
                 $requisition->save();
 
                 $takenDiscsRecord = new Document;
-                $takenDiscsRecord->path = $validatedRequest['takenDiscRecord']->store('test');
+                $takenDiscsRecord->path = $validatedRequest['takenDiscRecord']->store('documents');
                 $takenDiscsRecord->requisition_id = $requisition->id;
                 $takenDiscsRecord->type = DocumentType::TAKEN_DISCS_RECORD;
                 $takenDiscsRecord->version = 1;
@@ -143,7 +143,7 @@ class RequisitionController extends Controller
                 $takenDiscsRecord->save();
 
                 $currentCourseRecord = new Document;
-                $currentCourseRecord->path = $validatedRequest['courseRecord']->store('test');
+                $currentCourseRecord->path = $validatedRequest['courseRecord']->store('documents');
                 $currentCourseRecord->requisition_id = $requisition->id;
                 $currentCourseRecord->type = DocumentType::CURRENT_COURSE_RECORD;
                 $currentCourseRecord->version = 1;
@@ -151,7 +151,7 @@ class RequisitionController extends Controller
                 $currentCourseRecord->save();
 
                 $takenDiscSyllabus = new Document;
-                $takenDiscSyllabus->path = $validatedRequest['takenDiscSyllabus']->store('test');
+                $takenDiscSyllabus->path = $validatedRequest['takenDiscSyllabus']->store('documents');
                 $takenDiscSyllabus->requisition_id = $requisition->id;
                 $takenDiscSyllabus->type = DocumentType::TAKEN_DISCS_SYLLABUS;
                 $takenDiscSyllabus->version = 1;
@@ -159,7 +159,7 @@ class RequisitionController extends Controller
                 $takenDiscSyllabus->save();
 
                 $requestedDiscSyllabus = new Document;
-                $requestedDiscSyllabus->path = $validatedRequest['requestedDiscSyllabus']->store('test');
+                $requestedDiscSyllabus->path = $validatedRequest['requestedDiscSyllabus']->store('documents');
                 $requestedDiscSyllabus->requisition_id = $requisition->id;
                 $requestedDiscSyllabus->type = DocumentType::REQUESTED_DISC_SYLLABUS;
                 $requestedDiscSyllabus->version = 1;
@@ -496,7 +496,7 @@ class RequisitionController extends Controller
     private function updateDocumentData($requisitionId, $documentData, $documentType, $newVersion)
     {
         $document = new Document;
-        $document->path = $documentData->store('test');
+        $document->path = $documentData->store('documents');
         $document->hash = hash_file('sha256', $documentData->getRealPath());
         $document->version = $newVersion;
         $document->requisition_id = $requisitionId;
