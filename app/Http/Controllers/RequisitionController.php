@@ -809,6 +809,8 @@ class RequisitionController extends Controller
             $xml .= '</Table>';
             $xml .= '</Worksheet>';
             $xml .= '</Workbook>';
+
+            echo $xml;
         }, 200, [
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'Content-Disposition' => 'attachment; filename="requisitions_export.xlsx"',
