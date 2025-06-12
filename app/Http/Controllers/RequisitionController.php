@@ -28,6 +28,8 @@ use App\Notifications\RegisteredNotification;
 use App\Notifications\RequisitionCreatedNotification;
 use App\Notifications\RequisitionUpdatedNotification;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Illuminate\Support\Facades\Log;
+
 
 class RequisitionController extends Controller
 {
@@ -728,7 +730,7 @@ class RequisitionController extends Controller
 
     public function exportRequisitionsPost(Request $request)
     {   
-        \Log::info('Export requisitions started', ['request_data' => $request->all()]);
+        Log::info('Export requisitions started', ['request_data' => $request->all()]);
         
         try {
             $query = Requisition::with(['reviews', 'requisitionsVersions', 'events']);
@@ -761,7 +763,7 @@ class RequisitionController extends Controller
 
             $exportData = $requisitions->map(function ($requisition, $index) {                
                 try {
-                    $setToDepartment = $requisition->getRelation('events')->filter(function ($item) {
+                    $sentToDepartment = $requisition->getRelation('events')->filter(function ($item) {
                         return $item->type == 'Enviado para análise do departamento';
                     })->last();
 
@@ -784,7 +786,7 @@ class RequisitionController extends Controller
                         'Disciplina a ser dispensada' => $requisition->requested_disc_code,
                         'Departamento responsável' => $requisition->department,
                         'Situação' => $requisition->internal_status,
-                        'Data de encaminhamento ao departamento/unidade' => $setToDepartment != null ? $setToDepartment->created_at->format('d-m-Y') : null,
+                        'Data de encaminhamento ao departamento/unidade' => $sentToDepartment != null ? $sentToDepartment->created_at->format('d-m-Y') : null,
                         'Parecer' => $reviewIsEmpty ? null : $reviews,
                         'Parecerista' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->reviewer_name,
                         'Data do parecer' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->updated_at->format('d-m-Y'),
@@ -793,7 +795,7 @@ class RequisitionController extends Controller
 
                     return $data;
                 } catch (\Exception $e) {
-                    \Log::error("Export error while processing requisition {$index}", [
+                    Log::error("Export error while processing requisition {$index}", [
                         'requisition_id' => $requisition->id,
                         'error' => $e->getMessage(),
                         'trace' => $e->getTraceAsString()
@@ -803,7 +805,7 @@ class RequisitionController extends Controller
             });
 
             if ($exportData->isEmpty()) {
-                \Log::warning('Export data is empty after mapping');
+                Log::warning('Export data is empty after mapping');
                 return response()->json(['message' => 'No data to export'], 404);
             }
 
@@ -835,7 +837,7 @@ class RequisitionController extends Controller
                     echo $xml;
                     
                 } catch (\Exception $e) {
-                    \Log::error('Error in StreamedResponse callback', [
+                    Log::error('Error in StreamedResponse callback', [
                         'error' => $e->getMessage(),
                         'trace' => $e->getTraceAsString()
                     ]);
@@ -847,7 +849,7 @@ class RequisitionController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Export requisitions failed', [
+            Log::error('Export requisitions failed', [
                 'error' => $e->getMessage(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
