@@ -17,6 +17,9 @@ const RequisitionDetailPage = ({ label,
     const isMediumOrLarger = useMediaQuery(theme.breakpoints.up('md'));
     const actionsVariant = isMediumOrLarger ? 'box' : 'bar';
 
+    documents.sort((x, y) => x.type > y.type);
+    requisition.documents.sort((x, y) => x.type > y.type);
+
     return (
         <RequisitionProvider requisitionData={{...requisition, 'takenDiscs': takenDiscs}}>
             <BasePage
