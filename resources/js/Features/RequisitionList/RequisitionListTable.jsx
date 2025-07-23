@@ -2,8 +2,10 @@ import React from 'react';
 import { useMemo, useState, useEffect } from 'react';
 import { MaterialReactTable, useMaterialReactTable, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton } from 'material-react-table';
 
+// Make sure the imports are correct
 import PageviewIcon from '@mui/icons-material/Pageview';
-import { Link, Box, Button } from '@mui/material';
+import { Link, Box, Button, TextField, InputAdornment } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 
 import Builder from '../../ui/ComponentBuilder/Builder';
 import columnTypes from "../../ui/ComponentBuilder/TableColumnTypes";
@@ -24,33 +26,40 @@ function List({ requisitions, selectedColumns }) {
     const [columnFilters, setColumnFilters] = useState(() => {
         return JSON.parse(sessionStorage.getItem('filters')) || [];
     });
-
     useEffect(() => {
         sessionStorage.setItem('filters', JSON.stringify(columnFilters));
     }, [columnFilters]);
+
+
+    const [globalFilter, setGlobalFilter] = useState(() => {
+        return sessionStorage.getItem('globalFilter') || '';
+    });
+    useEffect(() => {
+        sessionStorage.setItem('globalFilter', globalFilter);
+    }, [globalFilter]);
+
 
     let data = requisitions;
     const table = useMaterialReactTable({
         columns,
         data,
-        rowCount: 20,
         enableSorting: true,
         enableDensityToggle: false,
         enableFullScreenToggle: false,
-        enableHiding: false,
+        enableHiding: false,          // This disables column hiding functionality
         enableColumnDragging: false,
         enableFilters: true,
         enableColumnFilters: true,
         enableTopToolbar: true,
         enableColumnOrdering: true,
-        enableGlobalFilter: false,
+        enableGlobalFilter: true,
         enableRowActions: true,
         muiTableHeadCellProps: textStyle,
         muiTableBodyCellProps: textStyle,
         displayColumnDefOptions: {
             'mrt-row-actions': {
-                header: null, //change header text
-                size: 80, //make actions column wider
+                header: null,
+                size: 80,
             },
         },
         renderRowActions: ({ row }) => (
@@ -60,18 +69,56 @@ function List({ requisitions, selectedColumns }) {
                 </Link>
             </Box>
         ),
-        state: { columnFilters, density: 'compact', showGlobalFilter: true },
-        renderTopToolbarCustomActions: ({ table }) => (
-            <Box sx={{ display: 'flex', gap: '1rem', p: '4px' }}>
-                <MRT_GlobalFilterTextField table={table} />
+        state: { 
+            columnFilters,
+            globalFilter,
+            density: 'compact',
+        },
+        onGlobalFilterChange: setGlobalFilter,
+        onColumnFiltersChange: setColumnFilters,
+        
+        // Updated toolbar with functioning search box
+        renderTopToolbar: ({ table }) => (
+            <Box
+                sx={{
+                    display: 'flex',
+                    gap: '0.5rem',
+                    p: '8px',
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                }}
+            >
+                {/* Global filter textbox */}
+                <TextField
+                    placeholder="Buscar por tudo..."
+                    value={globalFilter ?? ''}
+                    onChange={(e) => setGlobalFilter(e.target.value)}
+                    size="small"
+                    variant="outlined"
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <SearchIcon />
+                            </InputAdornment>
+                        ),
+                    }}
+                    sx={{ width: '250px' }}
+                />
+                
                 <MRT_ToggleFiltersButton table={table} />
-                <Button variant="outlined" onClick={() => setColumnFilters([])}>
+                <Button 
+                    variant="outlined" 
+                    size="large"
+                    onClick={() => {
+                        setColumnFilters([]);
+                        setGlobalFilter('');
+                    }}
+                >
                     Limpar Filtros
                 </Button>
             </Box>
         ),
-        renderToolbarInternalActions: ({ table }) => <></>,
-        onColumnFiltersChange: setColumnFilters
+        enableToolbarInternalActions: false,
     });
 
     return (

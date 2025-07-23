@@ -60,7 +60,8 @@ class CreateRequisitionsTable extends Migration
                 ResultType::CANCELLED
             ]);
             $table->text('result_text')->nullable();
-            $table->boolean('editable');
+            $table->boolean('editable')->default(false);
+            $table->boolean("registered")->default(false);
         });
     }
 

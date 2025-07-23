@@ -54,6 +54,16 @@ class RequisitionController extends Controller
         }
         $latestDocumentsArray = array_values($latestDocuments);
 
+        $takenDisciplines = $requisition->takenDisciplines;
+        $maxVersions = [];
+        foreach ($takenDisciplines as $disc) {
+            $code = $disc->code ?? '';
+            if (!isset($maxVersions[$code]) || $disc->version > $maxVersions[$code]->version) {
+                $maxVersions[$code] = $disc;
+            }
+        }
+        $latestTakenDisciplines = array_values($maxVersions);
+
         $roleId = $user->current_role_id;
         switch ($roleId) {
             case RoleId::STUDENT:
@@ -81,12 +91,11 @@ class RequisitionController extends Controller
                 break;
         }
 
-
         return Inertia::render('RequisitionDetailPage', [
             'label' => 'Requerimentos',
             'selectedActions' => $selectedActions,
             'requisition' => $requisition,
-            'takenDiscs' => $requisition->takenDisciplines,
+            'takenDiscs' => $latestTakenDisciplines,
             'documents' => $latestDocumentsArray,
         ]);
     }
@@ -135,7 +144,7 @@ class RequisitionController extends Controller
                 $requisition->save();
 
                 $takenDiscsRecord = new Document;
-                $takenDiscsRecord->path = $validatedRequest['takenDiscRecord']->store('test');
+                $takenDiscsRecord->path = $validatedRequest['takenDiscRecord']->store('documents');
                 $takenDiscsRecord->requisition_id = $requisition->id;
                 $takenDiscsRecord->type = DocumentType::TAKEN_DISCS_RECORD;
                 $takenDiscsRecord->version = 1;
@@ -143,7 +152,7 @@ class RequisitionController extends Controller
                 $takenDiscsRecord->save();
 
                 $currentCourseRecord = new Document;
-                $currentCourseRecord->path = $validatedRequest['courseRecord']->store('test');
+                $currentCourseRecord->path = $validatedRequest['courseRecord']->store('documents');
                 $currentCourseRecord->requisition_id = $requisition->id;
                 $currentCourseRecord->type = DocumentType::CURRENT_COURSE_RECORD;
                 $currentCourseRecord->version = 1;
@@ -151,7 +160,7 @@ class RequisitionController extends Controller
                 $currentCourseRecord->save();
 
                 $takenDiscSyllabus = new Document;
-                $takenDiscSyllabus->path = $validatedRequest['takenDiscSyllabus']->store('test');
+                $takenDiscSyllabus->path = $validatedRequest['takenDiscSyllabus']->store('documents');
                 $takenDiscSyllabus->requisition_id = $requisition->id;
                 $takenDiscSyllabus->type = DocumentType::TAKEN_DISCS_SYLLABUS;
                 $takenDiscSyllabus->version = 1;
@@ -159,7 +168,7 @@ class RequisitionController extends Controller
                 $takenDiscSyllabus->save();
 
                 $requestedDiscSyllabus = new Document;
-                $requestedDiscSyllabus->path = $validatedRequest['requestedDiscSyllabus']->store('test');
+                $requestedDiscSyllabus->path = $validatedRequest['requestedDiscSyllabus']->store('documents');
                 $requestedDiscSyllabus->requisition_id = $requisition->id;
                 $requestedDiscSyllabus->type = DocumentType::REQUESTED_DISC_SYLLABUS;
                 $requestedDiscSyllabus->version = 1;
@@ -496,7 +505,7 @@ class RequisitionController extends Controller
     private function updateDocumentData($requisitionId, $documentData, $documentType, $newVersion)
     {
         $document = new Document;
-        $document->path = $documentData->store('test');
+        $document->path = $documentData->store('documents');
         $document->hash = hash_file('sha256', $documentData->getRealPath());
         $document->version = $newVersion;
         $document->requisition_id = $requisitionId;
@@ -555,6 +564,8 @@ class RequisitionController extends Controller
             $requisition->situation = EventType::RESENT_BY_STUDENT;
             $requisition->internal_status = EventType::RESENT_BY_STUDENT;
         }
+        $requisition->result = "Sem resultado";
+        $requisition->result_text = "";
         $requisition->latest_version = $requisition->latest_version + 1;
         $requisition->save();
     }
@@ -597,7 +608,7 @@ class RequisitionController extends Controller
 
     private function notifyDepartment($requisitionId) {
         $requisitionDepartment = Requisition::find($requisitionId)->department;
-        $departmentId = Department::where('code', $requisitionDepartment)->first()->id;
+        $departmentId = Department::where('name', $requisitionDepartment)->first()->id;
         $departmentUsers = DepartmentUserRole::getUsersWithRoleAndDepartment(RoleId::SECRETARY, $departmentId);
 
         foreach ($departmentUsers as $departmentUser) {
@@ -798,6 +809,8 @@ class RequisitionController extends Controller
             $xml .= '</Table>';
             $xml .= '</Worksheet>';
             $xml .= '</Workbook>';
+
+            echo $xml;
         }, 200, [
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'Content-Disposition' => 'attachment; filename="requisitions_export.xlsx"',

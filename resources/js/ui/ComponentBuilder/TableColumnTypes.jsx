@@ -12,7 +12,6 @@ columnTypes.id = {
             </Typography>,
     accessorKey: 'id',
     enableHiding: false,
-    enableSorting: false,
     size: 0
 };
 
@@ -24,13 +23,13 @@ columnTypes.created_at = {
                 <b>Data<br /> de criação</b>
             </Typography>,
     accessorKey: 'created_at',
-    accessorFn: (row) => {
-        const date = new Date(row.created_at);
+    sortingFn: 'datetime',
+    Cell: ({ row }) => {
+        const date = new Date(row.original.created_at);
         const pad = (n) => n.toString().padStart(2, '0');
         return `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
     },
     enableHiding: false,
-    enableColumnActions: false,
     size: 0
 };
 
@@ -42,12 +41,13 @@ columnTypes.updated_at = {
                 <b>Última <br /> modificação</b>
             </Typography>,
     accessorKey: 'updated_at',
-    accessorFn: (row) => {
-        const date = new Date(row.updated_at);
+    sortingFn: 'datetime',
+    Cell: ({ row }) => {
+        const date = new Date(row.original.updated_at);
         const pad = (n) => n.toString().padStart(2, '0');
         return `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
-    },    enableHiding: false,
-    enableColumnActions: false,
+    },
+    enableHiding: false,
     size: 0
 };
 
@@ -72,12 +72,12 @@ columnTypes.situation = {
             </Typography>,
     accessorKey: 'situation',
     enableHiding: false,
-    accessorFn: (row) => (
+    Cell: ({ renderedCellValue }) => (
         <Typography 
             variant="h7"
             style={{ wordBreak: 'break-word' }}
         >
-            {row.situation}
+            {renderedCellValue}
         </Typography>
     )
 };
@@ -91,13 +91,13 @@ columnTypes.internal_status = {
             </Typography>,
     accessorKey: 'internal_status',
     enableHiding: false,
-    accessorFn: (row) => (
+    Cell: ({ renderedCellValue }) => (
         <Typography 
             variant="subtitle1"
             width={250}
             style={{ wordBreak: 'break-word', whiteSpace: "pre-line" }}
         >
-            {row.internal_status}
+            {renderedCellValue}
         </Typography>
     )
 };
@@ -123,7 +123,6 @@ columnTypes.student_nusp = {
             </Typography>,
     accessorKey: 'student_nusp',
     enableHiding: false,
-    enableColumnActions: false,
     size: 0
 };
 
@@ -196,7 +195,6 @@ columnTypes.ocurrence_time  = {
             </Typography>,
     accessorFn: (row) => row.created_at.slice(11, 19),
     enableHiding: false,
-    enableColumnActions: false,
     size: 0
 };
 
