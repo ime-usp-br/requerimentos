@@ -811,7 +811,7 @@ class RequisitionController extends Controller
         $validator = Validator::make($request->all(), [
             'requisitionId' => 'required|exists:requisitions,id',
             'result' => 'required|string',
-            'result_text' => 'required_if:result,Indeferido|required_if:result,Cancelado|nullable|string',
+            'result_text' => 'required_if:result,' . ResultType::REJECTED . '|required_if:result,' . ResultType::CANCELLED . '|nullable|string',
         ]);
         
         if ($validator->fails()) {
