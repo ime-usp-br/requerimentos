@@ -626,7 +626,7 @@ class RequisitionController extends Controller
             // Atualiza a situação para "parecer deferido automaticamente"
             $requisition = Requisition::find($request['requisitionId']);
             $requisitionId = $request['requisitionId'];
-            $requisition->situation = EventType::AUTOMATIC_DEFERRAL;
+            $requisition->situation = EventType::RETURNED_BY_REVIEWER;
             $requisition->internal_status = EventType::AUTOMATIC_DEFERRAL;
             $requisition->registered = false;
             $requisition->save();
