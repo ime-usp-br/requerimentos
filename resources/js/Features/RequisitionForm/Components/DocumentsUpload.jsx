@@ -142,17 +142,8 @@ const DocumentsUpload = ({data, setData, isUpdate = false, errors = {}}) => {
             </Alert>
 
             <DocumentField
-                title="Histórico escolar da instituição de origem (PDF, max 512KB)"
-                documentKey="takenDiscRecord"
-                data={data}
-                setData={setData}
-                isUpdate={isUpdate}
-                errors={errors}
-            />
-
-            <DocumentField
-                title="Histórico escolar do curso atual (máx. 512KB)"
-                documentKey="courseRecord"
+                title="Ementa da disciplina a ser dispensada (máx. 512KB)"
+                documentKey="requestedDiscSyllabus"
                 data={data}
                 setData={setData}
                 isUpdate={isUpdate}
@@ -169,8 +160,17 @@ const DocumentsUpload = ({data, setData, isUpdate = false, errors = {}}) => {
             />
 
             <DocumentField
-                title="Ementa da disciplina a ser dispensada (máx. 512KB)"
-                documentKey="requestedDiscSyllabus"
+                title="Histórico escolar da instituição de origem (PDF, max 512KB)"
+                documentKey="takenDiscRecord"
+                data={data}
+                setData={setData}
+                isUpdate={isUpdate}
+                errors={errors}
+            />
+
+            <DocumentField
+                title="Histórico escolar do curso atual (máx. 512KB)"
+                documentKey="courseRecord"
                 data={data}
                 setData={setData}
                 isUpdate={isUpdate}
