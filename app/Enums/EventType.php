@@ -17,4 +17,25 @@ class EventType
     const ACCEPTED = 'Requerimento deferido';
     const REJECTED = 'Requerimento indeferido';
     const IN_REVALUATION = 'Requerimento em reavaliação';
+    const CANCELLED = 'Requerimento cancelado';
+
+    public static function values()
+    {
+        return [
+            self::SENT_TO_SG,
+            self::BACK_TO_STUDENT,
+            self::UPDATED_BY_STUDENT,
+            self::UPDATED_BY_SG,
+            self::RESENT_BY_STUDENT,
+            self::SENT_TO_DEPARTMENT,
+            self::SENT_TO_REVIEWERS,
+            self::RETURNED_BY_REVIEWER,
+            self::AUTOMATIC_DEFERRAL,
+            self::REGISTERED,
+            self::ACCEPTED,
+            self::REJECTED,
+            self::IN_REVALUATION,
+            self::CANCELLED,
+        ];
+    }
 }
