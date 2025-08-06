@@ -113,7 +113,7 @@ class RequisitionController extends Controller
 
     public function newRequisitionPost(RequisitionCreationRequest $request)
     {
-        $validatedRequest = $request->validated();
+        $validatedRequest = $request->validated(); 
 
         try {
             $user = Auth::user();
@@ -205,6 +205,10 @@ class RequisitionController extends Controller
 
             return Inertia::location(route('list'));
         } catch (\Exception $e) {
+            Log::error('Error creating new requisition', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             abort(500, $e->getMessage());
         }
     }

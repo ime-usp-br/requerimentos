@@ -167,7 +167,7 @@ class ReviewController extends Controller
 
     private function notifyReviewGiven($requisitionId) {
         $requisitionDepartment = Requisition::find($requisitionId)->department;
-        $departmentId = Department::where('code', $requisitionDepartment)->first()->id;
+        $departmentId = Department::where('name', $requisitionDepartment)->first()->id;
         $departmentUsers = DepartmentUserRole::getUsersWithRoleAndDepartment(RoleId::SECRETARY, $departmentId);
 
         foreach ($departmentUsers as $departmentUser) {
