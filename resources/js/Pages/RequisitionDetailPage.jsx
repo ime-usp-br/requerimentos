@@ -8,20 +8,17 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 const RequisitionDetailPage = ({ label,
     selectedActions,
     requisition,
-    takenDiscs,
-    documents }) => {
-
-    // Use MUI theme breakpoints to determine variant
-
+    latestDocuments,
+    latestTakenDisciplines
+}) => {
     const theme = useTheme();
     const isMediumOrLarger = useMediaQuery(theme.breakpoints.up('md'));
     const actionsVariant = isMediumOrLarger ? 'box' : 'bar';
 
-    documents.sort((x, y) => x.type > y.type);
-    requisition.documents.sort((x, y) => x.type > y.type);
+    const sortedDocuments = latestDocuments.sort((a, b) => a.type.localeCompare(b.type));
 
     return (
-        <RequisitionProvider requisitionData={{...requisition, 'takenDiscs': takenDiscs}}>
+        <RequisitionProvider requisitionData={{...requisition, takenDiscs: latestTakenDisciplines, documents: sortedDocuments}}>
             <BasePage
                 headerProps={{
                     label: label,
@@ -32,7 +29,7 @@ const RequisitionDetailPage = ({ label,
                     variant: actionsVariant
                 }}
             >
-                <RequisitionDetail takenDiscs={takenDiscs} documents={documents} />
+                <RequisitionDetail takenDiscs={latestTakenDisciplines} documents={sortedDocuments} />
             </BasePage>
         </RequisitionProvider>
     );

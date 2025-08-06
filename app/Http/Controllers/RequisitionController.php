@@ -94,9 +94,9 @@ class RequisitionController extends Controller
         return Inertia::render('RequisitionDetailPage', [
             'label' => 'Requerimentos',
             'selectedActions' => $selectedActions,
-            'requisition' => $requisition,
-            'takenDiscs' => $latestTakenDisciplines,
-            'documents' => $latestDocumentsArray,
+            'requisition' => $requisition->makeHidden(['documents', 'takenDisciplines']),
+            'latestDocuments' => $latestDocumentsArray,
+            'latestTakenDisciplines' => $latestTakenDisciplines
         ]);
     }
 
