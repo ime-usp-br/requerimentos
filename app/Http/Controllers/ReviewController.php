@@ -108,7 +108,6 @@ class ReviewController extends Controller
     
     public function submit(Request $request)
     {
-
         // Validate the request using Laravel's validation system with translations
         $validator = Validator::make($request->all(), [
             'requisitionId' => 'required|exists:requisitions,id',
