@@ -28,6 +28,8 @@ use App\Notifications\RegisteredNotification;
 use App\Notifications\RequisitionCreatedNotification;
 use App\Notifications\RequisitionUpdatedNotification;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Illuminate\Support\Facades\Log;
+
 
 class RequisitionController extends Controller
 {
@@ -53,6 +55,16 @@ class RequisitionController extends Controller
             }
         }
         $latestDocumentsArray = array_values($latestDocuments);
+
+        $takenDisciplines = $requisition->takenDisciplines;
+        $maxVersions = [];
+        foreach ($takenDisciplines as $disc) {
+            $code = $disc->code ?? '';
+            if (!isset($maxVersions[$code]) || $disc->version > $maxVersions[$code]->version) {
+                $maxVersions[$code] = $disc;
+            }
+        }
+        $latestTakenDisciplines = array_values($maxVersions);
 
         $roleId = $user->current_role_id;
         switch ($roleId) {
@@ -81,12 +93,11 @@ class RequisitionController extends Controller
                 break;
         }
 
-
         return Inertia::render('RequisitionDetailPage', [
             'label' => 'Requerimentos',
             'selectedActions' => $selectedActions,
             'requisition' => $requisition,
-            'takenDiscs' => $requisition->takenDisciplines,
+            'takenDiscs' => $latestTakenDisciplines,
             'documents' => $latestDocumentsArray,
         ]);
     }
@@ -135,7 +146,7 @@ class RequisitionController extends Controller
                 $requisition->save();
 
                 $takenDiscsRecord = new Document;
-                $takenDiscsRecord->path = $validatedRequest['takenDiscRecord']->store('test');
+                $takenDiscsRecord->path = $validatedRequest['takenDiscRecord']->store('documents');
                 $takenDiscsRecord->requisition_id = $requisition->id;
                 $takenDiscsRecord->type = DocumentType::TAKEN_DISCS_RECORD;
                 $takenDiscsRecord->version = 1;
@@ -143,7 +154,7 @@ class RequisitionController extends Controller
                 $takenDiscsRecord->save();
 
                 $currentCourseRecord = new Document;
-                $currentCourseRecord->path = $validatedRequest['courseRecord']->store('test');
+                $currentCourseRecord->path = $validatedRequest['courseRecord']->store('documents');
                 $currentCourseRecord->requisition_id = $requisition->id;
                 $currentCourseRecord->type = DocumentType::CURRENT_COURSE_RECORD;
                 $currentCourseRecord->version = 1;
@@ -151,7 +162,7 @@ class RequisitionController extends Controller
                 $currentCourseRecord->save();
 
                 $takenDiscSyllabus = new Document;
-                $takenDiscSyllabus->path = $validatedRequest['takenDiscSyllabus']->store('test');
+                $takenDiscSyllabus->path = $validatedRequest['takenDiscSyllabus']->store('documents');
                 $takenDiscSyllabus->requisition_id = $requisition->id;
                 $takenDiscSyllabus->type = DocumentType::TAKEN_DISCS_SYLLABUS;
                 $takenDiscSyllabus->version = 1;
@@ -159,7 +170,7 @@ class RequisitionController extends Controller
                 $takenDiscSyllabus->save();
 
                 $requestedDiscSyllabus = new Document;
-                $requestedDiscSyllabus->path = $validatedRequest['requestedDiscSyllabus']->store('test');
+                $requestedDiscSyllabus->path = $validatedRequest['requestedDiscSyllabus']->store('documents');
                 $requestedDiscSyllabus->requisition_id = $requisition->id;
                 $requestedDiscSyllabus->type = DocumentType::REQUESTED_DISC_SYLLABUS;
                 $requestedDiscSyllabus->version = 1;
@@ -496,7 +507,7 @@ class RequisitionController extends Controller
     private function updateDocumentData($requisitionId, $documentData, $documentType, $newVersion)
     {
         $document = new Document;
-        $document->path = $documentData->store('test');
+        $document->path = $documentData->store('documents');
         $document->hash = hash_file('sha256', $documentData->getRealPath());
         $document->version = $newVersion;
         $document->requisition_id = $requisitionId;
@@ -555,6 +566,8 @@ class RequisitionController extends Controller
             $requisition->situation = EventType::RESENT_BY_STUDENT;
             $requisition->internal_status = EventType::RESENT_BY_STUDENT;
         }
+        $requisition->result = "Sem resultado";
+        $requisition->result_text = "";
         $requisition->latest_version = $requisition->latest_version + 1;
         $requisition->save();
     }
@@ -597,7 +610,7 @@ class RequisitionController extends Controller
 
     private function notifyDepartment($requisitionId) {
         $requisitionDepartment = Requisition::find($requisitionId)->department;
-        $departmentId = Department::where('code', $requisitionDepartment)->first()->id;
+        $departmentId = Department::where('name', $requisitionDepartment)->first()->id;
         $departmentUsers = DepartmentUserRole::getUsersWithRoleAndDepartment(RoleId::SECRETARY, $departmentId);
 
         foreach ($departmentUsers as $departmentUser) {
@@ -716,92 +729,138 @@ class RequisitionController extends Controller
     }
 
     public function exportRequisitionsPost(Request $request)
-    {
-        $query = Requisition::with(['reviews', 'requisitionsVersions', 'events']);
+    {   
+        Log::info('Export requisitions started', ['request_data' => $request->all()]);
+        
+        try {
+            $query = Requisition::with(['reviews', 'requisitionsVersions', 'events']);
 
-        if ($request->department !== 'Todos') {
-            $query->where('department', $request->department);
-        }
-
-        if ($request->internal_status !== 'Todos') {
-            $query->where('result', $request->internal_status);
-        }
-
-        if ($request->requested_disc_type !== 'Todos') {
-            $query->where('requested_disc_type', $request->requested_disc_type);
-        }
-
-        if ($request->start_date) {
-            $query->where('created_at', '>=', $request->start_date);
-        }
-
-        if ($request->end_date) {
-            $query->where('created_at', '<=', $request->end_date);
-        }
-
-        $requisitions = $query->get();
-
-        $exportData = $requisitions->map(function ($requisition) {
-            $setToDepartment = $requisition->getRelation('events')->filter(function ($item) {
-                return $item->type == 'Enviado para análise do departamento';
-            })->last();
-
-            $registeredAtJupiter = $requisition->getRelation('events')->filter(function ($item) {
-                return $item->type == 'Aguardando avaliação da CG';
-            })->last();
-
-            $reviewIsEmpty = $requisition->getRelation('reviews')->isEmpty();
-
-            $reviews = '';
-            foreach ($requisition->getRelation('reviews') as $review) {
-                $review += $review->reviewer_decision + ';';
+            if ($request->department !== 'Todos') {
+                $query->where('department', $request->department);
             }
 
-            $data = [
-                'Nome' => $requisition->student_name,
-                'Número USP' => $requisition->student_nusp,
-                'Curso' => $requisition->course,
-                'Data de abertura do Requerimento' => $requisition->created_at->format('d-m-Y'),
-                'Disciplina a ser dispensada' => $requisition->requested_disc_code,
-                'Departamento responsável' => $requisition->department,
-                'Situação' => $requisition->internal_status,
-                'Data de encaminhamento ao departamento/unidade' => $setToDepartment != null ? $setToDepartment->created_at->format('d-m-Y') : null,
-                'Parecer' => $reviewIsEmpty ? null : $reviews,
-                'Parecerista' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->reviewer_name,
-                'Data do parecer' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->updated_at->format('d-m-Y'),
-                'Data do registro no Júpiter pelo Departamento' => $registeredAtJupiter != null ? $registeredAtJupiter->created_at->format('d-m-Y') : null
-            ];
-
-            return $data;
-        });
-
-        return new StreamedResponse(function() use ($exportData) {
-            $xml = '<?xml version="1.0" encoding="UTF-8"?>';
-            $xml .= '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">';
-            $xml .= '<Worksheet ss:Name="Sheet1">';
-            $xml .= '<Table>';
-
-            $xml .= '<Row>';
-            foreach (array_keys($exportData->first()) as $header) {
-                $xml .= '<Cell><Data ss:Type="String">' . htmlspecialchars($header) . '</Data></Cell>';
+            if ($request->internal_status !== 'Todos') {
+                $query->where('result', $request->internal_status);
             }
-            $xml .= '</Row>';
 
-            foreach ($exportData as $row) {
-                $xml .= '<Row>';
-                foreach ($row as $cell) {
-                    $xml .= '<Cell><Data ss:Type="String">' . htmlspecialchars($cell) . '</Data></Cell>';
+            if ($request->requested_disc_type !== 'Todos') {
+                $query->where('requested_disc_type', $request->requested_disc_type);
+            }
+
+            if ($request->start_date) {
+                $query->where('created_at', '>=', $request->start_date);
+            }
+
+            if ($request->end_date) {
+                $query->where('created_at', '<=', $request->end_date);
+            }
+
+            $requisitions = $query->get();
+
+            if ($requisitions->isEmpty()) {
+                return response()->json(['message' => 'No requisitions found'], 404);
+            }
+
+            $exportData = $requisitions->map(function ($requisition, $index) {                
+                try {
+                    $sentToDepartment = $requisition->getRelation('events')->filter(function ($item) {
+                        return $item->type == 'Enviado para análise do departamento';
+                    })->last();
+
+                    $registeredAtJupiter = $requisition->getRelation('events')->filter(function ($item) {
+                        return $item->type == 'Aguardando avaliação da CG';
+                    })->last();
+
+                    $reviewIsEmpty = $requisition->getRelation('reviews')->isEmpty();
+
+                    $reviews = '';
+                    foreach ($requisition->getRelation('reviews') as $review) {
+                        $reviews .= $review->reviewer_decision . ';';
+                    }
+
+                    $data = [
+                        'Nome' => $requisition->student_name,
+                        'Número USP' => $requisition->student_nusp,
+                        'Curso' => $requisition->course,
+                        'Data de abertura do Requerimento' => $requisition->created_at->format('d-m-Y'),
+                        'Disciplina a ser dispensada' => $requisition->requested_disc_code,
+                        'Departamento responsável' => $requisition->department,
+                        'Situação' => $requisition->internal_status,
+                        'Data de encaminhamento ao departamento/unidade' => $sentToDepartment != null ? $sentToDepartment->created_at->format('d-m-Y') : null,
+                        'Parecer' => $reviewIsEmpty ? null : $reviews,
+                        'Parecerista' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->reviewer_name,
+                        'Data do parecer' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->updated_at->format('d-m-Y'),
+                        'Data do registro no Júpiter pelo Departamento' => $registeredAtJupiter != null ? $registeredAtJupiter->created_at->format('d-m-Y') : null
+                    ];
+
+                    return $data;
+                } catch (\Exception $e) {
+                    Log::error("Export error while processing requisition {$index}", [
+                        'requisition_id' => $requisition->id,
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString()
+                    ]);
+                    throw $e;
                 }
-                $xml .= '</Row>';
+            });
+
+            if ($exportData->isEmpty()) {
+                Log::warning('Export data is empty after mapping');
+                return response()->json(['message' => 'No data to export'], 404);
             }
 
-            $xml .= '</Table>';
-            $xml .= '</Worksheet>';
-            $xml .= '</Workbook>';
-        }, 200, [
-            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition' => 'attachment; filename="requisitions_export.xlsx"',
-        ]);
+            return new StreamedResponse(function() use ($exportData) {                
+                try {
+                    $xml = '<?xml version="1.0" encoding="UTF-8"?>';
+                    $xml .= '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">';
+                    $xml .= '<Worksheet ss:Name="Sheet1">';
+                    $xml .= '<Table>';
+
+                    $xml .= '<Row>';
+                    foreach (array_keys($exportData->first()) as $header) {
+                        $xml .= '<Cell><Data ss:Type="String">' . htmlspecialchars($header) . '</Data></Cell>';
+                    }
+                    $xml .= '</Row>';
+
+                    foreach ($exportData as $index => $row) {
+                        $xml .= '<Row>';
+                        foreach ($row as $cell) {
+                            $xml .= '<Cell><Data ss:Type="String">' . htmlspecialchars($cell) . '</Data></Cell>';
+                        }
+                        $xml .= '</Row>';
+                    }
+
+                    $xml .= '</Table>';
+                    $xml .= '</Worksheet>';
+                    $xml .= '</Workbook>';
+
+                    echo $xml;
+                    
+                } catch (\Exception $e) {
+                    Log::error('Error in StreamedResponse callback', [
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString()
+                    ]);
+                    throw $e;
+                }
+            }, 200, [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Disposition' => 'attachment; filename="requisitions_export.xlsx"',
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Export requisitions failed', [
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'error' => 'Export failed',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function setRequisitionResult(Request $request) 

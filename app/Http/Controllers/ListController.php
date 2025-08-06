@@ -62,11 +62,11 @@ class ListController extends Controller
 
         $selectedColumns = ['id', 'created_at', 'updated_at', 'requested_disc', 'situation', 'department'];
 
-        $departmentCode = Department::where('id', $user->current_department_id)->value('code');
+        $departmentName = Department::where('id', $user->current_department_id)->value('name');
 
         $requisitions = Requisition::with('takenDisciplines')
             ->select($selectedColumns)
-            ->where('department', $departmentCode)
+            ->where('department', $departmentName)
             ->whereIn('situation', $statuses)
             ->get();
 

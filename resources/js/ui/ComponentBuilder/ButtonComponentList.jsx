@@ -25,7 +25,7 @@ import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import { useDialogContext } from '../../Context/useDialogContext';
 import { useRequisitionContext } from '../../Features/RequisitionDetail/useRequisitionContext';
 import { useUser } from "../../Context/useUserContext";
-import ListOfReviewers from "../../Features/RequisitionDetail/ReviewerPicker";
+import ReviewerPicker from "../../Features/RequisitionDetail/ReviewerPicker";
 import ActionSuccessful from "../../Dialogs/ActionSuccessful";
 import AddRoleDialog from "../../Features/Admin/AddRoleDialog";
 import RequisitionsPeriodDialog from "../../Features/Admin/RequisitionsPeriodDialog";
@@ -471,7 +471,7 @@ buttonComponentList.send_to_reviewers = ({ styles = {} }) => {
             .then((response) => {
                 setDialogTitle('Lista de pareceristas');
                 setDialogBody(
-                    <ListOfReviewers
+                    <ReviewerPicker
                         requisitionId={requisitionData.id}
                         reviewers={response.data}
                         closeDialog={closeDialog}

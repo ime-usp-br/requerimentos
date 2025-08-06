@@ -43,6 +43,7 @@ export default function HeaderActions({
     const { user } = useUser();
     const userRoles = user?.roles || [];
     const roleId = user?.currentRoleId;
+    const departmentId = user?.currentDepartmentId;
 
     const handleComboBoxChange = (value) => {
         router.post(
@@ -58,7 +59,7 @@ export default function HeaderActions({
         if (!option.department)
             return option.role.name;
 
-        return option.role.name + " do " + option.department.name;
+        return option.role.name + " " + option.department.code;
     };
 
     let builder = new Builder(buttonComponentList);
@@ -70,7 +71,7 @@ export default function HeaderActions({
                     size='small'
                     options={userRoles}
                     optionGetter={getRoleName}
-                    value={userRoles.find(val => val.role_id == roleId) || null}
+                    value={userRoles.find(val => (val.role_id == roleId) && (val.department_id == departmentId)) || null}
                     name='Papel'
                     onChange={handleComboBoxChange}
                 />
