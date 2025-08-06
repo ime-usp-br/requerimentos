@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 use App\Enums\RoleId;
 use App\Enums\EventType;
+use App\Enums\ResultType;
 use App\Enums\DocumentType;
-use App\Enums\ReviewerDecision;
 use App\Models\User;
 use App\Models\Department;
 use App\Models\DepartmentUserRole;
@@ -98,9 +98,9 @@ class RequisitionController extends Controller
         return Inertia::render('RequisitionDetailPage', [
             'label' => 'Requerimentos',
             'selectedActions' => $selectedActions,
-            'requisition' => $requisition,
-            'takenDiscs' => $latestTakenDisciplines,
-            'documents' => $latestDocumentsArray,
+            'requisition' => $requisition->makeHidden(['documents', 'takenDisciplines']),
+            'latestDocuments' => $latestDocumentsArray,
+            'latestTakenDisciplines' => $latestTakenDisciplines
         ]);
     }
 
@@ -115,7 +115,7 @@ class RequisitionController extends Controller
 
     public function newRequisitionPost(RequisitionCreationRequest $request)
     {
-        $validatedRequest = $request->validated();
+        $validatedRequest = $request->validated(); 
 
         try {
             $user = Auth::user();
@@ -140,7 +140,7 @@ class RequisitionController extends Controller
                 $requisition->department = $validatedRequest['requestedDiscDepartment'];
                 $requisition->situation = EventType::SENT_TO_SG;
                 $requisition->internal_status = EventType::SENT_TO_SG;
-                $requisition->result = 'Sem resultado';
+                $requisition->result = ResultType::PENDING;
                 $requisition->result_text = null;
                 $requisition->observations = $validatedRequest["observations"] ?? "";
                 $requisition->latest_version = 1;
@@ -207,6 +207,10 @@ class RequisitionController extends Controller
 
             return Inertia::location(route('list'));
         } catch (\Exception $e) {
+            Log::error('Error creating new requisition', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             abort(500, $e->getMessage());
         }
     }
@@ -628,7 +632,7 @@ class RequisitionController extends Controller
             // Atualiza a situação para "parecer deferido automaticamente"
             $requisition = Requisition::find($request['requisitionId']);
             $requisitionId = $request['requisitionId'];
-            $requisition->situation = EventType::AUTOMATIC_DEFERRAL;
+            $requisition->situation = EventType::RETURNED_BY_REVIEWER;
             $requisition->internal_status = EventType::AUTOMATIC_DEFERRAL;
             $requisition->registered = false;
             $requisition->save();
@@ -638,7 +642,7 @@ class RequisitionController extends Controller
             $review->reviewer_name = $user->name;
             $review->reviewer_nusp = $user->codpes;
             $review->requisition_id = $requisitionId;
-            $review->reviewer_decision = ReviewerDecision::ACCEPTED;
+            $review->reviewer_decision = ResultType::ACCEPTED;
             $review->justification = 'Deferimento automático';
             $review->latest_version = 1;
             $review->save();
@@ -836,7 +840,7 @@ class RequisitionController extends Controller
         $validator = Validator::make($request->all(), [
             'requisitionId' => 'required|exists:requisitions,id',
             'result' => 'required|string',
-            'result_text' => 'required_if:result,Indeferido|nullable|string',
+            'result_text' => 'required_if:result,' . ResultType::REJECTED . '|required_if:result,' . ResultType::CANCELLED . '|nullable|string',
         ]);
         
         if ($validator->fails()) {
@@ -893,15 +897,17 @@ class RequisitionController extends Controller
     private function getResultEventTypeFrom($updateRequest)
     {
         switch ($updateRequest["result"]) {
-            case "Inconsistência nas informações":
+            case ResultType::INCONSISTENT:
                 $resultType = EventType::BACK_TO_STUDENT;
                 break;
-            case "Deferido":
+            case ResultType::ACCEPTED:
                 $resultType = EventType::ACCEPTED;
                 break;
-            case "Indeferido":
+            case ResultType::REJECTED:
                 $resultType = EventType::REJECTED;
                 break;
+            case ResultType::CANCELLED:
+                $resultType = EventType::CANCELLED;
         }
         return $resultType;
     }

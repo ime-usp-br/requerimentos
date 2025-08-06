@@ -108,7 +108,6 @@ class ReviewController extends Controller
     
     public function submit(Request $request)
     {
-
         // Validate the request using Laravel's validation system with translations
         $validator = Validator::make($request->all(), [
             'requisitionId' => 'required|exists:requisitions,id',
@@ -168,7 +167,7 @@ class ReviewController extends Controller
 
     private function notifyReviewGiven($requisitionId) {
         $requisitionDepartment = Requisition::find($requisitionId)->department;
-        $departmentId = Department::where('code', $requisitionDepartment)->first()->id;
+        $departmentId = Department::where('name', $requisitionDepartment)->first()->id;
         $departmentUsers = DepartmentUserRole::getUsersWithRoleAndDepartment(RoleId::SECRETARY, $departmentId);
 
         foreach ($departmentUsers as $departmentUser) {

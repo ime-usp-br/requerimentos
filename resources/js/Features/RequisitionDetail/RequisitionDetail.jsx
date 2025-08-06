@@ -17,8 +17,13 @@ const RequisitionDetail = ({
 			resultColor = "green";
 			break;
 		case "Indeferido":
-		case "Inconsistência nas informações":
 			resultColor = "red";
+			break;
+		case "Inconsistência nas informações":
+			resultColor = "orange";
+			break;
+		case "Cancelado":
+			resultColor = "grey";
 			break;
 		default:
 			resultColor = "";

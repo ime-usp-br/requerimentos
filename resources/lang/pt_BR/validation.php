@@ -141,7 +141,7 @@ return [
 
     'custom' => [
         'result_text' => [
-            'required_if' => 'Uma justificativa é necessária para indeferir.',
+            'required_if' => 'Uma justificativa é necessária.',
         ],
     ],
 
