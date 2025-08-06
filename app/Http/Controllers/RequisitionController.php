@@ -27,6 +27,8 @@ use App\Notifications\RequisitionResultNotification;
 use App\Notifications\RegisteredNotification;
 use App\Notifications\RequisitionCreatedNotification;
 use App\Notifications\RequisitionUpdatedNotification;
+use App\Exports\RequisitionsExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Support\Facades\Log;
 
@@ -813,45 +815,9 @@ class RequisitionController extends Controller
                 return response()->json(['message' => 'No data to export'], 404);
             }
 
-            return new StreamedResponse(function() use ($exportData) {                
-                try {
-                    $xml = '<?xml version="1.0" encoding="UTF-8"?>';
-                    $xml .= '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">';
-                    $xml .= '<Worksheet ss:Name="Sheet1">';
-                    $xml .= '<Table>';
-
-                    $xml .= '<Row>';
-                    foreach (array_keys($exportData->first()) as $header) {
-                        $xml .= '<Cell><Data ss:Type="String">' . htmlspecialchars($header) . '</Data></Cell>';
-                    }
-                    $xml .= '</Row>';
-
-                    foreach ($exportData as $index => $row) {
-                        $xml .= '<Row>';
-                        foreach ($row as $cell) {
-                            $xml .= '<Cell><Data ss:Type="String">' . htmlspecialchars($cell) . '</Data></Cell>';
-                        }
-                        $xml .= '</Row>';
-                    }
-
-                    $xml .= '</Table>';
-                    $xml .= '</Worksheet>';
-                    $xml .= '</Workbook>';
-
-                    echo $xml;
-                    
-                } catch (\Exception $e) {
-                    Log::error('Error in StreamedResponse callback', [
-                        'error' => $e->getMessage(),
-                        'trace' => $e->getTraceAsString()
-                    ]);
-                    throw $e;
-                }
-            }, 200, [
-                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                'Content-Disposition' => 'attachment; filename="requisitions_export.xlsx"',
-            ]);
-
+            $exportHandler = new RequisitionsExport($exportData);
+            return Excel::download($exportHandler, 'requisitions.xlsx');
+            
         } catch (\Exception $e) {
             Log::error('Export requisitions failed', [
                 'error' => $e->getMessage(),
