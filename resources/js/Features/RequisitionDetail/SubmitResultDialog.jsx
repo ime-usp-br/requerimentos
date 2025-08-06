@@ -62,6 +62,9 @@ function SubmitResultDialog({ requisitionId, type = 'requisition', submitRoute =
 								}
 								<FormControlLabel value="Deferido" control={<Radio />} label="Deferido" />
 								<FormControlLabel value="Indeferido" control={<Radio />} label="Indeferido" />
+								{type === 'requisition' &&
+									<FormControlLabel value="Cancelado" control={<Radio />} label="Cancelado" />
+								}
 							</RadioGroup>
 							{errors.result && (
 								<Typography

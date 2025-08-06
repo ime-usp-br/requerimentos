@@ -16,6 +16,9 @@ use App\Enums\DocumentType;
 use App\Enums\EventType;
 use App\Enums\DepartmentId;
 
+
+use App\Enums\ResultType;
+
 class RequisitionControllerTest extends TestCase
 {
     use RefreshDatabase;
@@ -1831,5 +1834,80 @@ class RequisitionControllerTest extends TestCase
             'requisition_id' => $requisition->id,
             'type' => EventType::REGISTERED,
         ]);
+    }
+
+    public function test_set_requisition_result_cancelled_success_for_sg()
+    {
+        $sgUser = User::factory()->create([
+            'codpes' => '777777',
+            'name' => 'Test SG Cancel',
+            'email' => 'sg_cancel@test.com',
+            'current_role_id' => RoleId::SG,
+        ]);
+        $this->actingAs($sgUser);
+
+        $studentUser = User::factory()->create([
+            'codpes' => '888888',
+        ]);
+
+        $requisition = Requisition::factory()->create([
+            'student_nusp' => $studentUser->codpes,
+            'student_name' => 'Cancel Student',
+            'email' => 'cancel_student@test.com',
+            'editable' => true,
+            'result' => 'Sem resultado',
+            'latest_version' => 1,
+        ]);
+        $payload = [
+            'requisitionId' => $requisition->id,
+            'result' => ResultType::CANCELLED,
+            'result_text' => 'Requisition cancelled by SG'
+        ];
+        $response = $this->post('/dar-resultado-ao-requerimento', $payload);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('requisitions', [
+            'id' => $requisition->id,
+            'result' => ResultType::CANCELLED,
+            'result_text' => 'Requisition cancelled by SG',
+            'situation' => EventType::CANCELLED,
+            'internal_status' => EventType::CANCELLED,
+        ]);
+        $this->assertDatabaseHas('events', [
+            'requisition_id' => $requisition->id,
+            'type' => EventType::CANCELLED,
+            'author_nusp' => '777777',
+            'version' => $requisition->latest_version,
+        ]);
+    }
+
+    public function test_set_requisition_result_cancelled_forbidden_for_non_sg_roles()
+    {
+        $nonAllowedRoles = [RoleId::STUDENT, RoleId::SECRETARY, RoleId::REVIEWER];
+
+        foreach ($nonAllowedRoles as $roleIndex => $role) {
+            $user = User::factory()->create([
+                'codpes' => '222' . $roleIndex,
+                'name' => 'Test User Cancel ' . $roleIndex,
+                'email' => 'user_cancel' . $roleIndex . '@test.com',
+                'current_role_id' => $role,
+            ]);
+            $this->actingAs($user);
+            $requisition = Requisition::factory()->create([
+                'student_nusp' => '222' . $roleIndex,
+                'student_name' => 'Test User Cancel ' . $roleIndex,
+                'email' => 'user_cancel' . $roleIndex . '@test.com',
+                'editable' => true,
+                'result' => 'Sem resultado',
+                'latest_version' => 1,
+            ]);
+            $payload = [
+                'requisitionId' => $requisition->id,
+                'result' => ResultType::CANCELLED,
+                'result_text' => 'Trying to cancel'
+            ];
+            $response = $this->post('/dar-resultado-ao-requerimento', $payload);
+            $response->assertStatus(403);
+        }
     }
 }

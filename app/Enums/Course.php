@@ -10,4 +10,16 @@ class Course
     const MAT_PURE = 'Bacharelado em Matemática';
     const MAT_COMP_APPLIED = 'Bacharelado em Matemática Aplicada e Computacional';
     const MAT_APPLIED = 'Bacharelado em Matemática Aplicada';
+
+    public static function values()
+    {
+        return [
+            self::BCC,
+            self::STATISTICS,
+            self::MAT_LIC,
+            self::MAT_PURE,
+            self::MAT_COMP_APPLIED,
+            self::MAT_APPLIED,
+        ];
+    }
 }
