@@ -220,7 +220,7 @@ class RequisitionController extends Controller
 
         foreach ($sgUsers as $sgUser) {
             if ($sgUser->email)
-                $sgUser->notify(new RequisitionCreatedNotification());
+                $sgUser->wrappedNotify(new RequisitionCreatedNotification());
         }
     }
 
@@ -583,7 +583,7 @@ class RequisitionController extends Controller
 
         foreach ($sgUsers as $sgUser) {
             if ($sgUser->email)
-                $sgUser->notify(new RequisitionUpdatedNotification());
+                $sgUser->wrappedNotify(new RequisitionUpdatedNotification());
         }
     }
 
@@ -621,7 +621,7 @@ class RequisitionController extends Controller
 
         foreach ($departmentUsers as $departmentUser) {
             if ($departmentUser->email)
-                $departmentUser->notify(new DepartmentNotification($departmentUser, $requisitionDepartment));
+                $departmentUser->wrappedNotify(new DepartmentNotification($departmentUser, $requisitionDepartment));
         }
     }
 
@@ -713,7 +713,7 @@ class RequisitionController extends Controller
 
         foreach ($sgUsers as $sgUser) {
             if ($sgUser->email)
-                $sgUser->notify(new RegisteredNotification($requisitionDepartment));
+                $sgUser->wrappedNotify(new RegisteredNotification($requisitionDepartment));
         }
 
     }
@@ -915,7 +915,7 @@ class RequisitionController extends Controller
     private function notifyRequisitionResult($student_nusp) {
         $studentUser = User::where('codpes', $student_nusp)->first();
         if($studentUser){
-            $studentUser->notify(new RequisitionResultNotification($studentUser));
+            $studentUser->wrappedNotify(new RequisitionResultNotification($studentUser));
         }
     }
 

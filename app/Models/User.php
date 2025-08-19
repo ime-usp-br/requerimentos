@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Role;
 use App\Models\Department;
 use App\Enums\RoleId;
@@ -52,6 +53,15 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function wrappedNotify($instance)
+    {
+        try {
+            $this->notify($instance);
+        } catch (\Exception $e) {
+            Log::error('Notification failed: ' . $e->getMessage());
+        }
     }
 
     /**

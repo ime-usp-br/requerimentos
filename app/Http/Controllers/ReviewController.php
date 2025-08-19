@@ -93,7 +93,7 @@ class ReviewController extends Controller
         $reviewerUser = User::where('codpes', $reviewer_nusp)->first();
 
         if ($reviewerUser->email) {
-            $reviewerUser->notify(new ReviewerNotification($reviewerUser));
+            $reviewerUser->wrappedNotify(new ReviewerNotification($reviewerUser));
         }
     }
 
@@ -172,7 +172,7 @@ class ReviewController extends Controller
 
         foreach ($departmentUsers as $departmentUser) {
             if ($departmentUser->email)
-                $departmentUser->notify(new ReviewGivenNotification($requisitionDepartment));
+                $departmentUser->wrappedNotify(new ReviewGivenNotification($requisitionDepartment));
         }
 
     }
