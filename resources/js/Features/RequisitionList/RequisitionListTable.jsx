@@ -1,11 +1,11 @@
 import React from 'react';
 import { useMemo, useState, useEffect } from 'react';
-import { MaterialReactTable, useMaterialReactTable, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton } from 'material-react-table';
+import { MaterialReactTable, useMaterialReactTable, MRT_ToggleFiltersButton } from 'material-react-table';
 
 // Make sure the imports are correct
-import PageviewIcon from '@mui/icons-material/Pageview';
-import { Link, Box, Button, TextField, InputAdornment } from '@mui/material';
+import { Link, Box, Button, TextField, InputAdornment, Divider, Stack, Grid2 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 import Builder from '../../ui/ComponentBuilder/Builder';
 import columnTypes from "../../ui/ComponentBuilder/TableColumnTypes";
@@ -14,7 +14,7 @@ function List({ requisitions, selectedColumns }) {
     let textStyle = {
         //simple styling with the `sx` prop, works just like a style prop in this example
         sx: {
-            fontSize: 18,
+            fontSize: 20,
         },
     };
     let builder = new Builder(columnTypes);
@@ -51,21 +51,49 @@ function List({ requisitions, selectedColumns }) {
         enableFilters: true,
         enableColumnFilters: true,
         enableTopToolbar: true,
-        enableColumnOrdering: true,
+        enableColumnOrdering: false,
         enableGlobalFilter: true,
         enableRowActions: true,
-        muiTableHeadCellProps: textStyle,
+        positionActionsColumn: 'last',
         muiTableBodyCellProps: textStyle,
         displayColumnDefOptions: {
             'mrt-row-actions': {
                 header: null,
-                size: 80,
+                size: 30,
             },
+        },
+        defaultColumn: {
+            minSize: 20
+        },
+        tableLayout: 'fixed',
+        muiTableHeadRowProps: () => ({
+            sx: {
+                backgroundColor: '#7CB4FD',
+                color: 'white'
+            }
+        }),
+        muiTableHeadCellProps: () => ({
+            sx: {
+                fontSize: 20,
+                color: 'white',
+
+            }
+        }),
+        muiTableBodyRowProps: ({ row }) => ({
+            sx: {
+                backgroundColor: row.index % 2 != 0 ? '#E3FAFF' : '#ffffff', // alternate colors
+            },
+        }),
+        muiTablePaperProps: {
+            elevation: 0,
+            sx: {
+                borderRadius: 0
+            }
         },
         renderRowActions: ({ row }) => (
             <Box display="flex" alignItems="center" justifyContent="center" height="100%">
                 <Link href={route('showRequisition', { requisitionId: row.original.id })} underline='never' color='textDisabled' display="flex" alignItems="center" justifyContent="center">
-                    <PageviewIcon fontSize="large" />
+                    <OpenInNewIcon fontSize="medium" />
                 </Link>
             </Box>
         ),
@@ -79,44 +107,70 @@ function List({ requisitions, selectedColumns }) {
         
         // Updated toolbar with functioning search box
         renderTopToolbar: ({ table }) => (
-            <Box
+            <Stack
                 sx={{
                     display: 'flex',
                     gap: '0.5rem',
-                    p: '8px',
+                    pb: '8px',
                     justifyContent: 'flex-start',
                     alignItems: 'center',
                 }}
             >
                 {/* Global filter textbox */}
-                <TextField
-                    placeholder="Buscar por tudo..."
-                    value={globalFilter ?? ''}
-                    onChange={(e) => setGlobalFilter(e.target.value)}
-                    size="small"
-                    variant="outlined"
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <SearchIcon />
-                            </InputAdornment>
-                        ),
-                    }}
-                    sx={{ width: '250px' }}
-                />
-                
-                <MRT_ToggleFiltersButton table={table} />
-                <Button 
-                    variant="outlined" 
-                    size="large"
-                    onClick={() => {
-                        setColumnFilters([]);
-                        setGlobalFilter('');
+                <Grid2
+                    container
+                    direction='row'
+                    sx={{
+                        width: '100%',
+                        marginTop: -6,
+                        marginRight: 4,
+                        marginLeft: 46,
+                        justifyContent: "flex-start",
+                        alignItems: 'center',
+                        position: 'fixed',
+                        zIndex: 20
                     }}
                 >
-                    Limpar Filtros
-                </Button>
-            </Box>
+                    <TextField
+                        placeholder="Buscar por tudo..."
+                        value={globalFilter ?? ''}
+                        onChange={(e) => setGlobalFilter(e.target.value)}
+                        size="medium"
+                        variant="standard"
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <SearchIcon />
+                                </InputAdornment>
+                            ),
+                        }}
+                        sx={{ width: '250px' }}
+                    />
+                    
+                    <MRT_ToggleFiltersButton 
+                        table={table}
+                    />
+                    <Button 
+                        variant="outlined" 
+                        size="large"
+                        onClick={() => {
+                            setColumnFilters([]);
+                            setGlobalFilter('');
+                        }}
+                    >
+                        Limpar Filtros
+                    </Button>
+                </Grid2>
+                
+                <Divider 
+                    orientation='horizontal' 
+                    flexItem 
+                    sx={{ 
+                        borderWidth: 5.5,
+                        bgcolor: '#FCA22D',
+                    }} 
+                />
+            </Stack>
         ),
         enableToolbarInternalActions: false,
     });
@@ -124,7 +178,9 @@ function List({ requisitions, selectedColumns }) {
     return (
         <Box
             sx={{
-                width: '100%'
+                width: '100%',
+                paddingX: 2,
+                boxSizing: 'border-box'
             }}
         >
             <MaterialReactTable table={table} />

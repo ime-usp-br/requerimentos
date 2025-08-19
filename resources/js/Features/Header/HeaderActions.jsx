@@ -19,21 +19,21 @@ const HeaderActionsContainer = styled(Stack)(({ theme }) => ({
 const StyledComboBox = styled(ComboBox)(({ theme }) => ({
     width: 250,
     userSelect: 'none',
-    '& .MuiInputLabel-root': { color: 'white', userSelect: 'none' },
-    '& .MuiInputLabel-root.Mui-focused': { color: 'white' },
-    '& .MuiOutlinedInput-root': { color: 'white', userSelect: 'none' },
-    '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
-    '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
-    '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
-    '& .MuiAutocomplete-popupIndicator': { color: 'white' },
-    '& .MuiSvgIcon-root': { color: 'white' }
+    // '& .MuiInputLabel-root': { color: 'white', userSelect: 'none' },
+    // '& .MuiInputLabel-root.Mui-focused': { color: 'white' },
+    // '& .MuiOutlinedInput-root': { color: 'white', userSelect: 'none' },
+    // '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+    // '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+    // '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+    // '& .MuiAutocomplete-popupIndicator': { color: 'white' },
+    // '& .MuiSvgIcon-root': { color: 'white' }
 }));
 
 const headerActionsButtonStyle = {
-    variant: 'outlined',
+    variant: 'text',
     sx: {
-        color: 'white',
-        borderColor: 'white'
+        color: 'black',
+        // borderColor: 'gray'
     }
 };
 

@@ -12,7 +12,7 @@ columnTypes.id = {
             </Typography>,
     accessorKey: 'id',
     enableHiding: false,
-    size: 0
+    size: 30
 };
 
 columnTypes.created_at = {
@@ -20,7 +20,7 @@ columnTypes.created_at = {
                 variant="h7" 
                 align="center" 
             >
-                <b>Data<br /> de criação</b>
+                <b>Criado em</b>
             </Typography>,
     accessorKey: 'created_at',
     sortingFn: 'datetime',
@@ -38,7 +38,7 @@ columnTypes.updated_at = {
                 variant="h7" 
                 align="center"
             >
-                <b>Última <br /> modificação</b>
+                <b>Últ. mod.</b>
             </Typography>,
     accessorKey: 'updated_at',
     sortingFn: 'datetime',
@@ -93,7 +93,7 @@ columnTypes.internal_status = {
     enableHiding: false,
     Cell: ({ renderedCellValue }) => (
         <Typography 
-            variant="subtitle1"
+            variant="h7"
             width={250}
             style={{ wordBreak: 'break-word', whiteSpace: "pre-line" }}
         >
@@ -119,7 +119,7 @@ columnTypes.student_nusp = {
                 variant="h7" 
                 align="center"
             >
-                <b>Número USP</b>
+                <b>NUSP</b>
             </Typography>,
     accessorKey: 'student_nusp',
     enableHiding: false,

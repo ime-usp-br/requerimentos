@@ -10,20 +10,21 @@ const PageContainer = styled(Stack)({
 	alignItems: 'center',
 	width: '100%',
 	paddingBottom: 20,
-	gap: "20px",
+	// gap: "20px",
 });
 
 const ContentContainer = styled(Stack)(({ direction }) => ({
 	flexDirection: direction,
 	alignItems: 'flex-start',
 	justifyContent: 'center',
-	width: '86%',
+	width: '100%',
 	paddingTop: 4,
 	gap: "20px",
 }));
 
 function BasePage({children, headerProps, actionsProps }){
 	const direction = actionsProps?.variant === "box" ? "row" : "column";
+	// actionsProps = false;
 	return (
 		<PageContainer>
 			<Header {...headerProps} />

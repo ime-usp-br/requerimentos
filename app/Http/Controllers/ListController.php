@@ -32,7 +32,7 @@ class ListController extends Controller
         }
         
         return Inertia::render('RequisitionListPage', [
-            'label' => 'Requerimentos',
+            'label' => 'Aproveitamento de Estudos',
             'requisitions' => $requisitions, 
             'selectedColumns' => $selectedColumns,
             'selectedActions' => $selectedActions,
@@ -47,7 +47,7 @@ class ListController extends Controller
     }
 
     private function sgList() { 
-        $selectedColumns = ['created_at', 'updated_at', 'id', 'student_name', 'student_nusp', 'internal_status', 'department'];
+        $selectedColumns = ['id', 'student_name', 'student_nusp', 'department', 'internal_status', 'created_at', 'updated_at'];
         $requisitions = Requisition::select($selectedColumns)->get();
         $selectedActions = [['admin', 'new_requisition', 'export']];
         return [$requisitions, $selectedColumns, $selectedActions];
