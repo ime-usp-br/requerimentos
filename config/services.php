@@ -35,4 +35,6 @@ return [
         ],
     ],
 
+    'replicado_is_active' => !empty(env('REPLICADO_HOST')),
+
 ];
