@@ -5,7 +5,6 @@ namespace Tests\Unit;
 use Tests\TestCase;
 use App\Models\Replicado\ReplicadoUser;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ReplicadoUserModelTest extends TestCase
 {
