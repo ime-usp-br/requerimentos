@@ -5,6 +5,7 @@ import {
     Typography,
     Autocomplete,
 } from "@mui/material";
+import AsyncSubjectAutocomplete from "./AsyncSubjectAutocomplete";
 
 const RequiredDisciplines = ({ data, setData, isUpdate, errors = {} }) => {
     const discTypes = [
@@ -27,29 +28,23 @@ const RequiredDisciplines = ({ data, setData, isUpdate, errors = {} }) => {
             <Typography variant={"subtitle1"}>
                 Disciplina a ser dispensada
             </Typography>
-            <TextField
-                size="small"
-                label="Nome da disciplina requerida"
-                required
-                value={data.requestedDiscName}
-                onChange={(e) =>
-                    setData("requestedDiscName", e.target.value)
-                }
-                disabled={isUpdate}
-                error={!!errors.requestedDiscName}
-                helperText={errors.requestedDiscName}
-            />
-            <TextField
-                size="small"
-                label="Sigla da disciplina requerida"
-                required
+            <AsyncSubjectAutocomplete
                 value={data.requestedDiscCode}
-                onChange={(e) =>
-                    setData("requestedDiscCode", e.target.value)
-                }
+                onChange={(selectedSubject) => {
+                    if (selectedSubject) {
+                        setData("requestedDiscCode", selectedSubject.code);
+                        // Always auto-fill the name field
+                        setData("requestedDiscName", selectedSubject.name);
+                    } else {
+                        setData("requestedDiscCode", "");
+                        setData("requestedDiscName", "");
+                    }
+                }}
                 disabled={isUpdate}
                 error={!!errors.requestedDiscCode}
                 helperText={errors.requestedDiscCode}
+                label="Código ou nome da disciplina requerida"
+                required
             />
             <Stack
                 direction="row"

@@ -14,6 +14,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RecordController;
 
 use App\Http\Controllers\DocumentsController;
+use App\Http\Controllers\SubjectController;
 
 Route::get('/', function () {
     return Inertia::render('Home');
@@ -32,10 +33,16 @@ Route::get('/phpinfo', function () {
 });
 
 // Route::get('/documento/{documentId}', [GlobalController::class, 'documentHandler'])
-    // ->name('document.show');
+// ->name('document.show');
 
 // ======== ACESSO AUTENTICADO ======== //
 Route::middleware('auth')->group(function () {
+    // API Routes
+    Route::prefix('api')->name('api.')->group(function () {
+        Route::get('/subjects/search', [SubjectController::class, 'search'])
+            ->name('subjects.search');
+    });
+
     Route::get('/lista', [ListController::class, 'list'])
         ->name('list');
     Route::get('/novo-requerimento', [RequisitionController::class, 'newRequisitionGet'])
