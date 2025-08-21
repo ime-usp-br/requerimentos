@@ -93,11 +93,13 @@ const AsyncSubjectAutocomplete = ({
                 if (typeof option === 'string') {
                     return option;
                 }
-                return option?.code || '';
+                return option?.code ? `${option.code} - ${option.name}` : '';
             }}
             renderOption={(props, option) => (
                 <li {...props} key={option.code}>
-                    {option.label}
+                    <div>
+                        <strong>{option.code}</strong> - {option.name}
+                    </div>
                 </li>
             )}
             loading={loading}
