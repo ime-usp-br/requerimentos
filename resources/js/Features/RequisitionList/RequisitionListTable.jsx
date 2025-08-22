@@ -42,7 +42,7 @@ const PREFILTER_PRED = {
 /**
  * Components
  */ 
-const PreFilterButton = styled(ButtonBase)(({ backgroundcolor, selected, children }) => ({
+const PreFilterButton = styled(ButtonBase)(({ backgroundcolor, selected, children, theme }) => ({
     align: 'center',
     backgroundColor: backgroundcolor || COLOR.ORANGE,
     paddingBlock: 4,
@@ -51,8 +51,15 @@ const PreFilterButton = styled(ButtonBase)(({ backgroundcolor, selected, childre
     color: 'white',
     fontWeight: 600,
     fontSize: 18,
-    width: '100px',
-    height: selected == children ? 50 : 35
+    [theme.breakpoints.up('md')]: {
+        width: '70px',
+    },
+    [theme.breakpoints.up('lg')]: {
+        width: '100px',
+    },
+    height: selected == children ? 50 : 35,
+    filter: selected == children ? 'opacity(1)' : 'opacity(.6)',
+    overflowX: 'hidden'
 }));
 PreFilterButton.defaultProps = {
     disableRipple: true
@@ -247,12 +254,15 @@ function List({ requisitions, selectedColumns }) {
                 <Grid2
                     container
                     direction='row'
-                    spacing={2}
+                    spacing={{
+                        md: .6,
+                        lg: 2,
+                    }}
                     sx={{
                         width: '100%',
                         height: '36px',
                         marginTop: -5.8,
-                        marginRight: 100,
+                        marginRight: 96,
                         // marginLeft: 46,
                         justifyContent: "flex-end",
                         alignItems: 'center',
