@@ -40,14 +40,14 @@ class ListController extends Controller
     }
 
     private function studentList($user) { 
-        $selectedColumns = ['id', 'created_at', 'requested_disc', 'situation'];
+        $selectedColumns = ['id', 'created_at', 'requested_disc_code', 'situation'];
         $requisitions = Requisition::with('takenDisciplines')->select($selectedColumns)->where('student_nusp', $user->codpes)->get();
         $selectedActions = [['new_requisition']];
         return [$requisitions, $selectedColumns, $selectedActions];
     }
 
     private function sgList() { 
-        $selectedColumns = ['id', 'student_name', 'student_nusp', 'department', 'internal_status', 'created_at', 'updated_at'];
+        $selectedColumns = ['id', 'student_name', 'student_nusp', 'requested_disc_code', 'department', 'created_at', 'updated_at', 'internal_status'];
         $requisitions = Requisition::select($selectedColumns)->get();
         $selectedActions = [['admin', 'new_requisition', 'export']];
         return [$requisitions, $selectedColumns, $selectedActions];

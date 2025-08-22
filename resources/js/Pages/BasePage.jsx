@@ -29,7 +29,7 @@ function BasePage({children, headerProps, actionsProps }){
 		<PageContainer>
 			<Header {...headerProps} />
 			<ContentContainer direction={direction}>
-				{actionsProps && <ActionsMenu {...actionsProps} />}
+				{/* {actionsProps && <ActionsMenu {...actionsProps} />} */}
 				{children}
 			</ContentContainer>
 		</PageContainer>

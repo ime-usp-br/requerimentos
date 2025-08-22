@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { router } from '@inertiajs/react'
-import { Stack } from '@mui/material';
+import { Stack, Popover, IconButton } from '@mui/material';
 
 import ComboBox from '../../ui/ComboBox';
 import Builder from '../../ui/ComponentBuilder/Builder';
 import buttonComponentList from '../../ui/ComponentBuilder/ButtonComponentList';
 import { useUser } from '../../Context/useUserContext';
 import { styled } from '@mui/material/styles';
+
+import MenuIcon from '@mui/icons-material/Menu';
+
+import ActionsMenu from '../../ui/ActionsMenu/ActionsMenu';
 
 const HeaderActionsContainer = styled(Stack)(({ theme }) => ({
     justifyContent: 'space-between',
@@ -39,11 +43,22 @@ const headerActionsButtonStyle = {
 
 export default function HeaderActions({
     showRoleSelector,
-    isExit }) {
+    selectedActions,
+    isExit,
+}) {
     const { user } = useUser();
     const userRoles = user?.roles || [];
     const roleId = user?.currentRoleId;
     const departmentId = user?.currentDepartmentId;
+
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+    const handleMenuClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
 
     const handleComboBoxChange = (value) => {
         router.post(
@@ -77,9 +92,27 @@ export default function HeaderActions({
                 />
             )}
 
-            {builder.build(isExit ? ['exit'] : ['go_back']).map((itemBuilder) =>
-                itemBuilder({ styles: headerActionsButtonStyle })
-            )}
+            <IconButton
+                size='large'
+                onClick={handleMenuClick}
+            >
+                <MenuIcon />
+            </IconButton>
+
+            <Popover
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleMenuClose}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                }}
+            >
+                {/* {builder.build(isExit ? ['exit'] : ['go_back']).map((itemBuilder) =>
+                    itemBuilder({ styles: headerActionsButtonStyle })
+                )} */}
+                <ActionsMenu selectedActions={selectedActions} variant={'box'} />
+            </Popover>
 
         </HeaderActionsContainer>
     );

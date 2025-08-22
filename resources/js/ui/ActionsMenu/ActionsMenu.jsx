@@ -6,6 +6,7 @@ import ActionsMenuBox from './Components/ActionsMenuBox';
 
 function ActionsMenu({ selectedActions, variant }) {
 	const builder = new Builder(buttonComponentList);
+	variant = 'box';
 	const MenuComponent = variant === 'box' ? ActionsMenuBox : ActionsMenuBar;
 
 	return (

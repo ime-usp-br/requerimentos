@@ -2,19 +2,21 @@ import React from 'react';
 import Typography from '@mui/material/Typography';
 import { Stack, Box, Grid2 } from '@mui/material';
 import HeaderActions from "./HeaderActions"
-import sgLogo from '../../../img/sg-logo.png';
+import sgLogo from '../../../img/sg-logo.jpg';
 
 export default function Header({
     label,
     showRoleSelector,
-    isExit }) {
+    isExit, 
+    selectedActions
+}) {
     return (
         <Grid2 
             container
             spacing={2}
             sx={{
                 width: '100%',
-                height: '145px',
+                height: '130px',
                 padding: 1.5,
                 position: "sticky",
                 top: 0,
@@ -23,8 +25,13 @@ export default function Header({
             }}
         >
             <img
-                height='100%'
+                height='90%'
                 src={sgLogo}
+                style={{
+                    borderRadius: 65,
+                    border: '3px solid #142C68',
+                    margin: '2px 8px 0px 8px',
+                }}
             />
 
             <Grid2
@@ -53,6 +60,7 @@ export default function Header({
                     </Typography>
                     <HeaderActions
                         showRoleSelector={showRoleSelector}
+                        selectedActions={selectedActions}
                         isExit={isExit}
                     />
                 </Stack>

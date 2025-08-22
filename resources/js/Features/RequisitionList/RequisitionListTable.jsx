@@ -2,22 +2,80 @@ import React from 'react';
 import { useMemo, useState, useEffect } from 'react';
 import { MaterialReactTable, useMaterialReactTable, MRT_ToggleFiltersButton } from 'material-react-table';
 
-// Make sure the imports are correct
-import { Link, Box, Button, TextField, InputAdornment, Divider, Stack, Grid2 } from '@mui/material';
+import { Link, Box, ButtonBase, TextField, InputAdornment, Divider, Stack, Grid2, IconButton, styled } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
 import Builder from '../../ui/ComponentBuilder/Builder';
 import columnTypes from "../../ui/ComponentBuilder/TableColumnTypes";
 
+/**
+ * Enumerables
+ */
+const COLOR = {
+    ORANGE: '#FF9305',
+    GREEN: '#0BC294',
+    PURPLE: '#586EFF',
+};
+
+const PREFILTER = {
+   OPEN: 'Abertos',
+   SENT: '1 - SG',
+   DEPARTMENT: '2 - Dep',
+   REVIEW: '3 - Par',
+   REGISTERED: '4 - Cad',
+   CLOSED: '5 - Fech',
+   ALL: 'Todos'
+};
+
+const PREFILTER_PRED = {
+   OPEN: (req) => !(req.internal_status.includes("Requerimento") && !req.internal_status.includes("reavaliação")),
+   SENT: (req) => req.internal_status.includes("Encaminhado"),
+   DEPARTMENT: (req) => req.internal_status.toLowerCase().includes("departamento"),
+   REVIEW: (req) => req.internal_status.toLowerCase().includes("parecer"),
+   REGISTERED: (req) => req.internal_status.toLowerCase().includes("registrado") || req.internal_status.includes("automaticamente"),
+   CLOSED: (req) => req.internal_status.includes("Requerimento") && !req.internal_status.includes("reavaliação"),
+   ALL: () => true 
+}
+
+/**
+ * Components
+ */ 
+const PreFilterButton = styled(ButtonBase)(({ backgroundcolor, selected, children }) => ({
+    align: 'center',
+    backgroundColor: backgroundcolor || COLOR.ORANGE,
+    paddingBlock: 4,
+    paddingBottom: selected == children ? 14 : 5,
+    paddingTop: selected == children ? 6 : 5,
+    color: 'white',
+    fontWeight: 600,
+    fontSize: 18,
+    width: '100px',
+    height: selected == children ? 50 : 35
+}));
+PreFilterButton.defaultProps = {
+    disableRipple: true
+};
+
+const builder = new Builder(columnTypes);
+
+/**
+ * Main component
+ */
 function List({ requisitions, selectedColumns }) {
+    const [selectedPreFilter, setSelectedPreFilter] = useState('Abertos');
+    const handlePrefilterClick = (event) => {
+        const id = event.target.id;
+        setSelectedPreFilter(PREFILTER[id]);
+        setPrefilterPred(() => PREFILTER_PRED[id])
+    };
+
     let textStyle = {
-        //simple styling with the `sx` prop, works just like a style prop in this example
         sx: {
             fontSize: 20,
         },
     };
-    let builder = new Builder(columnTypes);
     let columns = useMemo(
         () => builder.build(selectedColumns),
         [selectedColumns],
@@ -34,12 +92,20 @@ function List({ requisitions, selectedColumns }) {
     const [globalFilter, setGlobalFilter] = useState(() => {
         return sessionStorage.getItem('globalFilter') || '';
     });
+
+    const handleInputChange = (event) => {
+        const text = event.target.value;
+        setGlobalFilter(text);
+        sessionStorage.setItem('globalFilter', text);
+    };
+
+    const [data, setData] = useState(requisitions);
+    const [prefilterPred, setPrefilterPred] = useState(() => PREFILTER_PRED.OPEN);
     useEffect(() => {
-        sessionStorage.setItem('globalFilter', globalFilter);
-    }, [globalFilter]);
+        console.log(requisitions, prefilterPred);
+        setData(requisitions.filter(prefilterPred));
+    }, [requisitions, prefilterPred]);
 
-
-    let data = requisitions;
     const table = useMaterialReactTable({
         columns,
         data,
@@ -55,6 +121,14 @@ function List({ requisitions, selectedColumns }) {
         enableGlobalFilter: true,
         enableRowActions: true,
         positionActionsColumn: 'last',
+        muiPaginationProps: {
+            color: 'primary',
+            shape: 'rounded',
+            showRowsPerPage: false,
+            // variant: 'outlined',
+        },
+        paginationDisplayMode: 'pages',
+
         muiTableBodyCellProps: textStyle,
         displayColumnDefOptions: {
             'mrt-row-actions': {
@@ -63,20 +137,23 @@ function List({ requisitions, selectedColumns }) {
             },
         },
         defaultColumn: {
-            minSize: 20
+            minSize: 10
         },
         tableLayout: 'fixed',
         muiTableHeadRowProps: () => ({
             sx: {
+                // backgroundColor: '#7CB4FD',
                 backgroundColor: '#7CB4FD',
-                color: 'white'
+                color: 'white',
+                height: 40,
+                justifyContent: 'center'
             }
         }),
         muiTableHeadCellProps: () => ({
             sx: {
                 fontSize: 20,
                 color: 'white',
-
+                // paddingTop: 10
             }
         }),
         muiTableBodyRowProps: ({ row }) => ({
@@ -124,18 +201,34 @@ function List({ requisitions, selectedColumns }) {
                         width: '100%',
                         marginTop: -6,
                         marginRight: 4,
-                        marginLeft: 46,
-                        justifyContent: "flex-start",
+                        // marginLeft: 46,
+                        justifyContent: "flex-end",
                         alignItems: 'center',
                         position: 'fixed',
                         zIndex: 20
                     }}
                 >
+                    <MRT_ToggleFiltersButton 
+                        table={table}
+                        size='large'
+                    />
+
+                    <IconButton 
+                        aria-label="clean"
+                        size="large"
+                        onClick={() => {
+                            setColumnFilters([]);
+                            setGlobalFilter('');
+                        }}
+                    >
+                        <DeleteOutlinedIcon /> 
+                    </IconButton>
+
                     <TextField
                         placeholder="Buscar por tudo..."
                         value={globalFilter ?? ''}
-                        onChange={(e) => setGlobalFilter(e.target.value)}
-                        size="medium"
+                        onChange={handleInputChange}
+                        size="large"
                         variant="standard"
                         InputProps={{
                             startAdornment: (
@@ -144,22 +237,80 @@ function List({ requisitions, selectedColumns }) {
                                 </InputAdornment>
                             ),
                         }}
-                        sx={{ width: '250px' }}
-                    />
-                    
-                    <MRT_ToggleFiltersButton 
-                        table={table}
-                    />
-                    <Button 
-                        variant="outlined" 
-                        size="large"
-                        onClick={() => {
-                            setColumnFilters([]);
-                            setGlobalFilter('');
+                        sx={{ 
+                            width: '250px',
+                            marginLeft: 1
                         }}
+                    />
+                </Grid2>
+                
+                <Grid2
+                    container
+                    direction='row'
+                    spacing={2}
+                    sx={{
+                        width: '100%',
+                        height: '36px',
+                        marginTop: -5.8,
+                        marginRight: 100,
+                        // marginLeft: 46,
+                        justifyContent: "flex-end",
+                        alignItems: 'center',
+                        position: 'fixed',
+                        zIndex: 20
+                    }}
+                >
+                    <PreFilterButton
+                        id='OPEN'
+                        selected={selectedPreFilter}
+                        onClick={handlePrefilterClick}
                     >
-                        Limpar Filtros
-                    </Button>
+                        {PREFILTER.OPEN}
+                    </PreFilterButton>
+                    <PreFilterButton
+                        id='SENT'
+                        selected={selectedPreFilter}
+                        onClick={handlePrefilterClick}
+                    >
+                        {PREFILTER.SENT}
+                    </PreFilterButton>
+                    <PreFilterButton
+                        id='DEPARTMENT'
+                        selected={selectedPreFilter}
+                        onClick={handlePrefilterClick}
+                    >
+                        {PREFILTER.DEPARTMENT}
+                    </PreFilterButton>
+                    <PreFilterButton
+                        id='REVIEW'
+                        selected={selectedPreFilter}
+                        onClick={handlePrefilterClick}
+                    >
+                        {PREFILTER.REVIEW}
+                    </PreFilterButton>
+                    <PreFilterButton
+                        id='REGISTERED'
+                        selected={selectedPreFilter}
+                        onClick={handlePrefilterClick}
+                    >
+                        {PREFILTER.REGISTERED}
+                    </PreFilterButton>
+                    <PreFilterButton
+                        id='CLOSED'
+                        backgroundcolor={COLOR.GREEN}
+                        selected={selectedPreFilter}
+                        onClick={handlePrefilterClick}
+                    >
+                        {PREFILTER.CLOSED}
+                    </PreFilterButton>
+                    <PreFilterButton
+                        id='ALL'
+                        backgroundcolor={COLOR.PURPLE}
+                        selected={selectedPreFilter}
+                        onClick={handlePrefilterClick}
+                    >
+                        {PREFILTER.ALL}
+                    </PreFilterButton>
                 </Grid2>
                 
                 <Divider 
@@ -167,7 +318,17 @@ function List({ requisitions, selectedColumns }) {
                     flexItem 
                     sx={{ 
                         borderWidth: 5.5,
-                        bgcolor: '#FCA22D',
+                        borderColor: ((prefilter) => {
+                            switch (prefilter) {
+                                case PREFILTER.CLOSED:
+                                    return COLOR.GREEN;
+                                case PREFILTER.ALL:
+                                    return COLOR.PURPLE;
+                                default:
+                                    return COLOR.ORANGE;
+                            }
+                        })(selectedPreFilter),
+                        // transition: 'all .6s'
                     }} 
                 />
             </Stack>
