@@ -780,8 +780,10 @@ class RequisitionController extends Controller
                     $reviewIsEmpty = $requisition->getRelation('reviews')->isEmpty();
 
                     $reviews = '';
+                    $reviewers = '';
                     foreach ($requisition->getRelation('reviews') as $review) {
                         $reviews .= $review->reviewer_decision . ';';
+                        $reviewers .= $review->reviewer_name . ';';
                     }
 
                     $data = [
@@ -794,7 +796,7 @@ class RequisitionController extends Controller
                         'Situação' => $requisition->internal_status,
                         'Data de encaminhamento ao departamento/unidade' => $sentToDepartment != null ? $sentToDepartment->created_at->format('d-m-Y') : null,
                         'Parecer' => $reviewIsEmpty ? null : $reviews,
-                        'Parecerista' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->reviewer_name,
+                        'Parecerista' => $reviewIsEmpty ? null : $reviewers,
                         'Data do parecer' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->updated_at->format('d-m-Y'),
                         'Data do registro no Júpiter pelo Departamento' => $registeredAtJupiter != null ? $registeredAtJupiter->created_at->format('d-m-Y') : null
                     ];
