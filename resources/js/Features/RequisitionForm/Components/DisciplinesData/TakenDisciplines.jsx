@@ -1,4 +1,6 @@
 import React from "react";
+import { IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import {
     Stack,
     TextField,
@@ -6,7 +8,12 @@ import {
     Autocomplete,
     Divider,
     Button,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
 } from "@mui/material";
+import AsyncSubjectAutocomplete from "./AsyncSubjectAutocomplete";
 
 const TakenDisciplines = ({ data, setData, errors = {} }) => {
     const handleRemoveDiscipline = () => {
@@ -18,6 +25,7 @@ const TakenDisciplines = ({ data, setData, errors = {} }) => {
             setData("takenDiscGrades", data.takenDiscGrades.slice(0, -1));
             setData("takenDiscYears", data.takenDiscYears.slice(0, -1));
             setData("takenDiscSemesters", data.takenDiscSemesters.slice(0, -1));
+            setData("takenDiscIsUSP", data.takenDiscIsUSP.slice(0, -1));
         }
     };
 
@@ -29,40 +37,153 @@ const TakenDisciplines = ({ data, setData, errors = {} }) => {
         setData("takenDiscGrades", [...data.takenDiscGrades, ""]);
         setData("takenDiscYears", [...data.takenDiscYears, ""]);
         setData("takenDiscSemesters", [...data.takenDiscSemesters, ""]);
+        setData("takenDiscIsUSP", [...data.takenDiscIsUSP, false]);
+    };
+
+    const handleUSPToggle = (index, institutionType) => {
+        const newIsUSP = [...data.takenDiscIsUSP];
+        const isUSP = institutionType === 'USP';
+        newIsUSP[index] = isUSP;
+        setData("takenDiscIsUSP", newIsUSP);
+
+        if (isUSP) {
+            // Auto-fill institution field for USP disciplines
+            const newInstitutions = [...data.takenDiscInstitutions];
+            newInstitutions[index] = "USP";
+            setData("takenDiscInstitutions", newInstitutions);
+        } else {
+            // Clear all fields when switching from USP to external institution
+            const newInstitutions = [...data.takenDiscInstitutions];
+            newInstitutions[index] = "";
+            setData("takenDiscInstitutions", newInstitutions);
+
+            const newCodes = [...data.takenDiscCodes];
+            newCodes[index] = "";
+            setData("takenDiscCodes", newCodes);
+
+            const newNames = [...data.takenDiscNames];
+            newNames[index] = "";
+            setData("takenDiscNames", newNames);
+        }
+    };
+
+    const handleUSPSubjectSelect = (index, selectedSubject) => {
+        if (selectedSubject) {
+            // Update code
+            const newCodes = [...data.takenDiscCodes];
+            newCodes[index] = selectedSubject.code;
+            setData("takenDiscCodes", newCodes);
+
+            // Update name
+            const newNames = [...data.takenDiscNames];
+            newNames[index] = selectedSubject.name;
+            setData("takenDiscNames", newNames);
+        } else {
+            // Clear fields if no subject selected
+            const newCodes = [...data.takenDiscCodes];
+            newCodes[index] = "";
+            setData("takenDiscCodes", newCodes);
+
+            const newNames = [...data.takenDiscNames];
+            newNames[index] = "";
+            setData("takenDiscNames", newNames);
+        }
     };
 
     const semesters = ["Primeiro", "Segundo", "Anual"];
 
     return (
         <Stack spacing={1.5}>
-            <Typography variant={"subtitle1"}>
+            <Typography variant={"h6"}>
                 Disciplinas a serem aproveitadas
             </Typography>
-            <Stack 
-                spacing={1.5} 
-                divider={<Divider orientation="horizontal" flexItem />}
+            <Stack
+                spacing={3}
             >
                 {(() => {
                     const disciplineFields = [];
                     for (let index = 0; index < data.takenDiscCount; index++) {
+                        const isUSP = data.takenDiscIsUSP[index];
+
                         disciplineFields.push(
-                            <Stack spacing={1.5} key={`discipline-${index}`}>
-                                <TextField
-                                    size="small"
-                                    label={"Nome da " + (data.takenDiscCount > 1 ? (index + 1) + "ª " : "") + "disciplina cursada"}
-                                    required
-                                    value={data.takenDiscNames[index]}
-                                    onChange={(e) =>
-                                        setData("takenDiscNames", [
-                                            ...data.takenDiscNames.slice(0, index),
-                                            e.target.value,
-                                            ...data.takenDiscNames.slice(index + 1)
-                                        ])
-                                    }
-                                    key={`discipline-name-${index}`}
-                                    error={!!errors[`takenDiscNames.${index}`]}
-                                    helperText={errors[`takenDiscNames.${index}`]}
-                                />
+                            <Stack spacing={2.5} key={`discipline-${index}`} sx={{ p: 2, border: '1px solid #e0e0e0', borderRadius: 2, bgcolor: '#fafafa', position: 'relative' }}>
+                                <Stack direction="row" alignItems="center" justifyContent="space-between">
+                                    <Typography variant="subtitle1" sx={{ color: 'primary.main' }}>
+                                        {data.takenDiscCount > 1 ? `${index + 1}ª Disciplina Cursada` : 'Disciplina Cursada'}
+                                    </Typography>
+                                    {data.takenDiscCount > 1 && index > 0 && (
+                                        <IconButton
+                                            aria-label="Remover disciplina"
+                                            size="small"
+                                            onClick={handleRemoveDiscipline}
+                                            sx={{ ml: 1, color: 'grey.500' }}
+                                        >
+                                            <CloseIcon fontSize="small" />
+                                        </IconButton>
+                                    )}
+                                </Stack>
+
+                                <FormControl size="small" required>
+                                    <InputLabel>Tipo de instituição</InputLabel>
+                                    <Select
+                                        value={isUSP ? 'USP' : 'Externa'}
+                                        onChange={(e) => handleUSPToggle(index, e.target.value)}
+                                        label="Tipo de instituição"
+                                    >
+                                        <MenuItem value="USP">USP</MenuItem>
+                                        <MenuItem value="Externa">Instituição Externa</MenuItem>
+                                    </Select>
+                                </FormControl>
+
+                                {isUSP ? (
+                                    // USP discipline with autocomplete
+                                    <AsyncSubjectAutocomplete
+                                        value={data.takenDiscCodes[index] && data.takenDiscNames[index] ? {
+                                            code: data.takenDiscCodes[index],
+                                            name: data.takenDiscNames[index]
+                                        } : null}
+                                        onChange={(selectedSubject) => handleUSPSubjectSelect(index, selectedSubject)}
+                                        error={!!errors[`takenDiscCodes.${index}`] || !!errors[`takenDiscNames.${index}`]}
+                                        helperText={errors[`takenDiscCodes.${index}`] || errors[`takenDiscNames.${index}`]}
+                                        label="Código ou nome da disciplina cursada"
+                                        required
+                                    />
+                                ) : (
+                                    // Non-USP discipline with regular text fields
+                                    <Stack spacing={2}>
+                                        <TextField
+                                            size="small"
+                                            label="Nome da disciplina cursada"
+                                            required
+                                            value={data.takenDiscNames[index]}
+                                            onChange={(e) =>
+                                                setData("takenDiscNames", [
+                                                    ...data.takenDiscNames.slice(0, index),
+                                                    e.target.value,
+                                                    ...data.takenDiscNames.slice(index + 1)
+                                                ])
+                                            }
+                                            error={!!errors[`takenDiscNames.${index}`]}
+                                            helperText={errors[`takenDiscNames.${index}`]}
+                                        />
+                                        <TextField
+                                            size="small"
+                                            label="Sigla da disciplina cursada"
+                                            required
+                                            value={data.takenDiscCodes[index]}
+                                            onChange={(e) =>
+                                                setData("takenDiscCodes", [
+                                                    ...data.takenDiscCodes.slice(0, index),
+                                                    e.target.value,
+                                                    ...data.takenDiscCodes.slice(index + 1)
+                                                ])
+                                            }
+                                            error={!!errors[`takenDiscCodes.${index}`]}
+                                            helperText={errors[`takenDiscCodes.${index}`]}
+                                        />
+                                    </Stack>
+                                )}
+
                                 <TextField
                                     size="small"
                                     label="Instituição em que foi cursada"
@@ -75,28 +196,12 @@ const TakenDisciplines = ({ data, setData, errors = {} }) => {
                                             ...data.takenDiscInstitutions.slice(index + 1)
                                         ])
                                     }
-                                    key={`discipline-institution-${index}`}
+                                    disabled={isUSP}
                                     error={!!errors[`takenDiscInstitutions.${index}`]}
                                     helperText={errors[`takenDiscInstitutions.${index}`]}
                                 />
-                                <Stack direction="row" spacing={1.5} key={`discipline-codes-grades-${index}`}>
-                                    <TextField
-                                        fullWidth
-                                        size="small"
-                                        label="Sigla da disciplina cursada"
-                                        required
-                                        value={data.takenDiscCodes[index]}
-                                        onChange={(e) =>
-                                            setData("takenDiscCodes", [
-                                                ...data.takenDiscCodes.slice(0, index),
-                                                e.target.value,
-                                                ...data.takenDiscCodes.slice(index + 1)
-                                            ])
-                                        }
-                                        key={`discipline-code-${index}`}
-                                        error={!!errors[`takenDiscCodes.${index}`]}
-                                        helperText={errors[`takenDiscCodes.${index}`]}
-                                    />
+
+                                <Stack direction="row" spacing={2}>
                                     <TextField
                                         fullWidth
                                         size="small"
@@ -110,12 +215,12 @@ const TakenDisciplines = ({ data, setData, errors = {} }) => {
                                                 ...data.takenDiscGrades.slice(index + 1)
                                             ])
                                         }
-                                        key={`discipline-grade-${index}`}
                                         error={!!errors[`takenDiscGrades.${index}`]}
                                         helperText={errors[`takenDiscGrades.${index}`]}
                                     />
                                 </Stack>
-                                <Stack direction="row" spacing={1.5} key={`discipline-year-semester-${index}`}>
+
+                                <Stack direction="row" spacing={2}>
                                     <TextField
                                         fullWidth
                                         size="small"
@@ -130,7 +235,6 @@ const TakenDisciplines = ({ data, setData, errors = {} }) => {
                                                 ...data.takenDiscYears.slice(index + 1)
                                             ])
                                         }
-                                        key={`discipline-year-${index}`}
                                         error={!!errors[`takenDiscYears.${index}`]}
                                         helperText={errors[`takenDiscYears.${index}`]}
                                     />
@@ -156,7 +260,6 @@ const TakenDisciplines = ({ data, setData, errors = {} }) => {
                                                 helperText={errors[`takenDiscSemesters.${index}`]}
                                             />
                                         )}
-                                        key={`discipline-semester-${index}`}
                                     />
                                 </Stack>
                             </Stack>
@@ -165,25 +268,13 @@ const TakenDisciplines = ({ data, setData, errors = {} }) => {
                     return disciplineFields;
                 })()}
             </Stack>
-            <Stack direction="row" spacing={1.5} justifyContent="flex-start">
-                {data.takenDiscCount > 1 && (
-                    <Button
-                        size="small"
-                        color="error"
-                        variant="contained"
-                        onClick={handleRemoveDiscipline}
-                        sx={{ maxWidth: 200 }}
-                    >
-                        Remover disciplina
-                    </Button>
-                )}
+            <Stack direction="row" spacing={2} justifyContent="flex-start">
                 <Button
                     size="small"
                     variant="contained"
                     onClick={handleAddDiscipline}
-                    sx={{ maxWidth: 200 }}
                 >
-                    Adicionar disciplina
+                    Adicionar outra disciplina
                 </Button>
             </Stack>
         </Stack>

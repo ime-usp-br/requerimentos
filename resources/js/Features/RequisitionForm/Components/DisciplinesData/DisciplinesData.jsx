@@ -9,12 +9,9 @@ import {
 
 const DisciplinesData = ({ data, setData, isUpdate, errors }) => {
     return (
-        <Stack spacing={1.5} component={"div"}>
-            <Typography variant={"h6"} component={"legend"}>
-                Disciplinas
-            </Typography>
-            <RequiredDiscipline data={data} setData={setData} isUpdate={isUpdate} errors={errors}/>
-            <TakenDisciplines data={data} setData={setData} isUpdate={isUpdate} errors={errors}/>
+        <Stack spacing={4} component={"div"}>
+            <RequiredDiscipline data={data} setData={setData} isUpdate={isUpdate} errors={errors} />
+            <TakenDisciplines data={data} setData={setData} isUpdate={isUpdate} errors={errors} />
         </Stack>
     );
 };
