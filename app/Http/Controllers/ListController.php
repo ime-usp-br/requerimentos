@@ -47,7 +47,7 @@ class ListController extends Controller
     }
 
     private function sgList() { 
-        $selectedColumns = ['id', 'student_name', 'student_nusp', 'requested_disc_code', 'department', 'created_at', 'updated_at', 'internal_status'];
+        $selectedColumns = ['created_at', 'updated_at', 'id', 'student_name', 'student_nusp', 'requested_disc_code', 'department', 'internal_status'];
         $requisitions = Requisition::select($selectedColumns)->get();
         $selectedActions = [['admin', 'new_requisition', 'export']];
         return [$requisitions, $selectedColumns, $selectedActions];

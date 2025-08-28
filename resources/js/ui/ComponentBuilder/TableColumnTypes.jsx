@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography } from "@mui/material";
+// import { Typography } from "@mui/material";
 
 let columnTypes = {};
 
@@ -8,12 +8,6 @@ columnTypes.id = {
     accessorKey: 'id',
     enableHiding: false,
     size: 0,
-    // muiTableHeadCellProps: {
-    //     align: 'center',
-    // },
-    // muiTableBodyCellProps: {
-    //     align: 'center',
-    // },
 };
 
 columnTypes.created_at = {

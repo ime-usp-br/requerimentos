@@ -38,7 +38,7 @@ class RequisitionController extends Controller
     public function showRequisition($requisitionId)
     {
         $user = Auth::user();
-        $requisition = Requisition::with('takenDisciplines', 'documents')->find($requisitionId);
+        $requisition = Requisition::with('takenDisciplines', 'documents', 'reviews')->find($requisitionId);
 
         if (!$requisition) {
             abort(404);
@@ -94,7 +94,7 @@ class RequisitionController extends Controller
                 $selectedActions = [['submit_review']];
                 break;
         }
-
+        
         return Inertia::render('RequisitionDetailPage', [
             'label' => 'Requerimentos',
             'selectedActions' => $selectedActions,

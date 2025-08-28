@@ -116,7 +116,10 @@ function List({ requisitions, selectedColumns }) {
     const table = useMaterialReactTable({
         columns,
         data,
+        enableStickyHeader: true,
+        enableStickyFooter: true,
         enableSorting: true,
+        enablePagination: false,
         enableDensityToggle: false,
         enableFullScreenToggle: false,
         enableHiding: false,          // This disables column hiding functionality
@@ -128,13 +131,13 @@ function List({ requisitions, selectedColumns }) {
         enableGlobalFilter: true,
         enableRowActions: true,
         positionActionsColumn: 'last',
-        muiPaginationProps: {
-            color: 'primary',
-            shape: 'rounded',
-            showRowsPerPage: false,
-            // variant: 'outlined',
-        },
-        paginationDisplayMode: 'pages',
+        // muiPaginationrops: {
+        //     color: 'primary',
+        //     shape: 'rounded',
+        //     showRowsPerPage: true,
+        //     // variant: 'outlined',
+        // },
+        // paginationDisplayMode: 'pages',
 
         muiTableBodyCellProps: textStyle,
         displayColumnDefOptions: {
@@ -152,7 +155,7 @@ function List({ requisitions, selectedColumns }) {
                 // backgroundColor: '#7CB4FD',
                 backgroundColor: '#7CB4FD',
                 color: 'white',
-                height: 40,
+                // height: 40,
                 justifyContent: 'center'
             }
         }),
@@ -172,6 +175,11 @@ function List({ requisitions, selectedColumns }) {
             elevation: 0,
             sx: {
                 borderRadius: 0
+            }
+        },
+        muiTableContainerProps: {
+            sx: {
+                maxHeight: '800px'
             }
         },
         renderRowActions: ({ row }) => (

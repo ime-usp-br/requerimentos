@@ -77,8 +77,8 @@ export default function HeaderActions({
         return option.role.name + " " + option.department.code;
     };
 
-    let builder = new Builder(buttonComponentList);
-
+    const exitType = isExit ? [['exit']] : [['go_back']];
+    selectedActions = selectedActions || [];
     return (
         <HeaderActionsContainer direction='row' spacing={2}>
             {showRoleSelector && (userRoles.length > 1) && (
@@ -111,7 +111,7 @@ export default function HeaderActions({
                 {/* {builder.build(isExit ? ['exit'] : ['go_back']).map((itemBuilder) =>
                     itemBuilder({ styles: headerActionsButtonStyle })
                 )} */}
-                <ActionsMenu selectedActions={selectedActions} variant={'box'} />
+                <ActionsMenu selectedActions={selectedActions.concat(exitType)} variant={'box'} />
             </Popover>
 
         </HeaderActionsContainer>
