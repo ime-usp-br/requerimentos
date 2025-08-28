@@ -1,4 +1,6 @@
 import React from "react";
+import { IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import {
     Stack,
     TextField,
@@ -92,12 +94,11 @@ const TakenDisciplines = ({ data, setData, errors = {} }) => {
 
     return (
         <Stack spacing={1.5}>
-            <Typography variant={"subtitle1"} sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>
+            <Typography variant={"h6"}>
                 Disciplinas a serem aproveitadas
             </Typography>
             <Stack
                 spacing={3}
-                divider={<Divider orientation="horizontal" flexItem sx={{ my: 2 }} />}
             >
                 {(() => {
                     const disciplineFields = [];
@@ -105,10 +106,22 @@ const TakenDisciplines = ({ data, setData, errors = {} }) => {
                         const isUSP = data.takenDiscIsUSP[index];
 
                         disciplineFields.push(
-                            <Stack spacing={2.5} key={`discipline-${index}`} sx={{ p: 2, border: '1px solid #e0e0e0', borderRadius: 2, bgcolor: '#fafafa' }}>
-                                <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 'medium', color: 'primary.main' }}>
-                                    {data.takenDiscCount > 1 ? `${index + 1}ª Disciplina Cursada` : 'Disciplina Cursada'}
-                                </Typography>
+                            <Stack spacing={2.5} key={`discipline-${index}`} sx={{ p: 2, border: '1px solid #e0e0e0', borderRadius: 2, bgcolor: '#fafafa', position: 'relative' }}>
+                                <Stack direction="row" alignItems="center" justifyContent="space-between">
+                                    <Typography variant="subtitle1" sx={{ color: 'primary.main' }}>
+                                        {data.takenDiscCount > 1 ? `${index + 1}ª Disciplina Cursada` : 'Disciplina Cursada'}
+                                    </Typography>
+                                    {data.takenDiscCount > 1 && index > 0 && (
+                                        <IconButton
+                                            aria-label="Remover disciplina"
+                                            size="small"
+                                            onClick={handleRemoveDiscipline}
+                                            sx={{ ml: 1, color: 'grey.500' }}
+                                        >
+                                            <CloseIcon fontSize="small" />
+                                        </IconButton>
+                                    )}
+                                </Stack>
 
                                 <FormControl size="small" required>
                                     <InputLabel>Tipo de instituição</InputLabel>
@@ -256,24 +269,12 @@ const TakenDisciplines = ({ data, setData, errors = {} }) => {
                 })()}
             </Stack>
             <Stack direction="row" spacing={2} justifyContent="flex-start">
-                {data.takenDiscCount > 1 && (
-                    <Button
-                        size="small"
-                        color="error"
-                        variant="contained"
-                        onClick={handleRemoveDiscipline}
-                        sx={{ maxWidth: 200 }}
-                    >
-                        Remover disciplina
-                    </Button>
-                )}
                 <Button
                     size="small"
                     variant="contained"
                     onClick={handleAddDiscipline}
-                    sx={{ maxWidth: 200 }}
                 >
-                    Adicionar disciplina
+                    Adicionar outra disciplina
                 </Button>
             </Stack>
         </Stack>

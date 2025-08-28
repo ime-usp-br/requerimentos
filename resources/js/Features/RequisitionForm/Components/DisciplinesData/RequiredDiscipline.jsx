@@ -24,8 +24,8 @@ const RequiredDisciplines = ({ data, setData, isUpdate, errors = {} }) => {
     ];
 
     return (
-        <Stack spacing={2.5} component={"div"} sx={{ p: 2, border: '1px solid #e0e0e0', borderRadius: 2, bgcolor: '#f5f5f5' }}>
-            <Typography variant={"subtitle1"} sx={{ fontWeight: 'bold', fontSize: '1.1rem', color: 'primary.main' }}>
+        <Stack spacing={2.5} component={"div"}>
+            <Typography variant={"h6"}>
                 Disciplina a ser dispensada
             </Typography>
             <AsyncSubjectAutocomplete
@@ -36,7 +36,6 @@ const RequiredDisciplines = ({ data, setData, isUpdate, errors = {} }) => {
                 onChange={(selectedSubject) => {
                     if (selectedSubject) {
                         setData("requestedDiscCode", selectedSubject.code);
-                        // Always auto-fill the name field
                         setData("requestedDiscName", selectedSubject.name);
                     } else {
                         setData("requestedDiscCode", "");
