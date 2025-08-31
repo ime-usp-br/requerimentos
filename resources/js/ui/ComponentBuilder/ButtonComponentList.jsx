@@ -141,7 +141,7 @@ buttonComponentList.edit_requisition = ({ styles = {} }) => {
         <Tooltip
             title="Edição não permitida"
             disableHoverListener={isButtonEnabled}
-        >   
+        >
             <span>
                 <Button
                     key="edit_requisition"
@@ -220,12 +220,12 @@ buttonComponentList.export_current = ({ styles = {} }) => {
 
     const printDocument = async () => {
         const pdf = new jsPDF();
-        
+
         const container = document.createElement('div');
         const root = createRoot(container);
         root.render(
-            <RequisitionDetailExport 
-                requisition={requisitionData} 
+            <RequisitionDetailExport
+                requisition={requisitionData}
             />
         );
 
@@ -247,7 +247,7 @@ buttonComponentList.export_current = ({ styles = {} }) => {
             callback: async (pdfInstance) => {
                 // Get the PDF blob.
                 docs.unshift(pdfInstance.output('blob'));
-                
+
                 const mergedPdf = await PDFDocument.create();
 
                 for (const blob of docs) {
@@ -352,7 +352,7 @@ buttonComponentList.registered = ({ styles = {} }) => {
 
 buttonComponentList.requisition_history = ({ styles = {} }) => {
     const { requisitionData } = useRequisitionContext();
-    
+
     return (
         <Button
             key="requisition_history"
@@ -392,7 +392,7 @@ buttonComponentList.requisition_period = ({ styles = {} }) => {
 
 buttonComponentList.reviews = ({ styles = {} }) => {
     const { requisitionData } = useRequisitionContext();
-    
+
     return (
         <Button
             key="reviews"
@@ -407,7 +407,7 @@ buttonComponentList.reviews = ({ styles = {} }) => {
 
 buttonComponentList.save = ({ styles = {} }) => {
     const { requisitionData } = useRequisitionContext();
-    
+
     return (
         <Button
             key="save"
@@ -423,7 +423,7 @@ buttonComponentList.save = ({ styles = {} }) => {
 buttonComponentList.send_to_department = ({ styles = {} }) => {
     const { setDialogTitle, setDialogBody, openDialog, _closeDialog } = useDialogContext();
     const { requisitionData } = useRequisitionContext();
-    
+
     const handleSubmit = () => {
         setDialogBody(
             <>
@@ -496,7 +496,7 @@ buttonComponentList.send_to_reviewers = ({ styles = {} }) => {
 buttonComponentList.submit_review = ({ styles = {} }) => {
     const { setDialogTitle, setDialogBody, openDialog } = useDialogContext();
     const { requisitionData } = useRequisitionContext();
-    
+
     const handleClick = () => {
         setDialogTitle('Parecer');
         setDialogBody(<SubmitResultDialog requisitionId={requisitionData.id} type="review" submitRoute="submitReview" />);
@@ -535,6 +535,49 @@ buttonComponentList.result = ({ styles = {} }) => {
             Dar resultado
         </Button>
     )
+};
+
+buttonComponentList.send_back_to_sg = ({ styles = {} }) => {
+    const { setDialogTitle, setDialogBody, openDialog, _closeDialog } = useDialogContext();
+    const { requisitionData } = useRequisitionContext();
+
+    const handleSubmit = () => {
+        setDialogBody(
+            <>
+                <DialogContent>
+                    <DialogContentText>
+                        Enviando...
+                    </DialogContentText>
+                </DialogContent>
+            </>
+        );
+        openDialog();
+
+        router.post(
+            route('sendBackToSG'),
+            {
+                'requisitionId': requisitionData.id
+            },
+            {
+                onSuccess: (page) => {
+                    setDialogTitle('Requerimento enviado');
+                    setDialogBody(<ActionSuccessful dialogText={'Enviado à SG com sucesso.'} />);
+                    openDialog();
+                },
+                onError: (errors) => console.log(errors)
+            }
+        );
+    }
+    return (
+        <Button
+            key="send_back_to_sg"
+            onClick={handleSubmit}
+            startIcon={<SendIcon />}
+            {...styles}
+        >
+            Devolver à SG
+        </Button>
+    );
 };
 
 export default buttonComponentList;

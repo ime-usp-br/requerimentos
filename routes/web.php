@@ -68,6 +68,8 @@ Route::middleware('auth')->group(function () {
             ->name('record.event.version');
         Route::post('/enviar-ao-departamento', [RequisitionController::class, 'sendToDepartment'])
             ->name('sendToDepartment');
+        Route::post('/devolver-para-a-sg', [RequisitionController::class, 'sendBackToSG'])
+            ->name('sendBackToSG');
     });
 
     // ======== ACESSO SG + Secretarias ======== //
