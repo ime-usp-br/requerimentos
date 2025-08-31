@@ -1,10 +1,11 @@
 import React from 'react';
 import {
-	Paper, Typography, Stack, Grid2
+	Paper, Typography, Stack, Grid2, Divider, TableContainer, Table, TableHead, TableRow, TableCell, TableBody
 } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import Link from '@mui/material/Link';
 import { useRequisitionContext } from './useRequisitionContext';
+import { useUser } from '../../Context/useUserContext';
 
 const formatDate = (originalDate) => {
 	const date = new Date(originalDate);
@@ -16,35 +17,25 @@ const RequisitionData = ({ requisitionData }) => (
 	<Grid2 container rowSpacing={1} columnSpacing={1.5}>
 		<Grid2
 			size={12}
-			sx={{
-				backgroundColor: '#BEFFDA'
-			}}
+			// sx={{
+			// 	backgroundColor: '#BEFFDA'
+			// }}
 		>
-			<Typography variant='h5'><strong>Requerimento {requisitionData.id}</strong></Typography>
-		</Grid2>
-		<Grid2 size={1} />
-		<Grid2 size={1}>
-			<Typography variant='body1'><strong>Situação</strong></Typography>
-		</Grid2>
-		<Grid2 size={5}>
+			<Typography variant='h6'><strong>Requerimento {requisitionData.id}</strong></Typography>
 		</Grid2>
 		<Grid2 size={1}>
-			<Typography variant='body1' align='right'><strong>Abertura:</strong></Typography>
+			<Typography variant='body2'><strong>Situação:</strong></Typography>
+		</Grid2>
+		<Grid2 size={6}>
+			<Typography variant='body2'>{requisitionData.situation}</Typography>
+		</Grid2>
+		<Grid2 size={1}>
+			<Typography variant='body2'><strong>Abertura:</strong></Typography>
 		</Grid2>
 		<Grid2 size={4}>
-			<Typography variant='body1'>{formatDate(requisitionData.created_at)}</Typography>
+			<Typography variant='body2'>{formatDate(requisitionData.created_at)}</Typography>
 		</Grid2>
 
-		<Grid2 size={1} />
-		<Grid2 size={6}>
-			<Typography variant='body1'>{requisitionData.situation}</Typography>
-		</Grid2>
-		<Grid2 size={1}>
-			<Typography variant='body1' align='right'><strong>Últ. Mod.:</strong></Typography>
-		</Grid2>
-		<Grid2 size={2}>
-			<Typography variant='body1'>{formatDate(requisitionData.updated_at)}</Typography>
-		</Grid2>
 
 		<Grid2
 			container
@@ -53,17 +44,24 @@ const RequisitionData = ({ requisitionData }) => (
 				backgroundColor: '#E3FAFF'
 			}}
 		>
-			<Grid2 size={2}>
-				<Typography variant='body1' align='right'><strong>Resultado:</strong></Typography>
+			<Grid2 size={1}>
+				<Typography variant='body2'><strong>Resultado:</strong></Typography>
 			</Grid2>
-			<Grid2 size={10}>
-				<Typography variant='body1'>{requisitionData.result}</Typography>
+			<Grid2 size={6}>
+				<Typography variant='body2'>{requisitionData.result}</Typography>
 			</Grid2>
-			<Grid2 size={2}>
-				<Typography variant='body1' align='right'><strong>Justificativa:</strong></Typography>
+
+			<Grid2 size={1}>
+				<Typography variant='body2'><strong>Últ. Mod.:</strong></Typography>
 			</Grid2>
-			<Grid2 size={10}>
-				<Typography variant='body1'>{requisitionData.result_text}</Typography>
+			<Grid2 size={4}>
+				<Typography variant='body2'>{formatDate(requisitionData.updated_at)}</Typography>
+			</Grid2>
+			<Grid2 size={12}>
+				<Typography variant='body2'><strong>Justificativa</strong></Typography>
+			</Grid2>
+			<Grid2 size={12}>
+				<Typography variant='body2'>{requisitionData.result_text}</Typography>
 			</Grid2>
 		</Grid2>
 	</Grid2>
@@ -73,39 +71,37 @@ const StudentData = ({ requisitionData }) => (
 	<Grid2 container rowSpacing={1} columnSpacing={1.5}>
 		<Grid2
 			size={12}
-			sx={{
-				backgroundColor: '#BEFFDA'
-			}}
+			// sx={{
+			// 	backgroundColor: '#BEFFDA'
+			// }}
 		>
-			<Typography variant='h5'><strong>Dados Estudantis</strong></Typography>
-		</Grid2>
-		<Grid2 size={1} />
-		<Grid2 size={1}>
-			<Typography variant='body1' align='right'><strong>Nome:</strong></Typography>
-		</Grid2>
-		<Grid2 size={5}>
-			<Typography variant='body1'>{requisitionData.student_name}</Typography>
+			<Typography variant='h6'><strong>Dados Estudantis</strong></Typography>
 		</Grid2>
 		<Grid2 size={1}>
-			<Typography variant='body1' align='right'><strong>NUSP:</strong></Typography>
+			<Typography variant='body2'><strong>Nome:</strong></Typography>
+		</Grid2>
+		<Grid2 size={6}>
+			<Typography variant='body2'>{requisitionData.student_name}</Typography>
+		</Grid2>
+		<Grid2 size={1}>
+			<Typography variant='body2'><strong>NUSP:</strong></Typography>
 		</Grid2>
 		<Grid2 size={2}>
-			<Typography variant='body1'>{requisitionData.student_nusp}</Typography>
+			<Typography variant='body2'>{requisitionData.student_nusp}</Typography>
 		</Grid2>
 		<Grid2 size={2} />
 
-		<Grid2 size={1} />
 		<Grid2 size={1}>
-			<Typography variant='body1' align='right'><strong>Curso:</strong></Typography>
+			<Typography variant='body2'><strong>Curso:</strong></Typography>
 		</Grid2>
-		<Grid2 size={5}>
-			<Typography variant='body1'>{requisitionData.course}</Typography>
+		<Grid2 size={6}>
+			<Typography variant='body2'>{requisitionData.course}</Typography>
 		</Grid2>
 		<Grid2 size={1}>
-			<Typography variant='body1' align='right'><strong>email:</strong></Typography>
+			<Typography variant='body2'><strong>email:</strong></Typography>
 		</Grid2>
 		<Grid2 size={2}>
-			<Typography variant='body1'>{requisitionData.email}</Typography>
+			<Typography variant='body2'>{requisitionData.email}</Typography>
 		</Grid2>
 		<Grid2 size={2} />
 
@@ -116,38 +112,30 @@ const StudentData = ({ requisitionData }) => (
 				backgroundColor: '#E3FAFF'
 			}}
 		>
-			<Grid2 size={1} />
-			<Grid2 size={11}>
-				<Typography variant='body1'><strong>Observações do pedido</strong></Typography>
+			<Grid2 size={12}>
+				<Typography variant='body2'><strong>Observações do pedido</strong></Typography>
 			</Grid2>
-			<Grid2 size={1} />
-			<Grid2 size={11}>
-				<Typography variant='body1'>{requisitionData.observations}</Typography>
+			<Grid2 size={12}>
+				<Typography variant='body2'>{requisitionData.observations}</Typography>
 			</Grid2>
 		</Grid2>
 	</Grid2>
 );
 
 const DocumentLink = ({ title, doc }) => (
-	<Typography variant="body1" key={doc.id} align='right'>
+	<Typography variant="body2" key={doc.id} align='right'>
 		<Link href={`/documents/${doc.id}/view`} target="_blank" rel="noopener" sx={{ display: 'inline-flex', alignItems: 'center' }} underline="hover">
 			{title} <OpenInNewIcon fontSize="small" sx={{ ml: 0.5 }} />
 		</Link>
 	</Typography>
 );
 
-const DisciplinesData = ({ requisitionData, takenDiscs, documents }) => (
+const RequestedDisciplineData = ({ requisitionData, takenDiscs, documents }) => (
 	<Grid2 container rowSpacing={1} columnSpacing={2}>
 		<Grid2
-			size={12}
-			sx={{
-				backgroundColor: '#BEFFDA'
-			}}
+			size={8}
 		>
-			<Typography variant='h5'><strong>Disciplinas</strong></Typography>
-		</Grid2>
-		<Grid2 size={8}>
-			<Typography variant='body1'><strong>Requerida</strong></Typography>
+			<Typography variant='h6'><strong>Disciplina Requerida</strong></Typography>
 		</Grid2>
 		<Grid2 size={2}>
 			<DocumentLink title={'Ementa'} doc={documents[0]} />
@@ -163,35 +151,40 @@ const DisciplinesData = ({ requisitionData, takenDiscs, documents }) => (
 				backgroundColor: '#F6A828'
 			}}
 		>
-			<Grid2 size={1} />
 			<Grid2 size={1}>
-				<Typography variant='body1'><strong>Código</strong></Typography>
+				<Typography variant='body2'><strong>Código</strong></Typography>
 			</Grid2>
 			<Grid2 size={4}>
-				<Typography variant='body1'><strong>Nome</strong></Typography>
+				<Typography variant='body2'><strong>Nome</strong></Typography>
 			</Grid2>
 			<Grid2 size={3}>
-				<Typography variant='body1'><strong>Departamento</strong></Typography>
+				<Typography variant='body2'><strong>Departamento</strong></Typography>
 			</Grid2>
 			<Grid2 size={1}>
-				<Typography variant='body1'><strong>Tipo</strong></Typography>
+				<Typography variant='body2'><strong>Tipo</strong></Typography>
 			</Grid2>
 			<Grid2 size={2} />
 		</Grid2>
 
-		<Grid2 size={2}><Typography variant='body1' align='right'>{'MAC0422' || requisitionData.requested_disc_code}</Typography></Grid2>
+		<Grid2 size={1}><Typography variant='body2'>{'MAC0422' || requisitionData.requested_disc_code}</Typography></Grid2>
 		<Grid2 size={4}>
-			<Typography variant='body1'>{'Algoritmos e Estruturas de Dados para Engenharia Elétrica' || requisitionData.requested_disc}</Typography>
+			<Typography variant='body2'>{'Algoritmos e Estruturas de Dados para Engenharia Elétrica' || requisitionData.requested_disc}</Typography>
 		</Grid2>
 		<Grid2 size={3}>
-			<Typography variant='body1'>{'Disciplina de fora do IME' || requisitionData.requested_disc}</Typography>
+			<Typography variant='body2'>{'Disciplina de fora do IME' || requisitionData.requested_disc}</Typography>
 		</Grid2>
-		<Grid2 size={2}>
-			<Typography variant='body1'>{'Optativa Eletiva' || requisitionData.requested_disc}</Typography>
+		<Grid2 size={4}>
+			<Typography variant='body2'>{'Optativa Eletiva' || requisitionData.requested_disc}</Typography>
 		</Grid2>
+	</Grid2>
+);
 
-		<Grid2 size={8}>
-			<Typography variant='body1'><strong>Cursadas</strong></Typography>
+const CompletedDisciplinesData = ({ requisitionData, takenDiscs, documents }) => (
+	<Grid2 container rowSpacing={1} columnSpacing={2}>
+		<Grid2
+			size={8}
+		>
+			<Typography variant='h6'><strong>Disciplina(s) Cursada(s)</strong></Typography>
 		</Grid2>
 		<Grid2 size={2}>
 			<DocumentLink title={'Ementa(s)'} doc={documents[1]} />
@@ -207,94 +200,91 @@ const DisciplinesData = ({ requisitionData, takenDiscs, documents }) => (
 				backgroundColor: '#F6A828'
 			}}
 		>
-			<Grid2 size={1} />
 			<Grid2 size={1}>
-				<Typography variant='body1'><strong>Código</strong></Typography>
+				<Typography variant='body2'><strong>Código</strong></Typography>
 			</Grid2>
 			<Grid2 size={4}>
-				<Typography variant='body1'><strong>Nome</strong></Typography>
+				<Typography variant='body2'><strong>Nome</strong></Typography>
 			</Grid2>
 			<Grid2 size={3}>
-				<Typography variant='body1'><strong>Instituição</strong></Typography>
+				<Typography variant='body2'><strong>Instituição</strong></Typography>
 			</Grid2>
 			<Grid2 size={1}>
-				<Typography variant='body1'><strong>Nota</strong></Typography>
+				<Typography variant='body2'><strong>Nota</strong></Typography>
 			</Grid2>
 			<Grid2 size={1}>
-				<Typography variant='body1'><strong>Ano</strong></Typography>
+				<Typography variant='body2'><strong>Ano</strong></Typography>
 			</Grid2>
 			<Grid2 size={1}>
-				<Typography variant='body1'><strong>Semestre</strong></Typography>
+				<Typography variant='body2'><strong>Semestre</strong></Typography>
 			</Grid2>
 		</Grid2>
 		{takenDiscs.map((disc, _) => (
 			<>
-				<Grid2 size={2}><Typography variant='body1' align='right'>{disc.code}</Typography></Grid2>
-				<Grid2 size={4}><Typography variant='body1'>{disc.name}</Typography></Grid2>
-				<Grid2 size={3}><Typography variant='body1'>{disc.institution}</Typography></Grid2>
-				<Grid2 size={1}><Typography variant='body1'>{disc.grade}</Typography></Grid2>
-				<Grid2 size={1}><Typography variant='body1'>{disc.year}</Typography></Grid2>
-				<Grid2 size={1}><Typography variant='body1'>{disc.semester}</Typography></Grid2>
+				<Grid2 size={1}><Typography variant='body2'>{disc.code}</Typography></Grid2>
+				<Grid2 size={4}><Typography variant='body2'>{disc.name}</Typography></Grid2>
+				<Grid2 size={3}><Typography variant='body2'>{disc.institution}</Typography></Grid2>
+				<Grid2 size={1}><Typography variant='body2'>{disc.grade}</Typography></Grid2>
+				<Grid2 size={1}><Typography variant='body2'>{disc.year}</Typography></Grid2>
+				<Grid2 size={1}><Typography variant='body2'>{disc.semester}</Typography></Grid2>
 			</>
 		))}
-	</Grid2>
+    </Grid2>
 );
 
 const Reviews = ({ requisitionData }) => <>{
 	<Grid2 container rowSpacing={1} columnSpacing={1.5}>
 		<Grid2
 			size={12}
-			sx={{
-				backgroundColor: '#FDFFBE'
-			}}
+ 			//sx={{
+ 			//	backgroundColor: '#FDFFBE'
+			//}}
 		>
-			<Typography variant='h5'><strong>Pareceres</strong></Typography>
+			<Typography variant='h6'><strong>Pareceres</strong></Typography>
 		</Grid2>
 		{requisitionData.reviews.map((review) => (
 			<>
-				<Grid2 size={1} />
 				<Grid2 size={1}>
-					<Typography variant='body1' align='right'><strong>Nome:</strong></Typography>
+					<Typography variant='body2'><strong>Nome:</strong></Typography>
 				</Grid2>
 				<Grid2 size={5}>
-					<Typography variant='body1'>{review.reviewer_name}</Typography>
+					<Typography variant='body2'>{review.reviewer_name}</Typography>
 				</Grid2>
 				<Grid2 size={1}>
-					<Typography variant='body1' align='right'><strong>NUSP:</strong></Typography>
+					<Typography variant='body2'><strong>NUSP:</strong></Typography>
 				</Grid2>
-				<Grid2 size={2}>
-					<Typography variant='body1'>{review.reviewer_nusp}</Typography>
+				<Grid2 size={3}>
+					<Typography variant='body2'>{review.reviewer_nusp}</Typography>
 				</Grid2>
 				<Grid2 size={2} />
 
-				<Grid2 size={1} />
 				<Grid2 size={1}>
-					<Typography variant='body1' align='right'><strong>Decisão:</strong></Typography>
+					<Typography variant='body2'><strong>Decisão:</strong></Typography>
 				</Grid2>
-				<Grid2 size={4}>
-					<Typography variant='body1'>{review.reviewer_decision}</Typography>
+				<Grid2 size={5}>
+					<Typography variant='body2'>{review.reviewer_decision}</Typography>
+				</Grid2>
+				<Grid2 size={1}>
+					<Typography variant='body2'><strong>Últ. Mod.:</strong></Typography>
 				</Grid2>
 				<Grid2 size={2}>
-					<Typography variant='body1' align='right'><strong>Última Mod.:</strong></Typography>
-				</Grid2>
-				<Grid2 size={2}>
-					<Typography variant='body1'>{formatDate(review.updated_at)}</Typography>
+					<Typography variant='body2'>{formatDate(review.updated_at)}</Typography>
 				</Grid2>
 				<Grid2 size={2} />
-		
+
 				<Grid2
 					container
-					size={12} 
+					size={12}
 					columnSpacing={1.5}
 					sx={{
 						backgroundColor: '#E3FAFF'
 					}}
 				>
-					<Grid2 size={2}>
-						<Typography variant='body1' align='right'><strong>Justificativa:</strong></Typography>
+					<Grid2 size={1}>
+						<Typography variant='body2'><strong>Justif.:</strong></Typography>
 					</Grid2>
-					<Grid2 size={10}>
-						<Typography variant='body1'>{requisitionData.observations}</Typography>
+					<Grid2 size={11}>
+						<Typography variant='body2'>{requisitionData.observations}</Typography>
 					</Grid2>
 				</Grid2>
 			</>
@@ -308,7 +298,11 @@ const RequisitionDetail = ({
 }) => {
 	const { requisitionData } = useRequisitionContext();
 
-	console.log(requisitionData);
+    const { user } = useUser();
+    const userRoles = user?.roles || [];
+    const roleId = user?.currentRoleId;
+    const departmentId = user?.currentDepartmentId;
+	console.log(user);
 
 	let resultColor;
 	switch (requisitionData.result) {
@@ -340,100 +334,20 @@ const RequisitionDetail = ({
 
 			<Paper
 				id="requisition-paper"
-				elevation={0}
+				elevation={2}
 				sx={{
 					padding: 1,
 					width: '100%'
 				}}
 			>
-				<Grid2
-					container
-					rowSpacing={1}
-					display='grid'
-				>
-					<RequisitionData requisitionData={requisitionData} />
-					{/* <Divider /> */}
-					<StudentData requisitionData={requisitionData} />
-					{/* <Divider /> */}
-					<DisciplinesData requisitionData={requisitionData} takenDiscs={takenDiscs} documents={documents} />
-
-					<Reviews requisitionData={requisitionData} />
-				</Grid2>
-				{/* <Divider />
 				<Stack spacing={3} divider={<Divider orientation="horizontal" flexItem />}>
-					<Stack spacing={1}>
-						<Typography variant="body2">ID do requerimento: {requisitionData.id}</Typography>
-						<Typography variant="h6" sx={{ fontWeight: 600 }}>Dados Pessoais</Typography>
-						<Typography variant="body2"><strong>Nome:</strong> {requisitionData.student_name}</Typography>
-						<Typography variant="body2"><strong>Email:</strong> {requisitionData.email}</Typography>
-						<Typography variant="body2"><strong>Número USP:</strong> {requisitionData.student_nusp}</Typography>
-					</Stack>
+                    <RequisitionData requisitionData={requisitionData} />
+                    <StudentData requisitionData={requisitionData} />
+                    <RequestedDisciplineData requisitionData={requisitionData} takenDiscs={takenDiscs} documents={documents} />
+                    <CompletedDisciplinesData requisitionData={requisitionData} takenDiscs={takenDiscs} documents={documents} />
+                    <Reviews requisitionData={requisitionData} />
+                </Stack>
 
-					<Stack spacing={1}>
-						<Typography variant="h6" sx={{ fontWeight: 600 }}>Curso Atual</Typography>
-						<Typography variant="body2">{requisitionData.course}</Typography>
-					</Stack>
-
-					<Stack spacing={1}>
-						<Typography variant="h6" sx={{ fontWeight: 600 }}>Disciplina Requerida</Typography>
-						<Typography variant="body2"><strong>Código:</strong> {requisitionData.requested_disc_code}</Typography>
-						<Typography variant="body2"><strong>Nome:</strong> {requisitionData.requested_disc}</Typography>
-						<Typography variant="body2"><strong>Tipo:</strong> {requisitionData.requested_disc_type}</Typography>
-						<Typography variant="body2"><strong>Departamento:</strong> {requisitionData.department}</Typography>
-					</Stack>
-
-					<Stack spacing={1}>
-						<Typography variant="h6" sx={{ fontWeight: 600 }}>Disciplinas Cursadas</Typography>
-						<TableContainer component={Paper}>
-							<Table>
-								<TableHead>
-									<TableRow>
-										<TableCell>Nome</TableCell>
-										<TableCell>Instituição</TableCell>
-										<TableCell>Código</TableCell>
-										<TableCell>Ano</TableCell>
-										<TableCell>Nota</TableCell>
-										<TableCell>Semestre</TableCell>
-									</TableRow>
-								</TableHead>
-								<TableBody>
-									{takenDiscs.map((disc, index) => (
-										<TableRow key={index}>
-											<TableCell>{disc.name}</TableCell>
-											<TableCell>{disc.institution}</TableCell>
-											<TableCell>{disc.code}</TableCell>
-											<TableCell>{disc.year}</TableCell>
-											<TableCell>{disc.grade}</TableCell>
-											<TableCell>{disc.semester}</TableCell>
-										</TableRow>
-									))}
-								</TableBody>
-							</Table>
-						</TableContainer>
-					</Stack>
-
-					<Stack spacing={1}>
-						<Typography variant="h6" sx={{ fontWeight: 600 }}>Documentos</Typography>
-						{documents && documents.length > 0 && documents.map((doc) => (
-							<Typography variant="body2" key={doc.id}>
-								<Link href={`/documents/${doc.id}/view`} target="_blank" rel="noopener" sx={{ display: 'inline-flex', alignItems: 'center' }} underline="hover">
-									{doc.type} <OpenInNewIcon fontSize="small" sx={{ ml: 0.5 }} />
-								</Link>
-							</Typography>
-						))}
-					</Stack>
-
-					<Stack spacing={1}>
-						<Typography variant="h6" sx={{ fontWeight: 600 }}>Observações</Typography>
-						<Typography variant="body2">{requisitionData.observations}</Typography>
-					</Stack>
-
-					<Stack spacing={1}>
-						<Typography variant="h6" sx={{ fontWeight: 600 }}>Resultado</Typography>
-						<Typography variant="body2" color={resultColor}><strong>Status:</strong> {requisitionData.result}</Typography>
-						<Typography variant="body2"><strong>Justificativa:</strong> {requisitionData.result_text}</Typography>
-					</Stack>
-				</Stack> */}
 			</Paper>
 		</Stack>
 	);

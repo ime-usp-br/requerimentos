@@ -107,6 +107,11 @@ export default function HeaderActions({
                     vertical: 'bottom',
                     horizontal: 'right',
                 }}
+                    PaperProps={{ style: { zIndex: 2000 } }}
+
+                ModalProps={{
+                    container: document.body,
+                }}
             >
                 {/* {builder.build(isExit ? ['exit'] : ['go_back']).map((itemBuilder) =>
                     itemBuilder({ styles: headerActionsButtonStyle })
