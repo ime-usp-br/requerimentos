@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-class EventType 
+class EventType
 {
     const SENT_TO_SG = 'Encaminhado para a SG pelo aluno';
     const BACK_TO_STUDENT = 'Retornado para o aluno devido a inconsistência nos dados';
@@ -18,6 +18,7 @@ class EventType
     const REJECTED = 'Requerimento indeferido';
     const IN_REVALUATION = 'Requerimento em reavaliação';
     const CANCELLED = 'Requerimento cancelado';
+    const BACK_TO_SG = 'Retornado para a SG devido a inconsistência nos dados';
 
     public static function values()
     {
@@ -36,6 +37,7 @@ class EventType
             self::REJECTED,
             self::IN_REVALUATION,
             self::CANCELLED,
+            self::BACK_TO_SG,
         ];
     }
 }
