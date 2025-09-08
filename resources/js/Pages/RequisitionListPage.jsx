@@ -14,7 +14,7 @@ function RequisitionListPage({ label,
                 label: label,
                 showRoleSelector: true,
                 selectedActions: selectedActions,
-                isExit: true
+                isExit: false
             }}
             actionsProps={{
                 selectedActions: selectedActions,

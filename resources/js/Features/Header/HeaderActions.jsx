@@ -77,7 +77,9 @@ export default function HeaderActions({
         return option.role.name + " " + option.department.code;
     };
 
-    const exitType = isExit ? [['exit']] : [['go_back']];
+    // const exitType = isExit ? [['exit']] : [['go_back']];
+
+    const builder = new Builder(buttonComponentList);
     selectedActions = selectedActions || [];
     return (
         <HeaderActionsContainer direction='row' spacing={2}>
@@ -92,32 +94,36 @@ export default function HeaderActions({
                 />
             )}
 
-            <IconButton
-                size='large'
-                onClick={handleMenuClick}
-            >
-                <MenuIcon />
-            </IconButton>
 
-            <Popover
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleMenuClose}
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                }}
-                    PaperProps={{ style: { zIndex: 2000 } }}
+            { isExit ?
+                builder.build(['go_back']).map((itemBuilder) =>
+                    itemBuilder({ styles: headerActionsButtonStyle }))
+                :
+                <>
+                    <IconButton
+                        size='large'
+                        onClick={handleMenuClick}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <Popover
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleMenuClose}
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'right',
+                        }}
+                            PaperProps={{ style: { zIndex: 2000 } }}
 
-                ModalProps={{
-                    container: document.body,
-                }}
-            >
-                {/* {builder.build(isExit ? ['exit'] : ['go_back']).map((itemBuilder) =>
-                    itemBuilder({ styles: headerActionsButtonStyle })
-                )} */}
-                <ActionsMenu selectedActions={selectedActions.concat(exitType)} variant={'box'} />
-            </Popover>
+                        ModalProps={{
+                            container: document.body,
+                        }}
+                    >
+                        <ActionsMenu selectedActions={selectedActions} variant={'box'} />
+                    </Popover>
+                </>
+            }
 
         </HeaderActionsContainer>
     );

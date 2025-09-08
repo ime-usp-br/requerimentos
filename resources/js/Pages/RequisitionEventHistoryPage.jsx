@@ -16,7 +16,7 @@ function RequisitionEventHistoryPage({
                 label: label,
                 showRoleSelector: true,
                 selectedActions: selectedActions,
-                isExit: false
+                isExit: true
             }}
             actionsProps={{
                 selectedActions: selectedActions,

@@ -27,7 +27,7 @@ const RequisitionVersionDetailPage = ({
 			<BasePage
 				headerProps={{
 					label: label,
-					isExit: false
+					isExit: true
 				}}
 				actionsProps={{
 					selectedActions: selectedActions,

@@ -1,39 +1,54 @@
 import React from 'react'
 import { styled } from '@mui/material/styles';
-import { Stack, Divider, Paper } from '@mui/material';
+import { Stack, Divider, ButtonGroup, MenuItem } from '@mui/material';
 import ActionsMenu from '../ActionsMenu';
 
-const ActionsMenuContainer = styled(Stack)(({ theme }) => ({
-    width: '100%',
-    flexDirection: 'row',
-    gap: theme.spacing(2),
+const actionsMenuBarButtonStyle = {
+    disableRipple: true,
+    variant: 'text',
+    color: 'black',
+    sx: {
+        padding: '8px 12px',
+        width: '100%',
+        height: '100%',
+        textAlign: 'left',
+        justifyContent: 'flex-start',
+    }
 
-    [theme.breakpoints.down('md')]: {
-        flexDirection: 'column',
-        gap: theme.spacing(1),
-    },
-}));
-
-const actionsMenubarButtonStyle = {
-    variant: 'contained'
 };
 
 export default function ActionsMenuBar({ builder, selectedActions }) {
     return (
-        <ActionsMenuContainer>
-            {
-                selectedActions.map((grouping, groupIndex) =>
-                    builder.build(grouping).map((itemBuilder, itemIndex) =>
-                        <Paper elevation={0} key={`paper-${groupIndex}-${itemIndex}`}>
-                            {itemBuilder({ styles: actionsMenubarButtonStyle })}
-                        </Paper>
-                    ).concat(
-                        (selectedActions.length - 1 !== groupIndex)
-                            ? [<Divider key={`divider-${groupIndex}`} />]
-                            : []
+        <Stack
+            direction="row"
+            sx={{
+                position: 'sticky',
+                top: 0,
+                padding: 0,
+                backgroundColor: 'white',
+                justifyContent: 'space-between'
+            }}
+        >
+                {
+                    selectedActions.map((grouping, groupIndex) =>
+                    (
+                        <ButtonGroup
+                            variant="text"
+                            sx={{
+                                justifyContent: 'flex-end'
+                            }}
+                        >
+                            {
+                            builder.build(grouping).map((itemBuilder, itemIndex) =>
+                                <MenuItem key={`group-${groupIndex}-item-${itemIndex}`} sx={{ padding: 0 }}>
+                                    {itemBuilder({ styles: actionsMenuBarButtonStyle })}
+                                </MenuItem>
+                            ).concat((selectedActions.length - 1 != groupIndex) ? [<Divider key={`divider-${groupIndex}`} />] : [])
+                            }
+                        </ButtonGroup>
                     )
-                ).flat()
-            }
-        </ActionsMenuContainer>
+                    ).flat()
+                }
+        </Stack>
     );
 };

@@ -7,7 +7,7 @@ const RequisitionFormPage = ({ requisitionData, label, isStudent, isUpdate }) =>
         <BasePage
             headerProps={{
                 label: label,
-                isExit: false
+                isExit: true
             }}>
             <RequisitionForm
                 requisitionData={requisitionData}

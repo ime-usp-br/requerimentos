@@ -24,14 +24,18 @@ const RequisitionDetailPage = ({ label,
                 headerProps={{
                     label: label,
                     selectedActions: selectedActions,
-                    isExit: false
+                    isExit: true
                 }}
                 actionsProps={{
                     selectedActions: selectedActions,
                     variant: actionsVariant
                 }}
             >
-                <RequisitionDetail takenDiscs={latestTakenDisciplines} documents={sortedDocuments} />
+                <RequisitionDetail
+                    takenDiscs={latestTakenDisciplines}
+                    documents={sortedDocuments}
+                    selectedActions={selectedActions}
+                />
             </BasePage>
         </RequisitionProvider>
     );

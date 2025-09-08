@@ -9,7 +9,8 @@ const PageContainer = styled(Stack)({
 	justifyContent: 'space-around',
 	alignItems: 'center',
 	width: '100%',
-	paddingBottom: 20,
+    height: '100vh',
+	paddingBottom: 0
 	// gap: "20px",
 });
 

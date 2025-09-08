@@ -59,7 +59,7 @@ columnTypes.situation = {
 
 columnTypes.internal_status = {
     header: "Situação",
-    accessorKey: 'internal_status',
+    accessorKey: 'situation',
     enableHiding: false,
     grow: true,
 };

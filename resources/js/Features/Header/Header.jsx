@@ -16,7 +16,7 @@ export default function Header({
             spacing={2}
             sx={{
                 width: '100%',
-                height: '90px',
+                height: '80px',
                 paddingY: 1.5,
                 position: "sticky",
                 top: 0,
@@ -52,7 +52,7 @@ export default function Header({
                         paddingX: 2,
                         paddingY: 1.2,
                         marginRight: 2,
-                        marginY: 2
+                        marginY: 1.2
                     }}
                 >
                     <Typography
