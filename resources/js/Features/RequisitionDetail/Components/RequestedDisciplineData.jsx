@@ -42,15 +42,15 @@ const RequestedDisciplineData = ({ takenDiscs, documents }) => {
                 <Grid2 size={2} />
             </Grid2>
 
-            <Grid2 size={1}><Typography variant='body1'>{'MAC0422' || requisitionData.requested_disc_code}</Typography></Grid2>
+            <Grid2 size={1}><Typography variant='body1'>{requisitionData.requested_disc_code}</Typography></Grid2>
             <Grid2 size={4}>
-                <Typography variant='body1'>{'Algoritmos e Estruturas de Dados para Engenharia Elétrica' || requisitionData.requested_disc}</Typography>
+                <Typography variant='body1'>{requisitionData.requested_disc}</Typography>
             </Grid2>
             <Grid2 size={3}>
-                <Typography variant='body1'>{'Disciplina de fora do IME' || requisitionData.requested_disc}</Typography>
+                <Typography variant='body1'>{requisitionData.requested_disc}</Typography>
             </Grid2>
             <Grid2 size={4}>
-                <Typography variant='body1'>{'Optativa Eletiva' || requisitionData.requested_disc}</Typography>
+                <Typography variant='body1'>{requisitionData.requested_disc}</Typography>
             </Grid2>
         </Grid2>
     );

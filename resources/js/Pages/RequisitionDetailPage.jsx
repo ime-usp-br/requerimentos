@@ -24,7 +24,6 @@ const RequisitionDetailPage = ({ label,
                 headerProps={{
                     label: label,
                     selectedActions: selectedActions,
-                    isExit: true
                 }}
                 actionsProps={{
                     selectedActions: selectedActions,

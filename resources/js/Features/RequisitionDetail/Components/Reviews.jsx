@@ -70,7 +70,14 @@ const Reviews = () => {
                             <Grid2 size={1}>
                                 <Typography variant='body1'><strong>Justif.:</strong></Typography>
                             </Grid2>
-                            <Grid2 size={11}>
+                            <Grid2
+                                size={11}
+                                sx={{
+                                    wordBreak: 'break-word',
+                                    overflowWrap: 'break-word',
+                                    whiteSpace: 'pre-line',
+                                }}
+                            >
                                 <Typography variant='body1'>{review.justification}</Typography>
                             </Grid2>
                         </Grid2>

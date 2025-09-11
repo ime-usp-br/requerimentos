@@ -59,7 +59,8 @@ const PreFilterButton = styled(ButtonBase)(({ backgroundcolor, selected, childre
     },
     height: selected == children ? 50 : 35,
     filter: selected == children ? 'opacity(1)' : 'opacity(.6)',
-    overflowX: 'hidden'
+    overflowX: 'hidden',
+    borderRadius: '10px 10px 0 0'
 }));
 PreFilterButton.defaultProps = {
     disableRipple: true
@@ -124,7 +125,7 @@ function List({ requisitions, selectedColumns }) {
         enableStickyHeader: true,
         enableStickyFooter: true,
         enableSorting: true,
-        enablePagination: false,
+        enablePagination: true,
         enableDensityToggle: false,
         enableFullScreenToggle: false,
         enableHiding: false,          // This disables column hiding functionality
@@ -157,7 +158,6 @@ function List({ requisitions, selectedColumns }) {
         tableLayout: 'fixed',
         muiTableHeadRowProps: () => ({
             sx: {
-                // backgroundColor: '#7CB4FD',
                 backgroundColor: '#7CB4FD',
                 color: 'white',
                 // height: 40,
@@ -176,6 +176,25 @@ function List({ requisitions, selectedColumns }) {
                 backgroundColor: row.index % 2 != 0 ? '#E3FAFF' : '#ffffff', // alternate colors
             },
         }),
+        muiBottomToolbarProps: {
+            sx: {
+                height: '40px',
+                backgroundColor: '#7CB4FD',
+                borderRadius: '0 0 4px 4px',
+                color: 'white',
+                '& .MuiTablePagination-selectLabel': {
+                    fontSize: '1.08rem !important',
+                    fontWeight: 'bold !important',
+                    color: 'white !important', // force override
+                },
+                '& .MuiTablePagination-root *': {
+                    fontSize: '1.08rem !important',
+                    fontWeight: 'bold !important',
+                    color: 'white !important', // recursive override for all children
+                },
+                // Add any other MUI sx styles here
+            },
+        },
         muiTablePaperProps: {
             elevation: 0,
             sx: {
@@ -194,10 +213,12 @@ function List({ requisitions, selectedColumns }) {
                 </Link>
             </Box>
         ),
+        initialState: { pagination: { pageSize: 16, pageIndex: 0 } },
         state: {
             columnFilters,
             globalFilter,
             density: 'compact',
+            pageSize: 15,
         },
         onGlobalFilterChange: setGlobalFilter,
         onColumnFiltersChange: setColumnFilters,
@@ -207,7 +228,7 @@ function List({ requisitions, selectedColumns }) {
             <Stack
                 sx={{
                     display: 'flex',
-                    pb: '8px',
+                    pb: '6px',
                     justifyContent: 'flex-start',
                     alignItems: 'center',
                 }}
@@ -230,10 +251,11 @@ function List({ requisitions, selectedColumns }) {
                         }}
                         sx={{
                             width: '100%',
-                            height: '30px',
+                            height: '20px',
                             // marginLeft: 46,
                             justifyContent: "flex-end",
                             alignItems: 'center',
+                            pt: .4
                         }}
                     >
                         <PreFilterButton
@@ -349,6 +371,7 @@ function List({ requisitions, selectedColumns }) {
                             }
                         })(selectedPreFilter),
                         // transition: 'all .6s'
+                        borderRadius: '4px 4px 0 0'
                     }}
                 />
             </Stack>

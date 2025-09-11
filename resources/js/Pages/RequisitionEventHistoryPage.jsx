@@ -2,7 +2,7 @@ import React from 'react';
 import RequisitionEventHistoryTable from '../Features/RequisitionList/RequisitionEventHistoryTable';
 import BasePage from './BasePage';
 
-function RequisitionEventHistoryPage({ 
+function RequisitionEventHistoryPage({
     label,
     events,
     selectedColumns,
@@ -16,7 +16,6 @@ function RequisitionEventHistoryPage({
                 label: label,
                 showRoleSelector: true,
                 selectedActions: selectedActions,
-                isExit: true
             }}
             actionsProps={{
                 selectedActions: selectedActions,

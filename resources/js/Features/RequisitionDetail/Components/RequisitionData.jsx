@@ -13,7 +13,7 @@ const RequisitionData = () => {
 	const { requisitionData } = useRequisitionContext();
     const { user } = useUser();
     const roleId = user.currentRoleId;
-    
+
     const situation = roleId === 1 ? requisitionData.situation : requisitionData.internal_status;
 	return (
         <Grid2 container rowSpacing={1} columnSpacing={1.5}>
@@ -58,7 +58,16 @@ const RequisitionData = () => {
                     <Typography variant='body1'><strong>Justificativa</strong></Typography>
                 </Grid2>
                 <Grid2 size={12}>
-                    <Typography variant='body1'>{requisitionData.result_text}</Typography>
+                    <Typography
+                        variant='body1'
+                        sx={{
+                            wordBreak: 'break-word',
+                            overflowWrap: 'break-word',
+                            whiteSpace: 'pre-line',
+                        }}
+                    >
+                        {requisitionData.result_text}
+                    </Typography>
                 </Grid2>
             </Grid2>
         </Grid2>

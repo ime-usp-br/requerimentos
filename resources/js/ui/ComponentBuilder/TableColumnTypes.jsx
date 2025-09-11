@@ -114,7 +114,7 @@ columnTypes.author_nusp = {
 };
 
 columnTypes.ocurrence_time  = {
-    header: "Horário de<br /> ocorrência",
+    header: "Horário de ocorrência",
     accessorFn: (row) => row.created_at.slice(11, 19),
     enableHiding: false,
     size: 0

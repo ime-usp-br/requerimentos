@@ -16,7 +16,7 @@ createInertiaApp({
   },
   setup({ el, App, props }) {
     const root = createRoot(el)
-    
+
     root.render(
       <DialogProvider>
         <App {...props}>

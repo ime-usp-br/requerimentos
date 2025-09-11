@@ -6,7 +6,7 @@ import ActionsMenu from '../ui/ActionsMenu/ActionsMenu';
 
 const PageContainer = styled(Stack)({
 	flexDirection: 'column',
-	justifyContent: 'space-around',
+	justifyContent: 'flex-start',
 	alignItems: 'center',
 	width: '100%',
     height: '100vh',
@@ -28,7 +28,7 @@ function BasePage({children, headerProps, actionsProps }){
 	// actionsProps = false;
 	return (
 		<PageContainer>
-			<Header {...headerProps} />
+			<Header isExit={true} {...headerProps} {...actionsProps} />
 			<ContentContainer direction={direction}>
 				{/* {actionsProps && <ActionsMenu {...actionsProps} />} */}
 				{children}

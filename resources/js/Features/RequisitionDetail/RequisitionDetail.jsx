@@ -60,10 +60,7 @@ const RequisitionDetail = ({
 
 			<Paper
 				id="requisition-paper"
-				elevation={(x) => {
-                    console.log(x);
-                    return 2;
-                }}
+				elevation={2}
 				sx={{
 					width: '100%',
                     overflow: 'scroll',

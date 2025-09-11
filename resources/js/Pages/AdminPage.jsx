@@ -16,7 +16,6 @@ function AdminPage({ systemUsers }){
         <BasePage
             headerProps={{
                 label: "Administração do sistema",
-                isExit: false,
                 showRoleSelector: false
             }}
             actionsProps={{
