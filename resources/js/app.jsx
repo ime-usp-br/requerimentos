@@ -1,6 +1,7 @@
 import React from 'react';
 import { createInertiaApp } from '@inertiajs/react'
 import { createRoot } from 'react-dom/client'
+import { ThemeProvider } from '@mui/material/styles';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -8,6 +9,7 @@ import '@fontsource/roboto/700.css';
 
 import { DialogProvider } from "./Context/useDialogContext"
 import { UserProvider } from "./Context/useUserContext"
+import theme from './styles/theme.js';
 
 createInertiaApp({
   resolve: name => {
@@ -21,9 +23,11 @@ createInertiaApp({
       <DialogProvider>
         <App {...props}>
           {({ Component, key, props }) => (
-            <UserProvider>
-              <Component key={key} {...props} />
-            </UserProvider>
+            <ThemeProvider theme={theme}>
+                <UserProvider>
+                    <Component key={key} {...props} />
+                </UserProvider>
+            </ThemeProvider>
           )}
         </App>
       </DialogProvider>

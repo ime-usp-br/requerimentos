@@ -3,7 +3,7 @@ import { Typography, Grid2 } from '@mui/material';
 import { useRequisitionContext } from '../useRequisitionContext';
 
 const StudentData = () => {
-	const { requisitionData } = useRequisitionContext();
+    const { requisitionData } = useRequisitionContext();
 
     return (
         <Grid2 container rowSpacing={1} columnSpacing={1.5}>
@@ -41,9 +41,10 @@ const StudentData = () => {
             <Grid2
                 container
                 size={12}
-                sx={{
-                    backgroundColor: '#E3FAFF'
-                }}
+                sx={(theme) => ({
+                    backgroundColor: theme.palette.blue.light
+                })
+                }
             >
                 <Grid2 size={12}>
                     <Typography variant='body1'><strong>Observações do pedido</strong></Typography>

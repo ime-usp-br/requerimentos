@@ -3,22 +3,22 @@ import { Typography, Grid2, Paper } from '@mui/material';
 import { useRequisitionContext } from '../useRequisitionContext';
 
 const formatDate = (originalDate) => {
-	const date = new Date(originalDate);
-	const pad = (n) => n.toString().padStart(2, '0');
-	return `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    const date = new Date(originalDate);
+    const pad = (n) => n.toString().padStart(2, '0');
+    return `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 };
 
 const Reviews = () => {
-	const { requisitionData } = useRequisitionContext();
+    const { requisitionData } = useRequisitionContext();
     console.log(requisitionData);
 
-	return (
+    return (
         <Grid2 container rowSpacing={1} columnSpacing={1.5}>
             <Grid2
                 size={12}
-                //sx={{
-                //	backgroundColor: '#FDFFBE'
-                //}}
+            //sx={{
+            //	backgroundColor: '#FDFFBE'
+            //}}
             >
                 <Typography variant='h6'><strong>Pareceres</strong></Typography>
             </Grid2>
@@ -63,9 +63,10 @@ const Reviews = () => {
                             container
                             size={12}
                             columnSpacing={1.5}
-                            sx={{
-                                backgroundColor: '#E3FAFF'
-                            }}
+                            sx={(theme) => ({
+                                backgroundColor: theme.palette.blue.light
+                            })
+                            }
                         >
                             <Grid2 size={1}>
                                 <Typography variant='body1'><strong>Justif.:</strong></Typography>

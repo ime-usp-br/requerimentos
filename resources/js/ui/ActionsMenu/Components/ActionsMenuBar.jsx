@@ -25,7 +25,7 @@ export default function ActionsMenuBar({ builder, selectedActions }) {
                 position: 'sticky',
                 top: 0,
                 padding: 0,
-                backgroundColor: 'white',
+                bgcolor: 'white !important',
                 justifyContent: 'space-between'
             }}
         >

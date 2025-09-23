@@ -4,18 +4,18 @@ import { useRequisitionContext } from '../useRequisitionContext';
 import { useUser } from '../../../Context/useUserContext';
 
 const formatDate = (originalDate) => {
-	const date = new Date(originalDate);
-	const pad = (n) => n.toString().padStart(2, '0');
-	return `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    const date = new Date(originalDate);
+    const pad = (n) => n.toString().padStart(2, '0');
+    return `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 };
 
 const RequisitionData = () => {
-	const { requisitionData } = useRequisitionContext();
+    const { requisitionData } = useRequisitionContext();
     const { user } = useUser();
     const roleId = user.currentRoleId;
 
     const situation = roleId === 1 ? requisitionData.situation : requisitionData.internal_status;
-	return (
+    return (
         <Grid2 container rowSpacing={1} columnSpacing={1.5}>
             <Grid2 size={12}>
                 <Typography variant='h6'><strong>Requerimento {requisitionData.id}</strong></Typography>
@@ -37,9 +37,10 @@ const RequisitionData = () => {
             <Grid2
                 container
                 size={12}
-                sx={{
-                    backgroundColor: '#E3FAFF'
-                }}
+                sx={(theme) => ({
+                    backgroundColor: theme.palette.blue.light
+                })
+                }
             >
                 <Grid2 size={1}>
                     <Typography variant='body1'><strong>Resultado:</strong></Typography>
@@ -55,7 +56,7 @@ const RequisitionData = () => {
                     <Typography variant='body1'>{formatDate(requisitionData.updated_at)}</Typography>
                 </Grid2>
                 <Grid2 size={12}>
-                    <Typography variant='body1'><strong>Justificativa</strong></Typography>
+                    <Typography variant='body1'><strong>Observação</strong></Typography>
                 </Grid2>
                 <Grid2 size={12}>
                     <Typography

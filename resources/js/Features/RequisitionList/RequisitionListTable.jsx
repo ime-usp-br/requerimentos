@@ -44,7 +44,7 @@ const PREFILTER_PRED = {
  */
 const PreFilterButton = styled(ButtonBase)(({ backgroundcolor, selected, children, theme }) => ({
     align: 'center',
-    backgroundColor: backgroundcolor || COLOR.ORANGE,
+    backgroundColor: (backgroundcolor && theme.palette[backgroundcolor].main) || theme.palette.orange.main,
     paddingBlock: 4,
     paddingBottom: selected == children ? 14 : 5,
     paddingTop: selected == children ? 6 : 5,
@@ -157,29 +157,31 @@ function List({ requisitions, selectedColumns }) {
         },
         tableLayout: 'fixed',
         muiTableHeadRowProps: () => ({
-            sx: {
-                backgroundColor: '#7CB4FD',
-                color: 'white',
+            sx: (theme) => ({
+                backgroundColor: theme.palette.blue.main,
                 // height: 40,
                 justifyContent: 'center'
-            }
+            })
         }),
         muiTableHeadCellProps: () => ({
             sx: {
-                fontSize: 20,
+                fontSize: 18,
                 color: 'white',
+                '& * * *': {
+                    color: 'white !important', // recursive override for all children
+                },
                 // paddingTop: 10
             }
         }),
         muiTableBodyRowProps: ({ row }) => ({
-            sx: {
-                backgroundColor: row.index % 2 != 0 ? '#E3FAFF' : '#ffffff', // alternate colors
-            },
+            sx: (theme) => ({
+                backgroundColor: row.index % 2 != 0 ? theme.palette.blue.light : 'white', // alternate colors
+            }),
         }),
         muiBottomToolbarProps: {
-            sx: {
+            sx: (theme) => ({
                 height: '40px',
-                backgroundColor: '#7CB4FD',
+                backgroundColor: theme.palette.blue.main,
                 borderRadius: '0 0 4px 4px',
                 color: 'white',
                 '& .MuiTablePagination-selectLabel': {
@@ -193,7 +195,7 @@ function List({ requisitions, selectedColumns }) {
                     color: 'white !important', // recursive override for all children
                 },
                 // Add any other MUI sx styles here
-            },
+            }),
         },
         muiTablePaperProps: {
             elevation: 0,
@@ -204,7 +206,7 @@ function List({ requisitions, selectedColumns }) {
         muiTableContainerProps: {
             sx: {
                 maxHeight: '800px'
-            }
+            },
         },
         renderRowActions: ({ row }) => (
             <Box display="flex" alignItems="center" justifyContent="center" height="100%">
@@ -295,7 +297,7 @@ function List({ requisitions, selectedColumns }) {
                         </PreFilterButton>
                         <PreFilterButton
                             id='CLOSED'
-                            backgroundcolor={COLOR.GREEN}
+                            backgroundcolor='green'
                             selected={selectedPreFilter}
                             onClick={handlePrefilterClick}
                         >
@@ -303,7 +305,7 @@ function List({ requisitions, selectedColumns }) {
                         </PreFilterButton>
                         <PreFilterButton
                             id='ALL'
-                            backgroundcolor={COLOR.PURPLE}
+                            backgroundcolor='purple'
                             selected={selectedPreFilter}
                             onClick={handlePrefilterClick}
                         >
@@ -363,11 +365,11 @@ function List({ requisitions, selectedColumns }) {
                         borderColor: ((prefilter) => {
                             switch (prefilter) {
                                 case PREFILTER.CLOSED:
-                                    return COLOR.GREEN;
+                                    return 'green.main';
                                 case PREFILTER.ALL:
-                                    return COLOR.PURPLE;
+                                    return 'purple.main';
                                 default:
-                                    return COLOR.ORANGE;
+                                    return 'orange.main';
                             }
                         })(selectedPreFilter),
                         // transition: 'all .6s'

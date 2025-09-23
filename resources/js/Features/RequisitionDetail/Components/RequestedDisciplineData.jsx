@@ -4,9 +4,9 @@ import { useRequisitionContext } from '../useRequisitionContext';
 import DocumentLink from './DocumentLink';
 
 const RequestedDisciplineData = ({ takenDiscs, documents }) => {
-	const { requisitionData } = useRequisitionContext();
+    const { requisitionData } = useRequisitionContext();
 
-	return (
+    return (
         <Grid2 container rowSpacing={1} columnSpacing={2}>
             <Grid2
                 size={8}
@@ -23,9 +23,10 @@ const RequestedDisciplineData = ({ takenDiscs, documents }) => {
             <Grid2
                 container
                 size={12}
-                sx={{
-                    backgroundColor: '#F6A828'
-                }}
+                sx={(theme) => ({
+                    backgroundColor: theme.palette.orange.main
+                })
+                }
             >
                 <Grid2 size={1}>
                     <Typography variant='body1'><strong>Código</strong></Typography>
