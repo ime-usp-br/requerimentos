@@ -5,7 +5,7 @@ import { router } from "@inertiajs/react";
 import axios from "axios";
 import { jsPDF } from "jspdf";
 import { PDFDocument } from "pdf-lib";
-import { Button, Tooltip, DialogActions, DialogContent, DialogContentText, Alert } from "@mui/material";
+import { Button, IconButton, Tooltip, DialogActions, DialogContent, DialogContentText, Alert } from "@mui/material";
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import AddIcon from '@mui/icons-material/Add';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
@@ -107,14 +107,18 @@ buttonComponentList.automatic_requisition = ({ styles }) => {
         openDialog();
     };
     return (
-        <Button
-            key="automatic_requisition"
-            onClick={handleClick}
-            startIcon={<PrecisionManufacturingIcon />}
-            {...styles}
+        <Tooltip
+            title={"Deferimento Automático"}
+            placement="bottom"
         >
-            Deferimento Automático
-        </Button>
+            <IconButton
+                key="automatic_requisition"
+                onClick={handleClick}
+                {...styles}
+            >
+                <PrecisionManufacturingIcon />
+            </IconButton>
+        </Tooltip>
     );
 };
 
@@ -139,21 +143,37 @@ buttonComponentList.edit_requisition = ({ styles = {} }) => {
 
     return (
         <Tooltip
-            title="Edição não permitida"
-            disableHoverListener={isButtonEnabled}
-        >   
+            title={isButtonEnabled ? "Editar Requerimento" : "Edição não permitida"}
+            placement="bottom"
+        >
             <span>
-                <Button
+                <IconButton
                     key="edit_requisition"
                     disabled={!isButtonEnabled}
                     href={route('updateRequisition.get', { 'requisitionId': requisitionData.id })}
-                    startIcon={<ModeEditIcon />}
                     {...styles}
                 >
-                    Editar Requerimento
-                </Button>
+                    <ModeEditIcon />
+                </IconButton>
             </span>
+            { /* <Tooltip
+                title="Edição não permitida"
+                disableHoverListener={isButtonEnabled}
+            >
+                <span>
+                    <Button
+                        key="edit_requisition"
+                        disabled={!isButtonEnabled}
+                        href={route('updateRequisition.get', { 'requisitionId': requisitionData.id })}
+                        startIcon={<ModeEditIcon />}
+                        {...styles}
+                    >
+                        Editar Requerimento
+                    </Button>
+                </span>
+            </Tooltip> */ }
         </Tooltip>
+
     );
 };
 
@@ -220,12 +240,12 @@ buttonComponentList.export_current = ({ styles = {} }) => {
 
     const printDocument = async () => {
         const pdf = new jsPDF();
-        
+
         const container = document.createElement('div');
         const root = createRoot(container);
         root.render(
-            <RequisitionDetailExport 
-                requisition={requisitionData} 
+            <RequisitionDetailExport
+                requisition={requisitionData}
             />
         );
 
@@ -247,7 +267,7 @@ buttonComponentList.export_current = ({ styles = {} }) => {
             callback: async (pdfInstance) => {
                 // Get the PDF blob.
                 docs.unshift(pdfInstance.output('blob'));
-                
+
                 const mergedPdf = await PDFDocument.create();
 
                 for (const blob of docs) {
@@ -271,15 +291,16 @@ buttonComponentList.export_current = ({ styles = {} }) => {
         });
     };
     return (
-        <Button
-            key="export_current"
-            startIcon={<FileDownloadIcon />}
-            onClick={printDocument}
-            {...styles}
-        >
-            Exportar Requerimento
-        </Button>
-    )
+        <Tooltip title="Exportar Requerimento" placement="bottom">
+            <IconButton
+                key="export_current"
+                onClick={printDocument}
+                {...styles}
+            >
+                <FileDownloadIcon />
+            </IconButton>
+        </Tooltip>
+    );
 };
 
 buttonComponentList.exit = ({ styles = {} }) => (
@@ -339,29 +360,31 @@ buttonComponentList.registered = ({ styles = {} }) => {
     };
 
     return (
-        <Button
-            key="registered"
-            onClick={handleClick}
-            startIcon={<HowToRegIcon />}
-            {...styles}
-        >
-            Registrado no Jupiter
-        </Button>
+        <Tooltip title="Registrado no Jupiter" placement="bottom">
+            <IconButton
+                key="registered"
+                onClick={handleClick}
+                {...styles}
+            >
+                <HowToRegIcon />
+            </IconButton>
+        </Tooltip>
     )
 };
 
 buttonComponentList.requisition_history = ({ styles = {} }) => {
     const { requisitionData } = useRequisitionContext();
-    
+
     return (
-        <Button
-            key="requisition_history"
-            href={route('record.requisition', { 'requisitionId': requisitionData.id })}
-            startIcon={<HistoryIcon />}
-            {...styles}
-        >
-            Histórico do Requerimento
-        </Button>
+        <Tooltip title="Histórico do Requerimento" placement="bottom">
+            <IconButton
+                key="requisition_history"
+                href={route('record.requisition', { 'requisitionId': requisitionData.id })}
+                {...styles}
+            >
+                <HistoryIcon />
+            </IconButton>
+        </Tooltip>
     );
 };
 
@@ -392,7 +415,7 @@ buttonComponentList.requisition_period = ({ styles = {} }) => {
 
 buttonComponentList.reviews = ({ styles = {} }) => {
     const { requisitionData } = useRequisitionContext();
-    
+
     return (
         <Button
             key="reviews"
@@ -407,7 +430,7 @@ buttonComponentList.reviews = ({ styles = {} }) => {
 
 buttonComponentList.save = ({ styles = {} }) => {
     const { requisitionData } = useRequisitionContext();
-    
+
     return (
         <Button
             key="save"
@@ -423,8 +446,8 @@ buttonComponentList.save = ({ styles = {} }) => {
 buttonComponentList.send_to_department = ({ styles = {} }) => {
     const { setDialogTitle, setDialogBody, openDialog, _closeDialog } = useDialogContext();
     const { requisitionData } = useRequisitionContext();
-    
-    const handleSubmit = () => {
+
+    const handleClick = () => {
         setDialogBody(
             <>
                 <DialogContent>
@@ -452,14 +475,15 @@ buttonComponentList.send_to_department = ({ styles = {} }) => {
         );
     }
     return (
-        <Button
-            key="send_to_department"
-            onClick={handleSubmit}
-            startIcon={<SendIcon />}
-            {...styles}
-        >
-            Enviar para o Departamento
-        </Button>
+        <Tooltip title="Enviar para o Departamento" placement="bottom">
+            <IconButton
+                key="send_to_department"
+                onClick={handleClick}
+                {...styles}
+            >
+                <SendIcon />
+            </IconButton>
+        </Tooltip>
     );
 };
 
@@ -482,21 +506,30 @@ buttonComponentList.send_to_reviewers = ({ styles = {} }) => {
         );
     }
     return (
-        <Button
-            key="send_to_reviewers"
-            onClick={handleClick}
-            startIcon={<SendToMobileIcon />}
-            {...styles}
-        >
-            Enviar para Pareceristas
-        </Button>
+        <Tooltip title="Enviar para Pareceristas" placement="bottom">
+            { /* <Button
+                key="send_to_reviewers"
+                onClick={handleClick}
+                startIcon={<SendToMobileIcon />}
+                {...styles}
+            >
+                Enviar para Pareceristas
+            </Button> */ }
+            <IconButton
+                key="send_to_reviewers"
+                onClick={handleClick}
+                {...styles}
+            >
+                <SendToMobileIcon />
+            </IconButton>
+        </Tooltip>
     );
 };
 
 buttonComponentList.submit_review = ({ styles = {} }) => {
     const { setDialogTitle, setDialogBody, openDialog } = useDialogContext();
     const { requisitionData } = useRequisitionContext();
-    
+
     const handleClick = () => {
         setDialogTitle('Parecer');
         setDialogBody(<SubmitResultDialog requisitionId={requisitionData.id} type="review" submitRoute="submitReview" />);

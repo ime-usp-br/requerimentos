@@ -30,24 +30,38 @@ class ListController extends Controller
                 [$requisitions, $selectedColumns, $selectedActions] = $this->reviewerList($user);
                 break;
         }
-        
-        return Inertia::render('RequisitionListPage', [
-            'label' => 'Requerimentos',
-            'requisitions' => $requisitions, 
-            'selectedColumns' => $selectedColumns,
-            'selectedActions' => $selectedActions,
-        ]);
+
+            // Rename 'internal_status' to 'situation' in each requisition item
+            $requisitions = $requisitions->map(function ($item) {
+                // Convert Eloquent models to array for easier manipulation
+                if ($item instanceof \Illuminate\Database\Eloquent\Model) {
+                    $item = $item->toArray();
+                } elseif (is_object($item)) {
+                    $item = (array) $item;
+                }
+                if (array_key_exists('internal_status', $item)) {
+                    $item['situation'] = $item['internal_status'];
+                    unset($item['internal_status']);
+                }
+                return $item;
+            });
+            return Inertia::render('RequisitionListPage', [
+                'label' => 'Aproveitamento de Estudos',
+                'requisitions' => $requisitions,
+                'selectedColumns' => $selectedColumns,
+                'selectedActions' => $selectedActions,
+            ]);
     }
 
-    private function studentList($user) { 
-        $selectedColumns = ['id', 'created_at', 'requested_disc', 'situation'];
+    private function studentList($user) {
+        $selectedColumns = ['id', 'created_at', 'requested_disc_code', 'situation'];
         $requisitions = Requisition::with('takenDisciplines')->select($selectedColumns)->where('student_nusp', $user->codpes)->get();
         $selectedActions = [['new_requisition']];
         return [$requisitions, $selectedColumns, $selectedActions];
     }
 
-    private function sgList() { 
-        $selectedColumns = ['created_at', 'updated_at', 'id', 'student_name', 'student_nusp', 'internal_status', 'department'];
+    private function sgList() {
+        $selectedColumns = ['created_at', 'updated_at', 'id', 'student_name', 'student_nusp', 'requested_disc_code', 'department', 'internal_status'];
         $requisitions = Requisition::select($selectedColumns)->get();
         $selectedActions = [['admin', 'new_requisition', 'export']];
         return [$requisitions, $selectedColumns, $selectedActions];
@@ -60,7 +74,7 @@ class ListController extends Controller
             EventType::RETURNED_BY_REVIEWER,
         ];
 
-        $selectedColumns = ['id', 'created_at', 'updated_at', 'requested_disc', 'situation', 'department'];
+        $selectedColumns = ['id', 'created_at', 'updated_at', 'requested_disc', 'internal_status', 'department'];
 
         $departmentName = Department::where('id', $user->current_department_id)->value('name');
 
@@ -74,7 +88,7 @@ class ListController extends Controller
         return [$requisitions, $selectedColumns, $selectedActions];
     }
 
-    private function reviewerList($user) { 
+    private function reviewerList($user) {
         $selectedReviewColumns = ['requisitions.created_at', 'student_name', 'requested_disc', 'reviewer_decision', 'reviews.updated_at', 'requisitions.id'];
         $requisitions = DB::table('reviews')
 			->join('requisitions', 'reviews.requisition_id', '=', 'requisitions.id')

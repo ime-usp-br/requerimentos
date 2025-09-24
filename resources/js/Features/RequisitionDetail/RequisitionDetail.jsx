@@ -1,15 +1,34 @@
 import React from 'react';
 import {
-	Paper, Typography, Stack, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow
+	Paper, Typography, Stack, Grid2, Divider, TableContainer, Table, TableHead, TableRow, TableCell, TableBody,
+	FormControlLabel, FormControl, RadioGroup, Radio, TextField, Button
 } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import Link from '@mui/material/Link';
+import { useForm, router } from "@inertiajs/react";
 import { useRequisitionContext } from './useRequisitionContext';
+import { useDialogContext } from '../../Context/useDialogContext';
+import { useUser } from '../../Context/useUserContext';
+
+import ActionsMenu from '../../ui/ActionsMenu/ActionsMenu';
+import RequisitionData from './Components/RequisitionData';
+import StudentData from './Components/StudentData';
+import RequestedDisciplineData from './Components/RequestedDisciplineData';
+import CompletedDisciplinesData from './Components/CompletedDisciplinesData';
+import Reviews from './Components/Reviews';
+import ResultForm from './Components/ResultForm';
 
 const RequisitionDetail = ({
 	takenDiscs,
-	documents }) => {
+	documents,
+    selectedActions
+}) => {
 	const { requisitionData } = useRequisitionContext();
+
+    const { user } = useUser();
+    const userRoles = user?.roles || [];
+    const roleId = user?.currentRoleId;
+    const departmentId = user?.currentDepartmentId;
 
 	let resultColor;
 	switch (requisitionData.result) {
@@ -31,96 +50,38 @@ const RequisitionDetail = ({
 
 	return (
 		<Stack
-			direction='row'
-			spacing={10}
+			direction='column'
 			sx={{
 				justifyContent: 'center',
 				alignItems: 'top',
-				width: '100%'
+				width: '1440px',
+                height: 'calc(100vh - 130px)',
 			}}>
 
 			<Paper
 				id="requisition-paper"
-				elevation={3}
+				elevation={2}
 				sx={{
-					padding: 2,
-					width: '100%'
+					width: '100%',
+                    overflow: 'scroll',
 				}}
 			>
-				<Stack spacing={3} divider={<Divider orientation="horizontal" flexItem />}>
-					<Stack spacing={1}>
-						<Typography variant="body2">ID do requerimento: {requisitionData.id}</Typography>
-						<Typography variant="h6" sx={{ fontWeight: 600 }}>Dados Pessoais</Typography>
-						<Typography variant="body2"><strong>Nome:</strong> {requisitionData.student_name}</Typography>
-						<Typography variant="body2"><strong>Email:</strong> {requisitionData.email}</Typography>
-						<Typography variant="body2"><strong>Número USP:</strong> {requisitionData.student_nusp}</Typography>
-					</Stack>
+                <ActionsMenu selectedActions={selectedActions} variant={'bar'} />
+				<Stack
+                    spacing={3}
+                    divider={<Divider orientation="horizontal" flexItem />}
+                    sx={{
+                        padding: 1
+                    }}
+                >
+                    <RequisitionData requisitionData={requisitionData} />
+                    <StudentData requisitionData={requisitionData} />
+                    <RequestedDisciplineData requisitionData={requisitionData} takenDiscs={takenDiscs} documents={documents} />
+                    <CompletedDisciplinesData requisitionData={requisitionData} takenDiscs={takenDiscs} documents={documents} />
+                    { roleId != 1 && <Reviews requisitionData={requisitionData} /> }
+                    { roleId != 1 && roleId != 4 && <ResultForm requisitionData={requisitionData} /> }
+                </Stack>
 
-					<Stack spacing={1}>
-						<Typography variant="h6" sx={{ fontWeight: 600 }}>Curso Atual</Typography>
-						<Typography variant="body2">{requisitionData.course}</Typography>
-					</Stack>
-
-					<Stack spacing={1}>
-						<Typography variant="h6" sx={{ fontWeight: 600 }}>Disciplina Requerida</Typography>
-						<Typography variant="body2"><strong>Código:</strong> {requisitionData.requested_disc_code}</Typography>
-						<Typography variant="body2"><strong>Nome:</strong> {requisitionData.requested_disc}</Typography>
-						<Typography variant="body2"><strong>Tipo:</strong> {requisitionData.requested_disc_type}</Typography>
-						<Typography variant="body2"><strong>Departamento:</strong> {requisitionData.department}</Typography>
-					</Stack>
-
-					<Stack spacing={1}>
-						<Typography variant="h6" sx={{ fontWeight: 600 }}>Disciplinas Cursadas</Typography>
-						<TableContainer component={Paper}>
-							<Table>
-								<TableHead>
-									<TableRow>
-										<TableCell>Nome</TableCell>
-										<TableCell>Instituição</TableCell>
-										<TableCell>Código</TableCell>
-										<TableCell>Ano</TableCell>
-										<TableCell>Nota</TableCell>
-										<TableCell>Semestre</TableCell>
-									</TableRow>
-								</TableHead>
-								<TableBody>
-									{takenDiscs.map((disc, index) => (
-										<TableRow key={index}>
-											<TableCell>{disc.name}</TableCell>
-											<TableCell>{disc.institution}</TableCell>
-											<TableCell>{disc.code}</TableCell>
-											<TableCell>{disc.year}</TableCell>
-											<TableCell>{disc.grade}</TableCell>
-											<TableCell>{disc.semester}</TableCell>
-										</TableRow>
-									))}
-								</TableBody>
-							</Table>
-						</TableContainer>
-					</Stack>
-
-					<Stack spacing={1}>
-						<Typography variant="h6" sx={{ fontWeight: 600 }}>Documentos</Typography>
-						{documents && documents.length > 0 && documents.map((doc) => (
-							<Typography variant="body2" key={doc.id}>
-								<Link href={`/documents/${doc.id}/view`} target="_blank" rel="noopener" sx={{ display: 'inline-flex', alignItems: 'center' }} underline="hover">
-									{doc.type} <OpenInNewIcon fontSize="small" sx={{ ml: 0.5 }} />
-								</Link>
-							</Typography>
-						))}
-					</Stack>
-
-					<Stack spacing={1}>
-						<Typography variant="h6" sx={{ fontWeight: 600 }}>Observações</Typography>
-						<Typography variant="body2">{requisitionData.observations}</Typography>
-					</Stack>
-
-					<Stack spacing={1}>
-						<Typography variant="h6" sx={{ fontWeight: 600 }}>Resultado</Typography>
-						<Typography variant="body2" color={resultColor}><strong>Status:</strong> {requisitionData.result}</Typography>
-						<Typography variant="body2"><strong>Justificativa:</strong> {requisitionData.result_text}</Typography>
-					</Stack>
-				</Stack>
 			</Paper>
 		</Stack>
 	);

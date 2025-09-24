@@ -16,20 +16,25 @@ const RequisitionDetailPage = ({ label,
     const actionsVariant = isMediumOrLarger ? 'box' : 'bar';
 
     const sortedDocuments = latestDocuments.sort((a, b) => a.type.localeCompare(b.type));
+    console.log(selectedActions);
 
     return (
         <RequisitionProvider requisitionData={{...requisition, takenDiscs: latestTakenDisciplines, documents: sortedDocuments}}>
             <BasePage
                 headerProps={{
                     label: label,
-                    isExit: false
+                    selectedActions: selectedActions,
                 }}
                 actionsProps={{
                     selectedActions: selectedActions,
                     variant: actionsVariant
                 }}
             >
-                <RequisitionDetail takenDiscs={latestTakenDisciplines} documents={sortedDocuments} />
+                <RequisitionDetail
+                    takenDiscs={latestTakenDisciplines}
+                    documents={sortedDocuments}
+                    selectedActions={selectedActions}
+                />
             </BasePage>
         </RequisitionProvider>
     );

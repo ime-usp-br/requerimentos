@@ -22,7 +22,7 @@ use Inertia\Inertia;
 class ReviewController extends Controller
 {
     public function reviewerPick($requisitionId)
-    {   
+    {
         $requisitionDepartment = Requisition::find($requisitionId)->department;
         $departmentId = Department::where('name', $requisitionDepartment)->first()->id;
         $reviewers = DepartmentUserRole::getUsersWithRoleAndDepartment(RoleId::REVIEWER, $departmentId);
@@ -60,7 +60,7 @@ class ReviewController extends Controller
 
                 $req = Requisition::find($requisitionId);
 
-                // $req->situation é o que aparece na linha do requerimento na tabela 
+                // $req->situation é o que aparece na linha do requerimento na tabela
                 // para o aluno (não contém o nome do parecerista)
                 $req->situation = EventType::SENT_TO_REVIEWERS;
 
@@ -72,8 +72,8 @@ class ReviewController extends Controller
                 $event->version = $req->latest_version;
 
                 if ($reviewer->name) {
-                    // a $event->message/$req->internal_status contém o nome do  
-                    // parecerista, mas não aparece para o aluno, é usada apenas  
+                    // a $event->message/$req->internal_status contém o nome do
+                    // parecerista, mas não aparece para o aluno, é usada apenas
                     // internamente
                     $event->message = "Enviado para o parecerista " . $reviewer->name;
                     $req->internal_status = $event->message;
@@ -101,11 +101,11 @@ class ReviewController extends Controller
     {
         $requisition = Requisition::with('reviews')->find($requisitionId);
 
-        return Inertia::render('AssignedReviews', [ 'label' => 'Requerimentos', 
+        return Inertia::render('AssignedReviews', [ 'label' => 'Requerimentos',
                                                     'selectedActions' => [],
                                                     'reviews' => $requisition->reviews ]);
     }
-    
+
     public function submit(Request $request)
     {
         // Validate the request using Laravel's validation system with translations
@@ -114,7 +114,7 @@ class ReviewController extends Controller
             'result' => 'required|string',
             'result_text' => 'required_if:result,Indeferido|nullable|string',
         ]);
-        
+
         // If validation fails for any other reason
         if ($validator->fails()) {
             return back()->withErrors($validator);
@@ -160,7 +160,7 @@ class ReviewController extends Controller
 
             $event->save();
             $req->save();
-                
+
             $this->notifyReviewGiven($requisitionId);
         });
     }
@@ -180,8 +180,8 @@ class ReviewController extends Controller
     // public function previousReviews($requisitionId, $requestedDiscCode)
     // {
 
-    //     // O retorno da Query é um grupo, j́a que um mesmo requisito pode ter mais 
-    //     // de uma matéria realizada. 
+    //     // O retorno da Query é um grupo, j́a que um mesmo requisito pode ter mais
+    //     // de uma matéria realizada.
     //     $previousReviews = Requisition::where('requisitions.requested_disc_code', $requestedDiscCode)
     //         ->select(
     //             'requisitions.id',
