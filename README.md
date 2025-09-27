@@ -1,4 +1,4 @@
-# Documentação Focada - Modelos e Controladores
+# Sistema de Equivalência de Estudos
 
 # Configuração e Execução do Projeto
 
