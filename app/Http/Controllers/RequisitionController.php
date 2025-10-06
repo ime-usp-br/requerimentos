@@ -38,12 +38,29 @@ class RequisitionController extends Controller
     public function showRequisition($requisitionId)
     {
         $user = Auth::user();
+
+        Log::info('RequisitionController::showRequisition - Requisition view requested', [
+            'requisition_id' => $requisitionId,
+            'user_codpes' => $user->codpes,
+            'role_id' => $user->current_role_id
+        ]);
+
         $requisition = Requisition::with('takenDisciplines', 'documents')->find($requisitionId);
 
         if (!$requisition) {
+            Log::warning('RequisitionController::showRequisition - Requisition not found', [
+                'requisition_id' => $requisitionId,
+                'user_codpes' => $user->codpes
+            ]);
             abort(404);
         }
+
         if ($user->current_role_id == RoleId::STUDENT && (int) $requisition->student_nusp !== (int) $user->codpes) {
+            Log::warning('RequisitionController::showRequisition - Unauthorized access attempt', [
+                'requisition_id' => $requisitionId,
+                'user_codpes' => $user->codpes,
+                'requisition_owner' => $requisition->student_nusp
+            ]);
             abort(403);
         }
 
@@ -74,26 +91,46 @@ class RequisitionController extends Controller
                 $selectedActions =  [['edit_requisition']];
                 break;
             case RoleId::SG:
-                $selectedActions = [['send_to_department',
-                                     'result'],
-                                    ['edit_requisition'], 
-                                    ['send_to_reviewers', 
-                                     'reviews'], 
-                                    ['requisition_history'], 
-                                    ['registered',
-                                     'automatic_requisition',
-                                     'export_current']];
+                $selectedActions = [
+                    [
+                        'send_to_department',
+                        'result'
+                    ],
+                    ['edit_requisition'],
+                    [
+                        'send_to_reviewers',
+                        'reviews'
+                    ],
+                    ['requisition_history'],
+                    [
+                        'registered',
+                        'automatic_requisition',
+                        'export_current'
+                    ]
+                ];
                 break;
             case RoleId::SECRETARY:
-                $selectedActions =  [['send_to_reviewers', 
-                                       'reviews'], 
-                                     ['requisition_history'],
-                                     ['registered']];
+                $selectedActions =  [
+                    [
+                        'send_to_reviewers',
+                        'reviews'
+                    ],
+                    ['requisition_history'],
+                    ['registered']
+                ];
                 break;
             case RoleId::REVIEWER:
                 $selectedActions = [['submit_review']];
                 break;
         }
+
+        Log::info('RequisitionController::showRequisition - Requisition data prepared successfully', [
+            'requisition_id' => $requisitionId,
+            'user_codpes' => $user->codpes,
+            'role_id' => $roleId,
+            'document_count' => count($latestDocumentsArray),
+            'taken_disciplines_count' => count($latestTakenDisciplines)
+        ]);
 
         return Inertia::render('RequisitionDetailPage', [
             'label' => 'Requerimentos',
@@ -107,22 +144,41 @@ class RequisitionController extends Controller
     public function newRequisitionGet()
     {
         $user = Auth::user();
-        return Inertia::render('RequisitionFormPage', ['isStudent' => $user->current_role_id == RoleId::STUDENT,
-                                                    'label' => 'Novo Requerimento',
-                                                    'isUpdate' => false,
-                                                    ]);
+
+        Log::info('RequisitionController::newRequisitionGet - New requisition form requested', [
+            'user_codpes' => $user->codpes,
+            'role_id' => $user->current_role_id
+        ]);
+
+        $response = Inertia::render('RequisitionFormPage', [
+            'isStudent' => $user->current_role_id == RoleId::STUDENT,
+            'label' => 'Novo Requerimento',
+            'isUpdate' => false,
+        ]);
+        return $response;
     }
 
     public function newRequisitionPost(RequisitionCreationRequest $request)
     {
-        $validatedRequest = $request->validated(); 
+        $validatedRequest = $request->validated();
+        $user = Auth::user();
+
+        Log::info('RequisitionController::newRequisitionPost - New requisition creation started', [
+            'user_codpes' => $user->codpes,
+            'role_id' => $user->current_role_id,
+            'student_nusp' => $validatedRequest['student_nusp'] ?? $user->codpes,
+            'course' => $validatedRequest['course'],
+            'requested_disc_code' => $validatedRequest['requestedDiscCode'],
+            'department' => $validatedRequest['requestedDiscDepartment']
+        ]);
 
         try {
-            $user = Auth::user();
+            $requisitionId = null;
+            $studentNusp = null;
 
-            DB::transaction(function () use ($validatedRequest, $user) {
+            DB::transaction(function () use ($validatedRequest, $user, &$requisitionId, &$studentNusp) {
                 $requisition = new Requisition;
-                
+
                 if ($user->current_role_id == 1) {
                     $requisition->student_nusp = $user->codpes;
                     $requisition->student_name = $user->name;
@@ -146,6 +202,10 @@ class RequisitionController extends Controller
                 $requisition->latest_version = 1;
                 $requisition->editable = false;
                 $requisition->save();
+
+                // Capture values for logging
+                $requisitionId = $requisition->id;
+                $studentNusp = $requisition->student_nusp;
 
                 $takenDiscsRecord = new Document;
                 $takenDiscsRecord->path = $validatedRequest['takenDiscRecord']->store('documents');
@@ -200,14 +260,21 @@ class RequisitionController extends Controller
                 $event->version = 1;
                 $event->save();
             });
-           
+
             if ($user->current_role_id != RoleId::SG) {
                 $this->notifyRequisitionCreation();
             }
 
+            Log::info('RequisitionController::newRequisitionPost - Requisition created successfully', [
+                'user_codpes' => $user->codpes,
+                'requisition_id' => $requisitionId,
+                'student_nusp' => $studentNusp
+            ]);
+
             return Inertia::location(route('list'));
         } catch (\Exception $e) {
-            Log::error('Error creating new requisition', [
+            Log::error('RequisitionController::newRequisitionPost - Error creating new requisition', [
+                'user_codpes' => $user->codpes,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -215,7 +282,8 @@ class RequisitionController extends Controller
         }
     }
 
-    private function notifyRequisitionCreation() {
+    private function notifyRequisitionCreation()
+    {
         $sgUsers = DepartmentUserRole::getUsersWithRoleAndDepartment(RoleId::SG, null);
 
         foreach ($sgUsers as $sgUser) {
@@ -226,12 +294,20 @@ class RequisitionController extends Controller
 
     public function updateRequisitionGet($requisitionId)
     {
+        $user = Auth::user();
+
+        Log::info('RequisitionController::updateRequisitionGet - Update requisition form requested', [
+            'requisition_id' => $requisitionId,
+            'user_codpes' => $user->codpes,
+            'role_id' => $user->current_role_id
+        ]);
+
         $this->checkUserUpdatePermission($requisitionId);
         $requisition = Requisition::find($requisitionId);
 
         $latestTakenDisciplinesVersion = TakenDisciplines::where('requisition_id', $requisitionId)
             ->max('version') ?? 1;
-        
+
         $latestTakenDisciplines = TakenDisciplines::where('requisition_id', $requisitionId)
             ->where('version', $latestTakenDisciplinesVersion)
             ->get();
@@ -295,6 +371,13 @@ class RequisitionController extends Controller
 
         $user = Auth::user();
 
+        Log::info('RequisitionController::updateRequisitionGet - Update form rendered successfully', [
+            'requisition_id' => $requisitionId,
+            'user_codpes' => $user->codpes,
+            'role_id' => $user->current_role_id,
+            'taken_disciplines_count' => $latestTakenDisciplines->count()
+        ]);
+
         return Inertia::render('RequisitionFormPage', [
             'requisitionData' => $requisitionData,
             'label' => 'Novo Requerimento',
@@ -305,8 +388,16 @@ class RequisitionController extends Controller
 
     public function updateRequisitionPost(RequisitionUpdateRequest $request)
     {
-        $validatedRequest = $request->validated();        
-        $this->checkUserUpdatePermission($validatedRequest["requisitionId"]); 
+        $validatedRequest = $request->validated();
+        $user = Auth::user();
+
+        Log::info('RequisitionController::updateRequisitionPost - Requisition update started', [
+            'requisition_id' => $validatedRequest["requisitionId"],
+            'user_codpes' => $user->codpes,
+            'role_id' => $user->current_role_id
+        ]);
+
+        $this->checkUserUpdatePermission($validatedRequest["requisitionId"]);
         $requisition = Requisition::find($validatedRequest["requisitionId"]);
 
         $allDocumentTypes = [
@@ -342,9 +433,17 @@ class RequisitionController extends Controller
         $changedDocuments = $this->changedDocuments($requisition, $validatedRequest);
         $hasTakenDisciplinesChanged = $this->hasTakenDisciplinesChanged($validatedRequest);
         $hasRequisitionDataChanged = $this->hasRequisitionDataChanged($validatedRequest);
-        $hasChanges = !empty($changedDocuments) || $hasTakenDisciplinesChanged || $hasRequisitionDataChanged;   
-        
+        $hasChanges = !empty($changedDocuments) || $hasTakenDisciplinesChanged || $hasRequisitionDataChanged;
+
         if ($hasChanges) {
+            Log::info('RequisitionController::updateRequisitionPost - Changes detected, updating requisition', [
+                'requisition_id' => $validatedRequest["requisitionId"],
+                'user_codpes' => $user->codpes,
+                'changed_documents_count' => count($changedDocuments),
+                'taken_disciplines_changed' => $hasTakenDisciplinesChanged,
+                'requisition_data_changed' => $hasRequisitionDataChanged
+            ]);
+
             try {
                 DB::transaction(function () use ($changedDocuments, $hasTakenDisciplinesChanged, $requisition, $validatedRequest, $currentVersions) {
                     $newVersions = $currentVersions;
@@ -375,11 +474,28 @@ class RequisitionController extends Controller
                 });
 
                 $this->notifyRequisitionUpdate();
-            
+
+                Log::info('RequisitionController::updateRequisitionPost - Requisition updated successfully', [
+                    'requisition_id' => $validatedRequest["requisitionId"],
+                    'user_codpes' => $user->codpes,
+                    'new_version' => $requisition->latest_version
+                ]);
             } catch (\Exception $e) {
+                Log::error('RequisitionController::updateRequisitionPost - Error updating requisition', [
+                    'requisition_id' => $validatedRequest["requisitionId"],
+                    'user_codpes' => $user->codpes,
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
                 abort(500, $e->getMessage());
             }
+        } else {
+            Log::info('RequisitionController::updateRequisitionPost - No changes detected', [
+                'requisition_id' => $validatedRequest["requisitionId"],
+                'user_codpes' => $user->codpes
+            ]);
         }
+
         return Inertia::location(route('list'));
     }
 
@@ -430,7 +546,7 @@ class RequisitionController extends Controller
             }
 
             $newDocumentHash = hash_file('sha256', $newDocument->getRealPath());
-            
+
             if (isset($latestDocuments[$documentType])) {
                 $existingDocument = $latestDocuments[$documentType];
                 if ($existingDocument->hash !== $newDocumentHash) {
@@ -492,7 +608,7 @@ class RequisitionController extends Controller
         if ($existingTakenDisciplinesArray != $newTakenDisciplinesArray) {
             $hasChanged = True;
         }
-        
+
         return $hasChanged;
     }
 
@@ -500,10 +616,12 @@ class RequisitionController extends Controller
     {
         $requisition = Requisition::find($updateRequest["requisitionId"]);
         $hasChanged = False;
-        
-        if ($requisition->observations !== $updateRequest["observations"] 
+
+        if (
+            $requisition->observations !== $updateRequest["observations"]
             || $requisition->department !== $updateRequest["requestedDiscDepartment"]
-            || $requisition->requested_disc_type !== $updateRequest["requestedDiscType"]) {
+            || $requisition->requested_disc_type !== $updateRequest["requestedDiscType"]
+        ) {
             $hasChanged = True;
         }
 
@@ -561,9 +679,9 @@ class RequisitionController extends Controller
         $requisitionVersion->course_record_version = $versions['documents'][DocumentType::CURRENT_COURSE_RECORD];
         $requisitionVersion->taken_disc_syllabus_version = $versions['documents'][DocumentType::TAKEN_DISCS_SYLLABUS];
         $requisitionVersion->requested_disc_syllabus_version = $versions['documents'][DocumentType::REQUESTED_DISC_SYLLABUS];
-        
+
         $requisitionVersion->save();
-        
+
         $requisition->requested_disc_type = $updateRequest['requestedDiscType'];
         $requisition->department = $updateRequest['requestedDiscDepartment'];
         $requisition->observations = $updateRequest["observations"];
@@ -578,7 +696,8 @@ class RequisitionController extends Controller
         $requisition->save();
     }
 
-    private function notifyRequisitionUpdate() {
+    private function notifyRequisitionUpdate()
+    {
         $sgUsers = DepartmentUserRole::getUsersWithRoleAndDepartment(RoleId::SG, null);
 
         foreach ($sgUsers as $sgUser) {
@@ -587,8 +706,16 @@ class RequisitionController extends Controller
         }
     }
 
-    public function sendToDepartment(Request $request) {
+    public function sendToDepartment(Request $request)
+    {
         $requisitionId = $request['requisitionId'];
+        $user = Auth::user();
+
+        Log::info('RequisitionController::sendToDepartment - Sending requisition to department', [
+            'requisition_id' => $requisitionId,
+            'user_codpes' => $user->codpes,
+            'role_id' => $user->current_role_id
+        ]);
 
         DB::transaction(function () use ($request, $requisitionId) {
             $requisition = Requisition::find($requisitionId);
@@ -597,24 +724,29 @@ class RequisitionController extends Controller
             $event = new Event;
             $event->type = EventType::SENT_TO_DEPARTMENT;
             $event->requisition_id = $request['requisitionId'];
-            $event->author_name = $user->name; 
+            $event->author_name = $user->name;
             $event->author_nusp = $user->codpes;
-            $event->version = $requisition->latest_version;  
+            $event->version = $requisition->latest_version;
             $event->save();
 
             $requisition->situation = EventType::SENT_TO_DEPARTMENT;
             $requisition->internal_status = EventType::SENT_TO_DEPARTMENT . " " .  $requisition->department;
             $requisition->registered = false;
             $requisition->save();
-
         });
-       
+
         $this->notifyDepartment($requisitionId);
+
+        Log::info('RequisitionController::sendToDepartment - Requisition sent to department successfully', [
+            'requisition_id' => $requisitionId,
+            'user_codpes' => $user->codpes
+        ]);
 
         return response('', 200)->header('Content-Type', 'text/plain');
     }
 
-    private function notifyDepartment($requisitionId) {
+    private function notifyDepartment($requisitionId)
+    {
         $requisitionDepartment = Requisition::find($requisitionId)->department;
         $departmentId = Department::where('name', $requisitionDepartment)->first()->id;
         $departmentUsers = DepartmentUserRole::getUsersWithRoleAndDepartment(RoleId::SECRETARY, $departmentId);
@@ -625,7 +757,17 @@ class RequisitionController extends Controller
         }
     }
 
-    public function automaticDeferral(Request $request) {
+    public function automaticDeferral(Request $request)
+    {
+        $user = Auth::user();
+        $requisitionId = $request['requisitionId'];
+
+        Log::info('RequisitionController::automaticDeferral - Processing automatic deferral', [
+            'requisition_id' => $requisitionId,
+            'user_codpes' => $user->codpes,
+            'role_id' => $user->current_role_id
+        ]);
+
         DB::transaction(function () use ($request) {
             $user = Auth::user();
 
@@ -655,12 +797,26 @@ class RequisitionController extends Controller
             $event->author_nusp = $user->codpes;
             $event->version = $requisition->latest_version;
             $event->save();
-        });        
+        });
+
+        Log::info('RequisitionController::automaticDeferral - Automatic deferral processed successfully', [
+            'requisition_id' => $requisitionId,
+            'user_codpes' => $user->codpes
+        ]);
 
         return response('', 200)->header('Content-Type', 'text/plain');
-    } 
+    }
 
-    public function registered(Request $request) {
+    public function registered(Request $request)
+    {
+        $user = Auth::user();
+
+        Log::info('RequisitionController::registered - Registering requisition in Jupiter', [
+            'requisition_id' => $request->requisitionId,
+            'user_codpes' => $user->codpes,
+            'role_id' => $user->current_role_id
+        ]);
+
         $this->checkUserRegisteredPermission($request->requisitionId);
 
         DB::transaction(function () use ($request) {
@@ -684,10 +840,16 @@ class RequisitionController extends Controller
 
         $this->notifyRegisted($request->requisitionId);
 
+        Log::info('RequisitionController::registered - Requisition registered successfully', [
+            'requisition_id' => $request->requisitionId,
+            'user_codpes' => $user->codpes
+        ]);
+
         return response('', 200)->header('Content-Type', 'text/plain');
     }
 
-    private function checkUserRegisteredPermission($requisitionId){
+    private function checkUserRegisteredPermission($requisitionId)
+    {
         $requisition = Requisition::find($requisitionId);
 
         $user = Auth::user();
@@ -707,7 +869,8 @@ class RequisitionController extends Controller
         }
     }
 
-    private function notifyRegisted($requisitionId) {
+    private function notifyRegisted($requisitionId)
+    {
         $requisitionDepartment = Requisition::find($requisitionId)->department;
         $sgUsers = DepartmentUserRole::getUsersWithRoleAndDepartment(RoleId::SG, null);
 
@@ -715,12 +878,17 @@ class RequisitionController extends Controller
             if ($sgUser->email)
                 $sgUser->notify(new RegisteredNotification($requisitionDepartment));
         }
-
     }
 
     public function exportRequisitionsGet()
     {
         $user = Auth::user();
+
+        Log::info('RequisitionController::exportRequisitionsGet - Export form requested', [
+            'user_codpes' => $user->codpes,
+            'role_id' => $user->current_role_id
+        ]);
+
         $roleId = $user->current_role_id;
 
         $courses = Requisition::select('course')->distinct()->get();
@@ -731,13 +899,27 @@ class RequisitionController extends Controller
         $internal_statusOptions = ['Todos', 'Deferido', 'Indeferido', 'Encaminhado para a Secretaria'];
 
         $options = compact('courses', 'statuses', 'departments', 'discTypes', 'internal_statusOptions');
+
+        Log::info('RequisitionController::exportRequisitionsGet - Export form rendered successfully', [
+            'user_codpes' => $user->codpes,
+            'role_id' => $user->current_role_id,
+            'courses_count' => $courses->count(),
+            'statuses_count' => $statuses->count()
+        ]);
+
         return Inertia::render('ExportRequisitionsPage', ['label' => "Exportação de requerimentos", 'options' => $options]);
     }
 
     public function exportRequisitionsPost(Request $request)
-    {   
-        Log::info('Export requisitions started', ['request_data' => $request->all()]);
-        
+    {
+        $user = Auth::user();
+
+        Log::info('RequisitionController::exportRequisitionsPost - Export requisitions started', [
+            'user_codpes' => $user->codpes,
+            'role_id' => $user->current_role_id,
+            'request_data' => $request->all()
+        ]);
+
         try {
             $query = Requisition::with(['reviews', 'requisitionsVersions', 'events']);
 
@@ -763,11 +945,27 @@ class RequisitionController extends Controller
 
             $requisitions = $query->get();
 
+            Log::info('RequisitionController::exportRequisitionsPost - Query executed', [
+                'user_codpes' => $user->codpes,
+                'found_requisitions' => $requisitions->count(),
+                'filters' => [
+                    'department' => $request->department,
+                    'internal_status' => $request->internal_status,
+                    'requested_disc_type' => $request->requested_disc_type,
+                    'start_date' => $request->start_date,
+                    'end_date' => $request->end_date
+                ]
+            ]);
+
             if ($requisitions->isEmpty()) {
+                Log::warning('RequisitionController::exportRequisitionsPost - No requisitions found', [
+                    'user_codpes' => $user->codpes,
+                    'filters' => $request->all()
+                ]);
                 return response()->json(['message' => 'No requisitions found'], 404);
             }
 
-            $exportData = $requisitions->map(function ($requisition, $index) {                
+            $exportData = $requisitions->map(function ($requisition, $index) use ($user) {
                 try {
                     $sentToDepartment = $requisition->getRelation('events')->filter(function ($item) {
                         return $item->type == 'Enviado para análise do departamento';
@@ -801,7 +999,8 @@ class RequisitionController extends Controller
 
                     return $data;
                 } catch (\Exception $e) {
-                    Log::error("Export error while processing requisition {$index}", [
+                    Log::error("RequisitionController::exportRequisitionsPost - Export error while processing requisition {$index}", [
+                        'user_codpes' => $user->codpes,
                         'requisition_id' => $requisition->id,
                         'error' => $e->getMessage(),
                         'trace' => $e->getTraceAsString()
@@ -811,21 +1010,29 @@ class RequisitionController extends Controller
             });
 
             if ($exportData->isEmpty()) {
-                Log::warning('Export data is empty after mapping');
+                Log::warning('RequisitionController::exportRequisitionsPost - Export data is empty after mapping', [
+                    'user_codpes' => $user->codpes
+                ]);
                 return response()->json(['message' => 'No data to export'], 404);
             }
 
             $exportHandler = new RequisitionsExport($exportData);
+
+            Log::info('RequisitionController::exportRequisitionsPost - Export file generated successfully', [
+                'user_codpes' => $user->codpes,
+                'exported_count' => $exportData->count()
+            ]);
+
             return Excel::download($exportHandler, 'requisitions.xlsx');
-            
         } catch (\Exception $e) {
-            Log::error('Export requisitions failed', [
+            Log::error('RequisitionController::exportRequisitionsPost - Export requisitions failed', [
+                'user_codpes' => $user->codpes,
                 'error' => $e->getMessage(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
                 'trace' => $e->getTraceAsString()
             ]);
-            
+
             return response()->json([
                 'error' => 'Export failed',
                 'message' => $e->getMessage()
@@ -833,22 +1040,39 @@ class RequisitionController extends Controller
         }
     }
 
-    public function setRequisitionResult(Request $request) 
+    public function setRequisitionResult(Request $request)
     {
+        $user = Auth::user();
+
+        Log::info('RequisitionController::setRequisitionResult - Setting requisition result', [
+            'requisition_id' => $request->requisitionId,
+            'user_codpes' => $user->codpes,
+            'role_id' => $user->current_role_id,
+            'result' => $request->result
+        ]);
+
         $this->checkUserUpdatePermission($request->requisitionId);
-        
+
         $validator = Validator::make($request->all(), [
             'requisitionId' => 'required|exists:requisitions,id',
             'result' => 'required|string',
             'result_text' => 'required_if:result,' . ResultType::REJECTED . '|required_if:result,' . ResultType::CANCELLED . '|nullable|string',
         ]);
-        
+
         if ($validator->fails()) {
+            Log::warning('RequisitionController::setRequisitionResult - Validation failed', [
+                'requisition_id' => $request->requisitionId,
+                'user_codpes' => $user->codpes,
+                'errors' => $validator->errors()->toArray()
+            ]);
             return back()->withErrors($validator);
         }
-        
-        if (!$this->hasRequisitionResultChanged($request))
-        {
+
+        if (!$this->hasRequisitionResultChanged($request)) {
+            Log::info('RequisitionController::setRequisitionResult - No changes detected', [
+                'requisition_id' => $request->requisitionId,
+                'user_codpes' => $user->codpes
+            ]);
             return response('', 200)->header('Content-Type', 'text/plain');
         }
 
@@ -875,6 +1099,14 @@ class RequisitionController extends Controller
         $event->save();
 
         $this->notifyRequisitionResult($requisition->student_nusp);
+
+        Log::info('RequisitionController::setRequisitionResult - Requisition result set successfully', [
+            'requisition_id' => $request->requisitionId,
+            'user_codpes' => $user->codpes,
+            'result' => $request->result,
+            'result_type' => $resultType,
+            'student_nusp' => $requisition->student_nusp
+        ]);
 
         return response('', 200)->header('Content-Type', 'text/plain');
     }
@@ -912,11 +1144,11 @@ class RequisitionController extends Controller
         return $resultType;
     }
 
-    private function notifyRequisitionResult($student_nusp) {
+    private function notifyRequisitionResult($student_nusp)
+    {
         $studentUser = User::where('codpes', $student_nusp)->first();
-        if($studentUser){
+        if ($studentUser) {
             $studentUser->notify(new RequisitionResultNotification($studentUser));
         }
     }
-
 }

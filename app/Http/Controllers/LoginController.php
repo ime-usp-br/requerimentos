@@ -21,8 +21,13 @@ class LoginController extends Controller
 	{
 		$userSenhaUnica = Socialite::driver('senhaunica')->user();
 
-		Log::info('User login attempt: ', ['user_data' => json_encode($userSenhaUnica->user ?? $userSenhaUnica, JSON_PRETTY_PRINT)]);
+		Log::info('LoginController::callbackHandler - User login attempt: ', 
+			['user_data' => json_encode($userSenhaUnica->user ?? $userSenhaUnica, JSON_PRETTY_PRINT)]);
 
+		// Nós tentamos garantir que o usuário tenha vínculo com o IME, mas 
+		// na prática o objeto de login de alguns usuários vem diferente. 
+		// Tivemos problemas com alunos que recém-ingressaram e alunos de transferência.
+		//
 		// $fromIME = false;
 		// foreach ($userSenhaUnica->vinculo as $vinculo){
 		//     if (isset($vinculo["siglaUnidade"]) && $vinculo["siglaUnidade"] === 'IME') {
@@ -37,6 +42,8 @@ class LoginController extends Controller
 
 		$user = User::where('codpes', $userSenhaUnica->codpes)->first();
 		if (is_null($user)) {
+			Log::info('LoginController::callbackHandler - User not found, creating new user', ['codpes' => $userSenhaUnica->codpes]);
+
 			$user = DB::transaction(function () use ($userSenhaUnica) {
 				$user = new User;
 				$user->codpes = $userSenhaUnica->codpes;
@@ -51,11 +58,12 @@ class LoginController extends Controller
 				return $user;
 			});
 		}
-
-		// O usuário pode ter sido cadastrado por meio de uma atribuição de role
-		// Nesse caso, o email dele estará nulo, e teremos que completar as informações
-		// Se o replicado não tiver encontrado o usuário, é possível que o nome esteja nulo também
 		else if (is_null($user->email) || is_null($user->name)) {
+			// O usuário pode ter sido cadastrado por meio de uma atribuição de role.
+			// Nesse caso, o email dele estará nulo, e teremos que completar as informações.
+			// Se o replicado não tiver encontrado o usuário, é possível que o nome esteja nulo também
+			Log::info('LoginController::callbackHandler - User with incomplete data, updating', ['codpes' => $userSenhaUnica->codpes]);
+
 			DB::transaction(function () use ($user, $userSenhaUnica) {
 				$user->email = $user->email ?? $userSenhaUnica->emailUsp
 					?? $userSenhaUnica->email
