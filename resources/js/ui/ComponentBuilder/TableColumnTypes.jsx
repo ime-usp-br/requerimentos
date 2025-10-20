@@ -1,6 +1,12 @@
 import React from "react";
 // import { Typography } from "@mui/material";
 
+const formatDate = ({ row }) => {
+    const date = new Date(row.original.created_at);
+    const pad = (n) => n.toString().padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+};
+
 let columnTypes = {};
 
 columnTypes.id = {
@@ -14,11 +20,7 @@ columnTypes.created_at = {
     header: "Criado em",
     accessorKey: 'created_at',
     sortingFn: 'datetime',
-    Cell: ({ row }) => {
-        const date = new Date(row.original.created_at);
-        const pad = (n) => n.toString().padStart(2, '0');
-        return `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
-    },
+    Cell: formatDate,
     enableHiding: false,
     size: 0
 };
@@ -27,11 +29,7 @@ columnTypes.updated_at = {
     header: "Últ. mod.",
     accessorKey: 'updated_at',
     sortingFn: 'datetime',
-    Cell: ({ row }) => {
-        const date = new Date(row.original.updated_at);
-        const pad = (n) => n.toString().padStart(2, '0');
-        return `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
-    },
+    Cell: formatDate,
     enableHiding: false,
     size: 0
 };
@@ -82,7 +80,7 @@ columnTypes.department = {
     header: "Departamento",
     accessorKey: 'department',
     enableHiding: false,
-    size: 160
+    size: 160,
 };
 
 columnTypes.reviewer_decision = {
@@ -113,7 +111,7 @@ columnTypes.author_nusp = {
     size: 0
 };
 
-columnTypes.ocurrence_time  = {
+columnTypes.ocurrence_time = {
     header: "Horário de ocorrência",
     accessorFn: (row) => row.created_at.slice(11, 19),
     enableHiding: false,

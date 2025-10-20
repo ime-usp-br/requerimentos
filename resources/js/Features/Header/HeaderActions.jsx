@@ -12,33 +12,30 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 import ActionsMenu from '../../ui/ActionsMenu/ActionsMenu';
 
-const HeaderActionsContainer = styled(Stack)(({ theme }) => ({
+const HeaderActionsContainer = styled(Stack)(() => ({
     justifyContent: 'space-between',
     alignItems: 'center',
-    [theme.breakpoints.up('md')]: {
-        justifyContent: 'space-around',
-    },
+    // [theme.breakpoints.up('md')]: {
+    //     justifyContent: 'space-around',
+    // },
 }));
 
-const StyledComboBox = styled(ComboBox)(({ theme }) => ({
+const StyledComboBox = styled(ComboBox)(() => ({
     width: 250,
     userSelect: 'none',
-    // '& .MuiInputLabel-root': { color: 'white', userSelect: 'none' },
-    // '& .MuiInputLabel-root.Mui-focused': { color: 'white' },
-    // '& .MuiOutlinedInput-root': { color: 'white', userSelect: 'none' },
-    // '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
-    // '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
-    // '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
-    // '& .MuiAutocomplete-popupIndicator': { color: 'white' },
-    // '& .MuiSvgIcon-root': { color: 'white' }
+    '& .MuiInputLabel-root': { color: 'white', userSelect: 'none' },
+    '& .MuiInputLabel-root.Mui-focused': { color: 'white' },
+    '& .MuiOutlinedInput-root': { color: 'white', userSelect: 'none' },
+    '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+    '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+    '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+    '& .MuiAutocomplete-popupIndicator': { color: 'white' },
+    '& .MuiSvgIcon-root': { color: 'white' }
 }));
 
 const headerActionsButtonStyle = {
     variant: 'text',
-    sx: {
-        color: 'black',
-        // borderColor: 'gray'
-    }
+    color: 'white'
 };
 
 export default function HeaderActions({
@@ -95,7 +92,7 @@ export default function HeaderActions({
             )}
 
 
-            { isExit ?
+            {isExit ?
                 builder.build(['go_back']).map((itemBuilder) =>
                     itemBuilder({ styles: headerActionsButtonStyle }))
                 :
@@ -103,6 +100,7 @@ export default function HeaderActions({
                     <IconButton
                         size='large'
                         onClick={handleMenuClick}
+                        color='white'
                     >
                         <MenuIcon />
                     </IconButton>
@@ -114,7 +112,7 @@ export default function HeaderActions({
                             vertical: 'bottom',
                             horizontal: 'right',
                         }}
-                            PaperProps={{ style: { zIndex: 2000 } }}
+                        PaperProps={{ style: { zIndex: 2000 } }}
 
                         ModalProps={{
                             container: document.body,
