@@ -7,7 +7,7 @@
 - PHP 8.0 ou superior
 - Composer
 - Node.js (16.x ou superior) e npm
-- MySQL ou PostgreSQL
+- MySQL
 - Git
 
 ## Instalação
@@ -60,6 +60,20 @@
    ```bash
    php artisan db:seed
    ```
+
+### Para configurar o banco de dados
+No terminal digite os seguinte comandos:
+
+```bash
+#Loga no mariadb como admin
+sudo mariadb 
+# No mariadb, cria um database chamado requerimentos 
+create database requerimentos; 
+# Cria um usuário chamado requerimentos com a senha que você escolheu
+grant all privileges on requerimentos.* to 'requerimentos'@'localhost' identified by '<sua senha aqui>';
+# Recarrega todos os privilégios do banco de dados
+flush privileges  
+```
 
 ## Execução
 
