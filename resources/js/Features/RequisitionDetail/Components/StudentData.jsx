@@ -25,7 +25,7 @@ const StudentData = () => {
                 <Grid2 size={3}>
                     <Typography variant='body2'><strong>NUSP</strong></Typography>
                 </Grid2>
-                <Grid2 size={7}>
+                <Grid2 size={6}>
                     <Typography variant='body2'><strong>Email</strong></Typography>
                 </Grid2>
                 <Grid2 size={13}>
@@ -37,10 +37,10 @@ const StudentData = () => {
             <Grid2 size={3}>
                 <Typography variant='body2'>{requisitionData.student_nusp}</Typography>
             </Grid2>
-            <Grid2 size={7}>
+            <Grid2 size={6}>
                 <Typography variant='body2'>{requisitionData.email}</Typography>
             </Grid2>
-            <Grid2 size={13}>
+            <Grid2 size={14}>
                 <Typography variant='body2'>{requisitionData.course}</Typography>
             </Grid2>
 

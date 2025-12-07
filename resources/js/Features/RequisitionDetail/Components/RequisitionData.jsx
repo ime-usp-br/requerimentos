@@ -1,7 +1,8 @@
 import React from 'react';
-import { Typography, Grid2, Paper } from '@mui/material';
+import { Typography, Grid2 } from '@mui/material';
 import { useRequisitionContext } from '../useRequisitionContext';
 import { useUser } from '../../../Context/useUserContext';
+import FullTextTooltip from '../../FullTextTooltip';
 
 const formatDate = (originalDate) => {
     const date = new Date(originalDate);
@@ -27,33 +28,30 @@ const RequisitionData = () => {
                 sx={(theme) => ({
                     backgroundColor: theme.palette.orange.main,
                     borderRadius: 1
-                })
-                }
+                })}
             >
                 <Grid2 size={1} />
-                <Grid2 size={8}>
-                    <Typography variant='body2'><strong>Situação</strong></Typography>
-                </Grid2>
-                <Grid2 size={12}>
-                    <Typography variant='body2'><strong>Observações do pedido</strong></Typography>
-                </Grid2>
                 <Grid2 size={3}>
                     <Typography variant='body2'><strong>Última mod.</strong></Typography>
+                </Grid2>
+                <Grid2 size={6}>
+                    <Typography variant='body2'><strong>Situação</strong></Typography>
+                </Grid2>
+                <Grid2 size={14}>
+                    <Typography variant='body2'><strong>Observações do pedido</strong></Typography>
                 </Grid2>
             </Grid2>
 
             <Grid2 size={1} />
-            <Grid2 size={8}>
-                <Typography variant='body2' noWrap>{situation}</Typography>
-            </Grid2>
-            <Grid2 size={12}>
-                <Typography variant='body2' noWrap>{requisitionData.observations}</Typography>
-            </Grid2>
-
             <Grid2 size={3}>
                 <Typography variant='body2'>{formatDate(requisitionData.updated_at)}</Typography>
             </Grid2>
-
+            <Grid2 size={6}>
+                <FullTextTooltip value={situation} />
+            </Grid2>
+            <Grid2 size={14}>
+                <FullTextTooltip value={requisitionData.observations} />
+            </Grid2>
         </Grid2>
     );
 };

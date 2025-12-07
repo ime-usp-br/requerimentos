@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Grid2, Stack } from '@mui/material';
-import { useRequisitionContext } from '../useRequisitionContext';
 import DocumentLink from './DocumentLink';
+import FullTextTooltip from '../../FullTextTooltip';
 
 const CompletedDisciplinesData = ({ takenDiscs, documents }) => {
     return (
@@ -38,16 +38,16 @@ const CompletedDisciplinesData = ({ takenDiscs, documents }) => {
                 <Grid2 size={3}>
                     <Typography variant='body2'><strong>Sigla</strong></Typography>
                 </Grid2>
-                <Grid2 size={7}>
+                <Grid2 size={6}>
                     <Typography variant='body2'><strong>Nome</strong></Typography>
                 </Grid2>
-                <Grid2 size={7}>
+                <Grid2 size={5}>
                     <Typography variant='body2'><strong>Instituição</strong></Typography>
                 </Grid2>
-                <Grid2 size={3}>
+                <Grid2 size={2}>
                     <Typography variant='body2'><strong>Nota</strong></Typography>
                 </Grid2>
-                <Grid2 size={3}>
+                <Grid2 size={7}>
                     <Typography variant='body2'><strong>Ano-Semestre</strong></Typography>
                 </Grid2>
             </Grid2>
@@ -55,10 +55,10 @@ const CompletedDisciplinesData = ({ takenDiscs, documents }) => {
                 <>
                     <Grid2 size={1} />
                     <Grid2 size={3}><Typography variant='body2'>{disc.code}</Typography></Grid2>
-                    <Grid2 size={7}><Typography variant='body2'>{disc.name}</Typography></Grid2>
-                    <Grid2 size={7}><Typography variant='body2'>{disc.institution}</Typography></Grid2>
-                    <Grid2 size={3}><Typography variant='body2'>{disc.grade}</Typography></Grid2>
-                    <Grid2 size={3}><Typography variant='body2'>{disc.year + '-' + disc.semester}</Typography></Grid2>
+                    <Grid2 size={6}><FullTextTooltip value={disc.name} /></Grid2>
+                    <Grid2 size={5}><Typography variant='body2'>{disc.institution}</Typography></Grid2>
+                    <Grid2 size={2}><FullTextTooltip value={disc.grade} /></Grid2>
+                    <Grid2 size={7}><Typography variant='body2'>{disc.year + '-' + disc.semester}</Typography></Grid2>
                 </>
             ))}
         </Grid2>
