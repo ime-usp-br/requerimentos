@@ -12,30 +12,44 @@
 
 ## Instalação
 
-1. Clone o repositório:
+#### 1. Clone o repositório:
    ```bash
    git clone https://github.com/ime-usp-br/requerimentos.git
    cd requerimentos
    ```
 
-2. Instale as dependências do PHP:
+#### 2. Ative as extensões do PHP (normalmente em etc/php/php.ini)
+```
+extension=curl
+extension=gd
+extension=iconv
+extension=mysqlib
+extension=pdo_mysql
+extension=pdo_sqlite
+extension=sqlite3
+extension=zip
+extension=pdo_sqlsrv.so
+```
+Obs.: Para algumas dessas extensões, será necessário baixar bibliotecas específicas no seu OS. 
+
+#### 3. Rode o composer para instalar as dependências 
    ```bash
    composer install
    ```
-
-3. Instale as dependências do JavaScript:
+  
+#### 4. Instale as dependências do JavaScript:
    ```bash
    npm install
    ```
 
-4. Copie o arquivo de ambiente e configure as variáveis:
+#### 5. Copie o arquivo de ambiente e configure as variáveis:
    ```bash
    cp .env.example .env
    ```
    
-5. Edite o arquivo `.env` com as configurações do seu banco de dados e outras variáveis de ambiente.
+#### 6. Edite o arquivo `.env` com as configurações do seu banco de dados e outras variáveis de ambiente.
 
-6. Configure as credenciais do Replicado (sistema USP) no arquivo `.env`:
+#### 7. Configure as credenciais do Replicado (sistema USP) no arquivo `.env`:
    ```
    REPLICADO_HOST=
    REPLICADO_PORT=
@@ -46,17 +60,17 @@
    ```
    Solicite as credenciais de acesso ao banco Replicado à STI ou ao responsável pelo projeto.
 
-7. Gere uma chave para a aplicação:
+#### 8. Gere uma chave para a aplicação:
    ```bash
    php artisan key:generate
    ```
 
-7. Execute as migrações para criar as tabelas:
+#### 9. Execute as migrações para criar as tabelas:
    ```bash
    php artisan migrate
    ```
 
-8. (Opcional) Execute os seeders para popular o banco com dados iniciais:
+#### 10. Execute os seeders para popular o banco com dados iniciais:
    ```bash
    php artisan db:seed
    ```
