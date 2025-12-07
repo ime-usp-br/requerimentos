@@ -72,7 +72,9 @@ class ReplicadoUserModelTest extends TestCase
 
 	public function test_get_name_method_returns_null_for_nonexistent_user(): void
 	{
-		Config::set('services.replicado_is_active', 0);
+		if (!config('services.replicado_is_active')) {
+			$this->markTestSkipped('Replicado is not available');
+		}
 
 		$name = ReplicadoUser::getName('9999999999999');
 		$this->assertNull($name);
