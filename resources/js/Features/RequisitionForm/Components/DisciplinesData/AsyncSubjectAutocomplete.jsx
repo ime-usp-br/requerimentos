@@ -26,34 +26,32 @@ const AsyncSubjectAutocomplete = ({
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
 
-    // Debounced search function
-    const debouncedSearch = useMemo(
-        () => debounce(async (searchQuery) => {
-            if (searchQuery.length < 2) {
-                setOptions([]);
-                setLoading(false);
-                return;
-            }
+    const searchSubjects = useCallback(async (searchQuery) => {
+        if (searchQuery.length < 2) {
+            setOptions([]);
+            setLoading(false);
+            return;
+        }
 
-            setLoading(true);
-            try {
-                const response = await fetch(`/api/subjects/search?q=${encodeURIComponent(searchQuery)}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    setOptions(data);
-                } else {
-                    console.error('Failed to fetch subjects:', response.statusText);
-                    setOptions([]);
-                }
-            } catch (error) {
-                console.error('Error fetching subjects:', error);
+        setLoading(true);
+        try {
+            const response = await fetch(`/api/subjects/search?q=${encodeURIComponent(searchQuery)}`);
+            if (response.ok) {
+                const data = await response.json();
+                setOptions(data);
+            } else {
+                console.error('Failed to fetch subjects:', response.statusText);
                 setOptions([]);
-            } finally {
-                setLoading(false);
             }
-        }, 300),
-        []
-    );
+        } catch (error) {
+            console.error('Error fetching subjects:', error);
+            setOptions([]);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    const debouncedSearch = useMemo(() => debounce(searchSubjects, 300), []);
 
     // Effect to trigger search when inputValue changes
     useEffect(() => {
