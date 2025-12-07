@@ -12,15 +12,18 @@ import { createTheme } from "@mui/material/styles";
 let theme = createTheme({
     palette: {
         blue: {
-            dark: '#142C68',
+            dark: '#023373',
             main: '#7CB4FD',
-            light: '#E3FAFF'
+            light: '#F1F4F7'
         },
         indigo: { main: '#6610f2' },
         purple: { main: '#6f42c1' },
         pink: { main: '#e83e8c' },
         red: { main: '#dc3545' },
-        orange: { main: '#F6A828' },
+        orange: {
+            dark: '#F2A03D',
+            main: '#F2DF80'
+        },
         yellow: { main: '#ffc107' },
         green: { main: '#28a745' },
         teal: { main: '#20c997' },

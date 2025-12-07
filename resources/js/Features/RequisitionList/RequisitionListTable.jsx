@@ -10,33 +10,24 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import Builder from '../../ui/ComponentBuilder/Builder';
 import columnTypes from "../../ui/ComponentBuilder/TableColumnTypes";
 
-/**
- * Enumerables
- */
-const COLOR = {
-    ORANGE: '#FF9305',
-    GREEN: '#0BC294',
-    PURPLE: '#586EFF',
-};
-
 const PREFILTER = {
-   OPEN: 'Abertos',
-   SENT: '1 - SG',
-   DEPARTMENT: '2 - Dep',
-   REVIEW: '3 - Par',
-   REGISTERED: '4 - Cad',
-   CLOSED: '5 - Fech',
-   ALL: 'Todos'
+    OPEN: 'Abertos',
+    SENT: '1 - SG',
+    DEPARTMENT: '2 - Dep',
+    REVIEW: '3 - Par',
+    REGISTERED: '4 - Cad',
+    CLOSED: '5 - Fech',
+    ALL: 'Todos'
 };
 
 const PREFILTER_PRED = {
-   OPEN: (req) => !(req.situation.includes("Requerimento") && !req.situation.includes("reavaliação")),
-   SENT: (req) => req.situation.includes("Encaminhado"),
-   DEPARTMENT: (req) => req.situation.toLowerCase().includes("departamento"),
-   REVIEW: (req) => req.situation.toLowerCase().includes("parecer"),
-   REGISTERED: (req) => req.situation.toLowerCase().includes("registrado") || req.situation.includes("automaticamente"),
-   CLOSED: (req) => req.situation.includes("Requerimento") && !req.situation.includes("reavaliação"),
-   ALL: () => true
+    OPEN: (req) => !(req.situation.includes("Requerimento") && !req.situation.includes("reavaliação")),
+    SENT: (req) => req.situation.includes("Encaminhado"),
+    DEPARTMENT: (req) => req.situation.toLowerCase().includes("departamento"),
+    REVIEW: (req) => req.situation.toLowerCase().includes("parecer"),
+    REGISTERED: (req) => req.situation.toLowerCase().includes("registrado") || req.situation.includes("automaticamente"),
+    CLOSED: (req) => req.situation.includes("Requerimento") && !req.situation.includes("reavaliação"),
+    ALL: () => true
 }
 
 /**
@@ -48,7 +39,7 @@ const PreFilterButton = styled(ButtonBase)(({ backgroundcolor, selected, childre
     paddingBlock: 4,
     paddingBottom: selected == children ? 14 : 5,
     paddingTop: selected == children ? 6 : 5,
-    color: 'white',
+    color: 'black',
     fontWeight: 600,
     fontSize: 18,
     [theme.breakpoints.up('md')]: {
@@ -155,10 +146,10 @@ function List({ requisitions, selectedColumns }) {
         defaultColumn: {
             minSize: 10
         },
-        tableLayout: 'fixed',
+        tableLayout: 'grid-no-grow',
         muiTableHeadRowProps: () => ({
             sx: (theme) => ({
-                backgroundColor: theme.palette.blue.main,
+                backgroundColor: theme.palette.orange.dark,
                 // height: 40,
                 justifyContent: 'center'
             })
@@ -181,7 +172,7 @@ function List({ requisitions, selectedColumns }) {
         muiBottomToolbarProps: {
             sx: (theme) => ({
                 height: '40px',
-                backgroundColor: theme.palette.blue.main,
+                backgroundColor: theme.palette.orange.dark,
                 borderRadius: '0 0 4px 4px',
                 color: 'white',
                 '& .MuiTablePagination-selectLabel': {
@@ -205,7 +196,7 @@ function List({ requisitions, selectedColumns }) {
         },
         muiTableContainerProps: {
             sx: {
-                maxHeight: '800px'
+                maxHeight: '800px',
             },
         },
         renderRowActions: ({ row }) => (

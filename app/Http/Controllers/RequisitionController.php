@@ -788,7 +788,7 @@ class RequisitionController extends Controller
                         'Data de abertura do Requerimento' => $requisition->created_at->format('d-m-Y'),
                         'Disciplina a ser dispensada' => $requisition->requested_disc_code,
                         'Departamento responsável' => $requisition->department,
-                        'Situação' => $requisition->internal_status,
+                        'Resultado' => $requisition->result,
                         'Data de encaminhamento ao departamento/unidade' => $sentToDepartment != null ? $sentToDepartment->created_at->format('d-m-Y') : null,
                         'Parecer' => $reviewIsEmpty ? null : $reviews,
                         'Parecerista' => $reviewIsEmpty ? null : $requisition->getRelation('reviews')[0]->reviewer_name,
@@ -844,7 +844,7 @@ class RequisitionController extends Controller
             return back()->withErrors($validator);
         }
 
-        if (!$this->hasRequisitionResultChanged($request))
+        if (!$this->requisitionSituationHasResult($request))
         {
             return response('', 200)->header('Content-Type', 'text/plain');
         }
@@ -876,14 +876,16 @@ class RequisitionController extends Controller
         return response('', 200)->header('Content-Type', 'text/plain');
     }
 
-    private function hasRequisitionResultChanged($updateRequest)
+    private function requisitionSituationHasResult($updateRequest)
     {
         $requisition = Requisition::find($updateRequest["requisitionId"]);
 
         $hasChanged = False;
         if (
-            $requisition->result !== $updateRequest["result"] ||
-            $requisition->result_text !== $updateRequest["result_text"]
+            $requisition->internal_status !== EventType::BACK_TO_STUDENT &&
+            $requisition->internal_status !== EventType::ACCEPTED &&
+            $requisition->internal_status !== EventType::REJECTED &&
+            $requisition->internal_status !== EventType::CANCELLED
         ) {
             $hasChanged = True;
         }

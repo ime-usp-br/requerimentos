@@ -1,60 +1,64 @@
 import React from 'react';
-import { Typography, Grid2 } from '@mui/material';
-import { useRequisitionContext } from '../useRequisitionContext';
+import { Typography, Grid2, Stack } from '@mui/material';
 import DocumentLink from './DocumentLink';
+import FullTextTooltip from '../../FullTextTooltip';
 
 const CompletedDisciplinesData = ({ takenDiscs, documents }) => {
-    const { requisitionData } = useRequisitionContext();
-
     return (
-        <Grid2 container rowSpacing={1} columnSpacing={2}>
-            <Grid2
-                size={8}
-            >
+        <Grid2 container rowSpacing={.8} columnSpacing={1} columns={24}>
+            <Grid2 size={18}>
                 <Typography variant='h6'><strong>Disciplina(s) Cursada(s)</strong></Typography>
             </Grid2>
-            <Grid2 size={2}>
-                <DocumentLink title={'Ementa(s)'} doc={documents[1]} />
-            </Grid2>
-            <Grid2 size={2}>
-                <DocumentLink title={'Histórico'} doc={documents[3]} />
+            <Grid2
+                container
+                size={6}
+                justifyContent='right'
+                alignItems='end'
+            >
+                <Stack
+                    direction='row'
+                    justifyContent='right'
+                    spacing={2}
+                >
+                    <DocumentLink title={'Ementa(s)'} doc={documents[1]} />
+                    <DocumentLink title={'Histórico'} doc={documents[3]} />
+                </Stack>
             </Grid2>
 
             <Grid2
                 container
-                size={12}
+                size={24}
                 sx={(theme) => ({
-                    backgroundColor: theme.palette.orange.main
+                    backgroundColor: theme.palette.orange.main,
+                    borderRadius: 1
                 })
                 }
             >
-                <Grid2 size={1}>
-                    <Typography variant='body1'><strong>Código</strong></Typography>
-                </Grid2>
-                <Grid2 size={4}>
-                    <Typography variant='body1'><strong>Nome</strong></Typography>
-                </Grid2>
+                <Grid2 size={1} />
                 <Grid2 size={3}>
-                    <Typography variant='body1'><strong>Instituição</strong></Typography>
+                    <Typography variant='body2'><strong>Sigla</strong></Typography>
                 </Grid2>
-                <Grid2 size={1}>
-                    <Typography variant='body1'><strong>Nota</strong></Typography>
+                <Grid2 size={6}>
+                    <Typography variant='body2'><strong>Nome</strong></Typography>
                 </Grid2>
-                <Grid2 size={1}>
-                    <Typography variant='body1'><strong>Ano</strong></Typography>
+                <Grid2 size={5}>
+                    <Typography variant='body2'><strong>Instituição</strong></Typography>
                 </Grid2>
-                <Grid2 size={1}>
-                    <Typography variant='body1'><strong>Semestre</strong></Typography>
+                <Grid2 size={2}>
+                    <Typography variant='body2'><strong>Nota</strong></Typography>
+                </Grid2>
+                <Grid2 size={7}>
+                    <Typography variant='body2'><strong>Ano-Semestre</strong></Typography>
                 </Grid2>
             </Grid2>
             {takenDiscs.map((disc, _) => (
                 <>
-                    <Grid2 size={1}><Typography variant='body1'>{disc.code}</Typography></Grid2>
-                    <Grid2 size={4}><Typography variant='body1'>{disc.name}</Typography></Grid2>
-                    <Grid2 size={3}><Typography variant='body1'>{disc.institution}</Typography></Grid2>
-                    <Grid2 size={1}><Typography variant='body1'>{disc.grade}</Typography></Grid2>
-                    <Grid2 size={1}><Typography variant='body1'>{disc.year}</Typography></Grid2>
-                    <Grid2 size={1}><Typography variant='body1'>{disc.semester}</Typography></Grid2>
+                    <Grid2 size={1} />
+                    <Grid2 size={3}><Typography variant='body2'>{disc.code}</Typography></Grid2>
+                    <Grid2 size={6}><FullTextTooltip value={disc.name} /></Grid2>
+                    <Grid2 size={5}><Typography variant='body2'>{disc.institution}</Typography></Grid2>
+                    <Grid2 size={2}><FullTextTooltip value={disc.grade} /></Grid2>
+                    <Grid2 size={7}><Typography variant='body2'>{disc.year + '-' + disc.semester}</Typography></Grid2>
                 </>
             ))}
         </Grid2>

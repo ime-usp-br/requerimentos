@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stack, Typography, Grid2, FormControl, FormControlLabel, TextField, Radio, RadioGroup, Button } from '@mui/material';
+import { Stack, Typography, FormControl, FormControlLabel, TextField, Radio, RadioGroup, Button } from '@mui/material';
 import { useForm, router } from "@inertiajs/react";
 import { useRequisitionContext } from '../useRequisitionContext';
 import { useDialogContext } from '../../../Context/useDialogContext';
@@ -60,12 +60,12 @@ const ResultForm = () => {
                         }}
                     >
                         {roleId === 2 &&
-                            <FormControlLabel value="Inconsistência nas informações" control={<Radio />} label="Inconsistência nas informações" />
+                            <FormControlLabel value="Inconsistência nas informações" control={<Radio size="small" />} label="Inconsistência nas informações" />
                         }
-                        <FormControlLabel value="Deferido" control={<Radio />} label="Deferido" />
-                        <FormControlLabel value="Indeferido" control={<Radio />} label="Indeferido" />
+                        <FormControlLabel value="Deferido" control={<Radio size="small" />} label="Deferido" />
+                        <FormControlLabel value="Indeferido" control={<Radio size="small" />} label="Indeferido" />
                         {roleId === 2 &&
-                            <FormControlLabel value="Cancelado" control={<Radio />} label="Cancelado" />
+                            <FormControlLabel value="Cancelado" control={<Radio size="small" />} label="Cancelado" />
                         }
                     </RadioGroup>
                     {errors.result && (
@@ -81,6 +81,7 @@ const ResultForm = () => {
                 <TextField
                     label="Observações"
                     variant="outlined"
+                    size="small"
                     fullWidth
                     multiline
                     rows={4}
@@ -97,8 +98,8 @@ const ResultForm = () => {
                         alignItems: "center",
                     }}
                 >
-                    <Button size="medium" variant="text" color="primary" onClick={handleReturn}>Voltar</Button>
-                    <Button size="medium" variant="contained" color="primary" onClick={handleSubmit}>Enviar</Button>
+                    <Button size="small" variant="text" color="primary" onClick={handleReturn}>Voltar</Button>
+                    <Button size="small" variant="contained" color="primary" onClick={handleSubmit}>Enviar</Button>
                 </Stack>
             </Stack>
         </form>

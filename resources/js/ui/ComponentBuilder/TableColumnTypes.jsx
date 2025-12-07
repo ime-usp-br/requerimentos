@@ -1,5 +1,13 @@
-import React from "react";
-// import { Typography } from "@mui/material";
+import React from 'react';
+import FullTextTooltip from "../../Features/FullTextTooltip";
+
+const fullTextTooltipWrapper = ({ cell }) => <FullTextTooltip value={cell.getValue()} fontSize={18} />;
+
+const formatDate = ({ row }) => {
+    const date = new Date(row.original.created_at);
+    const pad = (n) => n.toString().padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+};
 
 let columnTypes = {};
 
@@ -7,33 +15,25 @@ columnTypes.id = {
     header: "ID",
     accessorKey: 'id',
     enableHiding: false,
-    size: 0,
+    size: 10,
 };
 
 columnTypes.created_at = {
     header: "Criado em",
     accessorKey: 'created_at',
     sortingFn: 'datetime',
-    Cell: ({ row }) => {
-        const date = new Date(row.original.created_at);
-        const pad = (n) => n.toString().padStart(2, '0');
-        return `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
-    },
+    Cell: formatDate,
     enableHiding: false,
-    size: 0
+    size: 10
 };
 
 columnTypes.updated_at = {
     header: "Últ. mod.",
     accessorKey: 'updated_at',
     sortingFn: 'datetime',
-    Cell: ({ row }) => {
-        const date = new Date(row.original.updated_at);
-        const pad = (n) => n.toString().padStart(2, '0');
-        return `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
-    },
+    Cell: formatDate,
     enableHiding: false,
-    size: 0
+    size: 10
 };
 
 columnTypes.requested_disc = {
@@ -47,28 +47,47 @@ columnTypes.requested_disc_code = {
     header: "Pedido",
     accessorKey: 'requested_disc_code',
     enableHiding: false,
-    size: 0
+    size: 0,
+    muiTableBodyCellProps: {
+        sx: {
+            maxWidth: 80,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            fontSize: 18
+        },
+    },
 };
 
 columnTypes.situation = {
     header: "Situação",
     accessorKey: 'situation',
     enableHiding: false,
-    grow: true,
+    size: 0
 };
 
 columnTypes.internal_status = {
     header: "Situação",
     accessorKey: 'situation',
     enableHiding: false,
-    grow: true,
+    size: 0
 };
 
 columnTypes.student_name = {
     header: "Aluno",
     accessorKey: 'student_name',
     enableHiding: false,
-    size: 120
+    size: 120,
+    muiTableBodyCellProps: {
+        sx: {
+            maxWidth: 120,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            fontSize: 18
+        },
+    },
+    Cell: fullTextTooltipWrapper,
 };
 
 columnTypes.student_nusp = {
@@ -79,10 +98,19 @@ columnTypes.student_nusp = {
 };
 
 columnTypes.department = {
-    header: "Departamento",
+    header: "Depart.",
     accessorKey: 'department',
     enableHiding: false,
-    size: 160
+    size: 20,
+    muiTableBodyCellProps: {
+        sx: {
+            maxWidth: 30,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            fontSize: 18
+        },
+    },
 };
 
 columnTypes.reviewer_decision = {
@@ -113,7 +141,7 @@ columnTypes.author_nusp = {
     size: 0
 };
 
-columnTypes.ocurrence_time  = {
+columnTypes.ocurrence_time = {
     header: "Horário de ocorrência",
     accessorFn: (row) => row.created_at.slice(11, 19),
     enableHiding: false,

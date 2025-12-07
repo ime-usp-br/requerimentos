@@ -8,7 +8,6 @@ const actionsMenuBarButtonStyle = {
     variant: 'text',
     color: 'black',
     sx: {
-        padding: '8px 12px',
         width: '100%',
         height: '100%',
         textAlign: 'left',
@@ -29,26 +28,26 @@ export default function ActionsMenuBar({ builder, selectedActions }) {
                 justifyContent: 'space-between'
             }}
         >
-                {
-                    selectedActions.map((grouping, groupIndex) =>
-                    (
-                        <ButtonGroup
-                            variant="text"
-                            sx={{
-                                justifyContent: 'flex-end'
-                            }}
-                        >
-                            {
+            {
+                selectedActions.map((grouping, groupIndex) =>
+                (
+                    <ButtonGroup
+                        size="small"
+                        sx={{
+                            justifyContent: 'flex-end'
+                        }}
+                    >
+                        {
                             builder.build(grouping).map((itemBuilder, itemIndex) =>
                                 <MenuItem key={`group-${groupIndex}-item-${itemIndex}`} sx={{ padding: 0 }}>
                                     {itemBuilder({ styles: actionsMenuBarButtonStyle })}
                                 </MenuItem>
                             ).concat((selectedActions.length - 1 != groupIndex) ? [<Divider key={`divider-${groupIndex}`} />] : [])
-                            }
-                        </ButtonGroup>
-                    )
-                    ).flat()
-                }
+                        }
+                    </ButtonGroup>
+                )
+                ).flat()
+            }
         </Stack>
     );
 };

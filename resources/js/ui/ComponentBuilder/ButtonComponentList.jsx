@@ -1,4 +1,4 @@
-import React, { useState, useEffect }from "react";
+import React, { useState, useEffect } from "react";
 
 import { createRoot } from "react-dom/client";
 import { router } from "@inertiajs/react";
@@ -40,7 +40,7 @@ buttonComponentList.add_role = ({ styles }) => {
     const { setDialogTitle, setDialogBody, openDialog } = useDialogContext();
     function handleClick() {
         setDialogTitle('Adicionar papel');
-        setDialogBody(<AddRoleDialog user={user}/>);
+        setDialogBody(<AddRoleDialog user={user} />);
         openDialog();
     }
     return (
@@ -503,7 +503,7 @@ buttonComponentList.send_to_reviewers = ({ styles = {} }) => {
                 );
                 openDialog();
             }
-        );
+            );
     }
     return (
         <Tooltip title="Enviar para Pareceristas" placement="bottom">

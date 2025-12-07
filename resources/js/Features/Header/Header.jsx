@@ -1,12 +1,10 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
-import { Stack, Box, Grid2, Container } from '@mui/material';
+import { Stack, Grid2 } from '@mui/material';
 import HeaderActions from "./HeaderActions"
-import sgLogo from '../../../img/sg-logo.jpg';
+import sgLogo from '../../../img/sg-logo.png';
 
 export default function Header({
-    label,
-    showRoleSelector,
     isExit,
     selectedActions
 }) {
@@ -14,22 +12,22 @@ export default function Header({
         <Stack
             direction="row"
             spacing={2}
-            sx={{
+            sx={(theme) => ({
                 width: '100%',
-                height: '80px',
-                paddingY: 1.5,
+                height: '48px',
+                paddingY: 1,
                 position: "sticky",
                 top: 0,
                 zIndex: 5,
-                backgroundColor: 'white',
-            }}
+                backgroundColor: theme.palette.blue.dark,
+            })
+            }
         >
             <img
                 height='90%'
                 src={sgLogo}
                 style={{
                     borderRadius: 65,
-                    border: '3px solid #142C68',
                     margin: '2px 8px 0px 16px',
                 }}
             />
@@ -47,7 +45,6 @@ export default function Header({
                     sx={{
                         justifyContent: { xs: 'space-evenly', sm: 'space-between' },
                         alignItems: "center",
-                        backgroundColor: '#D9D9D9',
                         width: '100%',
                         paddingX: 2,
                         paddingY: 1.2,
@@ -57,9 +54,10 @@ export default function Header({
                 >
                     <Typography
                         variant="h6"
+                        color='white'
                         sx={{
                             textAlign: { xs: 'center', sm: 'left' },
-                            fontSize: 28,
+                            fontSize: 26,
                         }}
                     >
                         Aproveitamento de Estudos
