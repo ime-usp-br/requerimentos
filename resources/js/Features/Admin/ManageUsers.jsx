@@ -47,8 +47,8 @@ function ManageUsers({ users }) {
         );
 
         try {
-            await axios.post(route("role.remove"), {nusp: userRole.nusp, 
-                                                    roleId: userRole.roleId, 
+            await axios.post(route("role.remove"), {nusp: userRole.nusp,
+                                                    roleId: userRole.roleId,
                                                     departmentId: userRole.departmentId});
         } catch (error) {
             console.error("Error:", error.response?.data || error.message);
@@ -126,7 +126,16 @@ function ManageUsers({ users }) {
     });
 
     return (
-        <Stack spacing={2} sx={{ width: "100%" }}>
+        <Stack
+            direction="column"
+            spacing={2}
+            sx={{
+                width: 'calc(100vw - 32px)',
+                justifyContent: 'flex-start',
+                mt: 2,
+                paddingX: 2
+            }}
+        >
             <Typography variant="h5">Usuários cadastrados</Typography>
             <TextField
                 label="Pesquisar"

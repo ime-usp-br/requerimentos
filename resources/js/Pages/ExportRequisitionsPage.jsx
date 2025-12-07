@@ -7,10 +7,9 @@ function ExportRequisitionsPage({ label, options }) {
         <BasePage
             headerProps={{
                 label: label,
-                isExit: false
             }}
-        >   
-            <ExportRequisitions options={options} />    
+        >
+            <ExportRequisitions options={options} />
         </BasePage>
     );
 };

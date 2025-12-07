@@ -11,14 +11,13 @@ const RequisitionVersionDetailPage = ({
 	requisition,
 	event,
 	takenDisciplines,
-	documents
+	documents,
+    selectedActions
 }) => {
 
 	const theme = useTheme();
 	const isMediumOrLarger = useMediaQuery(theme.breakpoints.up('md'));
 	const actionsVariant = isMediumOrLarger ? 'box' : 'bar';
-
-	const selectedActions = [];
 
 	console.log("takenDisciplines", takenDisciplines);
 
@@ -27,7 +26,6 @@ const RequisitionVersionDetailPage = ({
 			<BasePage
 				headerProps={{
 					label: label,
-					isExit: false
 				}}
 				actionsProps={{
 					selectedActions: selectedActions,

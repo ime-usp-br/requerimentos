@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { router } from '@inertiajs/react'
-import { Stack } from '@mui/material';
+import { Stack, Popover, IconButton } from '@mui/material';
 
 import ComboBox from '../../ui/ComboBox';
 import Builder from '../../ui/ComponentBuilder/Builder';
 import buttonComponentList from '../../ui/ComponentBuilder/ButtonComponentList';
 import { useUser } from '../../Context/useUserContext';
 import { styled } from '@mui/material/styles';
+
+import MenuIcon from '@mui/icons-material/Menu';
+
+import ActionsMenu from '../../ui/ActionsMenu/ActionsMenu';
 
 const HeaderActionsContainer = styled(Stack)(({ theme }) => ({
     justifyContent: 'space-between',
@@ -19,31 +23,42 @@ const HeaderActionsContainer = styled(Stack)(({ theme }) => ({
 const StyledComboBox = styled(ComboBox)(({ theme }) => ({
     width: 250,
     userSelect: 'none',
-    '& .MuiInputLabel-root': { color: 'white', userSelect: 'none' },
-    '& .MuiInputLabel-root.Mui-focused': { color: 'white' },
-    '& .MuiOutlinedInput-root': { color: 'white', userSelect: 'none' },
-    '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
-    '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
-    '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
-    '& .MuiAutocomplete-popupIndicator': { color: 'white' },
-    '& .MuiSvgIcon-root': { color: 'white' }
+    // '& .MuiInputLabel-root': { color: 'white', userSelect: 'none' },
+    // '& .MuiInputLabel-root.Mui-focused': { color: 'white' },
+    // '& .MuiOutlinedInput-root': { color: 'white', userSelect: 'none' },
+    // '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+    // '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+    // '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+    // '& .MuiAutocomplete-popupIndicator': { color: 'white' },
+    // '& .MuiSvgIcon-root': { color: 'white' }
 }));
 
 const headerActionsButtonStyle = {
-    variant: 'outlined',
+    variant: 'text',
     sx: {
-        color: 'white',
-        borderColor: 'white'
+        color: 'black',
+        // borderColor: 'gray'
     }
 };
 
 export default function HeaderActions({
     showRoleSelector,
-    isExit }) {
+    selectedActions,
+    isExit,
+}) {
     const { user } = useUser();
     const userRoles = user?.roles || [];
     const roleId = user?.currentRoleId;
     const departmentId = user?.currentDepartmentId;
+
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+    const handleMenuClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
 
     const handleComboBoxChange = (value) => {
         router.post(
@@ -62,8 +77,10 @@ export default function HeaderActions({
         return option.role.name + " " + option.department.code;
     };
 
-    let builder = new Builder(buttonComponentList);
+    // const exitType = isExit ? [['exit']] : [['go_back']];
 
+    const builder = new Builder(buttonComponentList);
+    selectedActions = selectedActions || [];
     return (
         <HeaderActionsContainer direction='row' spacing={2}>
             {showRoleSelector && (userRoles.length > 1) && (
@@ -77,9 +94,36 @@ export default function HeaderActions({
                 />
             )}
 
-            {builder.build(isExit ? ['exit'] : ['go_back']).map((itemBuilder) =>
-                itemBuilder({ styles: headerActionsButtonStyle })
-            )}
+
+            { isExit ?
+                builder.build(['go_back']).map((itemBuilder) =>
+                    itemBuilder({ styles: headerActionsButtonStyle }))
+                :
+                <>
+                    <IconButton
+                        size='large'
+                        onClick={handleMenuClick}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <Popover
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleMenuClose}
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'right',
+                        }}
+                            PaperProps={{ style: { zIndex: 2000 } }}
+
+                        ModalProps={{
+                            container: document.body,
+                        }}
+                    >
+                        <ActionsMenu selectedActions={selectedActions} variant={'box'} />
+                    </Popover>
+                </>
+            }
 
         </HeaderActionsContainer>
     );

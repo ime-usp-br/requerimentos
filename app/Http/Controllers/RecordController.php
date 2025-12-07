@@ -20,10 +20,10 @@ class RecordController extends Controller
         $user = Auth::user();
         $roleId = $user->current_role_id;
 
-        $selectedEventColumns = ['created_at', 
-                                 'type', 
-                                 'author_name', 
-                                 'author_nusp', 
+        $selectedEventColumns = ['created_at',
+                                 'type',
+                                 'author_name',
+                                 'author_nusp',
                                  'id',
                                  'message'];
 
@@ -34,10 +34,10 @@ class RecordController extends Controller
         $selectedColumns = ['type', 'created_at', 'ocurrence_time', 'author_name', 'author_nusp'];
 
         return Inertia::render('RequisitionEventHistoryPage', ['label' => 'Histórico do Requerimento ' . $requisitionId,
-                                                   'events' => $events, 
+                                                   'events' => $events,
                                                    'selectedColumns' => $selectedColumns,
-                                                   'selectedActions' => [],
-                                                   'roleId' => $roleId, 
+                                                   'selectedActions' => [[]],
+                                                   'roleId' => $roleId,
                                                    'userRoles' => $user->roles,
                                                    'requisitionId' => $requisitionId]);
     }
@@ -54,11 +54,11 @@ class RecordController extends Controller
             $requisitionVersion = RequisitionsVersion::where('requisition_id', $requisitionId)
                                                     ->where('version', $event->version)
                                                     ->first();
-            
+
             if (!$requisitionVersion) {
                 abort(404, 'Historical version not found');
             }
-            
+
             $takenDisciplines = TakenDisciplines::where('requisition_id', $requisitionId)
                                                     ->where('version', $requisitionVersion->taken_disciplines_version)
                                                     ->get();
@@ -79,25 +79,25 @@ class RecordController extends Controller
                     $documents[] = $document;
                 }
             }
-            
+
             $requisitionData = $requisitionVersion->toArray();
             $requisitionData['id'] = $requisitionId;
-            
+
         } else {
             $latestTakenDisciplinesVersion = TakenDisciplines::where('requisition_id', $requisitionId)
                                                             ->max('version');
-            
+
             $takenDisciplines = TakenDisciplines::where('requisition_id', $requisitionId)
                                                 ->where('version', $latestTakenDisciplinesVersion)
                                                 ->get();
-            
+
             $documentTypes = [
                 DocumentType::TAKEN_DISCS_RECORD,
                 DocumentType::CURRENT_COURSE_RECORD,
                 DocumentType::TAKEN_DISCS_SYLLABUS,
                 DocumentType::REQUESTED_DISC_SYLLABUS
             ];
-            
+
             $documents = [];
             foreach ($documentTypes as $documentType) {
                 $document = Document::where('requisition_id', $requisitionId)
@@ -108,7 +108,7 @@ class RecordController extends Controller
                     $documents[] = $document;
                 }
             }
-            
+
             $requisitionData = $requisition->toArray();
         }
 

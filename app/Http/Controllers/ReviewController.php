@@ -60,7 +60,7 @@ class ReviewController extends Controller
 
                 $req = Requisition::find($requisitionId);
 
-                // $req->situation é o que aparece na linha do requerimento na tabela 
+                // $req->situation é o que aparece na linha do requerimento na tabela
                 // para o aluno (não contém o nome do parecerista)
                 $req->situation = EventType::SENT_TO_REVIEWERS;
 
@@ -72,8 +72,8 @@ class ReviewController extends Controller
                 $event->version = $req->latest_version;
 
                 if ($reviewer->name) {
-                    // a $event->message/$req->internal_status contém o nome do  
-                    // parecerista, mas não aparece para o aluno, é usada apenas  
+                    // a $event->message/$req->internal_status contém o nome do
+                    // parecerista, mas não aparece para o aluno, é usada apenas
                     // internamente
                     $event->message = "Enviado para o parecerista " . $reviewer->name;
                     $req->internal_status = $event->message;
