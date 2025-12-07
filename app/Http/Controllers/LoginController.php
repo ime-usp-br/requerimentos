@@ -53,8 +53,9 @@ class LoginController extends Controller
 		}
 
 		// O usuário pode ter sido cadastrado por meio de uma atribuição de role
-		// Nesse caso, o email dele estará nulo, e teremos que completar as informações
-		// Se o replicado não tiver encontrado o usuário, é possível que o nome esteja nulo também
+		// Nesse caso, o email dele estará nulo, e teremos que completar as informações.
+		// Se o replicado não tiver encontrado o usuário na hora da atribuição de role, 
+		// é possível que o nome esteja nulo também
 		else if (is_null($user->email) || is_null($user->name)) {
 			DB::transaction(function () use ($user, $userSenhaUnica) {
 				$user->email = $user->email ?? $userSenhaUnica->emailUsp
