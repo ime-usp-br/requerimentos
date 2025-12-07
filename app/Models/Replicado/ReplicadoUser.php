@@ -12,6 +12,10 @@ class ReplicadoUser extends Model
 	protected $table = "dummy";
 	public $timestamps = false;
 
+	protected $casts = [
+		'nusp' => 'integer',
+	];
+
 	public function newQuery()
 	{
 		if (!config('services.replicado_is_active')) {
