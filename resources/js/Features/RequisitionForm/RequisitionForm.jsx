@@ -25,6 +25,7 @@ const RequisitionForm = ({ requisitionData, isStudent, isUpdate }) => {
 		takenDiscYears: requisitionData?.takenDiscYears || [""],
 		takenDiscGrades: requisitionData?.takenDiscGrades || [""],
 		takenDiscSemesters: requisitionData?.takenDiscSemesters || [""],
+		takenDiscIsUSP: requisitionData?.takenDiscIsUSP || [false],
 		takenDiscCount: requisitionData?.takenDiscCount || 1,
 		takenDiscRecord: requisitionData?.takenDiscRecord || null,
 		courseRecord: requisitionData?.courseRecord || null,
@@ -96,9 +97,9 @@ const RequisitionForm = ({ requisitionData, isStudent, isUpdate }) => {
 					<Button variant="contained" color="primary" onClick={() => window.history.back()}>
 						Voltar
 					</Button>
-					<Button 
-						variant="contained" 
-						color="primary" 
+					<Button
+						variant="contained"
+						color="primary"
 						onClick={submit}
 						disabled={processing}
 					>

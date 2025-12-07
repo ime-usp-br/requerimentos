@@ -5,6 +5,7 @@ import {
     Typography,
     Autocomplete,
 } from "@mui/material";
+import AsyncSubjectAutocomplete from "./AsyncSubjectAutocomplete";
 
 const RequiredDisciplines = ({ data, setData, isUpdate, errors = {} }) => {
     const discTypes = [
@@ -23,37 +24,33 @@ const RequiredDisciplines = ({ data, setData, isUpdate, errors = {} }) => {
     ];
 
     return (
-        <Stack spacing={1.5} component={"div"}>
-            <Typography variant={"subtitle1"}>
+        <Stack spacing={2.5} component={"div"}>
+            <Typography variant={"h6"}>
                 Disciplina a ser dispensada
             </Typography>
-            <TextField
-                size="small"
-                label="Nome da disciplina requerida"
-                required
-                value={data.requestedDiscName}
-                onChange={(e) =>
-                    setData("requestedDiscName", e.target.value)
-                }
-                disabled={isUpdate}
-                error={!!errors.requestedDiscName}
-                helperText={errors.requestedDiscName}
-            />
-            <TextField
-                size="small"
-                label="Sigla da disciplina requerida"
-                required
-                value={data.requestedDiscCode}
-                onChange={(e) =>
-                    setData("requestedDiscCode", e.target.value)
-                }
+            <AsyncSubjectAutocomplete
+                value={data.requestedDiscCode && data.requestedDiscName ? {
+                    code: data.requestedDiscCode,
+                    name: data.requestedDiscName
+                } : null}
+                onChange={(selectedSubject) => {
+                    if (selectedSubject) {
+                        setData("requestedDiscCode", selectedSubject.code);
+                        setData("requestedDiscName", selectedSubject.name);
+                    } else {
+                        setData("requestedDiscCode", "");
+                        setData("requestedDiscName", "");
+                    }
+                }}
                 disabled={isUpdate}
                 error={!!errors.requestedDiscCode}
                 helperText={errors.requestedDiscCode}
+                label="Código ou nome da disciplina requerida"
+                required
             />
             <Stack
                 direction="row"
-                spacing={1.5}
+                spacing={2}
             >
                 <Autocomplete
                     size="small"

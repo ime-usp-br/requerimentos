@@ -89,7 +89,8 @@ class ReviewController extends Controller
         return response('', 200)->header('Content-Type', 'text/plain');
     }
 
-    private function notifyReviewCreation($reviewer_nusp) {
+    private function notifyReviewCreation($reviewer_nusp)
+    {
         $reviewerUser = User::where('codpes', $reviewer_nusp)->first();
 
         if ($reviewerUser->email) {
@@ -101,9 +102,11 @@ class ReviewController extends Controller
     {
         $requisition = Requisition::with('reviews')->find($requisitionId);
 
-        return Inertia::render('AssignedReviews', [ 'label' => 'Requerimentos',
-                                                    'selectedActions' => [],
-                                                    'reviews' => $requisition->reviews ]);
+        return Inertia::render('AssignedReviews', [
+            'label' => 'Requerimentos',
+            'selectedActions' => [],
+            'reviews' => $requisition->reviews
+        ]);
     }
 
     public function submit(Request $request)
@@ -125,9 +128,8 @@ class ReviewController extends Controller
             $user = Auth::user();
 
             $review = Review::where('requisition_id', $requisitionId)->where('reviewer_nusp', $user->codpes)->first();
-            // Não tem devemos salvar a versão 0, já que ela
-            // não tem informação dada pelo parecerista.
-            if($review->latest_version > 0){
+
+            if ($review->latest_version > 0) {
                 $new_hist = new ReviewsVersion;
                 $new_hist->review_id = $review->id;
                 $new_hist->reviewer_name = $user->name;
@@ -143,7 +145,6 @@ class ReviewController extends Controller
             $review->justification = $request->result_text;
             $review->latest_version = ($review->latest_version + 1);
             $review->save();
-
 
             $req = Requisition::find($requisitionId);
             $req->situation = EventType::RETURNED_BY_REVIEWER;
@@ -161,11 +162,15 @@ class ReviewController extends Controller
             $event->save();
             $req->save();
 
+            // Delete all other empty reviews for this requisition
+            $this->deleteEmptyReviews($requisitionId, $user->codpes);
+
             $this->notifyReviewGiven($requisitionId);
         });
     }
 
-    private function notifyReviewGiven($requisitionId) {
+    private function notifyReviewGiven($requisitionId)
+    {
         $requisitionDepartment = Requisition::find($requisitionId)->department;
         $departmentId = Department::where('name', $requisitionDepartment)->first()->id;
         $departmentUsers = DepartmentUserRole::getUsersWithRoleAndDepartment(RoleId::SECRETARY, $departmentId);
@@ -174,60 +179,20 @@ class ReviewController extends Controller
             if ($departmentUser->email)
                 $departmentUser->notify(new ReviewGivenNotification($requisitionDepartment));
         }
-
     }
 
-    // public function previousReviews($requisitionId, $requestedDiscCode)
-    // {
-
-    //     // O retorno da Query é um grupo, j́a que um mesmo requisito pode ter mais
-    //     // de uma matéria realizada.
-    //     $previousReviews = Requisition::where('requisitions.requested_disc_code', $requestedDiscCode)
-    //         ->select(
-    //             'requisitions.id',
-    //             'taken_disciplines.code AS taken_codes',
-    //             'taken_disciplines.year AS year_taken',
-    //             'taken_disciplines.semester AS semester_taken',
-    //             'reviews.reviewer_decision',
-    //             'reviews.updated_at AS review_date',
-    //             'reviews.justification AS reviewer_justification',
-    //             'taken_disciplines.institution'
-    //         )
-    //         ->join('taken_disciplines', 'requisitions.id', '=', 'taken_disciplines.requisition_id') //inner join
-    //         ->join('reviews', 'requisitions.id', '=', 'reviews.requisition_id') //inner join
-    //         ->where('requisitions.id', '!=', $requisitionId) // Não queremos ver o parecer do requerimento atual
-    //         ->get()
-    //         ->groupBy('id');
-
-    //     // Dentre todas as disciplinas que foram utilizadas para pedir cada aproveitamento,
-    //     // verifica se alguma delas é da mesma instituição que o pedido atual.
-    //     // Se não definimos nenhuma instituição na pesquisa, então exibimos todas.
-    //     $previousReviewsFiltered = $previousReviews->filter(function ($group) {
-    //         return $group->contains(function ($object) {
-    //             return ($object->institution === request()->institution) or !(isset(request()->institution));
-    //         });
-    //     });
-
-    //     return view('pages.geral.previousReviews', ['requisitionId' => $requisitionId, 'previousRequisitions' => $previousReviewsFiltered]);
-    // }
-
-    // public function copy($requisitionId, Request $request)
-    // {
-    //     $user = Auth::user();
-
-    //     $reviewToBeUpdated = Review::where('requisition_id', $requisitionId)->where('reviewer_nusp', $user->codpes)->first();
-
-    //     $reviewToBeUpdated->reviewer_decision = $request->decision;
-    //     $reviewToBeUpdated->justification = $request->justification;
-
-    //     $reviewToBeUpdated->save();
-
-    //     $bodyMsg = "O parecer foi copiado para o requerimento atual. Lembre de enviar o parecer quando ele estiver concluído.<br/><br/> ID do requerimento: $requisitionId";
-    //     $titleMsg = 'Parecer copiado';
-
-    //     return redirect()->route('reviewer.show', ['requisitionId' => $requisitionId])
-    //         ->with('success', ['title message' => $titleMsg, 'body message' => $bodyMsg, 'return button' => false])
-    //         ->withFragment('decision'); #withFragment redireciona para o conteúdo com ID=decision
-    // }
-
+    /**
+     * Delete all empty reviews for a requisition except the current user's review.
+     * An empty review is one with reviewer_decision = 'Sem decisão', latest_version = 0, and justification is null or empty.
+     */
+    private function deleteEmptyReviews($requisitionId, $currentReviewerNusp)
+    {
+        Review::where('requisition_id', $requisitionId)
+            ->where('reviewer_nusp', '!=', $currentReviewerNusp)
+            ->where('reviewer_decision', 'Sem decisão')
+            ->where(function ($query) {
+                $query->whereNull('justification')->orWhere('justification', '');
+            })
+            ->delete();
+    }
 }

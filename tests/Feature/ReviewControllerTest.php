@@ -585,4 +585,105 @@ class ReviewControllerTest extends TestCase
             'reviewer_nusp' => '111111',
         ]);
     }
+
+    public function test_submit_review_deletes_empty_reviews_from_other_reviewers()
+    {
+        // Create a reviewer user who will submit the review
+        $submittingReviewer = $this->asRole(RoleId::REVIEWER, DepartmentId::MAC);
+        
+        // Create a requisition
+        $requisition = $this->createRequisition();
+        
+        // Create the review for the submitting reviewer (will be updated, not deleted)
+        $submittingReview = Review::factory()->create([
+            'requisition_id' => $requisition->id,
+            'reviewer_nusp' => '999999', // This is the submitting reviewer's NUSP
+            'reviewer_name' => 'test',
+            'reviewer_decision' => 'Sem decisão',
+            'justification' => null,
+            'latest_version' => 0
+        ]);
+        
+        // Create empty reviews from other reviewers (should be deleted)
+        $emptyReview1 = Review::factory()->create([
+            'requisition_id' => $requisition->id,
+            'reviewer_nusp' => '111111',
+            'reviewer_name' => 'Empty Reviewer 1',
+            'reviewer_decision' => 'Sem decisão',
+            'justification' => null,
+            'latest_version' => 0
+        ]);
+        
+        $emptyReview2 = Review::factory()->create([
+            'requisition_id' => $requisition->id,
+            'reviewer_nusp' => '222222',
+            'reviewer_name' => 'Empty Reviewer 2',
+            'reviewer_decision' => 'Sem decisão',
+            'justification' => '', // Empty string
+            'latest_version' => 0
+        ]);
+        
+        // Create a non-empty review from another reviewer (should NOT be deleted)
+        $nonEmptyReview = Review::factory()->create([
+            'requisition_id' => $requisition->id,
+            'reviewer_nusp' => '333333',
+            'reviewer_name' => 'Non-Empty Reviewer',
+            'reviewer_decision' => 'Deferido',
+            'justification' => 'This has content',
+            'latest_version' => 1
+        ]);
+        
+        // Create an empty review for a different requisition (should NOT be deleted)
+        $differentRequisition = $this->createRequisition('777777');
+        $emptyReviewDifferentRequisition = Review::factory()->create([
+            'requisition_id' => $differentRequisition->id,
+            'reviewer_nusp' => '444444',
+            'reviewer_name' => 'Different Requisition Reviewer',
+            'reviewer_decision' => 'Sem decisão',
+            'justification' => null,
+            'latest_version' => 0
+        ]);
+        
+        // Verify all reviews exist before submission
+        $this->assertDatabaseHas('reviews', ['id' => $submittingReview->id]);
+        $this->assertDatabaseHas('reviews', ['id' => $emptyReview1->id]);
+        $this->assertDatabaseHas('reviews', ['id' => $emptyReview2->id]);
+        $this->assertDatabaseHas('reviews', ['id' => $nonEmptyReview->id]);
+        $this->assertDatabaseHas('reviews', ['id' => $emptyReviewDifferentRequisition->id]);
+        
+        // Submit the review
+        $response = $this->post(route('submitReview'), [
+            'requisitionId' => $requisition->id,
+            'result' => 'Deferido',
+            'result_text' => 'Approved with justification'
+        ]);
+        
+        // Assertions
+        $response->assertStatus(200); // Success response
+        
+        // The submitting reviewer's review should still exist and be updated
+        $this->assertDatabaseHas('reviews', [
+            'id' => $submittingReview->id,
+            'reviewer_decision' => 'Deferido',
+            'justification' => 'Approved with justification',
+            'latest_version' => 1
+        ]);
+        
+        // Empty reviews from other reviewers should be deleted
+        $this->assertDatabaseMissing('reviews', ['id' => $emptyReview1->id]);
+        $this->assertDatabaseMissing('reviews', ['id' => $emptyReview2->id]);
+        
+        // Non-empty review should still exist
+        $this->assertDatabaseHas('reviews', [
+            'id' => $nonEmptyReview->id,
+            'reviewer_decision' => 'Deferido',
+            'justification' => 'This has content'
+        ]);
+        
+        // Empty review from different requisition should still exist
+        $this->assertDatabaseHas('reviews', [
+            'id' => $emptyReviewDifferentRequisition->id,
+            'reviewer_decision' => 'Sem decisão'
+        ]);
+    }
 }
