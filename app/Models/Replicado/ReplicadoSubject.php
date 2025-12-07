@@ -4,6 +4,7 @@ namespace App\Models\Replicado;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ReplicadoSubject extends Model
 {
@@ -14,6 +15,12 @@ class ReplicadoSubject extends Model
     public function newQuery()
     {
         if (!config('services.replicado_is_active')) {
+            if (app()->environment('production')) {
+				throw new \Exception('You need replicado connection to run in production.');
+			}
+
+            Log::warning('Unavailable replicado credentials - this will not run in production');
+
             $query = parent::newQuery()->fromSub($this->fakeQuery(), 'subtable');
         } else {
             $this->connection = "replicado";
