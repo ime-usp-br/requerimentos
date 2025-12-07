@@ -76,7 +76,7 @@ class ReplicadoUserModelTest extends TestCase
 			$this->markTestSkipped('Replicado is not available');
 		}
 
-		$name = ReplicadoUser::getName('9999999999999');
+		$name = ReplicadoUser::getName('-1');
 		$this->assertNull($name);
 	}
 }
