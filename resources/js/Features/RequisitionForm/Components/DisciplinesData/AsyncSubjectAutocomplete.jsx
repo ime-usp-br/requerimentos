@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { Autocomplete, TextField, CircularProgress } from '@mui/material';
 
 const debounce = (func, delay) => {
