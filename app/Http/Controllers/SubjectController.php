@@ -22,8 +22,8 @@ class SubjectController extends Controller
 
         try {
             $subjects = ReplicadoSubject::where(function ($q) use ($query) {
-                $q->whereRaw('LOWER(code) LIKE ?', ['%' . strtolower($query) . '%'])
-                    ->orWhereRaw('LOWER(name) LIKE ?', ['%' . strtolower($query) . '%']);
+                $q->whereRaw('LOWER(code) LIKE ?', [strtolower($query) . '%'])
+                    ->orWhereRaw('LOWER(name) LIKE ?', [strtolower($query) . '%']);
             })
                 ->orderBy('code')
                 ->limit(10)

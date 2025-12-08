@@ -1,0 +1,79 @@
+# Development Dockerfile for Laravel + Inertia + React
+FROM php:8.2-cli-alpine
+
+# Install system dependencies
+RUN apk add --no-cache \
+	mysql-client \
+	zip \
+	unzip \
+	libzip-dev \
+	libpng-dev \
+	libjpeg-turbo-dev \
+	freetype-dev \
+	icu-dev \
+	oniguruma-dev \
+	unixodbc-dev \
+	curl \
+	autoconf \
+	g++ \
+	make \
+	nodejs \
+	npm \
+	git \
+	&& rm -rf /var/cache/apk/*
+
+# Install Microsoft ODBC Driver 18 for SQL Server
+RUN curl https://download.microsoft.com/download/fae28b9a-d880-42fd-9b98-d779f0fdd77f/msodbcsql18_18.5.1.1-1_amd64.apk -o msodbcsql18.apk \
+	&& curl https://download.microsoft.com/download/7/6/d/76de322a-d860-4894-9945-f0cc5d6a45f8/mssql-tools18_18.4.1.1-1_amd64.apk -o mssql-tools18.apk \
+	&& apk add --allow-untrusted msodbcsql18.apk mssql-tools18.apk \
+	&& rm -f msodbcsql18.apk mssql-tools18.apk
+
+# Install PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+	&& docker-php-ext-install -j$(nproc) \
+	pdo_mysql \
+	mysqli \
+	zip \
+	gd \
+	intl \
+	mbstring \
+	bcmath
+
+# Install SQL Server PHP drivers
+RUN pecl install sqlsrv pdo_sqlsrv \
+	&& docker-php-ext-enable sqlsrv pdo_sqlsrv \
+	&& apk del autoconf g++ make
+
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Copy entrypoint script
+COPY docker/entrypoint.dev.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Configure PHP for development
+RUN cp "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini" \
+	&& { \
+	echo 'upload_max_filesize=20M'; \
+	echo 'post_max_size=20M'; \
+	echo 'memory_limit=512M'; \
+	echo 'display_errors=On'; \
+	echo 'error_reporting=E_ALL'; \
+	} > $PHP_INI_DIR/conf.d/custom.ini
+
+# Create required directories with proper permissions
+RUN mkdir -p storage/framework/cache \
+	storage/framework/sessions \
+	storage/framework/views \
+	storage/logs \
+	bootstrap/cache \
+	&& chmod -R 775 storage bootstrap/cache
+
+# Expose ports
+EXPOSE 8000 5173
+
+# Set entrypoint
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

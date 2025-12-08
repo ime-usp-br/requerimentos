@@ -2,118 +2,326 @@
 
 # Configuração e Execução do Projeto
 
-## Pré-requisitos
+Este projeto utiliza **Docker** para ambientes de desenvolvimento e produção.
 
-- PHP 8.0 ou superior
-- Composer
-- Node.js (16.x ou superior) e npm
-- MySQL
+## 📋 Pré-requisitos
+
+- Docker 20.10 ou superior
+- Docker Compose 2.0 ou superior
 - Git
 
-## Instalação
+## 🚀 Ambiente de Desenvolvimento
 
-#### 1. Clone o repositório:
+### Instalação e Configuração
+
+1. **Clone o repositório:**
    ```bash
    git clone https://github.com/ime-usp-br/requerimentos.git
    cd requerimentos
    ```
 
-#### 2. Ative as extensões do PHP (normalmente em etc/php/php.ini)
-```
-extension=curl
-extension=gd
-extension=iconv
-extension=mysqlib
-extension=pdo_mysql
-extension=pdo_sqlite
-extension=sqlite3
-extension=zip
-extension=pdo_sqlsrv.so
-```
-Obs.: Para algumas dessas extensões, será necessário baixar bibliotecas específicas no seu OS. 
-
-#### 3. Rode o composer para instalar as dependências 
+2. **Copie o arquivo de ambiente de desenvolvimento:**
    ```bash
-   composer install
-   ```
-  
-#### 4. Instale as dependências do JavaScript:
-   ```bash
-   npm install
+   cp .env.development.example .env.development
    ```
 
-#### 5. Copie o arquivo de ambiente e configure as variáveis:
-   ```bash
-   cp .env.example .env
-   ```
+3. **Configure o `.env.development`:**
    
-#### 6. Edite o arquivo `.env` com as configurações do seu banco de dados e outras variáveis de ambiente.
+   Edite o arquivo e ajuste as seguintes variáveis:
+   ```env
+   APP_KEY=                    # Será gerado no passo 5
+   APP_URL=http://localhost:8000
 
-#### 7. Configure as credenciais do Replicado (sistema USP) no arquivo `.env`:
-   ```
+   # Banco de dados (já configurado para Docker)
+   DB_CONNECTION=mysql
+   DB_HOST=db
+   DB_PORT=3306
+   DB_DATABASE=requerimentos
+   DB_USERNAME=requerimentos
+   DB_PASSWORD=password
+   DB_ROOT_PASSWORD=root_secret
+
+   # Credenciais do Replicado (sistema USP)
    REPLICADO_HOST=
    REPLICADO_PORT=
    REPLICADO_DATABASE=
    REPLICADO_USERNAME=
    REPLICADO_PASSWORD=
-   REPLICADO_CODUNDCLG=8
-   ```
-   Solicite as credenciais de acesso ao banco Replicado à STI ou ao responsável pelo projeto.
+   REPLICADO_TRUST_SERVER_CERTIFICATE=true
 
-#### 8. Gere uma chave para a aplicação:
+   # Senha Única USP
+   SENHAUNICA_KEY=
+   SENHAUNICA_SECRET=
+   SENHAUNICA_CALLBACK_ID=
+   ```
+
+   **Nota:** Solicite as credenciais do Replicado e Senha Única à STI ou ao responsável pelo projeto.
+
+4. **Inicie o ambiente de desenvolvimento:**
    ```bash
-   php artisan key:generate
+   docker compose -f docker-compose.dev.yml up
    ```
 
-#### 9. Execute as migrações para criar as tabelas:
+   Isso irá:
+   - ✅ Construir a imagem de desenvolvimento
+   - ✅ Instalar automaticamente dependências PHP (Composer) e JavaScript (npm)
+   - ✅ Iniciar o servidor Laravel em `http://localhost:8000`
+   - ✅ Iniciar o Vite dev server com Hot Module Replacement (HMR)
+   - ✅ Montar seu código como volume (alterações refletem imediatamente)
+
+5. **Gere a chave da aplicação (primeira vez):**
    ```bash
-   php artisan migrate
+   docker compose -f docker-compose.dev.yml exec app php artisan key:generate
    ```
+   
+   **Importante:** Copie a chave gerada e adicione ao seu `.env.development` se necessário.
 
-#### 10. Execute os seeders para popular o banco com dados iniciais:
+6. **Execute as migrações e seeders (primeira vez):**
    ```bash
-   php artisan db:seed
+   docker compose -f docker-compose.dev.yml exec app php artisan migrate
+   docker compose -f docker-compose.dev.yml exec app php artisan db:seed
    ```
 
-### Para configurar o banco de dados
-No terminal digite os seguinte comandos:
+7. **Acesse a aplicação:**
+   - **Frontend:** http://localhost:8000
+   - **Vite HMR:** http://localhost:5173 (conectado automaticamente)
+
+### Vantagens do Desenvolvimento com Docker
+
+- ✅ **Hot Module Replacement (HMR)**: Alterações React refletem instantaneamente
+- ✅ **Ambiente consistente**: Todos os desenvolvedores usam as mesmas versões de PHP, Node.js e extensões
+- ✅ **Sem instalação local**: Não precisa instalar PHP 8.2, Composer, Node.js, MySQL ou extensões
+- ✅ **Isolamento total**: Não afeta seu sistema operacional
+- ✅ **Onboarding rápido**: Novos desenvolvedores iniciam em minutos
+- ✅ **Code sync em tempo real**: Edite localmente, veja as mudanças imediatamente no container
+
+### Comandos Úteis - Desenvolvimento
 
 ```bash
-#Loga no mariadb como admin
-sudo mariadb 
-# No mariadb, cria um database chamado requerimentos 
-create database requerimentos; 
-# Cria um usuário chamado requerimentos com a senha que você escolheu
-grant all privileges on requerimentos.* to 'requerimentos'@'localhost' identified by '<sua senha aqui>';
-# Recarrega todos os privilégios do banco de dados
-flush privileges  
-```
+# Ver logs em tempo real
+docker compose -f docker-compose.dev.yml logs -f
 
-## Execução
+# Ver logs apenas do app
+docker compose -f docker-compose.dev.yml logs -f app
 
-Para desenvolvimento local, você pode executar:
+# Acessar o container
+docker compose -f docker-compose.dev.yml exec app sh
 
-1. Servidor Laravel:
-   ```bash
-   php artisan serve
-   ```
+# Parar serviços
+docker compose -f docker-compose.dev.yml down
 
-2. Compilação dos assets (em outro terminal):
-   ```bash
-   npm run dev
-   ```
+# Reiniciar serviços
+docker compose -f docker-compose.dev.yml restart
 
-A aplicação estará disponível em `http://localhost:8000`.
+# Rebuild containers (após mudanças no Dockerfile)
+docker compose -f docker-compose.dev.yml up -d --build
 
-## Compilação para Produção
+# Executar comandos Artisan
+docker compose -f docker-compose.dev.yml exec app php artisan <comando>
 
-Para compilar os assets para produção:
+# Executar comandos Composer
+docker compose -f docker-compose.dev.yml exec app composer <comando>
 
-```bash
-npm run build
+# Executar comandos NPM
+docker compose -f docker-compose.dev.yml exec app npm <comando>
+
+# Limpar cache do Laravel
+docker compose -f docker-compose.dev.yml exec app php artisan cache:clear
+docker compose -f docker-compose.dev.yml exec app php artisan config:clear
+
+# Acessar MySQL
+docker compose -f docker-compose.dev.yml exec db mysql -u requerimentos -p
+
+# Ver status dos containers
+docker compose -f docker-compose.dev.yml ps
 ```
 
 ---
+
+## 🏭 Ambiente de Produção
+
+### Instalação e Configuração
+
+## 🏭 Ambiente de Produção
+
+### Instalação e Configuração
+
+1. **Clone o repositório:**
+   ```bash
+   git clone https://github.com/ime-usp-br/requerimentos.git
+   cd requerimentos
+   ```
+
+2. **Copie o arquivo de ambiente de produção:**
+   ```bash
+   cp .env.production.example .env.production
+   ```
+
+3. **Configure o `.env.production` com valores seguros:**
+   ```env
+   APP_ENV=production
+   APP_DEBUG=false
+   APP_KEY=                    # Será gerado no passo 5
+   APP_URL=https://seu-dominio.com
+
+   # Banco de dados
+   DB_CONNECTION=mysql
+   DB_HOST=db
+   DB_PORT=3306
+   DB_DATABASE=requerimentos
+   DB_USERNAME=requerimentos
+   DB_PASSWORD=SENHA_SEGURA_AQUI        # ⚠️ ALTERE PARA UMA SENHA FORTE
+   DB_ROOT_PASSWORD=ROOT_SENHA_AQUI     # ⚠️ ALTERE PARA UMA SENHA FORTE
+
+   # Credenciais do Replicado (produção)
+   REPLICADO_HOST=
+   REPLICADO_PORT=
+   REPLICADO_DATABASE=
+   REPLICADO_USERNAME=
+   REPLICADO_PASSWORD=
+
+   # Senha Única USP (produção)
+   SENHAUNICA_KEY=
+   SENHAUNICA_SECRET=
+   SENHAUNICA_CALLBACK_ID=
+
+   # Email (configure seu servidor SMTP)
+   MAIL_MAILER=smtp
+   MAIL_HOST=
+   MAIL_PORT=
+   MAIL_USERNAME=
+   MAIL_PASSWORD=
+   ```
+
+4. **Ajuste as credenciais do banco no arquivo de produção para corresponder ao `.env.production`.**
+
+5. **Construa e inicie os containers:**
+   ```bash
+   docker compose up -d --build
+   ```
+
+   Isso irá:
+   - ✅ Construir a imagem otimizada para produção
+   - ✅ Compilar assets React/Inertia durante o build
+   - ✅ Instalar dependências de produção (sem dev-dependencies)
+   - ✅ Configurar Nginx + PHP-FPM + Supervisor
+   - ✅ Aplicar otimizações de cache do PHP (OPcache)
+
+6. **Gere a chave da aplicação (primeira vez):**
+   ```bash
+   docker compose exec app php artisan key:generate
+   ```
+
+7. **Execute as migrações e seeders:**
+   ```bash
+   docker compose exec app php artisan migrate
+   docker compose exec app php artisan db:seed
+   ```
+
+8. **Acesse a aplicação:**
+   - A aplicação estará disponível em `http://localhost:8000` ou no domínio configurado.
+
+### Comandos Úteis - Produção
+
+```bash
+# Ver logs
+docker compose logs -f app
+
+# Acessar o container
+docker compose exec app sh
+
+# Reiniciar serviços
+docker compose restart
+
+# Parar serviços
+docker compose down
+
+# Limpar cache
+docker compose exec app php artisan cache:clear
+docker compose exec app php artisan config:cache
+docker compose exec app php artisan route:cache
+docker compose exec app php artisan view:cache
+
+# Ver status dos containers
+docker compose ps
+```
+
+### Estrutura Docker - Produção
+
+O ambiente de produção utiliza uma arquitetura multi-stage otimizada com:
+- **PHP 8.2-FPM** com extensões necessárias (pdo_mysql, sqlsrv, pdo_sqlsrv, gd, intl, mbstring, zip, bcmath, opcache)
+- **Nginx** como servidor web
+- **MySQL 8.0** como banco de dados
+- **Node 20** para build dos assets React/Inertia (apenas durante build)
+- **Supervisor** para gerenciar PHP-FPM e Nginx
+- **OPcache** ativado para máximo desempenho
+
+---
+
+## 📁 Estrutura de Ambientes
+
+Este projeto utiliza arquivos `.env` separados para cada ambiente:
+
+| Arquivo | Uso | Docker Compose | Dockerfile |
+|---------|-----|----------------|------------|
+| `.env.development.example` | Template para desenvolvimento | `docker-compose.dev.yml` | `Dockerfile.dev` |
+| `.env.development` | Desenvolvimento (gitignored) | `docker-compose.dev.yml` | `Dockerfile.dev` |
+| `.env.production.example` | Template para produção | `docker-compose.yml` | `Dockerfile` |
+| `.env.production` | Produção (gitignored) | `docker-compose.yml` | `Dockerfile` |
+
+### Diferenças entre Ambientes
+
+| Característica | Desenvolvimento | Produção |
+|----------------|-----------------|----------|
+| **APP_ENV** | `local` | `production` |
+| **APP_DEBUG** | `true` | `false` |
+| **Assets** | Vite dev server com HMR | Pre-compilados no build |
+| **Código** | Montado como volume | Copiado para a imagem |
+| **PHP** | CLI com display_errors | FPM otimizado |
+| **Servidor Web** | `php artisan serve` | Nginx |
+| **Dependências** | Inclui dev-dependencies | Apenas produção |
+| **Cache** | Desabilitado | OPcache ativado |
+| **Portas** | 8000 (Laravel) + 5173 (Vite) | 8000 (Nginx) |
+
+---
+
+## 🔧 Gerenciamento de Dependências
+
+### Adicionar Pacotes PHP
+
+**Desenvolvimento:**
+```bash
+docker compose -f docker-compose.dev.yml exec app composer require vendor/package
+```
+
+**Produção:** Após adicionar no development, reconstrua a imagem de produção.
+
+### Adicionar Pacotes JavaScript
+
+**Desenvolvimento:**
+```bash
+docker compose -f docker-compose.dev.yml exec app npm install nome-do-pacote
+```
+
+**Produção:** Após adicionar no development, reconstrua a imagem de produção.
+
+---
+
+## 📝 Arquivos de Configuração
+
+- `.env.development` - Configuração de desenvolvimento (gitignored)
+- `.env.production` - Configuração de produção (gitignored)
+- `.env.development.example` - Template para desenvolvimento
+- `.env.production.example` - Template para produção
+- `docker-compose.dev.yml` - Configuração Docker para desenvolvimento
+- `docker-compose.yml` - Configuração Docker para produção
+- `Dockerfile.dev` - Imagem Docker de desenvolvimento
+- `Dockerfile` - Imagem Docker de produção
+- `vite.config.js` - Configuração do Vite (compatível com Docker)
+
+---
+
+## 📚 Documentação do Projeto
 
 Esta documentação concentra-se exclusivamente nos aspectos de Modelos e Controladores do projeto.
 

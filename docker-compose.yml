@@ -1,0 +1,47 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: requerimentos_app
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    env_file:
+      - .env.production
+    volumes:
+      - storage-app:/var/www/html/storage/app
+      - storage-logs:/var/www/html/storage/logs
+      - ./.env.production:/var/www/html/.env
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  db:
+    image: mysql:8.0
+    container_name: requerimentos_db
+    restart: unless-stopped
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db-data:
+    driver: local
+  storage-app:
+    driver: local
+  storage-logs:
+    driver: local
