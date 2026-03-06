@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Role;
 use App\Models\Department;
 use App\Enums\RoleId;
@@ -15,7 +16,10 @@ class User extends Authenticatable
 {
     use \Spatie\Permission\Traits\HasRoles;
     use \Uspdev\SenhaunicaSocialite\Traits\HasSenhaunica;
-    use HasFactory, Notifiable;
+    use HasFactory;
+    use Notifiable {
+        notify as protected originalNotify;
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -134,5 +138,13 @@ class User extends Authenticatable
     public function getRolesAttribute()
     {
         return $this->departmentUserRoles()->with('role', 'department')->get();
+    }
+
+    public function notify($instance) {
+        try {
+            $this->originalNotify($instance);
+        } catch (\Throwable $e) {
+            Log::alert('Email notification failed', ['error' => $e->getMessage()]);
+        }
     }
 }
